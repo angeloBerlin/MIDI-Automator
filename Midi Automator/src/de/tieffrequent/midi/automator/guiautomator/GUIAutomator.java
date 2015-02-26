@@ -17,7 +17,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	private final int HIGHLIGHT_DURATION = 1;
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final double MIN_SIMILARITY = 0.99;
+	private final float MIN_SIMILARITY = 0.99f;
+	private final boolean CHECK_LAST_SEEN = true;
+
 	private Screen screen;
 	private volatile boolean running = true;
 	private boolean debug = false;
@@ -32,9 +34,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 *            Indicates if the program is working in debug mode
 	 */
 	public GUIAutomator(boolean debug) {
-		screen = new Screen();
+		screen = new Screen(); // new MinSimColoredScreen();
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.MinSimilarity = MIN_SIMILARITY;
+		Settings.CheckLastSeenSimilar = MIN_SIMILARITY;
+		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 	}
 
 	/**

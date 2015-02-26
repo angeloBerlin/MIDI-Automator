@@ -29,7 +29,7 @@ public class MinSimColoredScreen extends Screen {
 
 		Match match = super.wait(target, timeout);
 		Rectangle targetRect = match.getRect();
-		BufferedImage targetImage = match.getImage();
+		BufferedImage targetImage = match.getImage().get();
 
 		// take screenshot of found region
 		BufferedImage foundImage = null;
