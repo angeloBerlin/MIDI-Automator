@@ -63,7 +63,7 @@ Midi Automator ant build file.
 	<target name="compile" depends="makedir">
 		<javac srcdir="${src.dir}" destdir="${build.dir}">
 			<classpath>
-				<pathelement path="lib/sikuli-ide.jar" />
+				<pathelement path="lib/sikulixapi.jar" />
 			</classpath>	
 		</javac>
 	</target>
