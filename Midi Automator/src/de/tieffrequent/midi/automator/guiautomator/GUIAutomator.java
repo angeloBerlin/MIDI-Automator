@@ -15,11 +15,11 @@ import de.tieffrequent.midi.automator.IDeActivateable;
  */
 public class GUIAutomator extends Thread implements IDeActivateable {
 
-	private static int HIGHLIGHT_DURATION = 1;
-	private static float MOVE_MOUSE_DELAY = 0;
-	private static double MIN_SIMILARITY = 0.96;
+	private final int HIGHLIGHT_DURATION = 1;
+	private final float MOVE_MOUSE_DELAY = 0;
+	private final double MIN_SIMILARITY = 0.99;
+	private Screen screen;
 	private volatile boolean running = true;
-	private final Screen SCREEN;
 	private boolean debug = false;
 	private boolean active = true;
 
@@ -32,8 +32,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 *            Indicates if the program is working in debug mode
 	 */
 	public GUIAutomator(boolean debug) {
-		this.debug = debug;
-		SCREEN = new MinSimColoredScreen();
+		screen = new Screen();
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.MinSimilarity = MIN_SIMILARITY;
 	}
@@ -195,7 +194,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 				e.printStackTrace();
 			}
 
-			Match match = SCREEN.wait(guiAutomation.getImagePath(),
+			Match match = screen.wait(guiAutomation.getImagePath(),
 					guiAutomation.getTimeout());
 			found = true;
 
