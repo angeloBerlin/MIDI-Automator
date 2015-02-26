@@ -13,7 +13,7 @@ Midi Automator ant build file.
 	<property name="src.dir" value="src" />
 	<property name="application.dir" value="${name}" />
 	<property name="build.dir" value="bin" />
-	<property name="dist.dir" value="/Users/aguelle/Documents/Eclipse Workspace/MIDI Opener/Midi Automator/build" />
+	<property name="dist.dir" value="build" />
 	<property name="lib.dir" value="lib" />
 	<property name="images.dir" value="images" />
 	<property name="jre.dir" value="jre" />
@@ -121,7 +121,7 @@ Midi Automator ant build file.
 			<runtime dir="${java.runtime}" />
 			<option value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
 			<argument value="-os=MacOS" />
-			<argument value="-wd=${working.dir.macos.resources}" />
+			<argument value="-wd=${working.dir.macos.resources}/" />
 		</bundleapp>
 		
 		<copy file="${build.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
@@ -228,10 +228,23 @@ Midi Automator ant build file.
 		
 	</target>
 	
+	<!-- Runs the build process -->
+    <target name="common" depends="preclean, compile, jar">
+        <description>Common OS unspecific preparations</description>
+    </target>
+	
+	<!-- Runs the Mac build process -->
+	<target name="macBuild" depends="common, dmg, copy">
+		<description>Build Mac DMG</description>
+	</target>
+	
+	<!-- Runs the Windows build process -->
+	<target name="windowsBuild" depends="common, compile, jar, exe, copy">
+		<description>Build Windows exe</description>
+	</target>
 	
 	<!-- Runs the build process -->
-	<target name="main" depends="preclean, compile, jar, exe, dmg, copy">
-		<description>Main target</description>
+	<target name="main" depends="macBuild, windowsBuild">
+	        <description>Main target</description>
 	</target>
-
 </project> 
