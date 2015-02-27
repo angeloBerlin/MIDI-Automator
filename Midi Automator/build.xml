@@ -201,8 +201,20 @@ Midi Automator ant build file.
 		<delete file="${name}-tmp.dmg" quiet="yes" failonerror="false"/>
 	</target>
 	
-	<!-- Copies the needed assets and files -->
-	<target name="copy" depends="makedir, jar, macbundle">
+	<!-- Copies the needed assets and files for MacOS -->
+    <target name="copyMac" depends="makedir, jar, macbundle">
+        <!-- MacOS -->
+    	<copy file="${build.dir}/${name}.dmg" tofile="${dist.dir.macos}/${name}.dmg" />
+        
+    	<!-- keep file permissions after copy process -->
+        <exec executable="cp">
+            <arg value="${debug.starter.macos}"/>
+            <arg value="${dist.dir.macos}/${debug.starter.macos}"/>
+        </exec>
+    </target>
+	
+	<!-- Copies the needed assets and files for Windows -->
+	<target name="copyWindows" depends="makedir, jar, macbundle">
 
 		<!-- Windows -->
 		<copy file="${build.dir}/${jar.file}" tofile="${build.dir.windows}/${jar.file}" />
@@ -217,15 +229,6 @@ Midi Automator ant build file.
 		<copy todir="${build.dir.windows}/${jre.dir}">
 			<fileset dir="${windows.jre.dir}" />
 		</copy>
-		
-		<!-- MacOS -->
-		<copy file="${build.dir}/${name}.dmg" tofile="${dist.dir.macos}/${name}.dmg" />
-		<!-- keep file permissions after copy process -->
-		<exec executable="cp">
-			<arg value="${debug.starter.macos}"/>
-			<arg value="${dist.dir.macos}/${debug.starter.macos}"/>
-		</exec>
-		
 	</target>
 	
 	<!-- Runs the build process -->
@@ -234,17 +237,17 @@ Midi Automator ant build file.
     </target>
 	
 	<!-- Runs the Mac build process -->
-	<target name="macBuild" depends="common, dmg, copy">
+	<target name="macBuild" depends="common, dmg, copyMac">
 		<description>Build Mac DMG</description>
 	</target>
 	
 	<!-- Runs the Windows build process -->
-	<target name="windowsBuild" depends="common, compile, jar, exe, copy">
+	<target name="windowsBuild" depends="common, compile, jar, exe, copyWindows">
 		<description>Build Windows exe</description>
 	</target>
 	
 	<!-- Runs the build process -->
 	<target name="main" depends="macBuild, windowsBuild">
-	        <description>Main target</description>
+		<description>Main target</description>
 	</target>
 </project> 
