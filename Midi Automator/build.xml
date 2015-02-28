@@ -6,6 +6,7 @@ Midi Automator ant build file.
 @date 16-02-15
 -->
 <project name="Ant-Test" default="main" basedir=".">
+	<property environment="env"/>
 	<property name="name" value="Midi Automator" />
 	<property name="demo.dir" value="demo" />
 	<property name="filelist.file" value="file_list.mido" />
@@ -28,8 +29,10 @@ Midi Automator ant build file.
 	<property name="build.dir.windows" value="${build.dir}/Windows" />
 	<property name="dist.dir.windows" value="${dist.dir}/Windows" />
 	<property name="debug.starter.windows" value="debug.bat" />
-	<property name="launch4j.dir" value="/Applications/launch4j" />
+	<property name="launch4j.dir" value="${env.ProgramFiles(x86)}\Launch4j" />
 	<property name="launch4j.config" value="launch4j.xml" />
+	<property name="nsis.exe" value="${env.ProgramFiles(x86)}\NSIS\makensis.exe" />
+	<property name="nsis.config" value="NSIS/installer.nsi" />
 	<property name="windows.jre.dir" value="jre/Windows" />
 	<property name="exe.file" value="${name}.exe" />
 	<property name="icon.file.windows" value="MidiAutomatorIcon.ico" />
@@ -52,7 +55,7 @@ Midi Automator ant build file.
 	</target>
 	
 	<!-- Creates the  build, docs and dist directory-->
-	<target name="makedir">
+	<target name="makedir" depends="preclean">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.dir.windows}" />
 		<mkdir dir="${dist.dir.windows}" />
@@ -214,7 +217,7 @@ Midi Automator ant build file.
     </target>
 	
 	<!-- Copies the needed assets and files for Windows -->
-	<target name="copyWindows" depends="makedir, jar, macbundle">
+	<target name="copyWindows" depends="makedir, jar, exe">
 
 		<!-- Windows -->
 		<copy file="${build.dir}/${jar.file}" tofile="${build.dir.windows}/${jar.file}" />
@@ -231,18 +234,20 @@ Midi Automator ant build file.
 		</copy>
 	</target>
 	
-	<!-- Runs the build process -->
-    <target name="common" depends="preclean, compile, jar">
-        <description>Common OS unspecific preparations</description>
-    </target>
+	<!-- Builds an NSIS installer for Windows -->
+	<target name="nsis" depends="copyWindows">
+	    <exec executable="${nsis.exe}" failonerror="true" >
+	    	<arg value="${nsis.config}"/>
+	    </exec>
+	</target>
 	
 	<!-- Runs the Mac build process -->
-	<target name="macBuild" depends="common, dmg, copyMac">
+	<target name="macBuild" depends="dmg, copyMac">
 		<description>Build Mac DMG</description>
 	</target>
 	
 	<!-- Runs the Windows build process -->
-	<target name="windowsBuild" depends="common, compile, jar, exe, copyWindows">
+	<target name="windowsBuild" depends="exe, copyWindows, nsis">
 		<description>Build Windows exe</description>
 	</target>
 	

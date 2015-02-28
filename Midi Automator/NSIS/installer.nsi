@@ -1,6 +1,5 @@
 /**
  * @author Angelo Gülle
- * @date 15-02-15
  */
 
 !include "MUI.nsh"
@@ -8,11 +7,11 @@
 
 Name "Midi Automator Installer"
 !define INSTALLATIONNAME "Midi Automator"
-!define PROJECTPATH "Y:\Dokumente\Eclipse Workspace\MIDI Opener\Midi Automator"
+!define PROJECTPATH "..\"
 !define ICON "MidiAutomatorIcon.ico"
 !define EXE "${INSTALLATIONNAME}.exe"
 !define LNK "${INSTALLATIONNAME}.lnk"
-!define DISTDIR "Y:\Dokumente\Eclipse Workspace\MIDI Opener\Midi Automator\build\Windows"
+!define DISTDIR "..\build\Windows"
 !define UNINSTALLER "uninstall.exe"
 !define APPDIR "$APPDATA\${INSTALLATIONNAME}"
 OutFile "${DISTDIR}\midiautomator_setup.exe"
@@ -33,15 +32,19 @@ Section
     SetOverwrite on
     File "${PROJECTPATH}\images\${ICON}"
     File /r /x "file_list.mido" "${PROJECTPATH}\bin\Windows\*"
+    
     # Copy files to data directory
     SetOutPath "${APPDIR}"
     File "${PROJECTPATH}\bin\Windows\file_list.mido"
     WriteUninstaller $INSTDIR\${UNINSTALLER}
+    
     # Set PATH environment varibale
     ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\lib\libs"
+    
     # Startmenu entries
     SetShellVarContext all
     CreateShortCut "$SMPROGRAMS\${LNK}" "$INSTDIR\${EXE}" "" "$INSTDIR\${EXE}" 0
+    
     # Set uninstall RegKeys
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayName" "${INSTALLATIONNAME}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayIcon" '"$INSTDIR\${ICON}"'
