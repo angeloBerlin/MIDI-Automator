@@ -25,6 +25,15 @@ Midi Automator ant build file.
 	<property name="build.sysclasspath" value="last"/>
 	<property name="splashscreen.file" value="splash.png" />
 	
+    <!-- Check for OS -->
+    <condition property="is_windows">
+        <os family="windows"/>
+    </condition>
+    
+    <condition property="is_macos">
+        <os family="mac"/>
+    </condition>
+	
 	<!-- Windows -->
 	<property name="build.dir.windows" value="${build.dir}/Windows" />
 	<property name="dist.dir.windows" value="${dist.dir}/Windows" />
@@ -205,7 +214,7 @@ Midi Automator ant build file.
 	</target>
 	
 	<!-- Copies the needed assets and files for MacOS -->
-    <target name="copyMac" depends="makedir, jar, macbundle">
+    <target name="copyMac" depends="makedir, dmg">
         <!-- MacOS -->
     	<copy file="${build.dir}/${name}.dmg" tofile="${dist.dir.macos}/${name}.dmg" />
         
@@ -217,7 +226,7 @@ Midi Automator ant build file.
     </target>
 	
 	<!-- Copies the needed assets and files for Windows -->
-	<target name="copyWindows" depends="makedir, jar, exe">
+	<target name="copyWindows" depends="makedir, exe">
 
 		<!-- Windows -->
 		<copy file="${build.dir}/${jar.file}" tofile="${build.dir.windows}/${jar.file}" />
@@ -242,13 +251,13 @@ Midi Automator ant build file.
 	</target>
 	
 	<!-- Runs the Mac build process -->
-	<target name="macBuild" depends="dmg, copyMac">
-		<description>Build Mac DMG</description>
+	<target name="macBuild" if="is_macos">
+		<antcall target="copyMac" />
 	</target>
 	
 	<!-- Runs the Windows build process -->
-	<target name="windowsBuild" depends="exe, copyWindows, nsis">
-		<description>Build Windows exe</description>
+	<target name="windowsBuild" if="is_windows">
+		<antcall target="nsis" />
 	</target>
 	
 	<!-- Runs the build process -->
