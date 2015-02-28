@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>Viewing Application Alerts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = ohj/ohw) - Version 1.0.11" />
+<meta name="date" content="2013-01-31T16:52:43Z" />
+<meta name="robots" content="noarchive" />
+<meta name="doctitle" content="Viewing Application Alerts" />
+<meta name="relnum" content="Release 5.2" />
+<meta name="partnum" content="E21585-03" />
+<meta name="topic-id" content="NOTFY119" />
+<link rel="copyright" href="./dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+<link rel="stylesheet" href="./dcommon/css/blafdoc.css" title="Oracle BLAFDoc" type="text/css" />
+<link rel="contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="prev" href="triggerstab_deleterule.htm" title="Previous" type="text/html" />
+</head>
+<body>
+<div class="zz-skip-header"><a href="#BEGIN">Skip Headers</a></div>
+<table class="simple oac_no_warn" summary="" cellspacing="0" cellpadding="0" width="100%">
+<col width="86%" />
+<col width="*" />
+<tr valign="bottom">
+<td align="left"></td>
+<td align="center"><a href="triggerstab_deleterule.htm"><img src="./dcommon/gifs/leftnav.gif" alt="Previous" /><br />
+<span class="icon">Previous</span></a>&nbsp;</td>
+</tr>
+</table>
+<p><a id="FHJBCBHI" name="FHJBCBHI"></a><a id="NOTFY119" name="NOTFY119"></a></p>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h1>Viewing Application Alerts</h1>
+<a name="BEGIN" id="BEGIN"></a>
+<p>An application alert is displayed in the Management Console application whenever an action with a specific trigger has issued. The trigger rule itself has been set to display the alert in the Trigger Alerts window. You can set rules to trigger an alert in other ways as well, for example, a rule can trigger the sending of an e-mail.</p>
+<p>This topic includes information on the following subtopics:</p>
+<ul>
+<li>
+<p><a href="#i1001965">Opening the Trigger Alerts Window</a></p>
+</li>
+<li>
+<p><a href="#CHDIAABC">Viewing the Trigger Alerts Window Contents</a></p>
+</li>
+<li>
+<p><a href="#i1001696">Using the Trigger Alerts Window</a></p>
+</li>
+</ul>
+<a id="i1001965" name="i1001965"></a><a id="NOTFY120" name="NOTFY120"></a>
+<div class="sect2">
+<h2>Opening the Trigger Alerts Window</h2>
+<p>Depending upon your Java Mission Control Client implementation, do one of the following:</p>
+<ul>
+<li>
+<p>If you are running the Java Mission Control Client as a standalone application, select <span class="gui-object-action">Window</span> then <span class="gui-object-action">Alerts</span>.</p>
+</li>
+<li>
+<p>If you are running the Java Mission Control Client as an Eclipse plug-in, click the <span class="bold">Triggers</span> tab and click <span class="gui-object-action">Alerts</span>.</p>
+</li>
+</ul>
+<p>The Trigger Alerts window opens.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDIAABC" name="CHDIAABC"></a><a id="NOTFY122" name="NOTFY122"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h2>Viewing the Trigger Alerts Window Contents</h2>
+<p>The Trigger Alerts window lists all alerts that have been generated for applications since Java Mission Control was started on that application. It shows:</p>
+<ul>
+<li>
+<p>The date and time the alert was raised</p>
+</li>
+<li>
+<p>The name of the rule that was violated to cause the alert</p>
+</li>
+<li>
+<p>The source of the rule violation. This field identifies the connection for which the trigger was activated. The source is the name of the process denoted in the JVM Browser.</p>
+</li>
+<li>
+<p>The Show dialog on alerts condition is on by default and means that the Trigger Alerts window opens as soon as that type of rule has been triggered.</p>
+</li>
+<li>
+<p>The Clear button removes all alerts that are listed in the Trigger Alerts window.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1001696" name="i1001696"></a><a id="NOTFY123" name="NOTFY123"></a>
+<div class="sect2">
+<h2>Using the Trigger Alerts Window</h2>
+<p>The primary purpose of the Trigger Alerts window is to provide you with information about all alerts triggered since the Mission Control Console was attached to a running application (assuming that trigger rules for that application were set).</p>
+<p>When you click on an individual alert, information about that alert appears in the alert detail section of the alerts list (<a href="#i1001734">Figure: Alert Details</a>). Depending upon the trigger action selected (see <a href="triggerstab_addrule.htm#i1000222">"Adding a New Trigger Rule Using the Add Wizard"</a>), different information will appear; for example, if a thread dump was selected as the trigger action, a thread dump would appear here. <a href="#i1001734">Figure: Alert Details</a> shows the result of an application alert action.</p>
+<div class="figure"><a id="i1001734" name="i1001734"></a><a id="NOTFY126" name="NOTFY126"></a>
+<p class="titleinfigure">Alert Details</p>
+<img src="./img/alerts_db_detail.gif" alt="Description of this figure follows" title="Description of this figure follows" longdesc="img_text/alerts_db_detail.htm" /><br />
+<a id="sthref6" name="sthref6" href="img_text/alerts_db_detail.htm">Description of "Alert Details"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#CHDBEHEA">Table: Trigger Alerts Detail</a> describes the alert information for the example in <a href="#i1001734">Figure: Alert Details</a>.</p>
+<div class="tblformal"><a id="sthref7" name="sthref7"></a><a id="CHDBEHEA" name="CHDBEHEA"></a>
+<p class="titleintable">Trigger Alerts Detail</p>
+<table class="Formal" title="Trigger Alerts Detail" summary="This is a two-column table that describes the contents of the application alert information illustrated in Figure 13. The left-hand column lists the information on the alert and the right-hand column describes what that information is." dir="ltr" border="1" width="100%" frame="hsides" rules="groups" cellpadding="3" cellspacing="0">
+<col width="42%" />
+<col width="*" />
+<thead>
+<tr align="left" valign="top">
+<th align="left" valign="bottom" id="r1c1-t3">This information...</th>
+<th align="left" valign="bottom" id="r1c2-t3">Identifies...</th>
+</tr>
+</thead>
+<tbody>
+<tr align="left" valign="top">
+<td align="left" id="r2c1-t3" headers="r1c1-t3">
+<p>Notification creation time was</p>
+</td>
+<td align="left" headers="r2c1-t3 r1c2-t3">
+<p>The time and date when the alert was triggered.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" id="r3c1-t3" headers="r1c1-t3">
+<p>The notification source is</p>
+</td>
+<td align="left" headers="r3c1-t3 r1c2-t3">
+<p>The source of the alert. This is usually an IP address and a port number.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" id="r4c1-t3" headers="r1c1-t3">
+<p>The notification rule is</p>
+</td>
+<td align="left" headers="r4c1-t3 r1c2-t3">
+<p>The name of the rule that was violated to trigger the alert. This will be the same name that appears in the Trigger Rules list on the Trigger Rules tab.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" id="r5c1-t3" headers="r1c1-t3">
+<p>Type description</p>
+</td>
+<td align="left" headers="r5c1-t3 r1c2-t3">
+<p>The attribute and attribute type associated with the violated rule.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" id="r6c1-t3" headers="r1c1-t3">
+<p>Rule trigger condition value</p>
+</td>
+<td align="left" headers="r6c1-t3 r1c2-t3">
+<p>The value at which the alert will be triggered. This is value is set in the Max trigger value field on the Trigger Rules tab.</p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td align="left" id="r7c1-t3" headers="r1c1-t3">
+<p>The condition was met for <span class="italic">n</span> seconds</p>
+</td>
+<td align="left" headers="r7c1-t3 r1c2-t3">
+<p>How long the alert conditioned sustained (<span class="italic">n</span>=the duration in seconds). This value is set by selecting <span class="bold">Sustained (s)</span> when adding a new trigger rule on the Trigger Rules tab.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<!-- Start Footer -->
+<div class="footer">
+<table class="simple oac_no_warn" summary="" cellspacing="0" cellpadding="0" width="100%">
+<col width="86%" />
+<col width="*" />
+<tr>
+<td align="left"><span class="copyrightlogo">Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.</span><br />
+<a href="./dcommon/html/cpyr.htm"><span class="copyrightlogo">Legal Notices</span></a></td>
+<td align="center"><a href="triggerstab_deleterule.htm"><img src="./dcommon/gifs/leftnav.gif" alt="Previous" /><br />
+<span class="icon">Previous</span></a>&nbsp;</td>
+</tr>
+</table>
+</div>
+<!-- class="footer" -->
+</body>
+</html>

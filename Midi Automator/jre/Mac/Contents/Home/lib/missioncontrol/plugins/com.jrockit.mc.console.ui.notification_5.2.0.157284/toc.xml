@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="Using the Triggers Tab" link_to="PLUGINS_ROOT/com.jrockit.mc.console.ui/toc.xml#ConsoleTOCLink">
+  <topic href="html/using.htm" label="Using the Triggers Tab">
+    <topic href="html/triggerstab_getfamiliar.htm#i1000300" label="Getting Familiar with the Triggers Tab" />
+    <topic href="html/triggerstab_addrule.htm#i1000222" label="Adding a New Trigger Rule Using the Add Wizard" />
+    <topic href="html/triggerstab_activate.htm#i999873" label="Activating and Deactivating a Rule" />
+    <topic href="html/triggerstab_editrule.htm#i999880" label="Editing a Trigger Rule on the Triggers Tab" />
+    <topic href="html/triggerstab_editrulewizard.htm#i999936" label="Editing a Trigger Rule Using the Edit Wizard" />
+    <topic href="html/triggerstab_deleterule.htm#i999960" label="Deleting a Trigger Rule" />
+    <topic href="html/view_app_alerts.htm#FHJBCBHI" label="Viewing Application Alerts">
+      <topic href="html/view_app_alerts.htm#i1001965" label="Opening the Trigger Alerts Window" />
+      <topic href="html/view_app_alerts.htm#CHDIAABC" label="Viewing the Trigger Alerts Window Contents" />
+      <topic href="html/view_app_alerts.htm#i1001696" label="Using the Trigger Alerts Window" />
+    </topic>
+  </topic>
+</toc>

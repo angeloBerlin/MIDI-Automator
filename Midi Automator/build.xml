@@ -43,7 +43,7 @@ Midi Automator ant build file.
 	<property name="working.dir.macos.resources" value="$APP_ROOT/Contents/Resources" />
 	<property name="icon.file.macos" value="MidiAutomatorIcon.icns" />
 	<property name="debug.starter.macos" value="debug.command" />
-	<property name="java.runtime" value="/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home" />
+	<property name="java.runtime" value="jre/Mac/Contents/Home" />
 	<property name="dmgbackground.file" value="DMGBackground.png" />
 	<property name="mountdir" value="/tmp"/>
 

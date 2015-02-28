@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.jrockit.mc.feature.core"
+      label="%name"
+      version="5.2.0.157284"
+      provider-name="%provider"
+      plugin="com.jrockit.mc.ui">
+
+   <description url="%descriptionUrl">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseUrl">
+      %license
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.forms" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.help" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.eclipse.osgi"/>
+   </requires>
+
+   <plugin
+         id="com.jrockit.mc.attach"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.common"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.ui"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.docs"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.jdp"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rjmx"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"/>
+
+   <plugin
+         id="com.jrockit.mc.greychartplugin"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser.jdp"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.browser.attach"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rjmx.ui"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.commands"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.core"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         unpack="false"/>
+
+   <plugin
+         id="com.jrockit.mc.rjmx.ext"
+         download-size="0"
+         install-size="0"
+         version="5.2.0.157284"
+         fragment="true"
+         unpack="false"/>
+
+</feature>

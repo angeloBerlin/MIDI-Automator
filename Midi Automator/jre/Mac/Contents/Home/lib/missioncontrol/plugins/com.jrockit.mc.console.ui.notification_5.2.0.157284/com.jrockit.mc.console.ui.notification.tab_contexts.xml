@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.contexts"?>
+<contexts>
+	<context id="TriggerSectionPart">
+		<description>TriggerSectionPart</description>
+		<topic href="/com.jrockit.mc.console.ui.notification/html/triggerstab_addrule.htm#i1000222" label="Adding a New Trigger Rule using the Add Wizard"/>
+	</context>
+	<context id="TriggerConditionSectionPart" title="TriggerConditionSectionPart">
+		<description>TriggerConditionSectionPart</description>
+		<topic href="/com.jrockit.mc.console.ui.notification/html/triggerstab_editrule.htm#i999880" label="Editing a Trigger Rule on the Triggers Tab"/>
+	</context>
+</contexts>

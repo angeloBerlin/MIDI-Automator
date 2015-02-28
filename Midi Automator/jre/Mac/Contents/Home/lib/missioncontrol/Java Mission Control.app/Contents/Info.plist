@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>jmc</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Oracle Java Mission Control 5.2.0, Copyright \u00A9 1999, 2013, Oracle and/or its affiliates. All rights reserved.</string>
+	<key>CFBundleIconFile</key>
+	<string>mission_control.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.oracle.jmc</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Oracle Java Mission Control</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.2.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>5.2.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ja</string>
+		<string>zh_CN</string>
+	</array>
+
+	<key>CFBundleDocumentTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleTypeName</key>
+              <string>Java Flight Recorder</string>
+            <key>CFBundleIconFile</key>
+              <string>mission_control.icns</string>
+            <key>CFBundleTypeExtensions</key>
+              <array>
+		<string>jfr</string>
+              </array>
+            <key>CFBundleTypeRole</key>
+              <string>Viewer</string>
+            <key>LSTypeIsPackage</key>
+              <true/>
+          </dict>
+        </array>
+
+
+	<key>Eclipse</key>
+	<array>
+		<string>-vm</string>
+		<string>$APP_PACKAGE/../../../bin/java</string>
+		<string>-keyring</string>
+		<string>~/.eclipse_keyring</string>
+	</array>
+</dict>
+</plist>
