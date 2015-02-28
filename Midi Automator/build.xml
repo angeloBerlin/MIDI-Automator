@@ -21,7 +21,7 @@ Midi Automator ant build file.
 	<property name="jar.file" value="MidiAutomator.jar" />
 	<property name="base.package" value="de.tieffrequent.midi.automator" />
 	<property name="main.class" value="${base.package}.Main" />
-	<property name="class.path" value="${lib.dir}/sikuli-ide.jar" />
+	<property name="class.path" value="${lib.dir}/sikulixapi.jar" />
 	<property name="build.sysclasspath" value="last"/>
 	<property name="splashscreen.file" value="splash.png" />
 	
