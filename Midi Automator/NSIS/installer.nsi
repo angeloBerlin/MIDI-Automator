@@ -1,5 +1,5 @@
 /**
- * @author Angelo G�lle
+ * @author Angelo Guelle
  */
 
 !include "MUI.nsh"
