@@ -231,6 +231,7 @@ Midi Automator ant build file.
 		<!-- Windows -->
 		<copy file="${build.dir}/${jar.file}" tofile="${build.dir.windows}/${jar.file}" />
 		<copy file="${demo.dir}/${filelist.file}" tofile="${build.dir.windows}/${filelist.file}" />
+		<copy file="${demo.dir}/${properties.file}" tofile="${build.dir.windows}/${properties.file}" />
 		<copy todir="${build.dir.windows}/${images.dir}">
 			<fileset dir="${images.dir}" />
 		</copy>

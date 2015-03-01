@@ -1,5 +1,5 @@
 /**
- * @author Angelo Gülle
+ * @author Angelo Gï¿½lle
  */
 
 !include "MUI.nsh"
@@ -32,13 +32,15 @@ Section
     SetOverwrite on
     File "${PROJECTPATH}\images\${ICON}"
     File /r /x "file_list.mido" "${PROJECTPATH}\bin\Windows\*"
+    File /r /x "midiautomator.properties" "${PROJECTPATH}\bin\Windows\*"
     
     # Copy files to data directory
     SetOutPath "${APPDIR}"
     File "${PROJECTPATH}\bin\Windows\file_list.mido"
+    File "${PROJECTPATH}\bin\Windows\midiautomator.properties"
     WriteUninstaller $INSTDIR\${UNINSTALLER}
     
-    # Set PATH environment varibale
+    # Set PATH environment variable
     ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\lib\libs"
     
     # Startmenu entries
@@ -50,7 +52,7 @@ Section
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayIcon" '"$INSTDIR\${ICON}"'
     WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "UninstallString" '"$INSTDIR\${UNINSTALLER}"'
     WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "InstallLocation" '"$INSTDIR"'
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "Publisher" "Angelo Gülle"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "Publisher" "Angelo Gï¿½lle"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "NoRepair" 1
 SectionEnd

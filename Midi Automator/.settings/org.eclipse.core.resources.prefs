@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//NSIS/installer.nsi=UTF-8
 encoding/LICENSE.txt=UTF-8
 encoding/debug.bat=UTF-8
 encoding/debug.command=UTF-8
