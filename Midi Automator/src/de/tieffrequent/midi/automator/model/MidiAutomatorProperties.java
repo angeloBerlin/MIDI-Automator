@@ -46,44 +46,27 @@ public class MidiAutomatorProperties extends Properties {
 
 	/**
 	 * Stores properties to the file.
+	 * 
+	 * @throws IOException
 	 */
-	public void store() {
+	public void store() throws IOException {
 
-		Writer writer = null;
-		try {
-			writer = new FileWriter(propertiesFilePath);
-			store(writer, null);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} finally {
-			try {
-				writer.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		Writer writer = new FileWriter(propertiesFilePath);
+		store(writer, null);
+		writer.close();
 	}
 
 	/**
 	 * Loads properties from the file.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public void load() {
+	public void load() throws FileNotFoundException, IOException {
 
-		Reader reader = null;
-		try {
-			reader = new FileReader(propertiesFilePath);
-			load(reader);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		Reader reader = new FileReader(propertiesFilePath);
+		load(reader);
+		reader.close();
 	}
 
 	@Override
@@ -145,7 +128,8 @@ public class MidiAutomatorProperties extends Properties {
 	 * @return The index of the key, <NULL> if there is no key
 	 */
 	public static int getIndexOfPropertyKey(String key) {
-		String[] splittedKey = key.split(MidiAutomatorProperties.INDEX_SEPARATOR);
+		String[] splittedKey = key
+				.split(MidiAutomatorProperties.INDEX_SEPARATOR);
 		String index = splittedKey[splittedKey.length - 1];
 		return Integer.parseInt(index);
 	}
