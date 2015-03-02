@@ -125,48 +125,30 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void reloadProperties() {
 
-		removeInfoMessage(errPropertiesFileNotFound);
-		removeInfoMessage(errPropertiesFileCouldNotBeOpened);
+		loadPropertiesFile();
 
-		try {
-			PROPERTIES.load();
+		// MIDI IN Remote
+		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 
-			// MIDI IN Remote
-			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+		// MIDI OUT Remote
+		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 
-			// MIDI OUT Remote
-			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
+		// MIDI IN Metronom
+		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 
-			// MIDI IN Metronom
-			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
+		// MIDI OUT Switch Notifier
+		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 
-			// MIDI OUT Switch Notifier
-			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
+		// PREV
+		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
 
-			// PREV
-			loadSwitchCommandProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
+		// NEXT
+		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
 
-			// NEXT
-			loadSwitchCommandProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
+		// GUI automation
+		loadGUIAutomationsProperties();
 
-			// GUI automation
-			loadGUIAutomationsProperties();
-
-		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
-
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-
-		} finally {
-			PROGRAM_FRAME.reload();
-		}
+		PROGRAM_FRAME.reload();
 	}
 
 	/**
@@ -530,17 +512,7 @@ public class MidiAutomator implements IApplication {
 						signature);
 			}
 
-			try {
-				removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-				PROPERTIES.store();
-
-			} catch (IOException e) {
-				errPropertiesFileCouldNotBeOpened = String.format(
-						Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-						resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-				setInfoMessage(errPropertiesFileCouldNotBeOpened);
-			}
-
+			storePropertiesFile();
 			reloadProperties();
 		}
 
@@ -814,23 +786,7 @@ public class MidiAutomator implements IApplication {
 
 	@Override
 	public String getMidiINRemoteDeviceName() {
-		try {
-			removeInfoMessage(errPropertiesFileNotFound);
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.load();
-		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
-
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-
-		}
+		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 	}
@@ -842,36 +798,12 @@ public class MidiAutomator implements IApplication {
 		PROPERTIES.setProperty(
 				MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE,
 				midiINDeviceName);
-		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.store();
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-		}
+		storePropertiesFile();
 	}
 
 	@Override
 	public String getMidiINMetronomDeviceName() {
-		try {
-			removeInfoMessage(errPropertiesFileNotFound);
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.load();
-		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
-
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-
-		}
+		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 	}
@@ -883,36 +815,12 @@ public class MidiAutomator implements IApplication {
 		PROPERTIES.setProperty(
 				MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE,
 				midiINDeviceName);
-		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.store();
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-		}
+		storePropertiesFile();
 	}
 
 	@Override
 	public String getMidiOUTRemoteDeviceName() {
-		try {
-			removeInfoMessage(errPropertiesFileNotFound);
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.load();
-		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
-
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-
-		}
+		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 	}
@@ -923,36 +831,12 @@ public class MidiAutomator implements IApplication {
 				.getProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 		PROPERTIES.setProperty(
 				MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE, deviceName);
-		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.store();
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-		}
+		storePropertiesFile();
 	}
 
 	@Override
 	public String getMidiOUTSwitchNotifierDeviceName() {
-		try {
-			removeInfoMessage(errPropertiesFileNotFound);
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.load();
-		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
-
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-
-		}
+		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 	}
@@ -964,15 +848,7 @@ public class MidiAutomator implements IApplication {
 		PROPERTIES.setProperty(
 				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE,
 				deviceName);
-		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.store();
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-		}
+		storePropertiesFile();
 	}
 
 	/**
@@ -1168,15 +1044,7 @@ public class MidiAutomator implements IApplication {
 					minDelay);
 		}
 
-		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
-			PROPERTIES.store();
-		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
-		}
+		storePropertiesFile();
 	}
 
 	@Override
@@ -1203,6 +1071,44 @@ public class MidiAutomator implements IApplication {
 	public void setGUIAutomationsToActive(boolean active) {
 		for (GUIAutomator guiAutomator : guiAutomators) {
 			guiAutomator.setActive(active);
+		}
+	}
+
+	/**
+	 * Tries to load the properties file.
+	 */
+	private void loadPropertiesFile() {
+		try {
+			removeInfoMessage(errPropertiesFileNotFound);
+			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
+			PROPERTIES.load();
+		} catch (FileNotFoundException e) {
+			errPropertiesFileNotFound = String.format(
+					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
+							+ PROPERTIES_FILE_NAME);
+			setInfoMessage(errPropertiesFileNotFound);
+
+		} catch (IOException e) {
+			errPropertiesFileCouldNotBeOpened = String.format(
+					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
+					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
+			setInfoMessage(errPropertiesFileCouldNotBeOpened);
+		}
+	}
+
+	/**
+	 * Tries to store the properties file.
+	 */
+	private void storePropertiesFile() {
+		try {
+			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
+			PROPERTIES.store();
+
+		} catch (IOException e) {
+			errPropertiesFileCouldNotBeOpened = String.format(
+					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
+					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
+			setInfoMessage(errPropertiesFileCouldNotBeOpened);
 		}
 	}
 }
