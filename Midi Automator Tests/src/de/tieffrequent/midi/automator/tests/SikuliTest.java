@@ -18,10 +18,12 @@ public class SikuliTest {
 		Settings.MinSimilarity = MIN_SIMILARITY;
 		SCREEN = new Screen();
 
-		System.out.println(System.getProperty("os.name"));
-
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			screenshotpath = "screenshots/mac/";
+		}
+		
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			screenshotpath = "screenshots/windows/";
 		}
 	}
 }

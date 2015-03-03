@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automator.test.helper.SikuliHelper;
-
 public class TestCancelAddFile extends SikuliTest {
 
 	@Test
@@ -31,13 +29,13 @@ public class TestCancelAddFile extends SikuliTest {
 			match = searchRegion.wait(screenshotpath + "name_text_field.png",
 					TIMEOUT);
 			match.click();
-			SCREEN.type(SikuliHelper.translateUSToKeyboard("x"));
+			SCREEN.paste("x");
 
 			// type file
 			match = searchRegion.wait(screenshotpath + "file_text_field.png",
 					TIMEOUT);
 			match.click();
-			SCREEN.type(SikuliHelper.translateUSToKeyboard("y"));
+			SCREEN.paste("y");
 
 			// cancel
 			match = searchRegion.wait(screenshotpath + "cancel_button.png",

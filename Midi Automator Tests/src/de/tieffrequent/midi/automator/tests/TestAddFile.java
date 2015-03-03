@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automator.test.helper.SikuliHelper;
-
 public class TestAddFile extends SikuliTest {
 
 	private String currentPath = "";
@@ -46,14 +44,14 @@ public class TestAddFile extends SikuliTest {
 			match = searchRegion.wait(screenshotpath + "name_text_field.png",
 					TIMEOUT);
 			match.click();
-			SCREEN.type(SikuliHelper.translateUSToKeyboard("Hello World"));
+			SCREEN.paste("Hello World");
 
 			// type file
 			match = searchRegion.wait(screenshotpath + "file_text_field.png",
 					TIMEOUT);
 			match.click();
-			SCREEN.type(SikuliHelper.translateUSToKeyboard(currentPath
-					+ "/testfiles/Hello World.rtf"));
+			SCREEN.paste(currentPath + "/testfiles/Hello World.rtf");
+
 			// save
 			match = searchRegion.wait(screenshotpath + "save_button.png",
 					TIMEOUT);
