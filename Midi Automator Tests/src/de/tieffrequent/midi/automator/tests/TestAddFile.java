@@ -61,7 +61,6 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 
 			// search new entry
-
 			match = searchRegion.wait(screenshotpath + "Hello_World_entry.png",
 					TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);

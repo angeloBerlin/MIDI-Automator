@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestCancelAddFile.class, TestAddFile.class })
+@SuiteClasses({ TestCancelAddFile.class, TestAddFile.class, TestOpenFile.class })
 public class AllTests {
 
 }
