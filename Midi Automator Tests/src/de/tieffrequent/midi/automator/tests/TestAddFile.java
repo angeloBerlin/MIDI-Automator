@@ -33,33 +33,34 @@ public class TestAddFile extends SikuliTest {
 
 		try {
 
-			searchRegion = SCREEN.wait("screenshots/midi_automator.png",
+			searchRegion = SCREEN.wait(screenshotpath + "midi_automator.png",
 					TIMEOUT);
 			match = searchRegion;
 
 			// open add dialog
 			match.rightClick();
-			match = searchRegion.wait("screenshots/add.png", TIMEOUT);
+			match = searchRegion.wait(screenshotpath + "add.png", TIMEOUT);
 			match.click();
 
 			// type name
-			match = searchRegion.wait("screenshots/name_text_field.png",
+			match = searchRegion.wait(screenshotpath + "name_text_field.png",
 					TIMEOUT);
 			match.click();
 			SCREEN.type(SikuliHelper.translateUSToKeyboard("Hello World"));
 
 			// type file
-			match = searchRegion.wait("screenshots/file_text_field.png",
+			match = searchRegion.wait(screenshotpath + "file_text_field.png",
 					TIMEOUT);
 			match.click();
 			SCREEN.type(SikuliHelper.translateUSToKeyboard(currentPath
 					+ "/testfiles/Hello World.rtf"));
 			// save
-			match = searchRegion.wait("screenshots/save_button.png", TIMEOUT);
+			match = searchRegion.wait(screenshotpath + "save_button.png",
+					TIMEOUT);
 			match.click();
 
 			// search new entry
-			match = searchRegion.wait("screenshots/Hello_World_entry.png",
+			match = searchRegion.wait(screenshotpath + "Hello_World_entry.png",
 					TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
