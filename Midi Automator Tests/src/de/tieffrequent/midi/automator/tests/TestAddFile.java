@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
@@ -41,8 +42,10 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 
 			// type name
+			Settings.MinSimilarity = MIN_SIMILARITY;
 			match = searchRegion.wait(screenshotpath + "name_text_field.png",
 					TIMEOUT);
+			Settings.MinSimilarity = MAX_SIMILARITY;
 			match.click();
 			SCREEN.paste("Hello World");
 
@@ -58,6 +61,7 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 
 			// search new entry
+
 			match = searchRegion.wait(screenshotpath + "Hello_World_entry.png",
 					TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
