@@ -49,6 +49,14 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 			SCREEN.paste("Hello World");
 
+			// use search dialog
+			match = SCREEN.wait(screenshotpath + "search_button.png", TIMEOUT);
+			match.click();
+			match = SCREEN.wait(screenshotpath + "file_chooser.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+			match = SCREEN.wait(screenshotpath + "cancel_button.png", TIMEOUT);
+			match.click();
+
 			// type file
 			match = searchRegion.wait(screenshotpath + "file_text_field.png",
 					TIMEOUT);
