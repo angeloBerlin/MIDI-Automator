@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
+
+import de.tieffrequent.midi.automaotr.tests.utils.Utils;
 
 public class TestOpenMidiAutomator extends SikuliTest {
 
@@ -21,14 +24,15 @@ public class TestOpenMidiAutomator extends SikuliTest {
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			filePath = "%PROGRAMFILES%\\MidiAutomator\\Midi Automator.exe";
+			filePath = Utils
+					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe");
 		}
 
 		File file = new File(filePath);
 
 		try {
-
 			Desktop.getDesktop().open(file);
+			Settings.MinSimilarity = MIN_SIMILARITY;
 			Region match = SCREEN.wait(screenshotpath + "midi_automator.png",
 					TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
@@ -39,5 +43,4 @@ public class TestOpenMidiAutomator extends SikuliTest {
 			fail(e.toString());
 		}
 	}
-
 }

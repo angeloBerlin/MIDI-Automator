@@ -72,11 +72,19 @@ public class TestOpenFile extends SikuliTest {
 			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
 		}
 
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		// show Midi Automator
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type(Key.TAB, Key.CMD);
 		}
-		if (System.getProperty("os.name").equals("Mac OS X")) {
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			SCREEN.type(Key.TAB, Key.ALT);
 			SCREEN.type(Key.TAB, Key.ALT);
 		}
 	}
