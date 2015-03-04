@@ -54,8 +54,18 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 			match = SCREEN.wait(screenshotpath + "file_chooser.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			match = SCREEN.wait(screenshotpath + "cancel_button.png", TIMEOUT);
-			match.click();
+
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				match = SCREEN.wait(screenshotpath + "cancel_button.png",
+						TIMEOUT);
+				match.click();
+			}
+
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				match = SCREEN.wait(screenshotpath + "abbrechen_button.png",
+						TIMEOUT);
+				match.click();
+			}
 
 			// type file
 			match = searchRegion.wait(screenshotpath + "file_text_field.png",
