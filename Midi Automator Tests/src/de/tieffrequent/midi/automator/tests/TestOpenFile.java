@@ -33,30 +33,33 @@ public class TestOpenFile extends SikuliTest {
 				}
 			}
 		}
-		// activate
 		try {
+			// activate
 			match.click();
 			match.doubleClick();
-			// strange workaround
+			// strange workaround to open
 			Thread.sleep(1000);
 			match.doubleClick();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			Thread.sleep(2000);
+			// minimize Midi Automator
+			match.click();
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				SCREEN.type("h", KeyModifier.CMD);
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				SCREEN.type(Key.DOWN, KeyModifier.WIN);
+			}
 
+		} catch (InterruptedException e) {
+			fail(e.toString());
+		}
 		// check if editor opened
 		Settings.MinSimilarity = MIN_SIMILARITY;
 		try {
-			match = SCREEN.wait(screenshotpath + "Hello_World_RTF_active.png",
-					TIMEOUT);
-		} catch (FindFailed ea) {
-			try {
-				match = SCREEN.wait(screenshotpath
-						+ "Hello_World_RTF_inactive.png", TIMEOUT);
-			} catch (FindFailed eb) {
-				fail(eb.toString());
-			}
+			match = SCREEN.wait(
+					screenshotpath + "Hello_World_RTF_inactive.png", TIMEOUT);
+		} catch (FindFailed e) {
+			fail(e.toString());
 		}
 		match.highlight(HIGHLIGHT_DURATION);
 
@@ -68,5 +71,14 @@ public class TestOpenFile extends SikuliTest {
 		if (System.getProperty("os.name").equals("Windows 7")) {
 			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
 		}
+
+		// show Midi Automator
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			SCREEN.type(Key.TAB, Key.CMD);
+		}
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			SCREEN.type(Key.TAB, Key.ALT);
+		}
 	}
+
 }
