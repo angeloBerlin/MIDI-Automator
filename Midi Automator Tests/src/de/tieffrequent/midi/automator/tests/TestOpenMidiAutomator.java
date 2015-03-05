@@ -17,6 +17,7 @@ public class TestOpenMidiAutomator extends SikuliTest {
 
 	@Test
 	public void test() {
+
 		String filePath = "";
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -33,9 +34,11 @@ public class TestOpenMidiAutomator extends SikuliTest {
 		try {
 			Desktop.getDesktop().open(file);
 			Settings.MinSimilarity = MIN_SIMILARITY;
-			Region match = SCREEN.wait(screenshotpath + "midi_automator.png",
-					TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
+			Region searchRegion = SCREEN.wait(screenshotpath
+					+ "midi_automator.png", TIMEOUT);
+			searchRegion.w = searchRegion.w + 100;
+			searchRegion.h = searchRegion.h + 100;
+			AllTests.setProgramRegion(searchRegion);
 
 		} catch (IOException e) {
 			fail(e.toString());

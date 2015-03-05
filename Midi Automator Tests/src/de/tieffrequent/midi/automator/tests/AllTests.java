@@ -5,11 +5,14 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.sikuli.script.Region;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestCancelAddFile.class,
 		TestAddFile.class, TestOpenFile.class, TestEditFile.class })
-public class AllTests {
+public class AllTests extends SikuliTest {
+
+	private static Region programRegion;
 
 	@BeforeClass
 	public static void setUp() {
@@ -19,6 +22,14 @@ public class AllTests {
 	@AfterClass
 	public static void tearDown() {
 		System.out.println("End of Tests!");
+	}
+
+	public static Region getProgramRegion() {
+		return programRegion;
+	}
+
+	public static void setProgramRegion(Region programRegion) {
+		AllTests.programRegion = programRegion;
 	}
 
 }

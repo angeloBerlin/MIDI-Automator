@@ -3,7 +3,6 @@ package de.tieffrequent.midi.automator.tests;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
@@ -38,14 +37,16 @@ public class TestOpenFile extends SikuliTest {
 
 		// open "Hello World"
 		try {
-			match = SCREEN.wait(screenshotpath + scEntry, TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(screenshotpath + scEntry,
+					TIMEOUT);
 		} catch (FindFailed ea) {
 			try {
-				match = SCREEN.wait(screenshotpath + scEntryInactive, TIMEOUT);
+				match = SikuliTest.getSearchRegion().wait(
+						screenshotpath + scEntryActive, TIMEOUT);
 			} catch (FindFailed eb) {
 				try {
-					match = SCREEN
-							.wait(screenshotpath + scEntryActive, TIMEOUT);
+					match = SikuliTest.getSearchRegion().wait(
+							screenshotpath + scEntryInactive, TIMEOUT);
 				} catch (FindFailed ec) {
 					fail(ec.toString());
 				}
@@ -72,9 +73,11 @@ public class TestOpenFile extends SikuliTest {
 			fail(e.toString());
 		}
 		// check if editor opened
-		Settings.MinSimilarity = MIN_SIMILARITY;
+		SikuliTest.setSearchRegion(SCREEN);
+
 		try {
-			match = SCREEN.wait(screenshotpath + scOpened, TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + scOpened, TIMEOUT);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}

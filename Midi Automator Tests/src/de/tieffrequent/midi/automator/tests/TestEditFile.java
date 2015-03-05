@@ -14,23 +14,24 @@ public class TestEditFile extends SikuliTest {
 	public void helloWorldShouldBeEdited() {
 
 		Region match = null;
-		Region searchRegion = SCREEN;
 
 		try {
 			// open edit dialog
-			Settings.MinSimilarity = MIN_SIMILARITY;
 			try {
-				match = SCREEN.wait(screenshotpath + "Hello_World_entry.png",
-						TIMEOUT);
+				match = SikuliTest.getSearchRegion().wait(
+						screenshotpath + "Hello_World_entry.png", TIMEOUT);
 				match.click();
 			} catch (FindFailed ea) {
 				try {
-					match = SCREEN.wait(screenshotpath
-							+ "Hello_World_entry_inactive.png", TIMEOUT);
+					match = SikuliTest.getSearchRegion().wait(
+							screenshotpath + "Hello_World_entry_inactive.png",
+							TIMEOUT);
 				} catch (FindFailed eb) {
 					try {
-						match = SCREEN.wait(screenshotpath
-								+ "Hello_World_entry_active.png", TIMEOUT);
+						match = SikuliTest.getSearchRegion()
+								.wait(screenshotpath
+										+ "Hello_World_entry_active.png",
+										TIMEOUT);
 					} catch (FindFailed ec) {
 						fail(ec.toString());
 					}
@@ -43,12 +44,14 @@ public class TestEditFile extends SikuliTest {
 				e.printStackTrace();
 			}
 			match.rightClick();
-			match = searchRegion.wait(screenshotpath + "edit.png", TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "edit.png", TIMEOUT);
 			match.click();
 
 			// type name
-			match = searchRegion.wait(screenshotpath
-					+ "name_text_field_Hello_World.png", TIMEOUT);
+			match = SikuliTest.getSearchRegion()
+					.wait(screenshotpath + "name_text_field_Hello_World.png",
+							TIMEOUT);
 			Settings.MinSimilarity = MAX_SIMILARITY;
 			SCREEN.paste("Hello World Edit");
 
@@ -71,8 +74,9 @@ public class TestEditFile extends SikuliTest {
 			}
 
 			// type file
-			match = searchRegion.wait(screenshotpath
-					+ "file_text_field_Hello_World.png", TIMEOUT);
+			match = SikuliTest.getSearchRegion()
+					.wait(screenshotpath + "file_text_field_Hello_World.png",
+							TIMEOUT);
 			match.click();
 			if (System.getProperty("os.name").equals("Mac OS X")) {
 				SCREEN.type("a", KeyModifier.CMD);
@@ -84,13 +88,13 @@ public class TestEditFile extends SikuliTest {
 			SCREEN.paste(currentPath + "/testfiles/Hello World edit.rtf");
 
 			// save
-			match = searchRegion.wait(screenshotpath + "save_button.png",
-					TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "save_button.png", TIMEOUT);
 			match.click();
 
 			// search new entry
-			match = searchRegion.wait(screenshotpath
-					+ "Hello_World_Edit_entry.png", TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "Hello_World_Edit_entry.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed e) {
@@ -103,6 +107,7 @@ public class TestEditFile extends SikuliTest {
 						"Hello_World_Edit_entry_inactive.png",
 						"Hello_World_Edit_entry_active.png",
 						"Hello_World_Edit_RTF.png");
+
 	}
 
 }
