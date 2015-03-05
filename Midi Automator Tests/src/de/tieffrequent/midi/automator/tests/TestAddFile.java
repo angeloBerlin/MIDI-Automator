@@ -2,27 +2,12 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Test;
 import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 public class TestAddFile extends SikuliTest {
-
-	private String currentPath = "";
-
-	public TestAddFile() {
-		super();
-
-		try {
-			currentPath = new File(".").getCanonicalPath();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
 
 	@Test
 	public void newFileShouldBeAdded() {
@@ -31,7 +16,7 @@ public class TestAddFile extends SikuliTest {
 		Region match;
 
 		try {
-
+			Settings.MinSimilarity = MIN_SIMILARITY;
 			searchRegion = SCREEN.wait(screenshotpath + "midi_automator.png",
 					TIMEOUT);
 			match = searchRegion;
@@ -42,7 +27,6 @@ public class TestAddFile extends SikuliTest {
 			match.click();
 
 			// type name
-			Settings.MinSimilarity = MIN_SIMILARITY;
 			match = searchRegion.wait(screenshotpath + "name_text_field.png",
 					TIMEOUT);
 			Settings.MinSimilarity = MAX_SIMILARITY;

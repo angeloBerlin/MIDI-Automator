@@ -12,22 +12,40 @@ import org.sikuli.script.Region;
 public class TestOpenFile extends SikuliTest {
 
 	@Test
-	public void newFileShouldBeAdded() {
+	public void helloWorldFileShouldBeOpened() {
+
+		openHelloWorldEdit("Hello_World_entry.png",
+				"Hello_World_entry_inactive.png",
+				"Hello_World_entry_active.png", "Hello_World_RTF_inactive.png");
+	}
+
+	/**
+	 * Opens an entry of the list.
+	 * 
+	 * @param scEntry
+	 *            screenshot of the unmarked entry
+	 * @param scEntryInactive
+	 *            screenshot of the marked unfocused entry
+	 * @param scEntryActive
+	 *            screenshot of the marked entry
+	 * @param scOpened
+	 *            screenshot of the opened program
+	 */
+	public static void openHelloWorldEdit(String scEntry,
+			String scEntryInactive, String scEntryActive, String scOpened) {
 
 		Region match = null;
 
 		// open "Hello World"
 		try {
-			match = SCREEN.wait(screenshotpath + "Hello_World_entry.png",
-					TIMEOUT);
+			match = SCREEN.wait(screenshotpath + scEntry, TIMEOUT);
 		} catch (FindFailed ea) {
 			try {
-				match = SCREEN.wait(screenshotpath
-						+ "Hello_World_entry_inactive.png", TIMEOUT);
+				match = SCREEN.wait(screenshotpath + scEntryInactive, TIMEOUT);
 			} catch (FindFailed eb) {
 				try {
-					match = SCREEN.wait(screenshotpath
-							+ "Hello_World_entry_active.png", TIMEOUT);
+					match = SCREEN
+							.wait(screenshotpath + scEntryActive, TIMEOUT);
 				} catch (FindFailed ec) {
 					fail(ec.toString());
 				}
@@ -56,8 +74,7 @@ public class TestOpenFile extends SikuliTest {
 		// check if editor opened
 		Settings.MinSimilarity = MIN_SIMILARITY;
 		try {
-			match = SCREEN.wait(
-					screenshotpath + "Hello_World_RTF_inactive.png", TIMEOUT);
+			match = SCREEN.wait(screenshotpath + scOpened, TIMEOUT);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -75,7 +92,6 @@ public class TestOpenFile extends SikuliTest {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -88,5 +104,4 @@ public class TestOpenFile extends SikuliTest {
 			SCREEN.type(Key.TAB, Key.ALT);
 		}
 	}
-
 }

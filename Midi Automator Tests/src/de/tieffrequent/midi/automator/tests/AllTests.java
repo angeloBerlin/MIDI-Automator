@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestCancelAddFile.class,
-		TestAddFile.class, TestOpenFile.class })
+		TestAddFile.class, TestOpenFile.class, TestEditFile.class })
 public class AllTests {
 
 	@BeforeClass
