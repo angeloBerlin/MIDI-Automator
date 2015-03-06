@@ -3,7 +3,6 @@ package de.tieffrequent.midi.automator.tests;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.KeyModifier;
 import org.sikuli.script.Region;
@@ -52,7 +51,13 @@ public class TestEditFile extends SikuliTest {
 			match = SikuliTest.getSearchRegion()
 					.wait(screenshotpath + "name_text_field_Hello_World.png",
 							TIMEOUT);
-			Settings.MinSimilarity = MAX_SIMILARITY;
+			match.click();
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				SCREEN.type("a", KeyModifier.CMD);
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				SCREEN.type("a", KeyModifier.CTRL);
+			}
 			SCREEN.paste("Hello World Edit");
 
 			// use search dialog
