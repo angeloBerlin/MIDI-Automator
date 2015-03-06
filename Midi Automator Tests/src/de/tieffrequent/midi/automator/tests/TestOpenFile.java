@@ -21,32 +21,32 @@ public class TestOpenFile extends SikuliTest {
 	/**
 	 * Opens an entry of the list.
 	 * 
-	 * @param scEntry
-	 *            screenshot of the unmarked entry
-	 * @param scEntryInactive
-	 *            screenshot of the marked unfocused entry
-	 * @param scEntryActive
-	 *            screenshot of the marked entry
+	 * @param scFirstTry
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param acSecondTry
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param scThirdTry
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @param scOpened
 	 *            screenshot of the opened program
 	 */
-	public static void openHelloWorldEdit(String scEntry,
-			String scEntryInactive, String scEntryActive, String scOpened) {
+	public static void openHelloWorldEdit(String scFirstTry,
+			String acSecondTry, String scThirdTry, String scOpened) {
 
 		Region match = null;
 
 		// open "Hello World"
 		try {
-			match = SikuliTest.getSearchRegion().wait(screenshotpath + scEntry,
-					TIMEOUT);
+			match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + scFirstTry, TIMEOUT);
 		} catch (FindFailed ea) {
 			try {
 				match = SikuliTest.getSearchRegion().wait(
-						screenshotpath + scEntryActive, TIMEOUT);
+						screenshotpath + scThirdTry, TIMEOUT);
 			} catch (FindFailed eb) {
 				try {
 					match = SikuliTest.getSearchRegion().wait(
-							screenshotpath + scEntryInactive, TIMEOUT);
+							screenshotpath + acSecondTry, TIMEOUT);
 				} catch (FindFailed ec) {
 					fail(ec.toString());
 				}

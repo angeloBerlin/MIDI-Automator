@@ -18,7 +18,8 @@ public class TestEditFile extends SikuliTest {
 			// open edit dialog
 			try {
 				match = SikuliTest.getSearchRegion().wait(
-						screenshotpath + "Hello_World_entry.png", TIMEOUT);
+						screenshotpath + "Hello_World_entry_active.png",
+						TIMEOUT);
 			} catch (FindFailed ea) {
 				try {
 					match = SikuliTest.getSearchRegion().wait(
@@ -26,10 +27,9 @@ public class TestEditFile extends SikuliTest {
 							TIMEOUT);
 				} catch (FindFailed eb) {
 					try {
-						match = SikuliTest.getSearchRegion()
-								.wait(screenshotpath
-										+ "Hello_World_entry_active.png",
-										TIMEOUT);
+						match = SikuliTest.getSearchRegion().wait(
+								screenshotpath + "Hello_World_entry.png",
+								TIMEOUT);
 					} catch (FindFailed ec) {
 						fail(ec.toString());
 					}
