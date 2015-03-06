@@ -1,5 +1,8 @@
 package de.tieffrequent.midi.automaotr.tests.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,5 +34,29 @@ public class Utils {
 		}
 
 		return str;
+	}
+
+	public static String runShellCommand(String[] cmd) {
+
+		StringBuffer output = new StringBuffer();
+
+		try {
+			Process p = Runtime.getRuntime().exec(cmd);
+			p.waitFor();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
+
+			String line = "";
+
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return (output.toString());
 	}
 }

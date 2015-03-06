@@ -16,7 +16,7 @@ import de.tieffrequent.midi.automaotr.tests.utils.Utils;
 public class TestOpenMidiAutomator extends SikuliTest {
 
 	@Test
-	public void test() {
+	public void programShallBeOpened() {
 
 		String filePath = "";
 

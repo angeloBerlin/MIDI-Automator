@@ -60,10 +60,10 @@ public class TestDeleteFiles extends SikuliTest {
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// check if delete is inactive
-			match.rightClick();
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "delete_inactive.png", TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
+			// match.rightClick();
+			// match = SikuliTest.getSearchRegion().wait(
+			// screenshotpath + "delete_inactive.png", TIMEOUT);
+			// match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed e) {
 			fail(e.toString());
