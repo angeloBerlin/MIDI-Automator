@@ -19,7 +19,6 @@ public class TestEditFile extends SikuliTest {
 			try {
 				match = SikuliTest.getSearchRegion().wait(
 						screenshotpath + "Hello_World_entry.png", TIMEOUT);
-				match.click();
 			} catch (FindFailed ea) {
 				try {
 					match = SikuliTest.getSearchRegion().wait(
