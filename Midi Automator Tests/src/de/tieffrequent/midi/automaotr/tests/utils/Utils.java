@@ -42,8 +42,8 @@ public class Utils {
 
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
-			p.waitFor();
 
+			p.getOutputStream().close();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 
@@ -53,7 +53,7 @@ public class Utils {
 				output.append(line + "\n");
 			}
 
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

@@ -47,12 +47,18 @@ public class TestCloseMidiAutomator extends SikuliTest {
 			String output = Utils.runShellCommand(cmd);
 
 			if (output.contains("Midi Automator.app")) {
-				fail(output);
+				fail("Process still active");
 			}
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
 
+			String[] cmd = { "cmd", "/c", "wmic process list" };
+			String output = Utils.runShellCommand(cmd);
+
+			if (output.contains("Midi Automator\\jre\\bin\\javaw.exe")) {
+				fail("Process still active");
+			}
 		}
 	}
 }
