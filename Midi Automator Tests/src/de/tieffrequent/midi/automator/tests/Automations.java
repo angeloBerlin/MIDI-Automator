@@ -267,9 +267,9 @@ public class Automations extends SikuliTest {
 		Region searchRegion = SCREEN.wait(
 				screenshotpath + "midi_automator.png", TIMEOUT);
 		setMinSimilarity(DEFAULT_SIMILARITY);
-		searchRegion.y = searchRegion.y - 30;
+		searchRegion.y = searchRegion.y - 22;
 		searchRegion.w = searchRegion.w + 100;
-		searchRegion.h = searchRegion.h + 130;
+		searchRegion.h = searchRegion.h + 100;
 		return searchRegion;
 	}
 
