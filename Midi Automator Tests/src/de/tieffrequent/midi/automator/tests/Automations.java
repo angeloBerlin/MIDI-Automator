@@ -1,11 +1,40 @@
 package de.tieffrequent.midi.automator.tests;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
 import org.sikuli.script.Region;
 
+import de.tieffrequent.midi.automaotr.tests.utils.Utils;
+
 public class Automations extends SikuliTest {
+
+	/**
+	 * Opens the Midi Automator program
+	 * 
+	 * @throws IOException
+	 */
+	public static void openMidiAutomator() throws IOException {
+
+		String filePath = "";
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			filePath = "/Applications/Midi Automator.app";
+		}
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			filePath = Utils
+					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe");
+		}
+
+		File file = new File(filePath);
+
+		Desktop.getDesktop().open(file);
+	}
 
 	/**
 	 * Opens the file menu
@@ -48,6 +77,52 @@ public class Automations extends SikuliTest {
 		match.rightClick();
 		match = SikuliTest.getSearchRegion().wait(
 				screenshotpath + "delete.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Moves a file entry one position up
+	 * 
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @throws FindFailed
+	 */
+	public static void moveUpEntry(String state1, String state2, String state3)
+			throws FindFailed {
+
+		Region match = Automations.findMultipleStateRegion(state1, state2,
+				state3);
+
+		match.rightClick();
+		match = SikuliTest.getSearchRegion().wait(
+				screenshotpath + "move_up.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Moves a file entry one position up
+	 * 
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @throws FindFailed
+	 */
+	public static void moveDownEntry(String state1, String state2, String state3)
+			throws FindFailed {
+
+		Region match = Automations.findMultipleStateRegion(state1, state2,
+				state3);
+
+		match.rightClick();
+		match = SikuliTest.getSearchRegion().wait(
+				screenshotpath + "move_down.png", TIMEOUT);
 		match.click();
 	}
 
@@ -175,7 +250,8 @@ public class Automations extends SikuliTest {
 	 * @throws FindFailed
 	 */
 	public static void focusMidiAutomator() throws FindFailed {
-		Region match = findMidiAutomatorRegion();
+		Region match = findMultipleStateRegion("Midi_Automator_title.png",
+				"Midi_Automator_title_inactive.png");
 		match.click();
 	}
 
@@ -188,11 +264,13 @@ public class Automations extends SikuliTest {
 	public static Region findMidiAutomatorRegion() throws FindFailed {
 
 		setMinSimilarity(0.8f);
-		Region match = SikuliTest.getSearchRegion().wait(
+		Region searchRegion = SCREEN.wait(
 				screenshotpath + "midi_automator.png", TIMEOUT);
 		setMinSimilarity(DEFAULT_SIMILARITY);
-		match.highlight(HIGHLIGHT_DURATION);
-		return match;
+		searchRegion.y = searchRegion.y - 30;
+		searchRegion.w = searchRegion.w + 100;
+		searchRegion.h = searchRegion.h + 130;
+		return searchRegion;
 	}
 
 	/**

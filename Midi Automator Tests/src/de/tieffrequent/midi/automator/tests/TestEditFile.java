@@ -2,16 +2,50 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 public class TestEditFile extends SikuliTest {
 
+	@Before
+	public void addHelloWorldFile() {
+		try {
+			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
+
+			Automations.addFile("Hello World", currentPath
+					+ "/testfiles/Hello World.rtf");
+
+		} catch (FindFailed e) {
+			fail(e.toString());
+		}
+	}
+
+	@Test
+	public void editingFileShouldBeCanceled() {
+
+		try {
+
+			Automations.openEditDialog("Hello_World_entry_active.png",
+					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
+			Automations.fillTextField("name_text_field_Hello_World.png", "x");
+			Automations.fillTextField("file_text_field_Hello_World.png", "y");
+			Automations.cancelDialog();
+
+			// search unmodified midi automator
+			Region match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "midi_automator_Hello_World.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+
+		} catch (FindFailed e) {
+			fail(e.toString());
+		}
+	}
+
 	@Test
 	public void helloWorldShouldBeEdited() {
-
-		Region match = null;
 
 		try {
 
@@ -51,6 +85,19 @@ public class TestEditFile extends SikuliTest {
 
 		} catch (FindFailed e) {
 			fail(e.toString());
+		}
+	}
+
+	@After
+	public void deleteAllFiles() {
+
+		try {
+			while (true) {
+				Automations.deleteEntry("Hello_World_entry_snippet.png",
+						"Hello_World_entry_snippet_active.png",
+						"Hello_World_entry_snippet_inactive.png");
+			}
+		} catch (FindFailed e) {
 		}
 	}
 }

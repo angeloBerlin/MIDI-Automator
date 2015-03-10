@@ -8,9 +8,10 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.sikuli.script.Region;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestOpenMidiAutomator.class, TestCancelAddFile.class,
-		TestAddFile.class, TestOpenFile.class, TestCancelEditFile.class,
-		TestEditFile.class, TestDeleteFiles.class, TestCloseMidiAutomator.class })
+@SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,
+		TestOpenFile.class, TestEditFile.class, TestDeleteFile.class,
+		TestMoveUpFile.class, TestMoveDownFile.class,
+		TestCloseMidiAutomator.class })
 public class AllTests extends SikuliTest {
 
 	private static Region programRegion;
