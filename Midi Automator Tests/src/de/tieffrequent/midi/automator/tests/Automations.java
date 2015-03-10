@@ -9,7 +9,7 @@ import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automaotr.tests.utils.Utils;
+import de.tieffrequent.midi.automator.tests.utils.Utils;
 
 public class Automations extends SikuliTest {
 

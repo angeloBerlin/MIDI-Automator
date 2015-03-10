@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import de.tieffrequent.midi.automaotr.tests.utils.Utils;
+import de.tieffrequent.midi.automator.tests.utils.Utils;
 
 public class TestCloseMidiAutomator extends SikuliTest {
 
