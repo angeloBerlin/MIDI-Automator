@@ -3,8 +3,8 @@ package de.tieffrequent.midi.automator.tests;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Region;
 
 public class TestCancelAddFile extends SikuliTest {
 
@@ -12,37 +12,17 @@ public class TestCancelAddFile extends SikuliTest {
 	public void addingFileShouldBeCanceled() {
 
 		try {
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", TIMEOUT);
 
-			// open add dialog
-			match.rightClick();
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "add.png", TIMEOUT);
-			match.click();
-
-			// type name
-			Settings.MinSimilarity = MIN_SIMILARITY;
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "name_text_field.png", TIMEOUT);
-			match.click();
-			SCREEN.paste("x");
-
-			// type file
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "file_text_field.png", TIMEOUT);
-			match.click();
-			SCREEN.paste("y");
-
-			// cancel
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "cancel_button.png", TIMEOUT);
-			match.click();
+			Automations.openAddDialog();
+			Automations.fillTextField("name_text_field.png", "x");
+			Automations.fillTextField("file_text_field.png", "y");
+			Automations.cancelDialog();
 
 			// search unmodified midi automator
-			Settings.MinSimilarity = MAX_SIMILARITY;
-			match = SikuliTest.getSearchRegion().wait(
+			setMinSimilarity(MAX_SIMILARITY);
+			Region match = SikuliTest.getSearchRegion().wait(
 					screenshotpath + "midi_automator.png", TIMEOUT);
+			setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed e) {

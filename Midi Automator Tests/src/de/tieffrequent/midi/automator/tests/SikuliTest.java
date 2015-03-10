@@ -12,8 +12,9 @@ public class SikuliTest {
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final boolean CHECK_LAST_SEEN = true;
 	protected static final float MAX_SIMILARITY = 0.99f;
-	protected static final float MIN_SIMILARITY = 0.97f;
+	protected static final float DEFAULT_SIMILARITY = 0.97f;
 	protected static final int HIGHLIGHT_DURATION = 1;
+	protected static final double MIN_TIMEOUT = 1;
 	protected static final double TIMEOUT = 7;
 	protected static final Screen SCREEN = new Screen();
 	protected static String screenshotpath;
@@ -24,9 +25,9 @@ public class SikuliTest {
 	public SikuliTest() {
 
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
-		Settings.MinSimilarity = MIN_SIMILARITY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
-		Settings.CheckLastSeenSimilar = MIN_SIMILARITY;
+		setMinSimilarity(DEFAULT_SIMILARITY);
+		Settings.CheckLastSeenSimilar = DEFAULT_SIMILARITY;
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			screenshotpath = "screenshots/mac/";
@@ -60,4 +61,8 @@ public class SikuliTest {
 		return searchRegion;
 	}
 
+	protected static void setMinSimilarity(float minSimilarity) {
+		Settings.MinSimilarity = minSimilarity;
+		Settings.CheckLastSeenSimilar = minSimilarity;
+	}
 }

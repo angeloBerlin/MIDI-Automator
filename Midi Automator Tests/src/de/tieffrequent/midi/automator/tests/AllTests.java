@@ -9,7 +9,7 @@ import org.sikuli.script.Region;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestCancelAddFile.class,
-		TestCancelEditFile.class, TestAddFile.class, TestOpenFile.class,
+		TestAddFile.class, TestOpenFile.class, TestCancelEditFile.class,
 		TestEditFile.class, TestDeleteFiles.class, TestCloseMidiAutomator.class })
 public class AllTests extends SikuliTest {
 

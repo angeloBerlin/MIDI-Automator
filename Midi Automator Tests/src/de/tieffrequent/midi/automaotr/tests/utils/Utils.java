@@ -36,6 +36,13 @@ public class Utils {
 		return str;
 	}
 
+	/**
+	 * Runs a shell command and returns the output as a String
+	 * 
+	 * @param cmd
+	 *            the command
+	 * @return the command's output
+	 */
 	public static String runShellCommand(String[] cmd) {
 
 		StringBuffer output = new StringBuffer();

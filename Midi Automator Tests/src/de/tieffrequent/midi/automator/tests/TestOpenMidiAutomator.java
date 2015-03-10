@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
@@ -33,11 +32,10 @@ public class TestOpenMidiAutomator extends SikuliTest {
 
 		try {
 			Desktop.getDesktop().open(file);
-			Settings.MinSimilarity = MIN_SIMILARITY;
-			Region searchRegion = SCREEN.wait(screenshotpath
-					+ "midi_automator.png", TIMEOUT);
+			Region searchRegion = Automations.findMidiAutomatorRegion();
+			searchRegion.y = searchRegion.y - 30;
 			searchRegion.w = searchRegion.w + 100;
-			searchRegion.h = searchRegion.h + 100;
+			searchRegion.h = searchRegion.h + 130;
 			AllTests.setProgramRegion(searchRegion);
 
 		} catch (IOException e) {

@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automaotr.tests.utils.Utils;
 
@@ -13,22 +12,8 @@ public class TestCloseMidiAutomator extends SikuliTest {
 	@Test
 	public void programShallBeClosed() {
 
-		Region match;
-
 		try {
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", TIMEOUT);
-
-			// open file menu
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "file.png", TIMEOUT);
-			match.click();
-
-			// exit
-			match = SikuliTest.getSearchRegion().wait(
-					screenshotpath + "exit.png", TIMEOUT);
-			match.click();
-
+			Automations.openExitMenu();
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
