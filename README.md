@@ -6,8 +6,8 @@ triggered by midi messages.
 
 The main idea is to have a little helper for musicians who use laptops on stage. 
 Most musicians use Ableton Live for that purpose. But they have to store their songs
-in one big live-set file, which is hard to maintain. With MIDI Automator they can prepare and change
-an ordered set list out of single live-set files. MIDI Automator can listen to midi messages and
+in one big live-set file which is hard to maintain. With MIDI Automator they can prepare and change
+an ordered set list containing single live-set files. MIDI Automator can listen to midi messages and
 load the next, previous or desired live-set file. All other features shall support the demand
 of a fully automated stage setup.
 
