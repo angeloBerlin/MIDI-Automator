@@ -2,6 +2,8 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,14 +14,26 @@ public class TestButtonNextFile extends SikuliTest {
 	@Before
 	public void addThreeFiles() {
 		try {
+			Automations.openExitMenu();
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			Automations.openMidiAutomator();
+
 			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
 
-			Automations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		}
+	}
 
-			Automations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
-
+	@Test
+	public void nextButtonNotActiveOnEmptyList() {
+		try {
+			SikuliTest.getSearchRegion().wait(
+					screenshotpath + "next_inactive.png", TIMEOUT);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -28,6 +42,10 @@ public class TestButtonNextFile extends SikuliTest {
 	@Test
 	public void nextFileShouldBeOpenedInCycle() {
 		try {
+			Automations.addFile("Hello World 1", currentPath
+					+ "/testfiles/Hello World 1.rtf");
+			Automations.addFile("Hello World 2", currentPath
+					+ "/testfiles/Hello World 2.rtf");
 
 			// open first file
 			Automations.nextFile();
@@ -79,7 +97,10 @@ public class TestButtonNextFile extends SikuliTest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterDeletingSecondFile() {
 		try {
-
+			Automations.addFile("Hello World 1", currentPath
+					+ "/testfiles/Hello World 1.rtf");
+			Automations.addFile("Hello World 2", currentPath
+					+ "/testfiles/Hello World 2.rtf");
 			Automations.addFile("Hello World 3", currentPath
 					+ "/testfiles/Hello World 3.rtf");
 
@@ -138,6 +159,10 @@ public class TestButtonNextFile extends SikuliTest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterAddingOnIndex2() {
 		try {
+			Automations.addFile("Hello World 1", currentPath
+					+ "/testfiles/Hello World 1.rtf");
+			Automations.addFile("Hello World 2", currentPath
+					+ "/testfiles/Hello World 2.rtf");
 
 			// open first file
 			Automations.nextFile();
