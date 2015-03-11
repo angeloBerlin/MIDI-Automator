@@ -74,7 +74,13 @@ public class ModelImpl implements IModel {
 		load();
 		List<String> result = new ArrayList<String>();
 		for (String csvLine : fileMap) {
-			result.add((csvLine.split(VALUE_SEPARATOR))[1]);
+			String[] split = csvLine.split(VALUE_SEPARATOR);
+
+			if (split.length > 1) {
+				result.add(split[1]);
+			} else {
+				result.add("");
+			}
 		}
 		return result;
 	}
