@@ -12,12 +12,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -125,6 +127,24 @@ public class MainFrame extends JFrame {
 			this.setLocation(new Point(MainFrame.DEV_POSITION_X,
 					MainFrame.DEV_POSITION_Y));
 		}
+
+		String icon16 = application.getResources().getImagePath()
+				+ "MidiAutomatorIcon16.png";
+		String icon32 = application.getResources().getImagePath()
+				+ "MidiAutomatorIcon32.png";
+		String icon64 = application.getResources().getImagePath()
+				+ "MidiAutomatorIcon64.png";
+		String icon128 = application.getResources().getImagePath()
+				+ "MidiAutomatorIcon128.png";
+		String icon256 = application.getResources().getImagePath()
+				+ "MidiAutomatorIcon256.png";
+		ArrayList<Image> icons = new ArrayList<Image>();
+		icons.add(new ImageIcon(icon16).getImage());
+		icons.add(new ImageIcon(icon32).getImage());
+		icons.add(new ImageIcon(icon64).getImage());
+		icons.add(new ImageIcon(icon128).getImage());
+		icons.add(new ImageIcon(icon256).getImage());
+		setIconImages(icons);
 
 		ICON_PATH_PREV = application.getResources().getImagePath()
 				+ "arrow_prev.png";
