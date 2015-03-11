@@ -35,6 +35,7 @@ public class TestButtonNextFile extends SikuliTest {
 			SikuliTest.setMinSimilarity(MAX_SIMILARITY);
 			SikuliTest.getSearchRegion().wait(
 					screenshotpath + "next_inactive.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
 			SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
 		} catch (FindFailed e) {
 			fail(e.toString());

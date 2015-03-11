@@ -170,6 +170,16 @@ public class Automations extends SikuliTest {
 	}
 
 	/**
+	 * Opens the popup menu
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void openPopupMenu() throws FindFailed {
+		Region match = findMidiAutomatorRegion();
+		match.rightClick();
+	}
+
+	/**
 	 * Opens the add dialog
 	 * 
 	 * @throws FindFailed
@@ -177,8 +187,7 @@ public class Automations extends SikuliTest {
 	public static void openAddDialog() throws FindFailed {
 
 		// open add dialog
-		Region match = findMidiAutomatorRegion();
-		match.rightClick();
+		openPopupMenu();
 		match = SikuliTest.getSearchRegion().wait(screenshotpath + "add.png",
 				TIMEOUT);
 		match.click();

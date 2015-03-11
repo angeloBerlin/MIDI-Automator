@@ -14,15 +14,21 @@ public class TestMoveUpFile extends SikuliTest {
 	public void addThreeFiles() {
 		try {
 			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
+		} catch (FindFailed e) {
+			fail(e.toString());
+		}
+	}
 
-			Automations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
+	@Test
+	public void moveUpMenuShouldBeDisabledIfListIsEmpty() {
 
-			Automations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
+		try {
+			Automations.openPopupMenu();
+			Region match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "move_up_inactive.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+			Automations.focusMidiAutomator();
 
-			Automations.addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 3.rtf");
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -31,6 +37,12 @@ public class TestMoveUpFile extends SikuliTest {
 	@Test
 	public void fileShouldBeMovedUp() {
 		try {
+			Automations.addFile("Hello World 1", currentPath
+					+ "/testfiles/Hello World 1.rtf");
+			Automations.addFile("Hello World 2", currentPath
+					+ "/testfiles/Hello World 2.rtf");
+			Automations.addFile("Hello World 3", currentPath
+					+ "/testfiles/Hello World 3.rtf");
 
 			Automations.moveUpEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",

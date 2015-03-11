@@ -15,8 +15,20 @@ public class TestEditFile extends SikuliTest {
 		try {
 			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
 
-			Automations.addFile("Hello World", currentPath
-					+ "/testfiles/Hello World.rtf");
+		} catch (FindFailed e) {
+			fail(e.toString());
+		}
+	}
+
+	@Test
+	public void editMenuShouldBeDisabledIfListIsEmpty() {
+
+		try {
+			Automations.openPopupMenu();
+			Region match = SikuliTest.getSearchRegion().wait(
+					screenshotpath + "edit_inactive.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+			Automations.focusMidiAutomator();
 
 		} catch (FindFailed e) {
 			fail(e.toString());
@@ -27,7 +39,8 @@ public class TestEditFile extends SikuliTest {
 	public void editingFileShouldBeCanceled() {
 
 		try {
-
+			Automations.addFile("Hello World", currentPath
+					+ "/testfiles/Hello World.rtf");
 			Automations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			Automations.fillTextField("name_text_field_Hello_World.png", "x");
@@ -48,7 +61,8 @@ public class TestEditFile extends SikuliTest {
 	public void helloWorldShouldBeEdited() {
 
 		try {
-
+			Automations.addFile("Hello World", currentPath
+					+ "/testfiles/Hello World.rtf");
 			Automations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			Automations.fillTextField("name_text_field_Hello_World.png",
@@ -78,6 +92,8 @@ public class TestEditFile extends SikuliTest {
 	@Test
 	public void fileChooserOfEditDialogShouldBeOpened() {
 		try {
+			Automations.addFile("Hello World", currentPath
+					+ "/testfiles/Hello World.rtf");
 			Automations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			Automations.openSearchDialog();
