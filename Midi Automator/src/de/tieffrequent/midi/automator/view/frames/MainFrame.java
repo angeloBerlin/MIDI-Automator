@@ -209,6 +209,13 @@ public class MainFrame extends JFrame {
 
 		// set list entries
 		fileJList.setListData(createViewableFileList(fileEntries));
+		if (fileEntries.isEmpty()) {
+			prevButton.setEnabled(false);
+			nextButton.setEnabled(false);
+		} else {
+			prevButton.setEnabled(true);
+			nextButton.setEnabled(true);
+		}
 
 		// set tooltips
 		if (midiSignatures != null) {
@@ -794,16 +801,34 @@ public class MainFrame extends JFrame {
 						popupMenu.configureFileListPopupMenu();
 						popupMenu.show(e.getComponent(), e.getX(), e.getY());
 
+						// en/disable edit
+						popupMenu.getEditMenuItem().setEnabled(false);
+						if (fileJList.getSelectedIndex() > -1) {
+							popupMenu.getEditMenuItem().setEnabled(true);
+						}
+
+						// en/disable delete
+						popupMenu.getDeleteMenuItem().setEnabled(false);
+						if (fileJList.getSelectedIndex() > -1) {
+							popupMenu.getDeleteMenuItem().setEnabled(true);
+						}
+
 						// en/disable move up
 						popupMenu.getMoveUpMenuItem().setEnabled(false);
-						if (!isFirstItem()) {
+						if (!isFirstItem() && fileJList.getSelectedIndex() > -1) {
 							popupMenu.getMoveUpMenuItem().setEnabled(true);
 						}
 
 						// en/disable move down
 						popupMenu.getMoveDownMenuItem().setEnabled(false);
-						if (!isLastItem()) {
+						if (!isLastItem() && fileJList.getSelectedIndex() > -1) {
 							popupMenu.getMoveDownMenuItem().setEnabled(true);
+						}
+
+						// en/disable midi learn
+						popupMenu.getMidiLearnMenuItem().setEnabled(false);
+						if (fileJList.getSelectedIndex() > -1) {
+							popupMenu.getMidiLearnMenuItem().setEnabled(true);
 						}
 
 						popupWasShown = true;

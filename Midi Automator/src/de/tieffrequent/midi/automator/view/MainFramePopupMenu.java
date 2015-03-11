@@ -233,30 +233,24 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		}
 	}
 
-	/**
-	 * Gets the menu item for move up action
-	 * 
-	 * @return The move up menu item
-	 */
 	public JMenuItem getMoveUpMenuItem() {
 		return moveUpMenuItem;
 	}
 
-	/**
-	 * Gets the menu item for move down action
-	 * 
-	 * @return The move down menu item
-	 */
 	public JMenuItem getMoveDownMenuItem() {
 		return moveDownMenuItem;
 	}
 
-	/**
-	 * Gets the menu item for midi unlearn action
-	 * 
-	 * @return The midi unlearn menu item
-	 */
 	public JMenuItem getMidiUnlearnMenuItem() {
 		return midiUnlearnMenuItem;
 	}
+
+	public JMenuItem getDeleteMenuItem() {
+		return deleteMenuItem;
+	}
+
+	public JMenuItem getEditMenuItem() {
+		return editMenuItem;
+	}
+
 }

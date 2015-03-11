@@ -63,6 +63,10 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 		midiLearnMenuItem.addActionListener(midiLearnAction);
 	}
 
+	public JMenuItem getMidiLearnMenuItem() {
+		return midiLearnMenuItem;
+	}
+
 	/**
 	 * Puts the application to the midi learn mode for the selected component.
 	 * 
