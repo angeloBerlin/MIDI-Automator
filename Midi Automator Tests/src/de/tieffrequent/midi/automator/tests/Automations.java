@@ -37,6 +37,28 @@ public class Automations extends SikuliTest {
 	}
 
 	/**
+	 * Opens the next file
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void nextFile() throws FindFailed {
+		Region match = SikuliTest.getSearchRegion().wait(
+				screenshotpath + "next.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Opens the previous file
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void prevFile() throws FindFailed {
+		Region match = SikuliTest.getSearchRegion().wait(
+				screenshotpath + "prev.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
 	 * Opens the file menu
 	 * 
 	 * @throws FindFailed
