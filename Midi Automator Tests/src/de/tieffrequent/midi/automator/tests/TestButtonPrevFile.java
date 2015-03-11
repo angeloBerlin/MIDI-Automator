@@ -29,7 +29,7 @@ public class TestButtonPrevFile extends SikuliTest {
 		}
 	}
 
-	@Test
+	// @Test
 	public void prevButtonNotActiveOnEmptyList() {
 		try {
 			SikuliTest.getSearchRegion().wait(
@@ -39,7 +39,7 @@ public class TestButtonPrevFile extends SikuliTest {
 		}
 	}
 
-	@Test
+	// @Test
 	public void prevFileShouldBeOpenedInCycle() {
 		try {
 			Automations.addFile("Hello World 1", currentPath
@@ -109,7 +109,7 @@ public class TestButtonPrevFile extends SikuliTest {
 					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry_inactive.png");
 
-			// open first file
+			// open third file
 			Automations.prevFile();
 
 			try {
@@ -119,8 +119,8 @@ public class TestButtonPrevFile extends SikuliTest {
 			}
 
 			if (!Automations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open");
+					.checkIfFileOpened("Hello_World_3_RTF_inactive.png")) {
+				fail("'Hello World 3.rtf' did not open");
 			}
 
 		} catch (FindFailed e) {
@@ -128,7 +128,7 @@ public class TestButtonPrevFile extends SikuliTest {
 		}
 	}
 
-	@Test
+	// @Test
 	public void thirdFileShouldBeOpenedAfterAddingOnIndex2() {
 		try {
 
