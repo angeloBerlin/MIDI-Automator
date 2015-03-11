@@ -14,7 +14,7 @@ public class SikuliTest {
 	protected static final float MAX_SIMILARITY = 0.99f;
 	protected static final float DEFAULT_SIMILARITY = 0.97f;
 	protected static final int HIGHLIGHT_DURATION = 1;
-	protected static final double MIN_TIMEOUT = 1;
+	protected static final double MIN_TIMEOUT = 0.8;
 	protected static final double TIMEOUT = 10;
 	protected static final Screen SCREEN = new Screen();
 	protected static String screenshotpath;
