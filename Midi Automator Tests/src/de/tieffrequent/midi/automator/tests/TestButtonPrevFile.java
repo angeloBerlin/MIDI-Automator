@@ -29,17 +29,19 @@ public class TestButtonPrevFile extends SikuliTest {
 		}
 	}
 
-	// @Test
+	@Test
 	public void prevButtonNotActiveOnEmptyList() {
 		try {
+			SikuliTest.setMinSimilarity(MAX_SIMILARITY);
 			SikuliTest.getSearchRegion().wait(
 					screenshotpath + "prev_inactive.png", TIMEOUT);
+			SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
 	}
 
-	// @Test
+	@Test
 	public void prevFileShouldBeOpenedInCycle() {
 		try {
 			Automations.addFile("Hello World 1", currentPath
@@ -128,7 +130,7 @@ public class TestButtonPrevFile extends SikuliTest {
 		}
 	}
 
-	// @Test
+	@Test
 	public void thirdFileShouldBeOpenedAfterAddingOnIndex2() {
 		try {
 

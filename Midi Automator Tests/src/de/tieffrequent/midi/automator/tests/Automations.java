@@ -42,8 +42,10 @@ public class Automations extends SikuliTest {
 	 * @throws FindFailed
 	 */
 	public static void nextFile() throws FindFailed {
+		SikuliTest.setMinSimilarity(MAX_SIMILARITY);
 		Region match = SikuliTest.getSearchRegion().wait(
 				screenshotpath + "next.png", TIMEOUT);
+		SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
 
@@ -53,8 +55,10 @@ public class Automations extends SikuliTest {
 	 * @throws FindFailed
 	 */
 	public static void prevFile() throws FindFailed {
+		SikuliTest.setMinSimilarity(MAX_SIMILARITY);
 		Region match = SikuliTest.getSearchRegion().wait(
 				screenshotpath + "prev.png", TIMEOUT);
+		SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
 

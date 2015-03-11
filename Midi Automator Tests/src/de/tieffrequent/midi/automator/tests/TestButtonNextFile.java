@@ -32,8 +32,10 @@ public class TestButtonNextFile extends SikuliTest {
 	@Test
 	public void nextButtonNotActiveOnEmptyList() {
 		try {
+			SikuliTest.setMinSimilarity(MAX_SIMILARITY);
 			SikuliTest.getSearchRegion().wait(
 					screenshotpath + "next_inactive.png", TIMEOUT);
+			SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
