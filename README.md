@@ -14,9 +14,7 @@ of a fully automated stage setup.
 MIDI Autopmator shall be hold as generic as possible, so that it can also handle other use cases 
 that are way apart from the main idea. 
 
-Watch the first draft on YouTube: http://youtu.be/85nKIIexOyg
-
-Download release builds from here: https://drive.google.com/folderview?id=0B26BzdlpHzNDX1VXNFN2QjBGRGs&usp=sharing
+Find additional information here: https://midi-automator.com
 
 License
 -------
