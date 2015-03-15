@@ -14,7 +14,7 @@ of a fully automated stage setup.
 MIDI Autopmator shall be hold as generic as possible, so that it can also handle other use cases 
 that are way apart from the main idea. 
 
-Find additional information here: https://midi-automator.com
+Find additional information here: https://www.midi-automator.com
 
 License
 -------
