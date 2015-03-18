@@ -21,11 +21,11 @@ import javax.swing.JList;
 
 import de.tieffrequent.midi.automator.guiautomator.GUIAutomation;
 import de.tieffrequent.midi.automator.guiautomator.GUIAutomator;
+import de.tieffrequent.midi.automator.midi.MidiAutomatorReceiver;
 import de.tieffrequent.midi.automator.midi.MidiINDetector;
 import de.tieffrequent.midi.automator.midi.MidiINExecuteReceiver;
 import de.tieffrequent.midi.automator.midi.MidiINLearnReceiver;
 import de.tieffrequent.midi.automator.midi.MidiINMetronomReceiver;
-import de.tieffrequent.midi.automator.midi.MidiAutomatorReceiver;
 import de.tieffrequent.midi.automator.model.IModel;
 import de.tieffrequent.midi.automator.model.MidiAutomatorProperties;
 import de.tieffrequent.midi.automator.model.ModelImpl;
@@ -527,6 +527,7 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void executeMidiMessage(MidiMessage message) {
 
+		System.out.println("eecuteMidiMessage");
 		// do not execute while midi learning
 		if (!isInMidiLearnMode()) {
 			String signature = MidiUtils.messageToString(message);
@@ -864,6 +865,7 @@ public class MidiAutomator implements IApplication {
 
 		if (signature == null) {
 			signature = "";
+			return false;
 		}
 
 		boolean found = false;
