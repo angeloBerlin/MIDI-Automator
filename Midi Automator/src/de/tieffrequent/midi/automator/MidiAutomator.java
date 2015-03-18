@@ -305,12 +305,12 @@ public class MidiAutomator implements IApplication {
 									.equals(propertyValue)) {
 
 								oldDevice = MidiUtils.getMidiDevice(
-										oldMidiINRemoteDeviceSignature, false);
+										oldMidiINRemoteDeviceSignature, "IN");
 							}
 						}
 
 						midiINRemoteDevice = MidiUtils.getMidiDevice(
-								propertyValue, false);
+								propertyValue, "IN");
 
 						// connect MIDI learner
 						connectMidiDeviceWithReceiver(midiINRemoteDevice,
@@ -340,12 +340,12 @@ public class MidiAutomator implements IApplication {
 							if (!oldMidiOUTRemoteDeviceSignature
 									.equals(propertyValue)) {
 								oldDevice = MidiUtils.getMidiDevice(
-										oldMidiOUTRemoteDeviceSignature, true);
+										oldMidiOUTRemoteDeviceSignature, "OUT");
 							}
 						}
 
 						midiOUTRemoteDevice = MidiUtils.getMidiDevice(
-								propertyValue, true);
+								propertyValue, "OUT");
 
 						if (midiOUTRemoteDevice != null) {
 							midiOUTRemoteDevice.open();
@@ -371,15 +371,13 @@ public class MidiAutomator implements IApplication {
 							if (!oldMidiINMetronomDeviceSignature
 									.equals(propertyValue)) {
 
-								oldDevice = MidiUtils
-										.getMidiDevice(
-												oldMidiINMetronomDeviceSignature,
-												false);
+								oldDevice = MidiUtils.getMidiDevice(
+										oldMidiINMetronomDeviceSignature, "IN");
 							}
 						}
 
 						midiINMetronomDevice = MidiUtils.getMidiDevice(
-								propertyValue, false);
+								propertyValue, "IN");
 
 						// connect MIDI metronom
 						connectMidiDeviceWithReceiver(midiINMetronomDevice,
@@ -407,12 +405,12 @@ public class MidiAutomator implements IApplication {
 								oldDevice = MidiUtils
 										.getMidiDevice(
 												oldMidiOUTSwitchNotifierDeviceSignature,
-												true);
+												"OUT");
 							}
 						}
 
 						midiOUTSwitchNotifierDevice = MidiUtils.getMidiDevice(
-								propertyValue, true);
+								propertyValue, "OUT");
 
 						if (midiOUTSwitchNotifierDevice != null) {
 							midiOUTSwitchNotifierDevice.open();
@@ -527,7 +525,6 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void executeMidiMessage(MidiMessage message) {
 
-		System.out.println("eecuteMidiMessage");
 		// do not execute while midi learning
 		if (!isInMidiLearnMode()) {
 			String signature = MidiUtils.messageToString(message);

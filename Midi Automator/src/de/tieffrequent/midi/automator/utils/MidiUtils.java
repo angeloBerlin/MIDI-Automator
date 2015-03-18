@@ -194,14 +194,14 @@ public class MidiUtils {
 	 * @param midiDeviceName
 	 *            The name of the midi device
 	 * @param outputDevice
-	 *            <TRUE> only output devices are considered, <FALSE> only input
+	 *            "OUT" only output devices are considered, "IN" only input
 	 *            devices are considered.
 	 * @return The midi device
 	 * @throws MidiUnavailableException
 	 *             If the midi device can not be found
 	 */
-	public static MidiDevice getMidiDevice(String midiDeviceName,
-			boolean outputDevice) throws MidiUnavailableException {
+	public static MidiDevice getMidiDevice(String midiDeviceName, String inout)
+			throws MidiUnavailableException {
 
 		MidiDevice.Info[] midiInfos;
 		MidiDevice device = null;
@@ -216,8 +216,8 @@ public class MidiUtils {
 
 					boolean allowsInput = (device.getMaxTransmitters() != 0);
 					boolean allowsOutput = (device.getMaxReceivers() != 0);
-					if ((allowsOutput && outputDevice)
-							|| (allowsInput && !outputDevice)) {
+					if ((allowsOutput && inout.equals("OUT"))
+							|| (allowsInput && inout.equals("IN"))) {
 						return device;
 					}
 				}

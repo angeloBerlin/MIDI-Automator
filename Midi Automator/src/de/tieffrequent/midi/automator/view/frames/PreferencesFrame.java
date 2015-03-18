@@ -500,7 +500,7 @@ public class PreferencesFrame extends JFrame {
 			String deviceName = (String) midiOUTSwitchNotifierDeviceComboBox
 					.getSelectedItem();
 			try {
-				MidiDevice device = MidiUtils.getMidiDevice(deviceName, true);
+				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
 				if (device != null) {
 					device.open();
 					application.sendItemChangeNotifier(device);
