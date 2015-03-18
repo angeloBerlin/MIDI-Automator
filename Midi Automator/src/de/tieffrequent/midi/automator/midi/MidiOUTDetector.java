@@ -10,7 +10,7 @@ import de.tieffrequent.midi.automator.IApplication;
  * @author aguelle
  * 
  */
-public class MidiOUTDetector extends MidiOpenerReceiver {
+public class MidiOUTDetector extends MidiAutomatorReceiver {
 
 	public MidiOUTDetector(IApplication appl) {
 		super(appl);

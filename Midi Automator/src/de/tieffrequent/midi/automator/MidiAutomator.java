@@ -25,7 +25,7 @@ import de.tieffrequent.midi.automator.midi.MidiINDetector;
 import de.tieffrequent.midi.automator.midi.MidiINExecuteReceiver;
 import de.tieffrequent.midi.automator.midi.MidiINLearnReceiver;
 import de.tieffrequent.midi.automator.midi.MidiINMetronomReceiver;
-import de.tieffrequent.midi.automator.midi.MidiOpenerReceiver;
+import de.tieffrequent.midi.automator.midi.MidiAutomatorReceiver;
 import de.tieffrequent.midi.automator.model.IModel;
 import de.tieffrequent.midi.automator.model.MidiAutomatorProperties;
 import de.tieffrequent.midi.automator.model.ModelImpl;
@@ -58,9 +58,9 @@ public class MidiAutomator implements IApplication {
 	private MidiDevice midiINMetronomDevice;
 	private MidiDevice midiOUTRemoteDevice;
 	private MidiDevice midiOUTSwitchNotifierDevice;
-	private MidiOpenerReceiver midiLearnReceiver;
-	private MidiOpenerReceiver midiExecuteReceiver;
-	private MidiOpenerReceiver midiMetronomReceiver;
+	private MidiAutomatorReceiver midiLearnReceiver;
+	private MidiAutomatorReceiver midiExecuteReceiver;
+	private MidiAutomatorReceiver midiMetronomReceiver;
 
 	// gui automation
 	private GUIAutomation[] guiAutomations;

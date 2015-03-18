@@ -11,7 +11,7 @@ import de.tieffrequent.midi.automator.utils.MidiUtils;
  * @author aguelle
  * 
  */
-public class MidiINLearnReceiver extends MidiOpenerReceiver {
+public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 
 	public MidiINLearnReceiver(IApplication appl) {
 		super(appl);

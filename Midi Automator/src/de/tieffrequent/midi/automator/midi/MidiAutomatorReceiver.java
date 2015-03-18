@@ -13,7 +13,7 @@ import de.tieffrequent.midi.automator.utils.MidiUtils;
  *         A special midi receiver that normalizes incoming midi data and puts
  *         out debug information.
  */
-public class MidiOpenerReceiver implements Receiver {
+public class MidiAutomatorReceiver implements Receiver {
 
 	protected IApplication application;
 	protected long lastTimeStamp = 0;
@@ -25,7 +25,7 @@ public class MidiOpenerReceiver implements Receiver {
 	 * @param application
 	 *            The main application
 	 */
-	public MidiOpenerReceiver(IApplication appl) {
+	public MidiAutomatorReceiver(IApplication appl) {
 		application = appl;
 	}
 
