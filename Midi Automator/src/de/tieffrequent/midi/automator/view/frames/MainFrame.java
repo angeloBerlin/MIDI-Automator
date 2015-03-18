@@ -326,6 +326,7 @@ public class MainFrame extends JFrame {
 		if (cache instanceof Color) {
 			fileJList.setSelectionBackground((Color) cache);
 		}
+		reload();
 	}
 
 	/**
@@ -857,6 +858,7 @@ public class MainFrame extends JFrame {
 					// show pop-up of switch buttons
 					if (name.equals(MainFrame.NAME_NEXT_BUTTON)
 							|| (name.equals(MainFrame.NAME_PREV_BUTTON))) {
+						popupMenu.getMidiLearnMenuItem().setEnabled(true);
 						popupMenu.configureSwitchButtonPopupMenu();
 						popupMenu.show(e.getComponent(), e.getX(), e.getY());
 						popupWasShown = true;
