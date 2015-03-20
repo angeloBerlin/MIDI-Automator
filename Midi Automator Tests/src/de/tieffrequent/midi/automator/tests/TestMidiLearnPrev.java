@@ -14,7 +14,7 @@ import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
 
-public class TestMidiLearnNext extends GUITest {
+public class TestMidiLearnPrev extends GUITest {
 
 	private String deviceName;
 	private String deviceScreenshot;
@@ -23,7 +23,7 @@ public class TestMidiLearnNext extends GUITest {
 	private int controlNo = 106;
 	private int value = 127;
 
-	public TestMidiLearnNext() {
+	public TestMidiLearnPrev() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";
@@ -39,8 +39,8 @@ public class TestMidiLearnNext extends GUITest {
 	public void midiLearnShouldBeCanceled() {
 
 		try {
-			GUIAutomations.midiLearn("next.png");
-			GUIAutomations.cancelMidiLearn("next_inactive.png");
+			GUIAutomations.midiLearn("prev.png");
+			GUIAutomations.cancelMidiLearn("prev_inactive.png");
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -58,16 +58,16 @@ public class TestMidiLearnNext extends GUITest {
 					+ "/testfiles/Hello World 1.rtf");
 
 			// midi learn
-			GUIAutomations.midiLearn("next.png");
+			GUIAutomations.midiLearn("prev.png");
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearn("next.png");
+			GUIAutomations.midiUnlearn("prev.png");
 
 			// check for inactive menu item
-			GUIAutomations.openPopupMenu("next.png");
+			GUIAutomations.openPopupMenu("prev.png");
 			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "midi_unlearn_inactive.png", TIMEOUT);
@@ -111,7 +111,7 @@ public class TestMidiLearnNext extends GUITest {
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
-			GUIAutomations.midiLearn("next.png");
+			GUIAutomations.midiLearn("prev.png");
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
@@ -126,16 +126,16 @@ public class TestMidiLearnNext extends GUITest {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 106, 127);
 			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
-				throw new FindFailed("Hello World 1.rtf did not open");
+					.checkIfFileOpened("Hello_World_2_RTF_inactive.png")) {
+				throw new FindFailed("Hello World 2.rtf did not open");
 			}
 
 			// open second files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 106, 127);
 			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_2_RTF_inactive.png")) {
-				throw new FindFailed("Hello World 2.rtf did not open");
+					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
+				throw new FindFailed("Hello World 1.rtf did not open");
 			}
 
 		} catch (FindFailed | IOException e) {
@@ -147,7 +147,7 @@ public class TestMidiLearnNext extends GUITest {
 			// cleanup
 			try {
 				GUIAutomations.focusMidiAutomator();
-				GUIAutomations.midiUnlearn("next.png");
+				GUIAutomations.midiUnlearn("prev.png");
 				GUIAutomations.setPreferencesComboBox(
 						"combo_box_midi_remote_in.png", "-none-.png");
 			} catch (FindFailed e) {

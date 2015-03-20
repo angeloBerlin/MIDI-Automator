@@ -118,14 +118,9 @@ public class GUIAutomations extends SikuliAutomation {
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + scLabel, TIMEOUT);
 		match.click(match.offset(0, 20));
-		match.y += 20;
-		match.w = 200;
-		match.h = 100;
-		SikuliAutomation.setSearchRegion(match);
 		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + scValue, TIMEOUT);
 		match.click();
-		SikuliAutomation.setSearchRegion(preferencesRegion);
 		GUIAutomations.saveDialog();
 		SikuliAutomation.setSearchRegion(GUIAutomations
 				.findMidiAutomatorRegion());
