@@ -11,8 +11,9 @@ import org.sikuli.script.Region;
 @SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,
 		TestOpenFile.class, TestEditFile.class, TestDeleteFile.class,
 		TestMoveUpFile.class, TestMoveDownFile.class, TestButtonNextFile.class,
-		TestButtonPrevFile.class, TestCloseMidiAutomator.class })
-public class AllTests extends SikuliTest {
+		TestButtonPrevFile.class, TestMidiLearnNext.class,
+		TestCloseMidiAutomator.class })
+public class AllTests extends SikuliAutomation {
 
 	private static Region programRegion;
 

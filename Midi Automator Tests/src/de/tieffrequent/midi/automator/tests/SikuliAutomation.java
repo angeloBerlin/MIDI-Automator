@@ -7,14 +7,16 @@ import org.sikuli.basics.Settings;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 
-public class SikuliTest {
+public class SikuliAutomation {
 
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final boolean CHECK_LAST_SEEN = true;
-	protected static final float MAX_SIMILARITY = 0.99f;
+	protected static final float MAX_SIMILARITY = 0.999f;
+	protected static final float HIGH_SIMILARITY = 0.99f;
 	protected static final float DEFAULT_SIMILARITY = 0.97f;
+	protected static final float LOW_SIMILARITY = 0.8f;
 	protected static final int HIGHLIGHT_DURATION = 1;
-	protected static final double MIN_TIMEOUT = 0.8;
+	protected static final double MIN_TIMEOUT = 0.5;
 	protected static final double TIMEOUT = 10;
 	protected static final Screen SCREEN = new Screen();
 	protected static String screenshotpath;
@@ -25,7 +27,7 @@ public class SikuliTest {
 	/**
 	 * Constructor
 	 */
-	public SikuliTest() {
+	public SikuliAutomation() {
 
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
@@ -45,9 +47,9 @@ public class SikuliTest {
 			e1.printStackTrace();
 		}
 
-		SikuliTest.setSearchRegion(AllTests.getProgramRegion());
+		SikuliAutomation.setSearchRegion(AllTests.getProgramRegion());
 		if (searchRegion == null) {
-			SikuliTest.setSearchRegion(SCREEN);
+			SikuliAutomation.setSearchRegion(SCREEN);
 		}
 	}
 
@@ -62,7 +64,7 @@ public class SikuliTest {
 			return;
 		}
 		searchRegion.highlight(HIGHLIGHT_DURATION, "green");
-		SikuliTest.searchRegion = searchRegion;
+		SikuliAutomation.searchRegion = searchRegion;
 	}
 
 	/**
@@ -83,5 +85,6 @@ public class SikuliTest {
 	protected static void setMinSimilarity(float minSimilarity) {
 		Settings.MinSimilarity = minSimilarity;
 		Settings.CheckLastSeenSimilar = minSimilarity;
+		System.out.println("MinSimilarity: " + minSimilarity);
 	}
 }

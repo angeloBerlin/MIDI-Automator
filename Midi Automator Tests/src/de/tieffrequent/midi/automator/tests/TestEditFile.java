@@ -2,33 +2,21 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-public class TestEditFile extends SikuliTest {
-
-	@Before
-	public void addHelloWorldFile() {
-		try {
-			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
-
-		} catch (FindFailed e) {
-			fail(e.toString());
-		}
-	}
+public class TestEditFile extends GUITest {
 
 	@Test
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			Automations.openPopupMenu();
-			Region match = SikuliTest.getSearchRegion().wait(
+			GUIAutomations.openPopupMenu("midi_automator.png");
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "edit_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			Automations.focusMidiAutomator();
+			GUIAutomations.focusMidiAutomator();
 
 		} catch (FindFailed e) {
 			fail(e.toString());
@@ -39,16 +27,18 @@ public class TestEditFile extends SikuliTest {
 	public void editingFileShouldBeCanceled() {
 
 		try {
-			Automations.addFile("Hello World", currentPath
+			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
-			Automations.openEditDialog("Hello_World_entry_active.png",
+			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
-			Automations.fillTextField("name_text_field_Hello_World.png", "x");
-			Automations.fillTextField("file_text_field_Hello_World.png", "y");
-			Automations.cancelDialog();
+			GUIAutomations
+					.fillTextField("name_text_field_Hello_World.png", "x");
+			GUIAutomations
+					.fillTextField("file_text_field_Hello_World.png", "y");
+			GUIAutomations.cancelDialog();
 
 			// search unmodified midi automator
-			Region match = SikuliTest.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "midi_automator_Hello_World.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -61,17 +51,17 @@ public class TestEditFile extends SikuliTest {
 	public void helloWorldShouldBeEdited() {
 
 		try {
-			Automations.addFile("Hello World", currentPath
+			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
-			Automations.openEditDialog("Hello_World_entry_active.png",
+			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
-			Automations.fillTextField("name_text_field_Hello_World.png",
+			GUIAutomations.fillTextField("name_text_field_Hello_World.png",
 					"Hello World Edit");
-			Automations.fillTextField("file_text_field_Hello_World.png",
+			GUIAutomations.fillTextField("file_text_field_Hello_World.png",
 					currentPath + "/testfiles/Hello World edit.rtf");
-			Automations.saveDialog();
+			GUIAutomations.saveDialog();
 
-			Automations.openEntryByDoubleClick("Hello_World_Edit_entry.png",
+			GUIAutomations.openEntryByDoubleClick("Hello_World_Edit_entry.png",
 					"Hello_World_Edit_entry_inactive.png",
 					"Hello_World_Edit_entry_active.png");
 			try {
@@ -80,7 +70,7 @@ public class TestEditFile extends SikuliTest {
 				e.printStackTrace();
 			}
 
-			if (!Automations.checkIfFileOpened("Hello_World_Edit_RTF.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png")) {
 				fail("File did not open");
 			}
 
@@ -92,28 +82,15 @@ public class TestEditFile extends SikuliTest {
 	@Test
 	public void fileChooserOfEditDialogShouldBeOpened() {
 		try {
-			Automations.addFile("Hello World", currentPath
+			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
-			Automations.openEditDialog("Hello_World_entry_active.png",
+			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
-			Automations.openSearchDialog();
-			Automations.cancelDialog();
+			GUIAutomations.openSearchDialog();
+			GUIAutomations.cancelDialog();
 
 		} catch (FindFailed e) {
 			fail(e.toString());
-		}
-	}
-
-	@After
-	public void deleteAllFiles() {
-
-		try {
-			while (true) {
-				Automations.deleteEntry("Hello_World_entry_snippet.png",
-						"Hello_World_entry_snippet_active.png",
-						"Hello_World_entry_snippet_inactive.png");
-			}
-		} catch (FindFailed e) {
 		}
 	}
 }

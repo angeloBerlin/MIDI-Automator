@@ -7,20 +7,20 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-public class TestOpenMidiAutomator extends SikuliTest {
+public class TestOpenMidiAutomator extends SikuliAutomation {
 
 	@Test
 	public void programShallBeOpened() {
 
 		try {
-			Automations.openMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 		} catch (IOException e) {
 			fail(e.toString());
 		}
 
 		// check if opened
 		try {
-			Automations.findMidiAutomatorRegion();
+			GUIAutomations.findMidiAutomatorRegion();
 
 		} catch (FindFailed e) {
 			fail(e.toString());

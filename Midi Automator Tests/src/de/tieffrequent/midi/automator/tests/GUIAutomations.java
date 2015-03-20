@@ -11,7 +11,7 @@ import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.Utils;
 
-public class Automations extends SikuliTest {
+public class GUIAutomations extends SikuliAutomation {
 
 	/**
 	 * Opens the Midi Automator program
@@ -37,15 +37,102 @@ public class Automations extends SikuliTest {
 	}
 
 	/**
+	 * Puts the program to midi learn for the given screenshot
+	 * 
+	 * @param screenshot
+	 *            A screenshot to open midi learn on
+	 * @throws FindFailed
+	 */
+	public static void midiLearn(String screenshot) throws FindFailed {
+		openPopupMenu(screenshot);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "midi_learn.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Unlearns a midi message on the given screenshot
+	 * 
+	 * @param screenshot
+	 *            A screenshot to open midi learn on
+	 * @throws FindFailed
+	 */
+	public static void midiUnlearn(String screenshot) throws FindFailed {
+		openPopupMenu(screenshot);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "midi_unlearn.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Cancels the midi learn for the given screenshot
+	 * 
+	 * @param screenshot
+	 *            A screenshot to open midi learn on
+	 * @throws FindFailed
+	 */
+	public static void cancelMidiLearn(String screenshot) throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + screenshot, TIMEOUT);
+		match.rightClick();
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "cancel_midi_learn.png", TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Opens the preferences window.
+	 * 
+	 * @return the region of the preferences window
+	 * @throws FindFailed
+	 */
+	public static Region openPreferences() throws FindFailed {
+		openFileMenu();
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "preferences.png", TIMEOUT);
+		match.click();
+		SikuliAutomation.setSearchRegion(SCREEN);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "midi_automator_preferences.png", TIMEOUT);
+		match.y -= 20;
+		match.h += 20;
+		return match;
+	}
+
+	/**
+	 * Sets the Midi Remote IN device to the given screenshot
+	 * 
+	 * @param scLabel
+	 *            The label of the combo box
+	 * @param scValue
+	 *            The value to choose
+	 * @throws FindFailed
+	 */
+	public static void setPreferencesComboBox(String scLabel, String scValue)
+			throws FindFailed {
+
+		SikuliAutomation.setSearchRegion(GUIAutomations.openPreferences());
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scLabel, TIMEOUT);
+		match.click(match.offset(0, 20));
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scValue, TIMEOUT);
+		match.click();
+		GUIAutomations.saveDialog();
+		SikuliAutomation.setSearchRegion(GUIAutomations
+				.findMidiAutomatorRegion());
+	}
+
+	/**
 	 * Opens the next file
 	 * 
 	 * @throws FindFailed
 	 */
 	public static void nextFile() throws FindFailed {
-		SikuliTest.setMinSimilarity(MAX_SIMILARITY);
-		Region match = SikuliTest.getSearchRegion().wait(
+		SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "next.png", TIMEOUT);
-		SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
+		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
 
@@ -55,10 +142,10 @@ public class Automations extends SikuliTest {
 	 * @throws FindFailed
 	 */
 	public static void prevFile() throws FindFailed {
-		SikuliTest.setMinSimilarity(MAX_SIMILARITY);
-		Region match = SikuliTest.getSearchRegion().wait(
+		SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "prev.png", TIMEOUT);
-		SikuliTest.setMinSimilarity(DEFAULT_SIMILARITY);
+		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
 
@@ -68,7 +155,7 @@ public class Automations extends SikuliTest {
 	 * @throws FindFailed
 	 */
 	public static void openFileMenu() throws FindFailed {
-		Region match = SikuliTest.getSearchRegion().wait(
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "file.png", TIMEOUT);
 		match.click();
 	}
@@ -80,8 +167,8 @@ public class Automations extends SikuliTest {
 	 */
 	public static void openExitMenu() throws FindFailed {
 		openFileMenu();
-		match = SikuliTest.getSearchRegion().wait(screenshotpath + "exit.png",
-				TIMEOUT);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "exit.png", TIMEOUT);
 		match.click();
 	}
 
@@ -101,7 +188,7 @@ public class Automations extends SikuliTest {
 			throws FindFailed {
 		Region match = findMultipleStateRegion(state1, state2, state3);
 		match.rightClick();
-		match = SikuliTest.getSearchRegion().wait(
+		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "delete.png", TIMEOUT);
 		match.click();
 	}
@@ -120,11 +207,11 @@ public class Automations extends SikuliTest {
 	public static void moveUpEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = Automations.findMultipleStateRegion(state1, state2,
+		Region match = GUIAutomations.findMultipleStateRegion(state1, state2,
 				state3);
 
 		match.rightClick();
-		match = SikuliTest.getSearchRegion().wait(
+		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "move_up.png", TIMEOUT);
 		match.click();
 	}
@@ -143,11 +230,11 @@ public class Automations extends SikuliTest {
 	public static void moveDownEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = Automations.findMultipleStateRegion(state1, state2,
+		Region match = GUIAutomations.findMultipleStateRegion(state1, state2,
 				state3);
 
 		match.rightClick();
-		match = SikuliTest.getSearchRegion().wait(
+		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "move_down.png", TIMEOUT);
 		match.click();
 	}
@@ -172,10 +259,20 @@ public class Automations extends SikuliTest {
 	/**
 	 * Opens the popup menu
 	 * 
+	 * @param screenshot
+	 *            The screenshot of the popup component
 	 * @throws FindFailed
 	 */
-	public static void openPopupMenu() throws FindFailed {
-		Region match = findMidiAutomatorRegion();
+	public static void openPopupMenu(String screenshot) throws FindFailed {
+		setMinSimilarity(0.8f);
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + screenshot, TIMEOUT);
+		setMinSimilarity(DEFAULT_SIMILARITY);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		match.rightClick();
 	}
 
@@ -186,10 +283,9 @@ public class Automations extends SikuliTest {
 	 */
 	public static void openAddDialog() throws FindFailed {
 
-		// open add dialog
-		openPopupMenu();
-		match = SikuliTest.getSearchRegion().wait(screenshotpath + "add.png",
-				TIMEOUT);
+		openPopupMenu("midi_automator.png");
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "add.png", TIMEOUT);
 		match.click();
 	}
 
@@ -217,8 +313,8 @@ public class Automations extends SikuliTest {
 		}
 
 		match.rightClick();
-		match = SikuliTest.getSearchRegion().wait(screenshotpath + "edit.png",
-				TIMEOUT);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "edit.png", TIMEOUT);
 		match.click();
 	}
 
@@ -239,7 +335,7 @@ public class Automations extends SikuliTest {
 
 		for (String state : states) {
 			try {
-				match = SikuliTest.getSearchRegion().wait(
+				match = SikuliAutomation.getSearchRegion().wait(
 						screenshotpath + state, MIN_TIMEOUT);
 				return match;
 			} catch (FindFailed e) {
@@ -321,7 +417,7 @@ public class Automations extends SikuliTest {
 
 		try {
 
-			// minimize Midi Automator
+			// // minimize Midi Automator
 			focusMidiAutomator();
 
 			if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -332,9 +428,9 @@ public class Automations extends SikuliTest {
 			}
 
 			// check if file opened
-			SikuliTest.setSearchRegion(SCREEN);
+			SikuliAutomation.setSearchRegion(SCREEN);
 
-			match = SikuliTest.getSearchRegion().wait(
+			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + screenshot, TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -354,7 +450,6 @@ public class Automations extends SikuliTest {
 			}
 
 		} catch (FindFailed e) {
-			e.printStackTrace();
 			return false;
 		} finally {
 
@@ -380,22 +475,22 @@ public class Automations extends SikuliTest {
 		Region match;
 
 		// open search dialog
-		match = SikuliTest.getSearchRegion().wait(
+		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "search_button.png", TIMEOUT);
 		match.click();
-		match = SikuliTest.getSearchRegion().wait(
+		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "file_chooser.png", TIMEOUT);
 		match.highlight(HIGHLIGHT_DURATION);
 
 		// cancel
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			match = SikuliTest.getSearchRegion().wait(
+			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "cancel_button.png", TIMEOUT);
 			match.click();
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			match = SikuliTest.getSearchRegion().wait(
+			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "abbrechen_button.png", TIMEOUT);
 			match.click();
 		}
@@ -408,7 +503,7 @@ public class Automations extends SikuliTest {
 	 */
 	public static void cancelDialog() throws FindFailed {
 
-		Region match = SikuliTest.getSearchRegion().wait(
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "cancel_button.png", TIMEOUT);
 		match.click();
 	}
@@ -420,7 +515,7 @@ public class Automations extends SikuliTest {
 	 */
 	public static void saveDialog() throws FindFailed {
 
-		Region match = SikuliTest.getSearchRegion().wait(
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "save_button.png", TIMEOUT);
 		match.click();
 	}
@@ -437,8 +532,8 @@ public class Automations extends SikuliTest {
 	public static void fillTextField(String screenshot, String text)
 			throws FindFailed {
 
-		match = SikuliTest.getSearchRegion().wait(screenshotpath + screenshot,
-				TIMEOUT);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + screenshot, TIMEOUT);
 		match.click();
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -449,5 +544,26 @@ public class Automations extends SikuliTest {
 			SCREEN.type("a", KeyModifier.CTRL);
 		}
 		SCREEN.paste(text);
+	}
+
+	/**
+	 * Restarts the MIDI Automator and sets search region to it
+	 * 
+	 * @throws FindFailed
+	 * @throws IOException
+	 */
+	public static void restartMidiAutomator() throws FindFailed, IOException {
+
+		GUIAutomations.openExitMenu();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		GUIAutomations.openMidiAutomator();
+
+		SikuliAutomation.setSearchRegion(GUIAutomations
+				.findMidiAutomatorRegion());
+
 	}
 }

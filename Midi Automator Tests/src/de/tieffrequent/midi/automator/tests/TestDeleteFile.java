@@ -2,32 +2,21 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-public class TestDeleteFile extends SikuliTest {
-
-	@Before
-	public void addHelloWorldFile() {
-		try {
-			SikuliTest.setSearchRegion(Automations.findMidiAutomatorRegion());
-
-		} catch (FindFailed e) {
-			fail(e.toString());
-		}
-	}
+public class TestDeleteFile extends GUITest {
 
 	@Test
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			Automations.openPopupMenu();
-			Region match = SikuliTest.getSearchRegion().wait(
+			GUIAutomations.openPopupMenu("midi_automator.png");
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "delete_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			Automations.focusMidiAutomator();
+			GUIAutomations.focusMidiAutomator();
 
 		} catch (FindFailed e) {
 			fail(e.toString());
@@ -38,9 +27,9 @@ public class TestDeleteFile extends SikuliTest {
 	public void helloWorldEditEntryShouldBeDeleted() {
 
 		try {
-			Automations.addFile("Hello World", currentPath
+			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
-			Automations.deleteEntry("Hello_World_entry.png",
+			GUIAutomations.deleteEntry("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
 
@@ -49,7 +38,7 @@ public class TestDeleteFile extends SikuliTest {
 		}
 
 		try {
-			Automations.findMultipleStateRegion("Hello_World_entry.png",
+			GUIAutomations.findMultipleStateRegion("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
 			fail("Hello World Edit still found.");

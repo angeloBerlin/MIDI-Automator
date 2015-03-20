@@ -7,13 +7,13 @@ import org.sikuli.script.FindFailed;
 
 import de.tieffrequent.midi.automator.tests.utils.Utils;
 
-public class TestCloseMidiAutomator extends SikuliTest {
+public class TestCloseMidiAutomator extends GUITest {
 
 	@Test
 	public void programShallBeClosed() {
 
 		try {
-			Automations.openExitMenu();
+			GUIAutomations.openExitMenu();
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
