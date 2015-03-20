@@ -26,7 +26,8 @@ public class MidiINExecuteReceiver extends MidiAutomatorReceiver {
 		String signature = MidiUtils.messageToString(interpretedMessage);
 
 		if (!application.isInMidiLearnMode() && interpretedMessage != null
-				&& !signature.equals(MidiUtils.UNKNOWN_MESSAGE)) {
+				&& !signature.equals(MidiUtils.UNKNOWN_MESSAGE)
+				&& !application.isDoNotExecuteMidiMessage()) {
 
 			if (application.isInDebugMode()) {
 				System.out.println(this.getClass().getName() + " interpreted: "
@@ -35,5 +36,7 @@ public class MidiINExecuteReceiver extends MidiAutomatorReceiver {
 
 			application.executeMidiMessage(interpretedMessage);
 		}
+
+		application.setDoNotExecuteMidiMessage(false);
 	}
 }

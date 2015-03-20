@@ -35,6 +35,8 @@ public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 			// learn midi signal
 			application.setMidiSignature(signature);
 			application.setMidiLearnMode(false, null);
+			application.setDoNotExecuteMidiMessage(true);
 		}
+
 	}
 }

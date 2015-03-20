@@ -240,6 +240,14 @@ public class MidiUtils {
 	public static void setReceiverToDevice(MidiDevice device, Receiver receiver)
 			throws MidiUnavailableException {
 
+		// check if Receiver was already connected
+		List<Transmitter> transmitters = device.getTransmitters();
+		for (Transmitter existingTransmitter : transmitters) {
+			if (receiver.equals(existingTransmitter.getReceiver())) {
+				return;
+			}
+		}
+
 		Transmitter t = device.getTransmitter();
 		t.setReceiver(receiver);
 	}

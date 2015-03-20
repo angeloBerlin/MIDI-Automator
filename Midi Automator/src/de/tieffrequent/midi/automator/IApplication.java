@@ -352,4 +352,21 @@ public interface IApplication {
 	 *            automation
 	 */
 	public void setGUIAutomationsToActive(boolean active);
+
+	/**
+	 * Gets the state if midi messages shall be executed.
+	 * 
+	 * @return <TRUE> if messages shall not be executed, <FALSE> if they shall
+	 *         be executed
+	 */
+	public boolean isDoNotExecuteMidiMessage();
+
+	/**
+	 * Sets the state if midi messages shall be executed.
+	 * 
+	 * @param doNotExecuteMidiMessage
+	 *            <TRUE> if messages shall not be executed, <FALSE> if they
+	 *            shall be executed
+	 */
+	public void setDoNotExecuteMidiMessage(boolean doNotExecuteMidiMessage);
 }

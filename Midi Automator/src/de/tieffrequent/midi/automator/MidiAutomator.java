@@ -49,6 +49,7 @@ public class MidiAutomator implements IApplication {
 
 	// midi
 	private boolean midiLearn;
+	private boolean doNotExecuteMidiMessage;
 	private JComponent learningComponent;
 	private String oldMidiINRemoteDeviceSignature;
 	private String oldMidiINMetronomDeviceSignature;
@@ -61,6 +62,7 @@ public class MidiAutomator implements IApplication {
 	private MidiAutomatorReceiver midiLearnReceiver;
 	private MidiAutomatorReceiver midiExecuteReceiver;
 	private MidiAutomatorReceiver midiMetronomReceiver;
+	private MidiAutomatorReceiver midiINDetectorReceiver;
 
 	// gui automation
 	private GUIAutomation[] guiAutomations;
@@ -110,9 +112,11 @@ public class MidiAutomator implements IApplication {
 		MODEL.setPersistenceFileName(this.fileName);
 
 		midiLearn = false;
+		doNotExecuteMidiMessage = false;
 		midiLearnReceiver = new MidiINLearnReceiver(this);
 		midiExecuteReceiver = new MidiINExecuteReceiver(this);
 		midiMetronomReceiver = new MidiINMetronomReceiver(this);
+		midiINDetectorReceiver = new MidiINDetector(this);
 
 		PROGRAM_FRAME = new MainFrame(this, VERSION);
 
@@ -277,6 +281,152 @@ public class MidiAutomator implements IApplication {
 	}
 
 	/**
+	 * Gets the old midi device
+	 * 
+	 * @param oldDeviceName
+	 *            Name of of the old device
+	 * @param oldDeviceType
+	 *            Direction of the old device <"IN"|"OUT">
+	 * @param newDeviceName
+	 *            The new device name
+	 * @return The old device, <NULL> if there is no old device or device has
+	 *         not changed
+	 * @throws MidiUnavailableException
+	 */
+	private MidiDevice getOldMidiDevice(String oldDeviceName,
+			String oldDeviceType, String newDeviceName) {
+		MidiDevice oldDevice = null;
+
+		if (oldDeviceName != null) {
+			if (!oldDeviceName.equals(newDeviceName)) {
+
+				try {
+					oldDevice = MidiUtils.getMidiDevice(oldDeviceName,
+							oldDeviceType);
+				} catch (MidiUnavailableException e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+		}
+
+		return oldDevice;
+	}
+
+	/**
+	 * Loads the MIDI IN Remote device
+	 * 
+	 * @param deviceName
+	 *            The name of the midi device
+	 * @param error
+	 *            The error String
+	 */
+	private void loadMidiInRemoteDevice(String deviceName, String error) {
+
+		if (!deviceName.equals(oldMidiINRemoteDeviceSignature)) {
+			try {
+
+				midiINRemoteDevice = MidiUtils.getMidiDevice(deviceName, "IN");
+
+				// connect MIDI learner
+				connectMidiDeviceWithReceiver(midiINRemoteDevice,
+						midiLearnReceiver);
+
+				// connect MIDI executer
+				connectMidiDeviceWithReceiver(midiINRemoteDevice,
+						midiExecuteReceiver);
+
+				removeInfoMessage(errMidiINRemoteDeviceUnavailable);
+
+			} catch (MidiUnavailableException e) {
+				if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+					setInfoMessage(error);
+					errMidiINRemoteDeviceUnavailable = error;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Loads the MIDI OUT Remote device
+	 * 
+	 * @param deviceName
+	 *            The name of the device
+	 * @param error
+	 *            The error String
+	 */
+	private void loadMidiOutRemoteDevice(String deviceName, String error) {
+
+		try {
+			midiOUTRemoteDevice = MidiUtils.getMidiDevice(deviceName, "OUT");
+
+			if (midiOUTRemoteDevice != null) {
+				midiOUTRemoteDevice.open();
+			}
+
+			removeInfoMessage(errMidiOUTRemoteDeviceUnavailable);
+		} catch (MidiUnavailableException e) {
+			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				setInfoMessage(error);
+				errMidiOUTRemoteDeviceUnavailable = error;
+			}
+		}
+	}
+
+	/**
+	 * Loads the MIDI IN Metronom device
+	 * 
+	 * @param deviceName
+	 *            The name of the device
+	 * @param error
+	 *            The error String
+	 */
+	private void loadMidiInMetronomDevice(String deviceName, String error) {
+
+		try {
+			midiINMetronomDevice = MidiUtils.getMidiDevice(deviceName, "IN");
+
+			// connect MIDI metronom
+			connectMidiDeviceWithReceiver(midiINMetronomDevice,
+					midiMetronomReceiver);
+
+			removeInfoMessage(errMidiINMetronomDeviceUnavailable);
+		} catch (MidiUnavailableException e) {
+			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				setInfoMessage(error);
+				errMidiINMetronomDeviceUnavailable = error;
+			}
+		}
+	}
+
+	/**
+	 * Loads the MIDI OUT Switch Notifier
+	 * 
+	 * @param deviceName
+	 *            The name of the device
+	 * @param error
+	 *            The error String
+	 */
+	private void loadMidiOutSwitchNotifier(String deviceName, String error) {
+
+		try {
+			midiOUTSwitchNotifierDevice = MidiUtils.getMidiDevice(deviceName,
+					"OUT");
+
+			if (midiOUTSwitchNotifierDevice != null) {
+				midiOUTSwitchNotifierDevice.open();
+			}
+
+			removeInfoMessage(errMidiOUTSwitchNotifierDeviceUnavailable);
+		} catch (MidiUnavailableException e) {
+			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				setInfoMessage(error);
+				errMidiOUTSwitchNotifierDeviceUnavailable = error;
+			}
+		}
+	}
+
+	/**
 	 * Loads a midi device property by opening and connecting the configured
 	 * midi devices.
 	 * 
@@ -295,136 +445,48 @@ public class MidiAutomator implements IApplication {
 			if (!propertyValue.equals("")) {
 
 				MidiDevice oldDevice = null;
-				try {
-					// MIDI IN Remote
-					if (propertyKey
-							.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
 
-						if (oldMidiINRemoteDeviceSignature != null) {
-							if (!oldMidiINRemoteDeviceSignature
-									.equals(propertyValue)) {
+				// MIDI IN Remote
+				if (propertyKey
+						.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
+					oldDevice = getOldMidiDevice(
+							oldMidiINRemoteDeviceSignature, "IN", propertyValue);
 
-								oldDevice = MidiUtils.getMidiDevice(
-										oldMidiINRemoteDeviceSignature, "IN");
-							}
-						}
-
-						midiINRemoteDevice = MidiUtils.getMidiDevice(
-								propertyValue, "IN");
-
-						// connect MIDI learner
-						connectMidiDeviceWithReceiver(midiINRemoteDevice,
-								midiLearnReceiver);
-
-						// connect MIDI executer
-						connectMidiDeviceWithReceiver(midiINRemoteDevice,
-								midiExecuteReceiver);
-
-						removeInfoMessage(errMidiINRemoteDeviceUnavailable);
-					}
-
-				} catch (MidiUnavailableException e) {
-					if (!propertyValue
-							.equals(MidiAutomatorProperties.VALUE_NULL)) {
-						setInfoMessage(errMidiDeviceNotAvailable);
-						errMidiINRemoteDeviceUnavailable = errMidiDeviceNotAvailable;
-					}
+					loadMidiInRemoteDevice(propertyValue,
+							errMidiDeviceNotAvailable);
 				}
 
-				try {
-					// MIDI OUT Remote
-					if (propertyKey
-							.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
+				// MIDI OUT Remote
+				if (propertyKey
+						.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
 
-						if (oldMidiOUTRemoteDeviceSignature != null) {
-							if (!oldMidiOUTRemoteDeviceSignature
-									.equals(propertyValue)) {
-								oldDevice = MidiUtils.getMidiDevice(
-										oldMidiOUTRemoteDeviceSignature, "OUT");
-							}
-						}
-
-						midiOUTRemoteDevice = MidiUtils.getMidiDevice(
-								propertyValue, "OUT");
-
-						if (midiOUTRemoteDevice != null) {
-							midiOUTRemoteDevice.open();
-						}
-
-						removeInfoMessage(errMidiOUTRemoteDeviceUnavailable);
-					}
-
-				} catch (MidiUnavailableException e) {
-					if (!propertyValue
-							.equals(MidiAutomatorProperties.VALUE_NULL)) {
-						setInfoMessage(errMidiDeviceNotAvailable);
-						errMidiOUTRemoteDeviceUnavailable = errMidiDeviceNotAvailable;
-					}
+					oldDevice = getOldMidiDevice(
+							oldMidiOUTRemoteDeviceSignature, "OUT",
+							propertyValue);
+					loadMidiOutRemoteDevice(propertyValue,
+							errMidiDeviceNotAvailable);
 				}
 
-				try {
-					// MIDI IN Metronom
-					if (propertyKey
-							.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
+				// MIDI IN Metronom
+				if (propertyKey
+						.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
 
-						if (oldMidiINMetronomDeviceSignature != null) {
-							if (!oldMidiINMetronomDeviceSignature
-									.equals(propertyValue)) {
-
-								oldDevice = MidiUtils.getMidiDevice(
-										oldMidiINMetronomDeviceSignature, "IN");
-							}
-						}
-
-						midiINMetronomDevice = MidiUtils.getMidiDevice(
-								propertyValue, "IN");
-
-						// connect MIDI metronom
-						connectMidiDeviceWithReceiver(midiINMetronomDevice,
-								midiMetronomReceiver);
-
-						removeInfoMessage(errMidiINMetronomDeviceUnavailable);
-					}
-
-				} catch (MidiUnavailableException e) {
-					if (!propertyValue
-							.equals(MidiAutomatorProperties.VALUE_NULL)) {
-						setInfoMessage(errMidiDeviceNotAvailable);
-						errMidiINMetronomDeviceUnavailable = errMidiDeviceNotAvailable;
-					}
+					oldDevice = getOldMidiDevice(
+							oldMidiINMetronomDeviceSignature, "IN",
+							propertyValue);
+					loadMidiInMetronomDevice(propertyValue,
+							errMidiDeviceNotAvailable);
 				}
 
-				try {
-					// MIDI OUT Switch Notifier
-					if (propertyKey
-							.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
+				// MIDI OUT Switch Notifier
+				if (propertyKey
+						.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
 
-						if (oldMidiOUTSwitchNotifierDeviceSignature != null) {
-							if (!oldMidiOUTSwitchNotifierDeviceSignature
-									.equals(propertyValue)) {
-								oldDevice = MidiUtils
-										.getMidiDevice(
-												oldMidiOUTSwitchNotifierDeviceSignature,
-												"OUT");
-							}
-						}
-
-						midiOUTSwitchNotifierDevice = MidiUtils.getMidiDevice(
-								propertyValue, "OUT");
-
-						if (midiOUTSwitchNotifierDevice != null) {
-							midiOUTSwitchNotifierDevice.open();
-						}
-
-						removeInfoMessage(errMidiOUTSwitchNotifierDeviceUnavailable);
-					}
-
-				} catch (MidiUnavailableException e) {
-					if (!propertyValue
-							.equals(MidiAutomatorProperties.VALUE_NULL)) {
-						setInfoMessage(errMidiDeviceNotAvailable);
-						errMidiOUTSwitchNotifierDeviceUnavailable = errMidiDeviceNotAvailable;
-					}
+					oldDevice = getOldMidiDevice(
+							oldMidiOUTSwitchNotifierDeviceSignature, "OUT",
+							propertyValue);
+					loadMidiOutSwitchNotifier(propertyValue,
+							errMidiDeviceNotAvailable);
 				}
 
 				if (oldDevice != null) {
@@ -432,6 +494,7 @@ public class MidiAutomator implements IApplication {
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -450,7 +513,7 @@ public class MidiAutomator implements IApplication {
 		if (device != null) {
 			device.open();
 			MidiUtils.setReceiverToDevice(device, receiver);
-			MidiUtils.setReceiverToDevice(device, new MidiINDetector(this));
+			MidiUtils.setReceiverToDevice(device, midiINDetectorReceiver);
 		} else {
 			throw new MidiUnavailableException();
 		}
@@ -1109,5 +1172,15 @@ public class MidiAutomator implements IApplication {
 					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
 			setInfoMessage(errPropertiesFileCouldNotBeOpened);
 		}
+	}
+
+	@Override
+	public boolean isDoNotExecuteMidiMessage() {
+		return doNotExecuteMidiMessage;
+	}
+
+	@Override
+	public void setDoNotExecuteMidiMessage(boolean doNotExecuteMidiMessage) {
+		this.doNotExecuteMidiMessage = doNotExecuteMidiMessage;
 	}
 }
