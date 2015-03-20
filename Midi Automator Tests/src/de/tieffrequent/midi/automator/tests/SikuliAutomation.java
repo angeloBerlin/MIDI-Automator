@@ -17,11 +17,10 @@ public class SikuliAutomation {
 	protected static final float LOW_SIMILARITY = 0.8f;
 	protected static final int HIGHLIGHT_DURATION = 1;
 	protected static final double MIN_TIMEOUT = 0.5;
-	protected static final double TIMEOUT = 10;
+	protected static final double TIMEOUT = 15;
 	protected static final Screen SCREEN = new Screen();
 	protected static String screenshotpath;
 	protected static String currentPath;
-	protected static Region match;
 	private static Region searchRegion;
 
 	/**
@@ -63,7 +62,11 @@ public class SikuliAutomation {
 		if (searchRegion == null) {
 			return;
 		}
-		searchRegion.highlight(HIGHLIGHT_DURATION, "green");
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			// This makes some focus trouble on Windows
+			searchRegion.highlight(HIGHLIGHT_DURATION, "green");
+		}
 		SikuliAutomation.searchRegion = searchRegion;
 	}
 

@@ -4,26 +4,17 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Region;
 
 public class TestButtonNextFile extends GUITest {
-
-	@Before
-	public void restartMidiAutomator() {
-		try {
-			GUIAutomations.restartMidiAutomator();
-		} catch (FindFailed | IOException e) {
-			fail(e.toString());
-		}
-	}
 
 	@Test
 	public void nextButtonNotActiveOnEmptyList() {
 		try {
 			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
-			SikuliAutomation.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "next_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
@@ -35,6 +26,7 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void nextFileShouldBeOpenedInCycle() {
 		try {
+			GUIAutomations.restartMidiAutomator();
 			GUIAutomations.addFile("Hello World 1", currentPath
 					+ "/testfiles/Hello World 1.rtf");
 			GUIAutomations.addFile("Hello World 2", currentPath
@@ -82,7 +74,7 @@ public class TestButtonNextFile extends GUITest {
 				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -90,6 +82,7 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterDeletingSecondFile() {
 		try {
+			GUIAutomations.restartMidiAutomator();
 			GUIAutomations.addFile("Hello World 1", currentPath
 					+ "/testfiles/Hello World 1.rtf");
 			GUIAutomations.addFile("Hello World 2", currentPath
@@ -144,7 +137,7 @@ public class TestButtonNextFile extends GUITest {
 				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -152,6 +145,7 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterAddingOnIndex2() {
 		try {
+			GUIAutomations.restartMidiAutomator();
 			GUIAutomations.addFile("Hello World 1", currentPath
 					+ "/testfiles/Hello World 1.rtf");
 			GUIAutomations.addFile("Hello World 2", currentPath
@@ -217,7 +211,7 @@ public class TestButtonNextFile extends GUITest {
 				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}

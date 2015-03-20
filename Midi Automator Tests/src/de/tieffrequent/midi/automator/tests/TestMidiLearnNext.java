@@ -2,8 +2,6 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
@@ -16,13 +14,26 @@ import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
 
 public class TestMidiLearnNext extends GUITest {
 
-	private String deviceName = "Bus 1";
+	private String deviceName;
+	private String deviceScreenshot;
 	private int messageType = ShortMessage.CONTROL_CHANGE;
 	private int channel = 1;
 	private int controlNo = 106;
 	private int value = 127;
 
-	@Test
+	public TestMidiLearnNext() {
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			deviceName = "Bus 1";
+			deviceScreenshot = "Bus_1.png";
+		}
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			deviceName = "LoopBe Internal MIDI";
+			deviceScreenshot = "LoopBe_Internal_MIDI.png";
+		}
+	}
+
+	// @Test
 	public void midiLearnShouldBeCanceled() {
 
 		try {
@@ -33,12 +44,12 @@ public class TestMidiLearnNext extends GUITest {
 		}
 	}
 
-	@Test
+	// @Test
 	public void midiShouldBeUnlearned() {
 		try {
 			// set MIDI IN Remote device
 			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_remote_in.png", "Bus1.png");
+					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// add files
 			GUIAutomations.addFile("Hello World 1", currentPath
@@ -91,11 +102,11 @@ public class TestMidiLearnNext extends GUITest {
 	public void midiShouldBeLearned() {
 
 		try {
-			GUIAutomations.restartMidiAutomator();
+			// GUIAutomations.restartMidiAutomator();
 
 			// set MIDI IN Remote device
 			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_remote_in.png", "Bus1.png");
+					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
 			GUIAutomations.midiLearn("next.png");
@@ -125,7 +136,7 @@ public class TestMidiLearnNext extends GUITest {
 				throw new FindFailed("Hello World 2.rtf did not open");
 			}
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed /* | IOException */e) {
 			fail(e.toString());
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
