@@ -122,6 +122,7 @@ public class MainFrame extends JFrame {
 		this.application = application;
 		this.setTitle(TITLE + " " + version);
 		this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		this.setResizable(false);
 
 		if (application.isInDevelopmentMode()) {
 			this.setLocation(new Point(MainFrame.DEV_POSITION_X,

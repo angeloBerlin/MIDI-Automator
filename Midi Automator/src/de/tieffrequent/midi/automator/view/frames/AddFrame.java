@@ -75,6 +75,7 @@ public class AddFrame extends JFrame {
 		this.programFrame = programFrame;
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
+		setResizable(false);
 		setLocation(this.programFrame.getLocationOnScreen().x
 				+ LOCATION_X_OFFSET, this.programFrame.getLocationOnScreen().y
 				+ LOCATION_Y_OFFSET);

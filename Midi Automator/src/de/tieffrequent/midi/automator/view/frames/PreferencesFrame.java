@@ -95,6 +95,7 @@ public class PreferencesFrame extends JFrame {
 			throws HeadlessException {
 		super();
 
+		this.setResizable(false);
 		this.application = application;
 		this.programFrame = programFrame;
 

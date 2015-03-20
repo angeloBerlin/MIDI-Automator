@@ -41,6 +41,7 @@ public class EditFrame extends AddFrame {
 
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
+		setResizable(false);
 		// change save action
 		buttonSave.removeActionListener(super.saveListener);
 		saveListener = new SaveAction();
