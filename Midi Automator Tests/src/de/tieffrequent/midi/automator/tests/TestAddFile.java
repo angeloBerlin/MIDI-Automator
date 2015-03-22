@@ -31,6 +31,11 @@ public class TestAddFile extends GUITest {
 		try {
 			GUIAutomations.openAddDialog();
 			GUIAutomations.openSearchDialog();
+			// check search dialog
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "file_chooser.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.cancelDialog();
 			GUIAutomations.cancelDialog();
 
 		} catch (FindFailed e) {

@@ -87,6 +87,13 @@ public class TestEditFile extends GUITest {
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			GUIAutomations.openSearchDialog();
+
+			// check search dialog
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "file_chooser.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.cancelDialog();
+
 			GUIAutomations.cancelDialog();
 
 		} catch (FindFailed e) {

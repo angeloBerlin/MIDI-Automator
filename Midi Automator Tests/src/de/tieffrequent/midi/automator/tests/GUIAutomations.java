@@ -495,28 +495,9 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void openSearchDialog() throws FindFailed {
 
-		Region match;
-
-		// open search dialog
-		match = SikuliAutomation.getSearchRegion().wait(
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "search_button.png", TIMEOUT);
 		match.click();
-		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "file_chooser.png", TIMEOUT);
-		match.highlight(HIGHLIGHT_DURATION);
-
-		// cancel
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "cancel_button.png", TIMEOUT);
-			match.click();
-		}
-
-		if (System.getProperty("os.name").equals("Windows 7")) {
-			match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "abbrechen_button.png", TIMEOUT);
-			match.click();
-		}
 	}
 
 	/**
