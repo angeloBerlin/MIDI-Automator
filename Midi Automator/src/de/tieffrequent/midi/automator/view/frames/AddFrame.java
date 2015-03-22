@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import de.tieffrequent.midi.automator.IApplication;
 
@@ -185,7 +187,7 @@ public class AddFrame extends JFrame {
 	class SearchAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private final JFileChooser fc = new JFileChooser();
+		private final JFileChooser fc;
 		private AddFrame parent;
 
 		/**
@@ -196,6 +198,10 @@ public class AddFrame extends JFrame {
 		 */
 		public SearchAction(AddFrame parent) {
 			this.parent = parent;
+			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
+			JFileChooser.setDefaultLocale(Locale.ENGLISH);
+			fc = new JFileChooser();
+			fc.setLocale(Locale.ENGLISH);
 		}
 
 		@Override
