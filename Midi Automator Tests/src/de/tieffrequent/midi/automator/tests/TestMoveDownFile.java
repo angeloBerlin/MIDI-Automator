@@ -12,7 +12,7 @@ public class TestMoveDownFile extends GUITest {
 	public void moveDownMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openPopupMenu("midi_automator.png");
+			GUIAutomations.openPopupMenu("midi_automator.png", null, null);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_down_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);

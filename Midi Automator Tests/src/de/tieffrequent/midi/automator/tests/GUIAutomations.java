@@ -39,12 +39,17 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Puts the program to midi learn for the given screenshot
 	 * 
-	 * @param screenshot
-	 *            A screenshot to open midi learn on
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void midiLearn(String screenshot) throws FindFailed {
-		openPopupMenu(screenshot);
+	public static void midiLearn(String state1, String state2, String state3)
+			throws FindFailed {
+		openPopupMenu(state1, state2, state3);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_learn.png", TIMEOUT);
 		match.click();
@@ -53,12 +58,17 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Unlearns a midi message on the given screenshot
 	 * 
-	 * @param screenshot
-	 *            A screenshot to open midi learn on
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void midiUnlearn(String screenshot) throws FindFailed {
-		openPopupMenu(screenshot);
+	public static void midiUnlearn(String state1, String state2, String state3)
+			throws FindFailed {
+		openPopupMenu(state1, state2, state3);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_unlearn.png", TIMEOUT);
 		match.click();
@@ -67,15 +77,18 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Cancels the midi learn for the given screenshot
 	 * 
-	 * @param screenshot
-	 *            A screenshot to open midi learn on
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void cancelMidiLearn(String screenshot) throws FindFailed {
+	public static void cancelMidiLearn(String state1, String state2,
+			String state3) throws FindFailed {
+		openPopupMenu(state1, state2, state3);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + screenshot, TIMEOUT);
-		match.rightClick();
-		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "cancel_midi_learn.png", TIMEOUT);
 		match.click();
 	}
@@ -262,14 +275,18 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Opens the popup menu
 	 * 
-	 * @param screenshot
-	 *            The screenshot of the popup component
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void openPopupMenu(String screenshot) throws FindFailed {
+	public static void openPopupMenu(String state1, String state2, String state3)
+			throws FindFailed {
 		setMinSimilarity(0.8f);
-		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + screenshot, TIMEOUT);
+		Region match = findMultipleStateRegion(state1, state2, state3);
 		setMinSimilarity(DEFAULT_SIMILARITY);
 		try {
 			Thread.sleep(500);
@@ -286,7 +303,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void openAddDialog() throws FindFailed {
 
-		openPopupMenu("midi_automator.png");
+		openPopupMenu("midi_automator.png", null, null);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "add.png", TIMEOUT);
 		match.click();
@@ -337,13 +354,16 @@ public class GUIAutomations extends SikuliAutomation {
 		FindFailed findFailed = null;
 
 		for (String state : states) {
-			try {
-				match = SikuliAutomation.getSearchRegion().wait(
-						screenshotpath + state, MIN_TIMEOUT);
-				return match;
-			} catch (FindFailed e) {
-				findFailed = e;
-				System.out.println(state + " not found. Trying next state...");
+			if (state != null) {
+				try {
+					match = SikuliAutomation.getSearchRegion().wait(
+							screenshotpath + state, MIN_TIMEOUT);
+					return match;
+				} catch (FindFailed e) {
+					findFailed = e;
+					System.out.println(state
+							+ " not found. Trying next state...");
+				}
 			}
 		}
 
