@@ -70,7 +70,8 @@ public class TestEditFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
+					"Hello_World_Edit_RTF_inactive.png")) {
 				fail("File did not open");
 			}
 

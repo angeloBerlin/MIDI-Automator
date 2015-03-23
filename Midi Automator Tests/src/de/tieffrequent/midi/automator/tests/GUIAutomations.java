@@ -430,17 +430,19 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Checks if the file opened correctly
 	 * 
-	 * @param screenshot
-	 *            screenshot to search for after opening
+	 * @param active
+	 *            screenshot of active window
+	 * @param inactive
+	 *            screenshot of inactive window
 	 * @return <TRUE> if file was opened, <FALSE> if not
 	 */
-	public static boolean checkIfFileOpened(String screenshot) {
+	public static boolean checkIfFileOpened(String active, String inactive) {
 
 		Region match = null;
 
 		try {
 
-			// // minimize Midi Automator
+			// minimize Midi Automator
 			focusMidiAutomator();
 
 			if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -453,8 +455,7 @@ public class GUIAutomations extends SikuliAutomation {
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
 
-			match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + screenshot, TIMEOUT);
+			match = findMultipleStateRegion(active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close editor

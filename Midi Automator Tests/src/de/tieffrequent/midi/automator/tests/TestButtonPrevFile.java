@@ -41,8 +41,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_2_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png")) {
 				fail("'Hello World 2.rtf' did not open");
 			}
 
@@ -55,8 +55,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
 				fail("'Hello World 1.rtf' did not open");
 			}
 
@@ -85,8 +85,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_3_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
+					"Hello_World_3_RTF_inactive.png")) {
 				fail("'Hello World 3.rtf' did not open");
 			}
 
@@ -104,8 +104,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_3_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
+					"Hello_World_3_RTF_inactive.png")) {
 				fail("'Hello World 3.rtf' did not open");
 			}
 
@@ -132,8 +132,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_2_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png")) {
 				fail("'Hello World 2.rtf' did not open");
 			}
 
@@ -146,8 +146,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
 				fail("'Hello World 1.rtf' did not open");
 			}
 
@@ -164,8 +164,8 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_3_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
+					"Hello_World_3_RTF_inactive.png")) {
 				fail("'Hello World 3.rtf' did not open");
 			}
 

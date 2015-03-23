@@ -77,8 +77,8 @@ public class TestMidiLearnPrev extends GUITest {
 			// open first files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 106, 127);
-			if (GUIAutomations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
+			if (GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
 				throw new FindFailed(
 						"Hello World 1.rtf opened though midi was unlearned.");
 			}
@@ -126,8 +126,8 @@ public class TestMidiLearnPrev extends GUITest {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_2_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png")) {
 				throw new FindFailed("Hello World 2.rtf did not open");
 			}
 
@@ -135,8 +135,8 @@ public class TestMidiLearnPrev extends GUITest {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			if (!GUIAutomations
-					.checkIfFileOpened("Hello_World_1_RTF_inactive.png")) {
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
 				throw new FindFailed("Hello World 1.rtf did not open");
 			}
 
