@@ -24,6 +24,7 @@ Midi Automator ant build file.
 	<property name="class.path" value="${lib.dir}/sikulixapi.jar" />
 	<property name="build.sysclasspath" value="last"/>
 	<property name="splashscreen.file" value="splash.png" />
+	<property name="encoding" value="UTF-8" />
 	
     <!-- Check for OS -->
     <condition property="is_windows">
@@ -131,6 +132,7 @@ Midi Automator ant build file.
 				   icon="${images.dir}/${icon.file.macos}"
 				   mainclassname="${main.class}">
 			<runtime dir="${java.runtime}" />
+			<option value="-Dfile.encoding=${encoding}" />
 			<option value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
 			<argument value="-os=MacOS" />
 			<argument value="-wd=${working.dir.macos.resources}/" />
