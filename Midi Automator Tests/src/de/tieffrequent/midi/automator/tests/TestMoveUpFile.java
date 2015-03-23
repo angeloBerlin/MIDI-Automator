@@ -46,7 +46,7 @@ public class TestMoveUpFile extends GUITest {
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// check for inactive menu
-			match = GUIAutomations.findMultipleStateRegion(
+			match = GUIAutomations.findMultipleStateRegion(TIMEOUT,
 					"Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
