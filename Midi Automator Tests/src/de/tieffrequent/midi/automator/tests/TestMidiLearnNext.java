@@ -150,7 +150,6 @@ public class TestMidiLearnNext extends GUITest {
 		} finally {
 			// cleanup
 			try {
-				GUIAutomations.focusMidiAutomator();
 				GUIAutomations.midiUnlearn("next.png", null, null);
 				GUIAutomations.setPreferencesComboBox(
 						"combo_box_midi_remote_in.png", "-none-.png");
