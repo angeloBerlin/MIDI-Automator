@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package de.tieffrequent.midi.automator.tests.utils;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -8,8 +8,6 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
 import org.sikuli.script.Region;
-
-import de.tieffrequent.midi.automator.tests.utils.Utils;
 
 public class GUIAutomations extends SikuliAutomation {
 
@@ -391,16 +389,6 @@ public class GUIAutomations extends SikuliAutomation {
 
 		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
 				state3);
-
-		// activate
-		match.click();
-		match.doubleClick();
-		// strange workaround to open
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		match.doubleClick();
 	}
 
@@ -410,6 +398,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 * @throws FindFailed
 	 */
 	public static void focusMidiAutomator() throws FindFailed {
+		SikuliAutomation.setSearchRegion(findMidiAutomatorRegion());
 		Region match = findMultipleStateRegion(TIMEOUT,
 				"Midi_Automator_title.png", "Midi_Automator_title_inactive.png");
 		match.click();
@@ -472,15 +461,15 @@ public class GUIAutomations extends SikuliAutomation {
 				SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
 			}
 
+		} catch (FindFailed e) {
+			return false;
+		} finally {
+
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-		} catch (FindFailed e) {
-			return false;
-		} finally {
 
 			// show Midi Automator
 			if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -489,6 +478,12 @@ public class GUIAutomations extends SikuliAutomation {
 			if (System.getProperty("os.name").equals("Windows 7")) {
 				SCREEN.type(Key.TAB, Key.ALT);
 				SCREEN.type(Key.TAB, Key.ALT);
+			}
+
+			try {
+				focusMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
 			}
 		}
 		return true;

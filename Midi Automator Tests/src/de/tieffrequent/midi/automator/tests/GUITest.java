@@ -6,13 +6,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.sikuli.script.FindFailed;
 
+import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+
 public class GUITest extends SikuliAutomation {
 
 	@Before
 	public void setSearchRegionToMidiAutomator() {
 		try {
-			SikuliAutomation.setSearchRegion(GUIAutomations
-					.findMidiAutomatorRegion());
 			GUIAutomations.focusMidiAutomator();
 		} catch (FindFailed e) {
 			fail(e.toString());

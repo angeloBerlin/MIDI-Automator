@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
+import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+
 public class TestOpenFile extends GUITest {
 
 	@Test

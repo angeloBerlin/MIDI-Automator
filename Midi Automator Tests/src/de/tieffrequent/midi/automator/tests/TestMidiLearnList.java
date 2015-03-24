@@ -10,7 +10,9 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
+import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
 import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
+import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiLearnList extends GUITest {
 

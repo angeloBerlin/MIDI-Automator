@@ -7,6 +7,9 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
+import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+
 public class TestOpenMidiAutomator extends SikuliAutomation {
 
 	@Test

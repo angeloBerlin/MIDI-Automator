@@ -7,6 +7,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.sikuli.script.Region;
 
+import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,
 		TestOpenFile.class, TestEditFile.class, TestDeleteFile.class,
