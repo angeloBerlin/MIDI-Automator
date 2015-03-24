@@ -202,7 +202,8 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void deleteEntry(String state1, String state2, String state3)
 			throws FindFailed {
-		Region match = findMultipleStateRegion(state1, state2, state3);
+		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+				state3);
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "delete.png", TIMEOUT);
@@ -223,8 +224,8 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void moveUpEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = GUIAutomations.findMultipleStateRegion(state1, state2,
-				state3);
+		Region match = GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+				state1, state2, state3);
 
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
@@ -246,8 +247,8 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void moveDownEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = GUIAutomations.findMultipleStateRegion(state1, state2,
-				state3);
+		Region match = GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+				state1, state2, state3);
 
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
@@ -286,7 +287,8 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openPopupMenu(String state1, String state2, String state3)
 			throws FindFailed {
 		setMinSimilarity(0.8f);
-		Region match = findMultipleStateRegion(state1, state2, state3);
+		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+				state3);
 		setMinSimilarity(DEFAULT_SIMILARITY);
 		try {
 			Thread.sleep(500);
@@ -323,7 +325,8 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openEditDialog(String state1, String state2,
 			String state3) throws FindFailed {
 
-		Region match = findMultipleStateRegion(state1, state2, state3);
+		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+				state3);
 		match.click();
 
 		try {
@@ -342,13 +345,15 @@ public class GUIAutomations extends SikuliAutomation {
 	 * Finds a region that can have multiple states, i.e. active, inactive,
 	 * unfocused
 	 * 
+	 * @param timeout
+	 *            the timeout to search for every state
 	 * @param states
 	 *            the different states of the region
 	 * @return The found region
 	 * @throws FindFailed
 	 */
-	public static Region findMultipleStateRegion(String... states)
-			throws FindFailed {
+	public static Region findMultipleStateRegion(double timeout,
+			String... states) throws FindFailed {
 
 		Region match;
 		FindFailed findFailed = null;
@@ -357,7 +362,7 @@ public class GUIAutomations extends SikuliAutomation {
 			if (state != null) {
 				try {
 					match = SikuliAutomation.getSearchRegion().wait(
-							screenshotpath + state, MIN_TIMEOUT);
+							screenshotpath + state, timeout);
 					return match;
 				} catch (FindFailed e) {
 					findFailed = e;
@@ -384,7 +389,8 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openEntryByDoubleClick(String state1, String state2,
 			String state3) throws FindFailed {
 
-		Region match = findMultipleStateRegion(state1, state2, state3);
+		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+				state3);
 
 		// activate
 		match.click();
@@ -404,8 +410,8 @@ public class GUIAutomations extends SikuliAutomation {
 	 * @throws FindFailed
 	 */
 	public static void focusMidiAutomator() throws FindFailed {
-		Region match = findMultipleStateRegion("Midi_Automator_title.png",
-				"Midi_Automator_title_inactive.png");
+		Region match = findMultipleStateRegion(TIMEOUT,
+				"Midi_Automator_title.png", "Midi_Automator_title_inactive.png");
 		match.click();
 	}
 
@@ -454,8 +460,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
-
-			match = findMultipleStateRegion(active, inactive);
+			match = findMultipleStateRegion(TIMEOUT, active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close editor
