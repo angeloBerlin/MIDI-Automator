@@ -15,7 +15,7 @@ import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 		TestMoveUpFile.class, TestMoveDownFile.class, TestButtonNextFile.class,
 		TestButtonPrevFile.class, TestMidiLearnNext.class,
 		TestMidiLearnPrev.class, TestMidiLearnList.class,
-		TestCloseMidiAutomator.class })
+		TestMidiRemoteOpen.class, TestCloseMidiAutomator.class })
 public class AllTests extends SikuliAutomation {
 
 	private static Region programRegion;

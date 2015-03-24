@@ -36,7 +36,7 @@ public class TestMidiLearnList extends GUITest {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiLearnShouldBeCanceled() {
 		try {
 			GUIAutomations.addFile("Hello World 1", currentPath
@@ -52,7 +52,7 @@ public class TestMidiLearnList extends GUITest {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiShouldBeUnlearned() {
 		try {
 			// set MIDI IN Remote device
