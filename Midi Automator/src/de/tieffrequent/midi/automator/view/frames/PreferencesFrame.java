@@ -46,11 +46,12 @@ public class PreferencesFrame extends JFrame {
 	private final String TITLE = "Preferences";
 	private final String LABEL_MIDI_IN_REMOTE_DEVICES = "Midi Remote IN:";
 	private final String LABEL_MIDI_OUT_REMOTE_DEVICES = "Midi Master OUT:";
+	private final String LABEL_MIDI_OUT_REMOTE_OPEN = "Master open: ch 1 CC 102 &lt;file number - 1&gt;";
 	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_DEVICES = "Midi Notifier OUT:";
 	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO = "Notifier: ch 1 CC 103 value 127";
 	private final String LABEL_MIDI_IN_METRONOM_DEVICES = "Midi Metronom IN:";
-	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16, NOTE ON A4<br/>"
-			+ "Other clicks: ch 16, NOTE ON E4";
+	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16 NOTE ON A4<br/>"
+			+ "Other clicks: ch 16 NOTE ON E4";
 	private final String LABEL_GUI_AUTOMATION = "Mouse Automation:";
 	private final String BUTTON_SEND_NOTIFIER = "Send...";
 	private final String BUTTON_SAVE = "Save";
@@ -80,6 +81,7 @@ public class PreferencesFrame extends JFrame {
 
 	private IApplication application;
 	private JFrame programFrame;
+	private int gridRowCount = 0;
 
 	/**
 	 * Constructor
@@ -161,7 +163,7 @@ public class PreferencesFrame extends JFrame {
 		midiINRemoteDevicesLabel = new JLabel(LABEL_MIDI_IN_REMOTE_DEVICES);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiINRemoteDevicesLabel, c);
 
 		List<String> midiINDevices = MidiUtils.getMidiDeviceSignatures("IN");
@@ -173,8 +175,9 @@ public class PreferencesFrame extends JFrame {
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiINRemoteDeviceComboBox, c);
+
 	}
 
 	/**
@@ -187,7 +190,7 @@ public class PreferencesFrame extends JFrame {
 		c.insets = new Insets(10, 0, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiOUTRemoteDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -200,8 +203,18 @@ public class PreferencesFrame extends JFrame {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiOUTRemoteDeviceComboBox, c);
+
+		// Info label
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = gridRowCount++;
+		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
+				"<span style='font-family:Arial; font-size:8px'>"
+						+ LABEL_MIDI_OUT_REMOTE_OPEN + "</span>");
+		middlePanel.add(midiOUTSwitchNotifierInfoLabel, c);
 	}
 
 	/**
@@ -214,7 +227,7 @@ public class PreferencesFrame extends JFrame {
 		c.insets = new Insets(10, 0, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiINMetronomDevicesLabel, c);
 
 		List<String> midiInDevices = MidiUtils.getMidiDeviceSignatures("IN");
@@ -227,14 +240,14 @@ public class PreferencesFrame extends JFrame {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiINMetronomDeviceComboBox, c);
 
 		// Info label
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = gridRowCount++;
 		midiINMetronomInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_IN_METRONOM_INFO + "</span>");
@@ -253,7 +266,7 @@ public class PreferencesFrame extends JFrame {
 		c.insets = new Insets(10, 0, 0, 0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = gridRowCount++;
 		middlePanel.add(midiOUTSwitchNotifierDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -266,14 +279,14 @@ public class PreferencesFrame extends JFrame {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 8;
+		c.gridy = gridRowCount;
 		middlePanel.add(midiOUTSwitchNotifierDeviceComboBox, c);
 
 		// Button test notification
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
-		c.gridy = 8;
+		c.gridy = gridRowCount++;
 		buttonSendNotify = new JButton(BUTTON_SEND_NOTIFIER);
 		buttonSendNotify.addActionListener(new SendNotificationAction());
 		buttonSendNotify.setMaximumSize(new Dimension(7, 10));
@@ -283,7 +296,7 @@ public class PreferencesFrame extends JFrame {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 9;
+		c.gridy = gridRowCount++;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO + "</span>");
@@ -300,14 +313,14 @@ public class PreferencesFrame extends JFrame {
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 10;
+		c.gridy = gridRowCount++;
 		middlePanel.add(guiAutomationLabel, c);
 
 		guiAutomationPanel = new GUIAutomationConfigurationPanel(application);
 		guiAutomationPanel.setOpaque(true);
 
 		c.gridx = 0;
-		c.gridy = 11;
+		c.gridy = gridRowCount++;
 		c.gridwidth = 3;
 		middlePanel.add(guiAutomationPanel, c);
 	}
