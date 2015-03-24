@@ -551,6 +551,7 @@ public class MainFrame extends JFrame {
 		prevButton.setAction(new PrevAction());
 		prevButton.setIcon(new ImageIcon(ICON_PATH_PREV));
 		prevButton.addMouseListener(new PopupListener());
+		prevButton.setFocusable(false);
 
 		c.gridx = 0;
 		parent.add(prevButton, c);
@@ -562,6 +563,7 @@ public class MainFrame extends JFrame {
 		nextButton.setAction(new NextAction());
 		nextButton.setIcon(new ImageIcon(ICON_PATH_NEXT));
 		nextButton.addMouseListener(new PopupListener());
+		nextButton.setFocusable(false);
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
