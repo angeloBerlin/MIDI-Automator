@@ -126,7 +126,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		// popup Menu
 		addMouseListener(new PopupListener());
-		popupMenu = new MidiLearnPopupMenu(application);
+		popupMenu = new MidiLearnPopupMenu(null, application);
 		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
 	}
 

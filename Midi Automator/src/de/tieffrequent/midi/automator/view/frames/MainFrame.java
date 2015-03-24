@@ -99,7 +99,6 @@ public class MainFrame extends JFrame {
 	private List<String> midiSignatures;
 
 	private int lastSelectedIndex;
-	// mutex flag for closing pop-up without
 	private boolean popupWasShown;
 
 	private PreferencesFrame preferencesFrame;
@@ -524,6 +523,7 @@ public class MainFrame extends JFrame {
 				.setFont(new Font(FONT_FAMILY, Font.BOLD, FONT_SIZE_FILE_LIST));
 		fileJList.setName(NAME_FILE_LIST);
 		fileJList.setCache(fileJList.getSelectionBackground());
+		fileJList.setFocusable(false);
 
 		fileJScrollPane = new JScrollPane(fileJList);
 		fileJScrollPane.setViewportView(fileJList);
@@ -757,13 +757,13 @@ public class MainFrame extends JFrame {
 	 */
 	class PreferencesAction extends AbstractAction {
 
+		private static final long serialVersionUID = 1L;
+		private JFrame programFrame;
+
 		public PreferencesAction(JFrame programFrame) {
 			super();
 			this.programFrame = programFrame;
 		}
-
-		private static final long serialVersionUID = 1L;
-		private JFrame programFrame;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -996,5 +996,13 @@ public class MainFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public boolean isPopupWasShown() {
+		return popupWasShown;
+	}
+
+	public void setPopupWasShown(boolean popupWasShown) {
+		this.popupWasShown = popupWasShown;
 	}
 }

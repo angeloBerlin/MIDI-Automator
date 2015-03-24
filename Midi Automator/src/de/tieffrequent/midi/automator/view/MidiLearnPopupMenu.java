@@ -2,13 +2,14 @@ package de.tieffrequent.midi.automator.view;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import de.tieffrequent.midi.automator.IApplication;
+import de.tieffrequent.midi.automator.view.frames.MainFrame;
 
 public class MidiLearnPopupMenu extends JPopupMenu {
 
@@ -22,25 +23,30 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	private Action midiCancelAction;
 
 	protected IApplication application;
+	protected MainFrame mainFrame;
 
 	/**
 	 * Constructor
 	 * 
+	 * @param parentFrame
+	 *            The parent main frame
 	 * @param application
 	 *            The main application
 	 */
-	public MidiLearnPopupMenu(IApplication application) {
+	public MidiLearnPopupMenu(JFrame parentFrame, IApplication application) {
 		super();
 
 		this.application = application;
-
+		if (parentFrame instanceof MainFrame) {
+			mainFrame = (MainFrame) parentFrame;
+		}
 		midiLearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setEnabled(true);
-		midiLearnAction = new MidiLearnAction();
+		midiLearnAction = new MidiLearnAction(mainFrame);
 		midiLearnMenuItem.addActionListener(midiLearnAction);
 		add(midiLearnMenuItem);
 
-		midiCancelAction = new MidiLearnCancelAction();
+		midiCancelAction = new MidiLearnCancelAction(mainFrame);
 	}
 
 	/**
@@ -73,14 +79,18 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @author aguelle
 	 * 
 	 */
-	class MidiLearnAction extends AbstractAction {
+	class MidiLearnAction extends PopUpMenuAction {
+
+		public MidiLearnAction(MainFrame parentFrame) {
+			super(parentFrame);
+		}
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void actionPerformed(ActionEvent ae) {
-
-			JMenuItem menuItem = (JMenuItem) ae.getSource();
+		public void actionPerformed(ActionEvent e) {
+			super.actionPerformed(e);
+			JMenuItem menuItem = (JMenuItem) e.getSource();
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			JComponent component = (JComponent) popupMenu.getInvoker();
 			application.setMidiLearnMode(true, component);
@@ -93,12 +103,17 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @author aguelle
 	 * 
 	 */
-	class MidiLearnCancelAction extends AbstractAction {
+	class MidiLearnCancelAction extends PopUpMenuAction {
+
+		public MidiLearnCancelAction(MainFrame parentFrame) {
+			super(parentFrame);
+		}
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void actionPerformed(ActionEvent ae) {
+		public void actionPerformed(ActionEvent e) {
+			super.actionPerformed(e);
 			application.setMidiLearnMode(false, null);
 		}
 	}
