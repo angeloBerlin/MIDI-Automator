@@ -67,4 +67,27 @@ public class TestAddFile extends GUITest {
 			fail(e.toString());
 		}
 	}
+
+	// @Test
+	public void addingMoreFilesThan128ShouldBeImpossible() {
+
+		try {
+
+			for (int i = 1; i <= 129; i++) {
+				GUIAutomations.addFile("Hello World " + i, currentPath
+						+ "/testfiles/Hello World.rtf");
+			}
+		} catch (FindFailed e) {
+			e.printStackTrace();
+		}
+
+		try {
+			GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+					"Hello_World_129_entry.png",
+					"Hello_World_129_entry_active.png",
+					"Hello_World_129_entry_inactive.png");
+			fail("More than 128 entries added!");
+		} catch (FindFailed e) {
+		}
+	}
 }
