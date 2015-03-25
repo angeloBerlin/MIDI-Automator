@@ -43,11 +43,13 @@ public class GUIAutomations extends SikuliAutomation {
 	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @param state3
 	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param similarity
+	 *            the minimum similarity
 	 * @throws FindFailed
 	 */
-	public static void midiLearn(String state1, String state2, String state3)
-			throws FindFailed {
-		openPopupMenu(state1, state2, state3);
+	public static void midiLearn(String state1, String state2, String state3,
+			float similarity) throws FindFailed {
+		openPopupMenu(state1, state2, state3, similarity);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_learn.png", TIMEOUT);
 		match.click();
@@ -66,7 +68,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void midiUnlearn(String state1, String state2, String state3)
 			throws FindFailed {
-		openPopupMenu(state1, state2, state3);
+		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_unlearn.png", TIMEOUT);
 		match.click();
@@ -85,7 +87,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void cancelMidiLearn(String state1, String state2,
 			String state3) throws FindFailed {
-		openPopupMenu(state1, state2, state3);
+		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "cancel_midi_learn.png", TIMEOUT);
 		match.click();
@@ -274,17 +276,20 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Opens the popup menu
 	 * 
+	 * 
 	 * @param state1
 	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @param state2
 	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @param state3
 	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param similarity
+	 *            The minimum similarity
 	 * @throws FindFailed
 	 */
-	public static void openPopupMenu(String state1, String state2, String state3)
-			throws FindFailed {
-		setMinSimilarity(0.8f);
+	public static void openPopupMenu(String state1, String state2,
+			String state3, float similarity) throws FindFailed {
+		setMinSimilarity(similarity);
 		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
 				state3);
 		setMinSimilarity(DEFAULT_SIMILARITY);
@@ -303,7 +308,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void openAddDialog() throws FindFailed {
 
-		openPopupMenu("midi_automator.png", null, null);
+		openPopupMenu("midi_automator.png", null, null, LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "add.png", TIMEOUT);
 		match.click();

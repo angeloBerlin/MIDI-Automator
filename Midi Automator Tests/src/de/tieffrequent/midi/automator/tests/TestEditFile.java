@@ -15,7 +15,8 @@ public class TestEditFile extends GUITest {
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null);
+			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+					LOW_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "edit_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);

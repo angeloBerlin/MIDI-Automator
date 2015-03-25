@@ -41,7 +41,7 @@ public class TestMidiLearnPrev extends GUITest {
 	public void midiLearnShouldBeCanceled() {
 
 		try {
-			GUIAutomations.midiLearn("prev.png", null, null);
+			GUIAutomations.midiLearn("prev.png", null, null, LOW_SIMILARITY);
 			GUIAutomations.cancelMidiLearn("prev_inactive.png", null, null);
 		} catch (FindFailed e) {
 			fail(e.toString());
@@ -60,7 +60,7 @@ public class TestMidiLearnPrev extends GUITest {
 					+ "/testfiles/Hello World 1.rtf");
 
 			// midi learn
-			GUIAutomations.midiLearn("prev.png", null, null);
+			GUIAutomations.midiLearn("prev.png", null, null, LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
@@ -69,7 +69,8 @@ public class TestMidiLearnPrev extends GUITest {
 			GUIAutomations.midiUnlearn("prev.png", null, null);
 
 			// check for inactive menu item
-			GUIAutomations.openPopupMenu("prev.png", "prev_inactive.png", null);
+			GUIAutomations.openPopupMenu("prev.png", "prev_inactive.png", null,
+					LOW_SIMILARITY);
 			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "midi_unlearn_inactive.png", TIMEOUT);
@@ -113,7 +114,7 @@ public class TestMidiLearnPrev extends GUITest {
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
-			GUIAutomations.midiLearn("prev.png", null, null);
+			GUIAutomations.midiLearn("prev.png", null, null, LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);

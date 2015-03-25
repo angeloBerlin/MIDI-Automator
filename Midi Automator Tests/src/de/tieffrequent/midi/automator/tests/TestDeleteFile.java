@@ -15,7 +15,8 @@ public class TestDeleteFile extends GUITest {
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null);
+			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+					LOW_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "delete_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);

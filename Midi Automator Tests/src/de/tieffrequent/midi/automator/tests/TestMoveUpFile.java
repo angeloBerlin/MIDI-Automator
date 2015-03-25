@@ -15,7 +15,8 @@ public class TestMoveUpFile extends GUITest {
 	public void moveUpMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null);
+			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+					LOW_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_up_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
