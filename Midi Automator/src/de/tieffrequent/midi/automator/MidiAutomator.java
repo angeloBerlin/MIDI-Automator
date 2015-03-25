@@ -545,8 +545,6 @@ public class MidiAutomator implements IApplication {
 	public void setMidiSignature(String signature, Component component) {
 
 		// check for unique signature
-		removeInfoMessage(errDuplicateMidiSignature);
-
 		if (midiSignatureIsAlreadyStored(signature)) {
 			return;
 		}
@@ -923,6 +921,8 @@ public class MidiAutomator implements IApplication {
 	 */
 	private boolean midiSignatureIsAlreadyStored(String signature) {
 
+		removeInfoMessage(errDuplicateMidiSignature);
+
 		if (signature == null) {
 			signature = "";
 			return false;
@@ -937,6 +937,10 @@ public class MidiAutomator implements IApplication {
 		}
 
 		if (MODEL.getMidiSinatures().contains(signature)) {
+			found = true;
+		}
+
+		if (signature.contains(IApplication.OPEN_FILE_MIDI_SIGNATURE)) {
 			found = true;
 		}
 
