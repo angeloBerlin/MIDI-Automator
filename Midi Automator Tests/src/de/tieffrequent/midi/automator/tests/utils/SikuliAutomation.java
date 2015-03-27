@@ -16,7 +16,7 @@ public class SikuliAutomation {
 	protected static final float MAX_SIMILARITY = 0.999f;
 	protected static final float HIGH_SIMILARITY = 0.99f;
 	protected static final float DEFAULT_SIMILARITY = 0.97f;
-	protected static final float LOW_SIMILARITY = 0.8f;
+	protected static final float LOW_SIMILARITY = 0.7f;
 	protected static final int HIGHLIGHT_DURATION = 1;
 	protected static final double MIN_TIMEOUT = 0.5;
 	protected static final double TIMEOUT = 15;

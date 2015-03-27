@@ -48,9 +48,8 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
-			GUIAutomations.cancelMidiLearn("Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
-					"Hello_World_1_entry_inactive.png");
+			GUIAutomations.cancelMidiLearn("Hello_World_1_entry_learn.png",
+					null, null);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -169,7 +168,6 @@ public class TestMidiLearnList extends GUITest {
 		} finally {
 			// cleanup
 			try {
-				GUIAutomations.focusMidiAutomator();
 				GUIAutomations.setPreferencesComboBox(
 						"combo_box_midi_remote_in.png", "-none-.png");
 			} catch (FindFailed e) {
@@ -203,9 +201,11 @@ public class TestMidiLearnList extends GUITest {
 					masterChannel, masterControlNo, 0);
 
 			// check failure
+			SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "error_midi_master_sig_learned.png",
 					TIMEOUT);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// open first file by master midi message
@@ -232,9 +232,11 @@ public class TestMidiLearnList extends GUITest {
 					controlNo, value);
 
 			// check failure
+			SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "error_midi_learn_already_used.png",
 					TIMEOUT);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// open second file by learned midi message
@@ -254,7 +256,6 @@ public class TestMidiLearnList extends GUITest {
 		} finally {
 			// cleanup
 			try {
-				GUIAutomations.focusMidiAutomator();
 				GUIAutomations.setPreferencesComboBox(
 						"combo_box_midi_remote_in.png", "-none-.png");
 			} catch (FindFailed e) {

@@ -403,10 +403,16 @@ public class GUIAutomations extends SikuliAutomation {
 	 * @throws FindFailed
 	 */
 	public static void focusMidiAutomator() throws FindFailed {
-		SikuliAutomation.setSearchRegion(findMidiAutomatorRegion());
-		Region match = findMultipleStateRegion(TIMEOUT,
-				"Midi_Automator_title.png", "Midi_Automator_title_inactive.png");
-		match.click();
+		try {
+			SikuliAutomation.setSearchRegion(findMidiAutomatorRegion());
+			Region match = findMultipleStateRegion(MIN_TIMEOUT,
+					"Midi_Automator_title.png",
+					"Midi_Automator_title_inactive.png");
+			match.click();
+		} catch (FindFailed e) {
+			System.err.println("focusMidiAutomator() failed");
+			throw e;
+		}
 	}
 
 	/**
@@ -417,14 +423,20 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static Region findMidiAutomatorRegion() throws FindFailed {
 
-		setMinSimilarity(0.8f);
-		Region searchRegion = SCREEN.wait(
-				screenshotpath + "midi_automator.png", TIMEOUT);
-		setMinSimilarity(DEFAULT_SIMILARITY);
-		searchRegion.y = searchRegion.y - 22;
-		searchRegion.w = searchRegion.w + 100;
-		searchRegion.h = searchRegion.h + 100;
-		return searchRegion;
+		try {
+			setMinSimilarity(LOW_SIMILARITY);
+			SikuliAutomation.setSearchRegion(SCREEN);
+			Region searchRegion = findMultipleStateRegion(TIMEOUT,
+					"midi_automator.png");
+			setMinSimilarity(DEFAULT_SIMILARITY);
+			searchRegion.y = searchRegion.y - 21;
+			searchRegion.w = searchRegion.w + 100;
+			searchRegion.h = searchRegion.h + 100;
+			return searchRegion;
+		} catch (FindFailed e) {
+			System.err.println("findMidiAutomatorRegion() failed");
+			throw e;
+		}
 	}
 
 	/**
