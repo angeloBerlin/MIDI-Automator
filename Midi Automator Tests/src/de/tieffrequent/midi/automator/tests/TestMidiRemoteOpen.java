@@ -47,7 +47,7 @@ public class TestMidiRemoteOpen extends GUITest {
 					+ "/testfiles/Hello World 2.rtf");
 
 			// open files by learned midi master message
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
 			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
