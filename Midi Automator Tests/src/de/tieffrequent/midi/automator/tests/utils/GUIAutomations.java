@@ -569,6 +569,24 @@ public class GUIAutomations extends SikuliAutomation {
 	}
 
 	/**
+	 * Closes the Midi Automator program
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void closeMidiAutomator() throws FindFailed {
+
+		focusMidiAutomator();
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			SCREEN.type("q", KeyModifier.CMD);
+		}
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
+		}
+	}
+
+	/**
 	 * Restarts the MIDI Automator and sets search region to it
 	 * 
 	 * @throws FindFailed
@@ -576,7 +594,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void restartMidiAutomator() throws FindFailed, IOException {
 
-		GUIAutomations.openExitMenu();
+		closeMidiAutomator();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -586,6 +604,5 @@ public class GUIAutomations extends SikuliAutomation {
 
 		SikuliAutomation.setSearchRegion(GUIAutomations
 				.findMidiAutomatorRegion());
-
 	}
 }
