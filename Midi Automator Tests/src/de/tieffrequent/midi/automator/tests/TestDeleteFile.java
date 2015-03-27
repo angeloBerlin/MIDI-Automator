@@ -42,7 +42,7 @@ public class TestDeleteFile extends GUITest {
 		}
 
 		try {
-			GUIAutomations.findMultipleStateRegion(TIMEOUT,
+			GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
 					"Hello_World_entry.png", "Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
 			fail("Hello World Edit still found.");
