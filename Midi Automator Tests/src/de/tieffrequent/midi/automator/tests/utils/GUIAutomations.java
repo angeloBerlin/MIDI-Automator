@@ -408,7 +408,7 @@ public class GUIAutomations extends SikuliAutomation {
 			Region match = findMultipleStateRegion(MIN_TIMEOUT,
 					"Midi_Automator_title.png",
 					"Midi_Automator_title_inactive.png");
-			match.click();
+			match.click(match.offset(50, 20));
 		} catch (FindFailed e) {
 			System.err.println("focusMidiAutomator() failed");
 			throw e;
