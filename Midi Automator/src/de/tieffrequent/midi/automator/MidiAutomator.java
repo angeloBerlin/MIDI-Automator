@@ -1047,7 +1047,9 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void setItem(Integer index, String entryName, String filePath,
 			String midiSignature) {
-		MODEL.setEntry(index, entryName, filePath, midiSignature);
+		if (entryName != null && !entryName.equals("")) {
+			MODEL.setEntry(index, entryName, filePath, midiSignature);
+		}
 		reloadModel();
 	}
 
