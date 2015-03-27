@@ -68,6 +68,26 @@ public class TestAddFile extends GUITest {
 		}
 	}
 
+	@Test
+	public void addingEmptyFileNameShouldNotBePossible() {
+
+		try {
+
+			GUIAutomations.openAddDialog();
+			GUIAutomations.saveDialog();
+
+			// search unmodified midi automator
+			setMinSimilarity(HIGH_SIMILARITY);
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "midi_automator.png", TIMEOUT);
+			setMinSimilarity(DEFAULT_SIMILARITY);
+			match.highlight(HIGHLIGHT_DURATION);
+
+		} catch (FindFailed e) {
+			fail(e.toString());
+		}
+	}
+
 	// @Test
 	public void addingMoreFilesThan128ShouldBeImpossible() {
 
