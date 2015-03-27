@@ -42,8 +42,10 @@ public class TestEditFile extends GUITest {
 			GUIAutomations.cancelDialog();
 
 			// search unmodified midi automator
+			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_automator_Hello_World.png", TIMEOUT);
+					screenshotpath + "file_list_Hello_World.png", TIMEOUT);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed e) {
