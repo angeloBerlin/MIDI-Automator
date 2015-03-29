@@ -73,6 +73,7 @@ public class MidiAutomator implements IApplication {
 	private String infoEntryOpened;
 	private String errMidoFileNotFound;
 	private String errMidoFileCouldNotBeOpened;
+	private String errFileCouldNotBeAdded;
 	private String errPropertiesFileNotFound;
 	private String errPropertiesFileCouldNotBeOpened;
 	private String errMidiINRemoteDeviceUnavailable;
@@ -1047,6 +1048,15 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void setItem(Integer index, String entryName, String filePath,
 			String midiSignature) {
+		removeInfoMessage(errFileCouldNotBeAdded);
+
+		if (index == null && MODEL.getEntryNames().size() >= 128) {
+			errFileCouldNotBeAdded = String.format(
+					Messages.MSG_FILE_LIST_IS_FULL, entryName);
+			setInfoMessage(errFileCouldNotBeAdded);
+			return;
+		}
+
 		if (entryName != null && !entryName.equals("")) {
 			MODEL.setEntry(index, entryName, filePath, midiSignature);
 		}

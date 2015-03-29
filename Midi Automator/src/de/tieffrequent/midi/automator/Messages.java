@@ -15,4 +15,5 @@ public class Messages {
 	public static final String MSG_MIDI_LEARN_SUCCESS = "Midi message <b>%s</b> learned.";
 	public static final String MSG_MIDI_UNLEARNED = "Midi message for <b>%s</b> unlearned.";
 	public static final String MSG_DUPLICATE_MIDI_SIGNATURE = "The midi message <b>%s</b> is already set for a function. Please use another one.";
+	public static final String MSG_FILE_LIST_IS_FULL = "The entry <b>%s</b> could not be added because the list contains already the maximum of 128 entries.";
 }
