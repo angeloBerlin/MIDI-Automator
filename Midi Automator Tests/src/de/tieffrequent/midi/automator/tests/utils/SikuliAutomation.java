@@ -18,6 +18,8 @@ public class SikuliAutomation {
 	protected static final float DEFAULT_SIMILARITY = 0.97f;
 	protected static final float LOW_SIMILARITY = 0.7f;
 	protected static final int HIGHLIGHT_DURATION = 1;
+	private static final int HIGHLIGHT_SEARCH_REGION_DURATION = 1;
+	private static boolean HIGHLIGHT_SEARCH_REGION = false;
 	protected static final double MIN_TIMEOUT = 0.5;
 	protected static final double TIMEOUT = 15;
 	protected static final Screen SCREEN = new Screen();
@@ -65,10 +67,10 @@ public class SikuliAutomation {
 			return;
 		}
 
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			// This makes some focus trouble on Windows
-			searchRegion.highlight(HIGHLIGHT_DURATION, "green");
+		if (HIGHLIGHT_SEARCH_REGION) {
+			searchRegion.highlight(HIGHLIGHT_SEARCH_REGION_DURATION, "green");
 		}
+
 		SikuliAutomation.searchRegion = searchRegion;
 	}
 

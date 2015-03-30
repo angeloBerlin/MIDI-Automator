@@ -2,11 +2,14 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMoveUpFile extends GUITest {
@@ -15,14 +18,20 @@ public class TestMoveUpFile extends GUITest {
 	public void moveUpMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// open popup menu
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
+
+			// check if move up menu entry is disabled
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_up_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -30,13 +39,11 @@ public class TestMoveUpFile extends GUITest {
 	@Test
 	public void fileShouldBeMovedUp() {
 		try {
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
-			GUIAutomations.addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 3.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
+			GUIAutomations.restartMidiAutomator();
 
+			// move entries
 			GUIAutomations.moveUpEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
@@ -56,14 +63,16 @@ public class TestMoveUpFile extends GUITest {
 					"Hello_World_3_entry_inactive.png");
 
 			match.rightClick();
+			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_up_inactive.png", TIMEOUT);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close context menu
 			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}

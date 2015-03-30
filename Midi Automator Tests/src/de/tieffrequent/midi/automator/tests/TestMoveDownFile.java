@@ -2,11 +2,14 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMoveDownFile extends GUITest {
@@ -15,14 +18,21 @@ public class TestMoveDownFile extends GUITest {
 	public void moveDownMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
+
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// open poupmenu
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
+
+			// check for disabled menu entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_down_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -31,14 +41,11 @@ public class TestMoveDownFile extends GUITest {
 	public void fileShouldBeMovedUp() {
 		try {
 
-			Region match;
-			GUIAutomations.addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 2.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 3.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_world_312.mido");
+			GUIAutomations.restartMidiAutomator();
 
+			// move down entry
 			GUIAutomations.moveDownEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
@@ -47,7 +54,7 @@ public class TestMoveDownFile extends GUITest {
 					"Hello_World_3_entry_inactive.png");
 
 			// check for correct order
-			match = SikuliAutomation.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "Hello_World_order_123.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -58,14 +65,16 @@ public class TestMoveDownFile extends GUITest {
 					"Hello_World_3_entry_inactive.png");
 
 			match.rightClick();
+			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "move_down_inactive.png", TIMEOUT);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close context menu
 			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}

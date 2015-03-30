@@ -9,6 +9,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestButtonNextFile extends GUITest {
@@ -16,12 +17,18 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void nextButtonNotActiveOnEmptyList() {
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// check for inactive next button
 			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "next_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
-		} catch (FindFailed e) {
+
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -29,11 +36,9 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void nextFileShouldBeOpenedInCycle() {
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.restartMidiAutomator();
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
 
 			// open first file
 			GUIAutomations.nextFile();
@@ -85,13 +90,9 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterDeletingSecondFile() {
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
 			GUIAutomations.restartMidiAutomator();
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
-			GUIAutomations.addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 3.rtf");
 
 			// open first file
 			GUIAutomations.nextFile();
@@ -148,11 +149,9 @@ public class TestButtonNextFile extends GUITest {
 	@Test
 	public void thirdFileShouldBeOpenedAfterAddingOnIndex2() {
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.restartMidiAutomator();
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
 
 			// open first file
 			GUIAutomations.nextFile();

@@ -2,11 +2,14 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestDeleteFile extends GUITest {
@@ -15,38 +18,44 @@ public class TestDeleteFile extends GUITest {
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// open popup menu
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
+
+			// check for disabled delete menu entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "delete_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
 
 	@Test
-	public void helloWorldEditEntryShouldBeDeleted() {
+	public void helloWorldEntryShouldBeDeleted() {
 
 		try {
-			GUIAutomations.addFile("Hello World", currentPath
-					+ "/testfiles/Hello World.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// delete entry
 			GUIAutomations.deleteEntry("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
 
-		} catch (FindFailed e) {
-			System.out.println("Nothing to delete");
-		}
-
-		try {
+			// check if entry was deleted
 			GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
 					"Hello_World_entry.png", "Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
-			fail("Hello World Edit still found.");
-		} catch (FindFailed e) {
+			fail("Hello World entry still found.");
+		} catch (FindFailed | IOException e) {
 		}
 	}
 }

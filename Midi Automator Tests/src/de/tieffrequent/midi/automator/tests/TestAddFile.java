@@ -2,11 +2,14 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestAddFile extends GUITest {
@@ -14,17 +17,21 @@ public class TestAddFile extends GUITest {
 	@Test
 	public void newFileShouldBeAdded() {
 		try {
-			Region match;
 
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// add file
 			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
 
 			// search new entry
-			match = SikuliAutomation.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "Hello_World_entry.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -51,6 +58,10 @@ public class TestAddFile extends GUITest {
 
 		try {
 
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
 			GUIAutomations.openAddDialog();
 			GUIAutomations.fillTextField("name_text_field.png", "x");
 			GUIAutomations.fillTextField("file_text_field.png", "y");
@@ -63,7 +74,7 @@ public class TestAddFile extends GUITest {
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -72,7 +83,11 @@ public class TestAddFile extends GUITest {
 	public void addingEmptyFileNameShouldNotBePossible() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
 
+			// adde empty file
 			GUIAutomations.openAddDialog();
 			GUIAutomations.saveDialog();
 
@@ -83,31 +98,30 @@ public class TestAddFile extends GUITest {
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
 
-	// @Test
+	@Test
 	public void addingMoreFilesThan128ShouldBeImpossible() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
+			GUIAutomations.restartMidiAutomator();
 
-			for (int i = 1; i <= 129; i++) {
-				GUIAutomations.addFile("Hello World " + i, currentPath
-						+ "/testfiles/Hello World.rtf");
-			}
-		} catch (FindFailed e) {
-			e.printStackTrace();
-		}
+			// add file 129
+			GUIAutomations.addFile("Hello World 129", currentPath
+					+ "/testfiles/Hello World.rtf");
 
-		try {
-			GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
-					"Hello_World_129_entry.png",
-					"Hello_World_129_entry_active.png",
-					"Hello_World_129_entry_inactive.png");
-			fail("More than 128 entries added!");
-		} catch (FindFailed e) {
+			// check for failure
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "error_129th_file_added.png", TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
+
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
 		}
 	}
 }

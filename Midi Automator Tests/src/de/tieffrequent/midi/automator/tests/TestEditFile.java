@@ -2,11 +2,14 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestEditFile extends GUITest {
@@ -15,14 +18,20 @@ public class TestEditFile extends GUITest {
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// open popup menu
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
+
+			// check for disabled edit entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "edit_inactive.png", TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
-			GUIAutomations.focusMidiAutomator();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -31,14 +40,20 @@ public class TestEditFile extends GUITest {
 	public void editingFileShouldBeCanceled() {
 
 		try {
-			GUIAutomations.addFile("Hello World", currentPath
-					+ "/testfiles/Hello World.rtf");
+
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// edit entry
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			GUIAutomations
 					.fillTextField("name_text_field_Hello_World.png", "x");
 			GUIAutomations
 					.fillTextField("file_text_field_Hello_World.png", "y");
+
+			// cancel edit
 			GUIAutomations.cancelDialog();
 
 			// search unmodified midi automator
@@ -48,7 +63,7 @@ public class TestEditFile extends GUITest {
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -57,8 +72,11 @@ public class TestEditFile extends GUITest {
 	public void helloWorldShouldBeEdited() {
 
 		try {
-			GUIAutomations.addFile("Hello World", currentPath
-					+ "/testfiles/Hello World.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// edit entry
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			GUIAutomations.fillTextField("name_text_field_Hello_World.png",
@@ -67,6 +85,7 @@ public class TestEditFile extends GUITest {
 					currentPath + "/testfiles/Hello World edit.rtf");
 			GUIAutomations.saveDialog();
 
+			// open edited entry
 			GUIAutomations.openEntryByDoubleClick("Hello_World_Edit_entry.png",
 					"Hello_World_Edit_entry_inactive.png",
 					"Hello_World_Edit_entry_active.png");
@@ -76,12 +95,13 @@ public class TestEditFile extends GUITest {
 				e.printStackTrace();
 			}
 
+			// check for open edited file
 			if (!GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
 					"Hello_World_Edit_RTF_inactive.png")) {
 				fail("File did not open");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -89,8 +109,12 @@ public class TestEditFile extends GUITest {
 	@Test
 	public void fileChooserOfEditDialogShouldBeOpened() {
 		try {
-			GUIAutomations.addFile("Hello World", currentPath
-					+ "/testfiles/Hello World.rtf");
+
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// edit entry with search dialog
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
 			GUIAutomations.openSearchDialog();
@@ -103,7 +127,7 @@ public class TestEditFile extends GUITest {
 
 			GUIAutomations.cancelDialog();
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}

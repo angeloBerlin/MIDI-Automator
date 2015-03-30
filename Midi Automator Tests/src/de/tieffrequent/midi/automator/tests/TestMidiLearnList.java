@@ -2,6 +2,8 @@ package de.tieffrequent.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
@@ -12,6 +14,7 @@ import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
 import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiLearnList extends GUITest {
@@ -43,14 +46,19 @@ public class TestMidiLearnList extends GUITest {
 	@Test
 	public void midiLearnShouldBeCanceled() {
 		try {
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.restartMidiAutomator();
+
+			// midi learn
 			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
+
+			// cancel midi learn
 			GUIAutomations.cancelMidiLearn("Hello_World_1_entry_learn.png",
 					null, null);
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
 	}
@@ -58,13 +66,17 @@ public class TestMidiLearnList extends GUITest {
 	@Test
 	public void midiShouldBeUnlearned() {
 		try {
-			// set MIDI IN Remote device
-			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// add files
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINBus_1.properties");
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINLoopBe_Internal_MIDI.properties");
+			}
+			GUIAutomations.restartMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
@@ -98,20 +110,11 @@ public class TestMidiLearnList extends GUITest {
 						"Hello World 1.rtf opened though midi was unlearned.");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
-		} finally {
-			// cleanup
-			try {
-				SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
-				GUIAutomations.setPreferencesComboBox(
-						"combo_box_midi_remote_in.png", "-none-.png");
-			} catch (FindFailed e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -119,15 +122,13 @@ public class TestMidiLearnList extends GUITest {
 	public void midiShouldBeLearned() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.restartMidiAutomator();
+
 			// set MIDI IN Remote device
 			GUIAutomations.setPreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// add files
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
 
 			// midi learn
 			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
@@ -160,37 +161,29 @@ public class TestMidiLearnList extends GUITest {
 				throw new FindFailed("Hello World 2.rtf did not open");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
-		} finally {
-			// cleanup
-			try {
-				GUIAutomations.setPreferencesComboBox(
-						"combo_box_midi_remote_in.png", "-none-.png");
-			} catch (FindFailed e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
 	@Test
-	public void midiLearnShouldBeRejected() {
-
-		Region match;
+	public void midiMasterLearnShouldBeRejected() {
 
 		try {
-			// set MIDI IN Remote device
-			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// add files
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINBus_1.properties");
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINLoopBe_Internal_MIDI.properties");
+			}
+			GUIAutomations.restartMidiAutomator();
 
 			// midi learn master signature
 			GUIAutomations.midiLearn("Hello_World_2_entry_active.png",
@@ -202,7 +195,7 @@ public class TestMidiLearnList extends GUITest {
 
 			// check failure
 			SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
-			match = SikuliAutomation.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "error_midi_master_sig_learned.png",
 					TIMEOUT);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
@@ -216,6 +209,30 @@ public class TestMidiLearnList extends GUITest {
 					"Hello_World_1_RTF_inactive.png")) {
 				throw new FindFailed("Hello World 1.rtf did not open");
 			}
+
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} catch (InterruptedException | MidiUnavailableException
+				| InvalidMidiDataException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void midiDuplicateLearnShouldBeRejected() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINBus_1.properties");
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINLoopBe_Internal_MIDI.properties");
+			}
+			GUIAutomations.restartMidiAutomator();
 
 			// midi learn same signature twice
 			GUIAutomations.midiLearn("Hello_World_2_entry_active.png",
@@ -233,7 +250,7 @@ public class TestMidiLearnList extends GUITest {
 
 			// check failure
 			SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
-			match = SikuliAutomation.getSearchRegion().wait(
+			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "error_midi_learn_already_used.png",
 					TIMEOUT);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
@@ -248,19 +265,11 @@ public class TestMidiLearnList extends GUITest {
 				throw new FindFailed("Hello World 2.rtf did not open");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
-		} finally {
-			// cleanup
-			try {
-				GUIAutomations.setPreferencesComboBox(
-						"combo_box_midi_remote_in.png", "-none-.png");
-			} catch (FindFailed e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }

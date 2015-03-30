@@ -14,6 +14,7 @@ import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
 import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
+import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
 import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiLearnPrev extends GUITest {
@@ -51,13 +52,17 @@ public class TestMidiLearnPrev extends GUITest {
 	@Test
 	public void midiShouldBeUnlearned() {
 		try {
-			// set MIDI IN Remote device
-			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// add files
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINBus_1.properties");
+			}
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				MockUpUtils
+						.setMockupPropertiesFile("mockups/RemoteINLoopBe_Internal_MIDI.properties");
+			}
+			GUIAutomations.restartMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearn("prev.png", null, null, LOW_SIMILARITY);
@@ -86,20 +91,11 @@ public class TestMidiLearnPrev extends GUITest {
 						"Hello World 1.rtf opened though midi was unlearned.");
 			}
 
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
-		} finally {
-			// cleanup
-			try {
-				SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
-				GUIAutomations.setPreferencesComboBox(
-						"combo_box_midi_remote_in.png", "-none-.png");
-			} catch (FindFailed e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -107,6 +103,8 @@ public class TestMidiLearnPrev extends GUITest {
 	public void midiShouldBeLearned() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI IN Remote device
@@ -118,12 +116,6 @@ public class TestMidiLearnPrev extends GUITest {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-
-			// add files
-			GUIAutomations.addFile("Hello World 1", currentPath
-					+ "/testfiles/Hello World 1.rtf");
-			GUIAutomations.addFile("Hello World 2", currentPath
-					+ "/testfiles/Hello World 2.rtf");
 
 			// open first files by learned midi message
 			Thread.sleep(1000);
@@ -148,15 +140,6 @@ public class TestMidiLearnPrev extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
-		} finally {
-			// cleanup
-			try {
-				GUIAutomations.midiUnlearn("prev.png", null, null);
-				GUIAutomations.setPreferencesComboBox(
-						"combo_box_midi_remote_in.png", "-none-.png");
-			} catch (FindFailed e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }
