@@ -86,7 +86,7 @@ public class ModelImpl implements IModel {
 	}
 
 	@Override
-	public List<String> getMidiSinatures() {
+	public List<String> getMidiSignatures() {
 
 		load();
 		List<String> result = new ArrayList<String>();

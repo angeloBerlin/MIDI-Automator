@@ -23,7 +23,7 @@ public interface IModel {
 	 * 
 	 * @return The midi signatures
 	 */
-	public List<String> getMidiSinatures();
+	public List<String> getMidiSignatures();
 
 	/**
 	 * Sets the midi signature for the given index

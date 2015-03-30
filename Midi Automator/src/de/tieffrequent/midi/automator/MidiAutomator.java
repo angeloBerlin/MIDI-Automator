@@ -161,7 +161,7 @@ public class MidiAutomator implements IApplication {
 	 */
 	private void reloadModel() {
 		PROGRAM_FRAME.setFileEntries(MODEL.getEntryNames());
-		PROGRAM_FRAME.setMidiSignatures(MODEL.getMidiSinatures());
+		PROGRAM_FRAME.setMidiSignatures(MODEL.getMidiSignatures());
 		PROGRAM_FRAME.setSelectedIndex(PROGRAM_FRAME.getLastSelectedIndex());
 		PROGRAM_FRAME.reload();
 	}
@@ -592,7 +592,7 @@ public class MidiAutomator implements IApplication {
 			String signature = MidiUtils.messageToString(message);
 
 			// open file from list
-			int index = MODEL.getMidiSinatures().indexOf(signature);
+			int index = MODEL.getMidiSignatures().indexOf(signature);
 
 			if (index > -1) {
 				openFileByIndex(index, true);
@@ -627,7 +627,6 @@ public class MidiAutomator implements IApplication {
 					openFileByIndex(index, false);
 				}
 			}
-
 			// activate midi automations
 			for (GUIAutomator guiAutomator : guiAutomators) {
 				guiAutomator.activateMidiAutomations(signature);
@@ -820,7 +819,7 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public String getMidiSignature(int index) {
 		try {
-			return MODEL.getMidiSinatures().get(index);
+			return MODEL.getMidiSignatures().get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -937,7 +936,7 @@ public class MidiAutomator implements IApplication {
 			}
 		}
 
-		if (MODEL.getMidiSinatures().contains(signature)) {
+		if (MODEL.getMidiSignatures().contains(signature)) {
 			found = true;
 		}
 

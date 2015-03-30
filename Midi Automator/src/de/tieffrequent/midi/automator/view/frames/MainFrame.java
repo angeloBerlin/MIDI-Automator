@@ -258,6 +258,7 @@ public class MainFrame extends JFrame {
 	 * @param text
 	 */
 	public void setInfoText(String text) {
+		System.out.println("text: " + text);
 		infoLabel
 				.setText("<span style='font-family:Arial'>" + text + "</span>");
 		this.repaint();
@@ -314,9 +315,6 @@ public class MainFrame extends JFrame {
 
 		// change menu item
 		popupMenu.midiLearnOff();
-
-		// set info text
-		setInfoText("");
 
 		GUIUtils.deHighlightComponent(prevButton, false);
 		GUIUtils.deHighlightComponent(nextButton, false);
