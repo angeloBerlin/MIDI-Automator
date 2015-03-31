@@ -115,6 +115,7 @@ Midi Automator ant build file.
 					 jdkPreference="preferJre"
 					 runtimeBits="64">
 					<opt>-splash:images/splash.png</opt>
+					<opt>-Dfile.encoding=UTF-8</opt>
 				</jre>
 			</config>
 		</launch4j>
