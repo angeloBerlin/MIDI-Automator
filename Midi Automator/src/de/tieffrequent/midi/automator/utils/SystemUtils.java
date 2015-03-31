@@ -18,7 +18,7 @@ public class SystemUtils {
 	 */
 	public static String replaceSystemVariables(String str) {
 
-		String pattern = "%[A-Za-z0-9_]+%";
+		String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
 		Pattern expr = Pattern.compile(pattern);
 		Matcher matcher = expr.matcher(str);
 		Map<String, String> env = System.getenv();
@@ -26,7 +26,9 @@ public class SystemUtils {
 		while (matcher.find()) {
 
 			String sysVar = matcher.group(0);
-			String sysVarValue = env.get(sysVar.replace("%", ""));
+			String varName = sysVar.replace("%", "");
+			varName = varName.replace("$", "");
+			String sysVarValue = env.get(varName);
 
 			if (sysVarValue != null) {
 				str = str.replace(sysVar, sysVarValue);
