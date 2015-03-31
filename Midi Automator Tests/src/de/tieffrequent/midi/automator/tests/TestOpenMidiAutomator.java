@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Region;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
 import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
@@ -26,8 +27,9 @@ public class TestOpenMidiAutomator extends SikuliAutomation {
 
 		// check if opened
 		try {
-			GUIAutomations.findMidiAutomatorRegion();
-
+			Region match = SCREEN.wait(screenshotpath + "midi_automator.png",
+					MAX_TIMEOUT);
+			match.highlight(HIGHLIGHT_DURATION);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}

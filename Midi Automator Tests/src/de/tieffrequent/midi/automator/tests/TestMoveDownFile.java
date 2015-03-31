@@ -38,7 +38,7 @@ public class TestMoveDownFile extends GUITest {
 	}
 
 	@Test
-	public void fileShouldBeMovedUp() {
+	public void fileShouldBeMovedDown() {
 		try {
 
 			// mockup
