@@ -31,6 +31,7 @@ import de.tieffrequent.midi.automator.model.MidiAutomatorProperties;
 import de.tieffrequent.midi.automator.model.ModelImpl;
 import de.tieffrequent.midi.automator.utils.FileUtils;
 import de.tieffrequent.midi.automator.utils.MidiUtils;
+import de.tieffrequent.midi.automator.utils.SystemUtils;
 import de.tieffrequent.midi.automator.view.frames.MainFrame;
 
 public class MidiAutomator implements IApplication {
@@ -660,10 +661,11 @@ public class MidiAutomator implements IApplication {
 		List<String> filePaths = null;
 
 		filePaths = MODEL.getFilePaths();
-		String entryName = MODEL.getEntryNames().get(index);
-		String fileName = MODEL.getFilePaths().get(index);
-
+		
 		if (!filePaths.isEmpty()) {
+			String entryName = MODEL.getEntryNames().get(index);
+			String fileName = SystemUtils.replaceSystemVariables(filePaths.get(index));
+
 			try {
 
 				removeInfoMessage(infoEntryOpened);
@@ -680,9 +682,9 @@ public class MidiAutomator implements IApplication {
 
 				// wait a little before opening file...
 				Thread.sleep(IApplication.WAIT_BEFORE_OPENING);
+				
 
-				String path = resources.generateRelativeLoadingPath(filePaths
-						.get(index));
+				String path = resources.generateRelativeLoadingPath(fileName);
 				FileUtils.openFileFromPath(path);
 				setInfoMessage(infoEntryOpened);
 
