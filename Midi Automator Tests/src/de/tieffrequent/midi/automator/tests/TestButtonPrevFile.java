@@ -24,7 +24,7 @@ public class TestButtonPrevFile extends GUITest {
 			// check for disabled prev button
 			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "prev_inactive.png", TIMEOUT);
+					screenshotpath + "prev_inactive.png", MAX_TIMEOUT);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 

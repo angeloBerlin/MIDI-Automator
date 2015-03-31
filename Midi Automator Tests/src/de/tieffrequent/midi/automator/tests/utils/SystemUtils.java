@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public class SystemUtils {
 
 	/**
 	 * Replaces all system variables in a String with their corresponding value.

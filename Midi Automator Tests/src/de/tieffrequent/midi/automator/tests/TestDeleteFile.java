@@ -28,7 +28,7 @@ public class TestDeleteFile extends GUITest {
 
 			// check for disabled delete menu entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "delete_inactive.png", TIMEOUT);
+					screenshotpath + "delete_inactive.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			GUIAutomations.focusMidiAutomator();
 

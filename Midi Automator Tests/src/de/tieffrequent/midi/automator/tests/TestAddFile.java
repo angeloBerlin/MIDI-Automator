@@ -28,7 +28,7 @@ public class TestAddFile extends GUITest {
 
 			// search new entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "Hello_World_entry.png", TIMEOUT);
+					screenshotpath + "Hello_World_entry.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed | IOException e) {
@@ -43,7 +43,7 @@ public class TestAddFile extends GUITest {
 			GUIAutomations.openSearchDialog();
 			// check search dialog
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "file_chooser.png", TIMEOUT);
+					screenshotpath + "file_chooser.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			GUIAutomations.cancelDialog();
 			GUIAutomations.cancelDialog();
@@ -70,7 +70,7 @@ public class TestAddFile extends GUITest {
 			// search unmodified midi automator
 			setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", TIMEOUT);
+					screenshotpath + "midi_automator.png", MAX_TIMEOUT);
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -94,7 +94,7 @@ public class TestAddFile extends GUITest {
 			// search unmodified midi automator
 			setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", TIMEOUT);
+					screenshotpath + "midi_automator.png", MAX_TIMEOUT);
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -117,7 +117,7 @@ public class TestAddFile extends GUITest {
 
 			// check for failure
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "error_129th_file_added.png", TIMEOUT);
+					screenshotpath + "error_129th_file_added.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed | IOException e) {

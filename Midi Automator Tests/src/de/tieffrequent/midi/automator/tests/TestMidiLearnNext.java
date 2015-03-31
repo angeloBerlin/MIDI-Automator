@@ -78,7 +78,7 @@ public class TestMidiLearnNext extends GUITest {
 					.openPopupMenu("next.png", null, null, LOW_SIMILARITY);
 			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_unlearn_inactive.png", TIMEOUT);
+					screenshotpath + "midi_unlearn_inactive.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 
@@ -105,6 +105,7 @@ public class TestMidiLearnNext extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI IN Remote device

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
 import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.Utils;
+import de.tieffrequent.midi.automator.tests.utils.SystemUtils;
 
 public class TestCloseMidiAutomator extends GUITest {
 
@@ -30,7 +30,7 @@ public class TestCloseMidiAutomator extends GUITest {
 
 			String[] cmd = { "/bin/sh", "-c",
 					"ps -ax | grep \"Midi Automator\"" };
-			String output = Utils.runShellCommand(cmd);
+			String output = SystemUtils.runShellCommand(cmd);
 
 			if (output.contains("Midi Automator.app")) {
 				fail("Process still active");
@@ -40,7 +40,7 @@ public class TestCloseMidiAutomator extends GUITest {
 		if (System.getProperty("os.name").equals("Windows 7")) {
 
 			String[] cmd = { "cmd", "/c", "wmic process list" };
-			String output = Utils.runShellCommand(cmd);
+			String output = SystemUtils.runShellCommand(cmd);
 
 			if (output.contains("Midi Automator\\jre\\bin\\javaw.exe")) {
 				fail("Process still active");

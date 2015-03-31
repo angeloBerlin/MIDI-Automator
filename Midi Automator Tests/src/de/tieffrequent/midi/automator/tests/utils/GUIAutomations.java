@@ -25,7 +25,7 @@ public class GUIAutomations extends SikuliAutomation {
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			filePath = Utils
+			filePath = SystemUtils
 					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe");
 		}
 
@@ -51,7 +51,7 @@ public class GUIAutomations extends SikuliAutomation {
 			float similarity) throws FindFailed {
 		openPopupMenu(state1, state2, state3, similarity);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "midi_learn.png", TIMEOUT);
+				screenshotpath + "midi_learn.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -70,7 +70,7 @@ public class GUIAutomations extends SikuliAutomation {
 			throws FindFailed {
 		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "midi_unlearn.png", TIMEOUT);
+				screenshotpath + "midi_unlearn.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -90,7 +90,7 @@ public class GUIAutomations extends SikuliAutomation {
 		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "cancel_midi_learn.png", TIMEOUT);
+				screenshotpath + "cancel_midi_learn.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
@@ -104,12 +104,12 @@ public class GUIAutomations extends SikuliAutomation {
 	public static Region openPreferences() throws FindFailed {
 		openFileMenu();
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "preferences.png", TIMEOUT);
+				screenshotpath + "preferences.png", MAX_TIMEOUT);
 		match.click();
 		SikuliAutomation.setSearchRegion(SCREEN);
 		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "midi_automator_preferences.png", TIMEOUT);
+				screenshotpath + "midi_automator_preferences.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.y -= 20;
 		match.h += 20;
@@ -131,10 +131,10 @@ public class GUIAutomations extends SikuliAutomation {
 		Region preferencesRegion = GUIAutomations.openPreferences();
 		SikuliAutomation.setSearchRegion(preferencesRegion);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + scLabel, TIMEOUT);
+				screenshotpath + scLabel, MAX_TIMEOUT);
 		match.click(match.offset(0, 20));
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + scValue, TIMEOUT);
+				screenshotpath + scValue, MAX_TIMEOUT);
 		match.click();
 		GUIAutomations.saveDialog();
 		SikuliAutomation.setSearchRegion(GUIAutomations
@@ -149,7 +149,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void nextFile() throws FindFailed {
 		SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "next.png", TIMEOUT);
+				screenshotpath + "next.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
@@ -162,7 +162,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void prevFile() throws FindFailed {
 		SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "prev.png", TIMEOUT);
+				screenshotpath + "prev.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
@@ -174,7 +174,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void openFileMenu() throws FindFailed {
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "file.png", TIMEOUT);
+				screenshotpath + "file.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -186,7 +186,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openExitMenu() throws FindFailed {
 		openFileMenu();
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "exit.png", TIMEOUT);
+				screenshotpath + "exit.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -208,7 +208,7 @@ public class GUIAutomations extends SikuliAutomation {
 				state3);
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "delete.png", TIMEOUT);
+				screenshotpath + "delete.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -231,7 +231,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "move_up.png", TIMEOUT);
+				screenshotpath + "move_up.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -254,7 +254,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "move_down.png", TIMEOUT);
+				screenshotpath + "move_down.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -313,7 +313,7 @@ public class GUIAutomations extends SikuliAutomation {
 		openPopupMenu("midi_automator.png", null, null, LOW_SIMILARITY);
 		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "add.png", TIMEOUT);
+				screenshotpath + "add.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
 	}
@@ -344,7 +344,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 		match.rightClick();
 		match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "edit.png", TIMEOUT);
+				screenshotpath + "edit.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -430,7 +430,7 @@ public class GUIAutomations extends SikuliAutomation {
 		try {
 			setMinSimilarity(LOW_SIMILARITY);
 			SikuliAutomation.setSearchRegion(SCREEN);
-			Region searchRegion = findMultipleStateRegion(TIMEOUT,
+			Region searchRegion = findMultipleStateRegion(MAX_TIMEOUT,
 					"midi_automator.png");
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			searchRegion.y = searchRegion.y - 21;
@@ -469,7 +469,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
-			match = findMultipleStateRegion(TIMEOUT, active, inactive);
+			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close editor
@@ -549,7 +549,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openSearchDialog() throws FindFailed {
 
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "search_button.png", TIMEOUT);
+				screenshotpath + "search_button.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -561,7 +561,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void cancelDialog() throws FindFailed {
 
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "cancel_button.png", TIMEOUT);
+				screenshotpath + "cancel_button.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -573,7 +573,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void saveDialog() throws FindFailed {
 
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + "save_button.png", TIMEOUT);
+				screenshotpath + "save_button.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -590,8 +590,8 @@ public class GUIAutomations extends SikuliAutomation {
 			throws FindFailed {
 
 		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + screenshot, TIMEOUT);
-		match.click();
+				screenshotpath + screenshot, MAX_TIMEOUT);
+		match.click(match.offset(50, 0));
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type("a", KeyModifier.CMD);

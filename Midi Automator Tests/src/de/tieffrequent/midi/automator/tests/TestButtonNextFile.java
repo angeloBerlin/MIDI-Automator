@@ -24,7 +24,7 @@ public class TestButtonNextFile extends GUITest {
 			// check for inactive next button
 			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "next_inactive.png", TIMEOUT);
+					screenshotpath + "next_inactive.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 

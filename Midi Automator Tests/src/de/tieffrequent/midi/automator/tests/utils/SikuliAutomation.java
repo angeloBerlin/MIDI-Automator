@@ -21,7 +21,8 @@ public class SikuliAutomation {
 	private static final int HIGHLIGHT_SEARCH_REGION_DURATION = 1;
 	private static boolean HIGHLIGHT_SEARCH_REGION = false;
 	protected static final double MIN_TIMEOUT = 0.5;
-	protected static final double TIMEOUT = 15;
+	protected static final double DEFAULT_TIMEOUT = 5;
+	protected static final double MAX_TIMEOUT = 20;
 	protected static final Screen SCREEN = new Screen();
 	protected static String screenshotpath;
 	protected static String currentPath;

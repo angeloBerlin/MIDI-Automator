@@ -1,5 +1,7 @@
 package de.tieffrequent.midi.automator.tests.utils;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,8 +21,8 @@ public class MockUpUtils {
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			settingsPath = Utils
-					.replaceSystemVariables("%AppData%\\Midi Automator\\");
+			settingsPath = SystemUtils
+					.replaceSystemVariables("%APPDATA%\\Midi Automator\\");
 		}
 
 		return settingsPath;
@@ -79,7 +81,8 @@ public class MockUpUtils {
 		// copy mockup file
 		File mockupFile = new File(mockUpPath);
 		try {
-			Files.copy(mockupFile.toPath(), getMidoFile().toPath());
+			Files.copy(mockupFile.toPath(), getMidoFile().toPath(),
+					REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

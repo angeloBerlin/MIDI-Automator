@@ -29,7 +29,7 @@ public class TestMoveDownFile extends GUITest {
 
 			// check for disabled menu entry
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "move_down_inactive.png", TIMEOUT);
+					screenshotpath + "move_down_inactive.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
 		} catch (FindFailed | IOException e) {
@@ -55,11 +55,11 @@ public class TestMoveDownFile extends GUITest {
 
 			// check for correct order
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "Hello_World_order_123.png", TIMEOUT);
+					screenshotpath + "Hello_World_order_123.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// check for inactive menu
-			match = GUIAutomations.findMultipleStateRegion(TIMEOUT,
+			match = GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
 					"Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
@@ -67,7 +67,7 @@ public class TestMoveDownFile extends GUITest {
 			match.rightClick();
 			SikuliAutomation.setMinSimilarity(MAX_SIMILARITY);
 			match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "move_down_inactive.png", TIMEOUT);
+					screenshotpath + "move_down_inactive.png", MAX_TIMEOUT);
 			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 			match.highlight(HIGHLIGHT_DURATION);
 
