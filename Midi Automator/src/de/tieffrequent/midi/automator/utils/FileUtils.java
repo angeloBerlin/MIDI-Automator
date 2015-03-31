@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileUtils {
-
+	
 	/**
 	 * Opens a file with the application configured in the OS
 	 * 
@@ -16,7 +19,8 @@ public class FileUtils {
 	 */
 	public static void openFileFromPath(String filePath)
 			throws IllegalArgumentException, IOException {
-
+		
+		System.out.println(filePath);
 		File file = new File(filePath);
 		Desktop.getDesktop().open(file);
 	}

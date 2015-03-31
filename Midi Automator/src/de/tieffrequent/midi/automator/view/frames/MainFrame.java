@@ -258,7 +258,6 @@ public class MainFrame extends JFrame {
 	 * @param text
 	 */
 	public void setInfoText(String text) {
-		System.out.println("text: " + text);
 		infoLabel
 				.setText("<span style='font-family:Arial'>" + text + "</span>");
 		this.repaint();
