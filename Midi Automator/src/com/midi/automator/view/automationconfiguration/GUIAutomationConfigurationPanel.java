@@ -18,11 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
+import com.midi.automator.IApplication;
 import com.midi.automator.guiautomator.GUIAutomation;
 import com.midi.automator.view.MidiLearnPopupMenu;
 import com.midi.automator.view.ScaleableImageIcon;
-
-import de.tieffrequent.midi.automator.IApplication;
 
 public class GUIAutomationConfigurationPanel extends JPanel {
 

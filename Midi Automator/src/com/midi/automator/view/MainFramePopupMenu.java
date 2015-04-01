@@ -6,12 +6,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import com.midi.automator.IApplication;
+import com.midi.automator.Messages;
 import com.midi.automator.view.frames.AddFrame;
 import com.midi.automator.view.frames.EditFrame;
 import com.midi.automator.view.frames.MainFrame;
-
-import de.tieffrequent.midi.automator.IApplication;
-import de.tieffrequent.midi.automator.Messages;
 
 /**
  * The PopupMenu of the file list in the main window.

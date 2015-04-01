@@ -5,7 +5,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 import org.sikuli.script.Screen;
 
-import de.tieffrequent.midi.automator.IDeActivateable;
+import com.midi.automator.IDeActivateable;
 
 /**
  * 

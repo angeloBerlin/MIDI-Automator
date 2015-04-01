@@ -1,6 +1,6 @@
 package com.midi.automator.guiautomator;
 
-import de.tieffrequent.midi.automator.IDeActivateable;
+import com.midi.automator.IDeActivateable;
 
 /**
  * Represents a GUI automation.

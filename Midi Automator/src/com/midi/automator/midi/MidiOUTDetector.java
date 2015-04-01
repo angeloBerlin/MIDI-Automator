@@ -2,7 +2,7 @@ package com.midi.automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import de.tieffrequent.midi.automator.IApplication;
+import com.midi.automator.IApplication;
 
 /**
  * Shows midi out signals

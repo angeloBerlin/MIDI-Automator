@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator;
+package com.midi.automator;
 
 import java.awt.Component;
 

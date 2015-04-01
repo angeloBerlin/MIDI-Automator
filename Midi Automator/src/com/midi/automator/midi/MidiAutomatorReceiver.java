@@ -3,9 +3,8 @@ package com.midi.automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 
+import com.midi.automator.IApplication;
 import com.midi.automator.utils.MidiUtils;
-
-import de.tieffrequent.midi.automator.IApplication;
 
 /**
  * 

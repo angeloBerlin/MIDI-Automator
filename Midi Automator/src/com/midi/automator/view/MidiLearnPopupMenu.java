@@ -8,9 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import com.midi.automator.IApplication;
 import com.midi.automator.view.frames.MainFrame;
-
-import de.tieffrequent.midi.automator.IApplication;
 
 public class MidiLearnPopupMenu extends JPopupMenu {
 

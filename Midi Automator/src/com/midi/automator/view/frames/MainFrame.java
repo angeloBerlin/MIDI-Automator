@@ -37,6 +37,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import com.midi.automator.IApplication;
+import com.midi.automator.Messages;
 import com.midi.automator.utils.GUIUtils;
 import com.midi.automator.view.CacheableJButton;
 import com.midi.automator.view.CacheableToolTipJList;
@@ -45,9 +47,6 @@ import com.midi.automator.view.HTMLLabel;
 import com.midi.automator.view.IToolTipItem;
 import com.midi.automator.view.MainFramePopupMenu;
 import com.midi.automator.view.ToolTipItemImpl;
-
-import de.tieffrequent.midi.automator.IApplication;
-import de.tieffrequent.midi.automator.Messages;
 
 public class MainFrame extends JFrame {
 

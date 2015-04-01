@@ -20,13 +20,12 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import com.midi.automator.IApplication;
 import com.midi.automator.guiautomator.GUIAutomation;
 import com.midi.automator.view.CacheableJTable;
 import com.midi.automator.view.DeActivateableMouseAdapter;
 import com.midi.automator.view.MidiLearnPopupMenu;
 import com.midi.automator.view.ScaleableImageIcon;
-
-import de.tieffrequent.midi.automator.IApplication;
 
 /**
  * A JTable for configuring the GUI automation

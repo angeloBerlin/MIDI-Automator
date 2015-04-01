@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator;
+package com.midi.automator;
 
 import java.util.Map;
 import java.util.regex.Matcher;

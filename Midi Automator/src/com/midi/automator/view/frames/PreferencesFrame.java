@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
+import com.midi.automator.IApplication;
 import com.midi.automator.guiautomator.GUIAutomation;
 import com.midi.automator.model.MidiAutomatorProperties;
 import com.midi.automator.utils.GUIUtils;
@@ -35,8 +36,6 @@ import com.midi.automator.view.HTMLLabel;
 import com.midi.automator.view.automationconfiguration.AutomationIndexDoesNotExistException;
 import com.midi.automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi.automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-
-import de.tieffrequent.midi.automator.IApplication;
 
 public class PreferencesFrame extends JFrame {
 

@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.midi.automator.IApplication;
+import com.midi.automator.Messages;
 import com.midi.automator.utils.FileUtils;
-
-import de.tieffrequent.midi.automator.IApplication;
-import de.tieffrequent.midi.automator.Messages;
 
 public class ModelImpl implements IModel {
 
