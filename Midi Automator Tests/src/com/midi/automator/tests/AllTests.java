@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+import com.midi.automator.tests.utils.SikuliAutomation;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,

@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
@@ -8,25 +8,25 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
-import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+import com.midi.automator.tests.utils.GUIAutomations;
+import com.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.SikuliAutomation;
 
-public class TestButtonPrevFile extends GUITest {
+public class TestButtonNextFile extends GUITest {
 
 	@Test
-	public void prevButtonNotActiveOnEmptyList() {
+	public void nextButtonNotActiveOnEmptyList() {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// check for disabled prev button
+			// check for inactive next button
 			SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
 			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "prev_inactive.png", MAX_TIMEOUT);
-			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
+					screenshotpath + "next_inactive.png", MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
+			SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -34,14 +34,28 @@ public class TestButtonPrevFile extends GUITest {
 	}
 
 	@Test
-	public void prevFileShouldBeOpenedInCycle() {
+	public void nextFileShouldBeOpenedInCycle() {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// cycle second file
-			GUIAutomations.prevFile();
+			// open first file
+			GUIAutomations.nextFile();
+
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
+				fail("'Hello World 1.rtf' did not open");
+			}
+
+			// open second file
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -54,8 +68,8 @@ public class TestButtonPrevFile extends GUITest {
 				fail("'Hello World 2.rtf' did not open");
 			}
 
-			// open first file
-			GUIAutomations.prevFile();
+			// cycle first file
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -65,7 +79,7 @@ public class TestButtonPrevFile extends GUITest {
 
 			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open");
+				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
 		} catch (FindFailed | IOException e) {
@@ -80,8 +94,8 @@ public class TestButtonPrevFile extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// cycle third file
-			GUIAutomations.prevFile();
+			// open first file
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -89,9 +103,9 @@ public class TestButtonPrevFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
-					"Hello_World_3_RTF_inactive.png")) {
-				fail("'Hello World 3.rtf' did not open");
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
+				fail("'Hello World 1.rtf' did not open");
 			}
 
 			// delete second file
@@ -100,7 +114,7 @@ public class TestButtonPrevFile extends GUITest {
 					"Hello_World_2_entry_inactive.png");
 
 			// open third file
-			GUIAutomations.prevFile();
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -111,6 +125,20 @@ public class TestButtonPrevFile extends GUITest {
 			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
 					"Hello_World_3_RTF_inactive.png")) {
 				fail("'Hello World 3.rtf' did not open");
+			}
+
+			// cycle first file
+			GUIAutomations.nextFile();
+
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
+				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
 		} catch (FindFailed | IOException e) {
@@ -125,22 +153,8 @@ public class TestButtonPrevFile extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// cycle second file
-			GUIAutomations.prevFile();
-
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_2_RTF_inactive.png")) {
-				fail("'Hello World 2.rtf' did not open");
-			}
-
 			// open first file
-			GUIAutomations.prevFile();
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -153,12 +167,26 @@ public class TestButtonPrevFile extends GUITest {
 				fail("'Hello World 1.rtf' did not open");
 			}
 
-			// add third file
+			// open second file
+			GUIAutomations.nextFile();
+
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png")) {
+				fail("'Hello World 2.rtf' did not open");
+			}
+
+			// ad third file
 			GUIAutomations.addFile("Hello World 3", currentPath
 					+ "/testfiles/Hello World 3.rtf");
 
-			// cycle third file
-			GUIAutomations.prevFile();
+			// open third file
+			GUIAutomations.nextFile();
 
 			try {
 				Thread.sleep(3000);
@@ -169,6 +197,20 @@ public class TestButtonPrevFile extends GUITest {
 			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
 					"Hello_World_3_RTF_inactive.png")) {
 				fail("'Hello World 3.rtf' did not open");
+			}
+
+			// cycle first file
+			GUIAutomations.nextFile();
+
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png")) {
+				fail("'Hello World 1.rtf' did not open in cycle");
 			}
 
 		} catch (FindFailed | IOException e) {

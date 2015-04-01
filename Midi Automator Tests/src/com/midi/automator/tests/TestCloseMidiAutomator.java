@@ -1,12 +1,12 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.SystemUtils;
+import com.midi.automator.tests.utils.GUIAutomations;
+import com.midi.automator.tests.utils.SystemUtils;
 
 public class TestCloseMidiAutomator extends GUITest {
 

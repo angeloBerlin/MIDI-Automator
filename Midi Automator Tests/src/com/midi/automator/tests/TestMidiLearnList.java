@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
-import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
-import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+import com.midi.automator.tests.utils.GUIAutomations;
+import com.midi.automator.tests.utils.MidiUtils;
+import com.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiLearnList extends GUITest {
 

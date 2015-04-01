@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
@@ -7,8 +7,8 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.GUIAutomations;
+import com.midi.automator.tests.utils.MockUpUtils;
 
 public class TestOpenFile extends GUITest {
 

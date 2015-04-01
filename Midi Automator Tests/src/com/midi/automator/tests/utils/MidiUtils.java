@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests.utils;
+package com.midi.automator.tests.utils;
 
 /*
  * Copyright (c) 1999 - 2001 by Matthias Pfisterer

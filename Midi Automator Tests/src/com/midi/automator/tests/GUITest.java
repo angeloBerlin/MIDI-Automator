@@ -1,9 +1,9 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import org.junit.After;
 
-import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
-import de.tieffrequent.midi.automator.tests.utils.SikuliAutomation;
+import com.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class GUITest extends SikuliAutomation {
 

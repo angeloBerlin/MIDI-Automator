@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests.utils;
+package com.midi.automator.tests.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

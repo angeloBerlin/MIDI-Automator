@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests.utils;
+package com.midi.automator.tests.utils;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 

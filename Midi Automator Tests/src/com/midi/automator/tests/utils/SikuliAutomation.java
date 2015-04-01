@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests.utils;
+package com.midi.automator.tests.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import org.sikuli.basics.Settings;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 
-import de.tieffrequent.midi.automator.tests.AllTests;
+import com.midi.automator.tests.AllTests;
 
 public class SikuliAutomation {
 

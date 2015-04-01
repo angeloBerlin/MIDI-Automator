@@ -1,4 +1,4 @@
-package de.tieffrequent.midi.automator.tests;
+package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
@@ -11,9 +11,9 @@ import javax.sound.midi.ShortMessage;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import de.tieffrequent.midi.automator.tests.utils.GUIAutomations;
-import de.tieffrequent.midi.automator.tests.utils.MidiUtils;
-import de.tieffrequent.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.GUIAutomations;
+import com.midi.automator.tests.utils.MidiUtils;
+import com.midi.automator.tests.utils.MockUpUtils;
 
 public class TestMidiRemoteOpen extends GUITest {
 
