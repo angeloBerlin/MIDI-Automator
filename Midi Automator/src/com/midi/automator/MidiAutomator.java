@@ -661,10 +661,11 @@ public class MidiAutomator implements IApplication {
 		List<String> filePaths = null;
 
 		filePaths = MODEL.getFilePaths();
-		
+
 		if (!filePaths.isEmpty()) {
 			String entryName = MODEL.getEntryNames().get(index);
-			String fileName = SystemUtils.replaceSystemVariables(filePaths.get(index));
+			String fileName = SystemUtils.replaceSystemVariables(filePaths
+					.get(index));
 
 			try {
 
@@ -680,9 +681,13 @@ public class MidiAutomator implements IApplication {
 				// Send MIDI change notifier
 				sendItemChangeNotifier(midiOUTSwitchNotifierDevice);
 
+				// Send MIDI remote open command
+				if (send) {
+					sendItemChangeToSlaves(index);
+				}
+
 				// wait a little before opening file...
 				Thread.sleep(IApplication.WAIT_BEFORE_OPENING);
-				
 
 				String path = resources.generateRelativeLoadingPath(fileName);
 				FileUtils.openFileFromPath(path);
@@ -695,11 +700,6 @@ public class MidiAutomator implements IApplication {
 
 				// wait a little before sending remote message...
 				Thread.sleep(IApplication.WAIT_BEFORE_SLAVE_SEND);
-
-				// Send MIDI remote open command
-				if (send) {
-					sendItemChangeToSlaves(index);
-				}
 
 			} catch (IllegalArgumentException ex) {
 				errMidoFileNotFound = String.format(
