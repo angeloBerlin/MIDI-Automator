@@ -576,14 +576,50 @@ public class MidiUtils {
 		return result;
 	}
 
+	/**
+	 * Gets the key name and octave to the corresponding byte value
+	 * 
+	 * @param nKeyNumber
+	 *            The byte value
+	 * @return The key name and the octave
+	 */
 	private static String getKeyName(int nKeyNumber) {
+
 		if (nKeyNumber > 127) {
 			return "illegal value";
-		} else {
-			int nNote = nKeyNumber % 12;
-			int nOctave = nKeyNumber / 12;
-			return sm_astrKeyNames[nNote] + (nOctave - 1);
 		}
+
+		int nNote = nKeyNumber % 12;
+		int nOctave = nKeyNumber / 12;
+		return sm_astrKeyNames[nNote] + (nOctave - 2);
+	}
+
+	/**
+	 * Gets the byte value for a key name and a octave
+	 * 
+	 * @param note
+	 *            The key name
+	 * @param octave
+	 *            The octave
+	 * @return The byte value, -1 if no key was found
+	 */
+	private static int getKeyNumber(String note, int octave) {
+
+		int nOctave = (octave + 2) * 12;
+
+		int nNote = -1;
+		for (int i = 0; i < sm_astrKeyNames.length; i++) {
+			if (sm_astrKeyNames[i].equals(note)) {
+				nNote = i;
+				break;
+			}
+		}
+
+		if (nNote == -1) {
+			return -1;
+		}
+
+		return nOctave + nNote;
 	}
 
 	private static int get14bitValue(int nLowerPart, int nHigherPart) {
@@ -656,5 +692,24 @@ public class MidiUtils {
 		long timeStamp = device.getMicrosecondPosition();
 		device.getReceiver().send(message, timeStamp);
 		device.close();
+	}
+
+	/**
+	 * Sends a midi message
+	 * 
+	 * @param midiDeviceName
+	 * @param command
+	 * @param channel
+	 * @param note
+	 * @param octave
+	 * @param velocity
+	 * @throws InvalidMidiDataException
+	 * @throws MidiUnavailableException
+	 */
+	public static void sendMidiMessage(String midiDeviceName, int command,
+			int channel, String note, int octave, int velocity)
+			throws InvalidMidiDataException, MidiUnavailableException {
+		sendMidiMessage(midiDeviceName, command, channel,
+				getKeyNumber(note, octave), velocity);
 	}
 }
