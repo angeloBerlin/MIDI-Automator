@@ -15,7 +15,8 @@ import com.midi.automator.tests.utils.SikuliAutomation;
 		TestMoveUpFile.class, TestMoveDownFile.class, TestButtonNextFile.class,
 		TestButtonPrevFile.class, TestMidiLearnNext.class,
 		TestMidiLearnPrev.class, TestMidiLearnList.class,
-		TestMidiRemoteOpen.class, TestCloseMidiAutomator.class })
+		TestMidiRemoteOpen.class, TestMidiRemoteOut.class,
+		TestCloseMidiAutomator.class })
 public class AllTests extends SikuliAutomation {
 
 	private static Region programRegion;
