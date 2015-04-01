@@ -8,7 +8,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 import javax.swing.JComponent;
 
-import de.tieffrequent.midi.automator.guiautomator.GUIAutomation;
+import com.midi.automator.guiautomator.GUIAutomation;
 
 /**
  * Things the main application should provide.

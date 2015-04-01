@@ -19,20 +19,20 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
 
-import de.tieffrequent.midi.automator.guiautomator.GUIAutomation;
-import de.tieffrequent.midi.automator.guiautomator.GUIAutomator;
-import de.tieffrequent.midi.automator.midi.MidiAutomatorReceiver;
-import de.tieffrequent.midi.automator.midi.MidiINDetector;
-import de.tieffrequent.midi.automator.midi.MidiINExecuteReceiver;
-import de.tieffrequent.midi.automator.midi.MidiINLearnReceiver;
-import de.tieffrequent.midi.automator.midi.MidiINMetronomReceiver;
-import de.tieffrequent.midi.automator.model.IModel;
-import de.tieffrequent.midi.automator.model.MidiAutomatorProperties;
-import de.tieffrequent.midi.automator.model.ModelImpl;
-import de.tieffrequent.midi.automator.utils.FileUtils;
-import de.tieffrequent.midi.automator.utils.MidiUtils;
-import de.tieffrequent.midi.automator.utils.SystemUtils;
-import de.tieffrequent.midi.automator.view.frames.MainFrame;
+import com.midi.automator.guiautomator.GUIAutomation;
+import com.midi.automator.guiautomator.GUIAutomator;
+import com.midi.automator.midi.MidiAutomatorReceiver;
+import com.midi.automator.midi.MidiINDetector;
+import com.midi.automator.midi.MidiINExecuteReceiver;
+import com.midi.automator.midi.MidiINLearnReceiver;
+import com.midi.automator.midi.MidiINMetronomReceiver;
+import com.midi.automator.model.IModel;
+import com.midi.automator.model.MidiAutomatorProperties;
+import com.midi.automator.model.ModelImpl;
+import com.midi.automator.utils.FileUtils;
+import com.midi.automator.utils.MidiUtils;
+import com.midi.automator.utils.SystemUtils;
+import com.midi.automator.view.frames.MainFrame;
 
 public class MidiAutomator implements IApplication {
 
