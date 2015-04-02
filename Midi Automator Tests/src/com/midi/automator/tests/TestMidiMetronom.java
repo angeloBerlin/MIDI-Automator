@@ -2,6 +2,8 @@ package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
@@ -12,6 +14,7 @@ import org.sikuli.script.Region;
 
 import com.midi.automator.tests.utils.GUIAutomations;
 import com.midi.automator.tests.utils.MidiUtils;
+import com.midi.automator.tests.utils.MockUpUtils;
 import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiMetronom extends GUITest {
@@ -25,6 +28,9 @@ public class TestMidiMetronom extends GUITest {
 	private int octave = 4;
 	private int velocity = 127;
 	private String failMessage = null;
+	private int clicks = 20;
+	private int clickPause = 110; // in ms, do not decrease as LoopBe fill
+									// recognize it as false loop
 
 	public TestMidiMetronom() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -44,6 +50,10 @@ public class TestMidiMetronom extends GUITest {
 		try {
 			failMessage = null;
 
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
+
 			// set MIDI Metronom IN device
 			GUIAutomations.setPreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
@@ -55,10 +65,10 @@ public class TestMidiMetronom extends GUITest {
 					"metronom_first_click.png");
 			watcher.start();
 
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < clicks; i++) {
 				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 						value1stClick, octave, velocity);
-				Thread.sleep(80);
+				Thread.sleep(clickPause);
 			}
 
 			// wait for watcher thread
@@ -72,7 +82,7 @@ public class TestMidiMetronom extends GUITest {
 
 		} catch (FindFailed e) {
 			fail(e.toString());
-		} catch (InterruptedException | MidiUnavailableException
+		} catch (IOException | InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
@@ -83,6 +93,10 @@ public class TestMidiMetronom extends GUITest {
 
 		try {
 			failMessage = null;
+
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
 			GUIAutomations.setPreferencesComboBox(
@@ -95,10 +109,10 @@ public class TestMidiMetronom extends GUITest {
 					"metronom_other_click.png");
 			watcher.start();
 
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < clicks; i++) {
 				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 						valueClick, octave, velocity);
-				Thread.sleep(80);
+				Thread.sleep(clickPause);
 			}
 
 			// wait for watcher thread
@@ -112,7 +126,7 @@ public class TestMidiMetronom extends GUITest {
 
 		} catch (FindFailed e) {
 			fail(e.toString());
-		} catch (InterruptedException | MidiUnavailableException
+		} catch (IOException | InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
