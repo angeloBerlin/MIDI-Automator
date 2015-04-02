@@ -618,14 +618,16 @@ public class MainFrame extends JFrame {
 	public void flashFileList(Color color) {
 
 		final int duration = 100;
-
+		Color originalColor = null; 
+		
 		try {
+			originalColor = fileJList.getBackground();
 			fileJList.setBackground(color);
 			Thread.sleep(duration);
-			fileJList.setBackground(null);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			fileJList.setBackground(originalColor);
 		}
 	}
 
