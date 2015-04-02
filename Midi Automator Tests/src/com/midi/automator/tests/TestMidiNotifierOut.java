@@ -11,12 +11,14 @@ import javax.sound.midi.Receiver;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Region;
 
 import com.midi.automator.tests.utils.GUIAutomations;
 import com.midi.automator.tests.utils.MidiUtils;
 import com.midi.automator.tests.utils.MockUpUtils;
+import com.midi.automator.tests.utils.SikuliAutomation;
 
-public class TestMidiRemoteOut extends GUITest {
+public class TestMidiNotifierOut extends GUITest {
 
 	private String deviceName;
 	private MidiDevice device;
@@ -24,7 +26,7 @@ public class TestMidiRemoteOut extends GUITest {
 	private String deviceScreenshot;
 	private String receivedSignature;
 
-	public TestMidiRemoteOut() {
+	public TestMidiNotifierOut() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";
@@ -46,16 +48,16 @@ public class TestMidiRemoteOut extends GUITest {
 	}
 
 	@Test
-	public void masterOutMessageShouldBeSent() {
+	public void notifierMessageShouldBeSentAtOpen() {
 
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// set MIDI Master Out device
+			// set MIDI Notifier Out device
 			GUIAutomations.setAndSavePreferencesComboBox(
-					"combo_box_midi_master_out.png", deviceScreenshot);
+					"combo_box_midi_notifier_out.png", deviceScreenshot);
 
 			// open first file
 			GUIAutomations.openEntryByDoubleClick(
@@ -70,17 +72,33 @@ public class TestMidiRemoteOut extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!"channel 1: CONTROL CHANGE 102 value: 0"
+			if (!"channel 1: CONTROL CHANGE 103 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
 						+ " is wrong master signature for index 0.");
 			}
 
-			// open second file
-			GUIAutomations.openEntryByDoubleClick(
-					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry_inactive.png",
-					"Hello_World_2_entry.png");
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		}
+	}
+
+	@Test
+	public void notifierMessageShouldBeSentByButton() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			GUIAutomations.restartMidiAutomator();
+
+			// set MIDI Master Out device
+			GUIAutomations.setPreferencesComboBox(
+					"combo_box_midi_notifier_out.png", deviceScreenshot);
+			// hit send button
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "send_button.png", MAX_TIMEOUT);
+			match.click();
 
 			// check if midi master message was sent
 			try {
@@ -89,14 +107,22 @@ public class TestMidiRemoteOut extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!"channel 1: CONTROL CHANGE 102 value: 1"
+			if (!"channel 1: CONTROL CHANGE 103 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
-						+ " is wrong master signature for index 1.");
+						+ " is wrong master signature for index 0.");
 			}
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				Region match = SikuliAutomation.getSearchRegion().wait(
+						screenshotpath + "cancel_button.png", MAX_TIMEOUT);
+				match.click();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

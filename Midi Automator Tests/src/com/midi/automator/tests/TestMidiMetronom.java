@@ -55,7 +55,7 @@ public class TestMidiMetronom extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
-			GUIAutomations.setPreferencesComboBox(
+			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
 
 			Thread.sleep(500);
@@ -99,7 +99,7 @@ public class TestMidiMetronom extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
-			GUIAutomations.setPreferencesComboBox(
+			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
 
 			Thread.sleep(500);

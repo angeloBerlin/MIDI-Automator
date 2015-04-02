@@ -117,6 +117,25 @@ public class GUIAutomations extends SikuliAutomation {
 	}
 
 	/**
+	 * Sets the Midi Remote IN device to the given screenshot and saves the
+	 * preferences
+	 * 
+	 * @param scLabel
+	 *            The label of the combo box
+	 * @param scValue
+	 *            The value to choose
+	 * @throws FindFailed
+	 */
+	public static void setAndSavePreferencesComboBox(String scLabel,
+			String scValue) throws FindFailed {
+
+		setPreferencesComboBox(scLabel, scValue);
+		GUIAutomations.saveDialog();
+		SikuliAutomation.setSearchRegion(GUIAutomations
+				.findMidiAutomatorRegion());
+	}
+
+	/**
 	 * Sets the Midi Remote IN device to the given screenshot
 	 * 
 	 * @param scLabel
@@ -136,9 +155,6 @@ public class GUIAutomations extends SikuliAutomation {
 		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + scValue, MAX_TIMEOUT);
 		match.click();
-		GUIAutomations.saveDialog();
-		SikuliAutomation.setSearchRegion(GUIAutomations
-				.findMidiAutomatorRegion());
 	}
 
 	/**

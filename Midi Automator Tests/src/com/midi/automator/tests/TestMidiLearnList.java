@@ -128,7 +128,7 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI IN Remote device
-			GUIAutomations.setPreferencesComboBox(
+			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
