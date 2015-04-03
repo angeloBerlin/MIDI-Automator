@@ -515,11 +515,7 @@ public class PreferencesFrame extends JFrame {
 					.getSelectedItem();
 			try {
 				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
-				if (device != null) {
-					device.open();
-					application.sendItemChangeNotifier(device);
-					device.close();
-				}
+				application.sendItemChangeNotifier(device);
 			} catch (MidiUnavailableException e1) {
 				e1.printStackTrace();
 			}

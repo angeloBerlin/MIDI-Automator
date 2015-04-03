@@ -415,10 +415,6 @@ public class MidiAutomator implements IApplication {
 			midiOUTSwitchNotifierDevice = MidiUtils.getMidiDevice(deviceName,
 					"OUT");
 
-			if (midiOUTSwitchNotifierDevice != null) {
-				midiOUTSwitchNotifierDevice.open();
-			}
-
 			removeInfoMessage(errMidiOUTSwitchNotifierDeviceUnavailable);
 		} catch (MidiUnavailableException e) {
 			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
@@ -767,7 +763,7 @@ public class MidiAutomator implements IApplication {
 	public void sendItemChangeNotifier(MidiDevice device) {
 
 		if (device != null) {
-
+			
 			String errMidiDeviceNotAvailable = String.format(
 					Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, device
 							.getDeviceInfo().getName());
@@ -779,6 +775,7 @@ public class MidiAutomator implements IApplication {
 						IApplication.SWITCH_NOTIFIER_MIDI_VALUE);
 
 				long timeStamp = device.getMicrosecondPosition();
+				device.open();
 				device.getReceiver().send(message, timeStamp);
 				showMidiOUTSignal();
 
@@ -1005,17 +1002,6 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void close() {
 
-		if (midiINRemoteDevice != null) {
-			if (midiINRemoteDevice.isOpen()) {
-				midiINRemoteDevice.close();
-			}
-		}
-
-		if (midiOUTRemoteDevice != null) {
-			if (midiOUTRemoteDevice.isOpen()) {
-				midiOUTRemoteDevice.close();
-			}
-		}
 	}
 
 	@Override
