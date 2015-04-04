@@ -127,7 +127,8 @@ public class GUIAutomation implements IDeActivateable {
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
 
-		if (trigger.equals(CLICKTRIGGER_ALWAYS)) {
+		if (trigger.equals(CLICKTRIGGER_ALWAYS)
+				|| trigger.equals(CLICKTRIGGER_ONCE)) {
 			active = true;
 		} else {
 			active = false;
