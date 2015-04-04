@@ -763,7 +763,7 @@ public class MidiAutomator implements IApplication {
 	public void sendItemChangeNotifier(MidiDevice device) {
 
 		if (device != null) {
-			
+
 			String errMidiDeviceNotAvailable = String.format(
 					Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, device
 							.getDeviceInfo().getName());
@@ -1108,7 +1108,6 @@ public class MidiAutomator implements IApplication {
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					minDelay);
 		}
-
 		storePropertiesFile();
 	}
 

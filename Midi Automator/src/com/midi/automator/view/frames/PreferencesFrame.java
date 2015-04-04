@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import com.midi.automator.IApplication;
+import com.midi.automator.PropertiesReloadThread;
 import com.midi.automator.guiautomator.GUIAutomation;
 import com.midi.automator.model.MidiAutomatorProperties;
 import com.midi.automator.utils.GUIUtils;
@@ -473,7 +474,8 @@ public class PreferencesFrame extends JFrame {
 					.setMidiOUTSwitchNotifierDeviceName(midiOUTSwitchNotifierDeviceName);
 			application.setGUIAutomations(guiAutomations);
 
-			application.reloadProperties();
+			new PropertiesReloadThread(application).start();
+
 			new CancelAction().actionPerformed(e);
 		}
 	}
