@@ -4,6 +4,8 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
+import com.midi.automator.utils.SystemUtils;
+
 /**
  * An ImageIcon that can be scaled to a defined size in its original aspect
  * ratio.
@@ -35,7 +37,7 @@ public class ScaleableImageIcon extends ImageIcon {
 	 *            The maximal height of the image
 	 */
 	public ScaleableImageIcon(String path, int maxWidth, int maxHeight) {
-		super(path);
+		super(SystemUtils.replaceSystemVariables(path));
 		this.path = path;
 		scale(maxWidth, maxHeight);
 	}

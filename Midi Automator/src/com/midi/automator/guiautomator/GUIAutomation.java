@@ -1,6 +1,7 @@
 package com.midi.automator.guiautomator;
 
 import com.midi.automator.IDeActivateable;
+import com.midi.automator.utils.SystemUtils;
 
 /**
  * Represents a GUI automation.
@@ -207,7 +208,8 @@ public class GUIAutomation implements IDeActivateable {
 
 	@Override
 	public String toString() {
-		return "IMAGE: \"" + imagePath + "\" TYPE: " + type + " TRIGGER: "
-				+ trigger + " MIDI: " + midiSignature;
+		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
+				+ "\" TYPE: " + type + " TRIGGER: " + trigger + " MIDI: "
+				+ midiSignature;
 	}
 }
