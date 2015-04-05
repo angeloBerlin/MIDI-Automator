@@ -474,9 +474,8 @@ public class PreferencesFrame extends JFrame {
 					.setMidiOUTSwitchNotifierDeviceName(midiOUTSwitchNotifierDeviceName);
 			application.setGUIAutomations(guiAutomations);
 
-			new PropertiesReloadThread(application).start();
-
 			new CancelAction().actionPerformed(e);
+			new PropertiesReloadThread(application).start();
 		}
 	}
 
