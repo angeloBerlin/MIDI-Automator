@@ -1,7 +1,5 @@
 package com.midi.automator.tests.utils;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 
 import org.sikuli.script.FindFailed;
@@ -18,20 +16,19 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void openMidiAutomator() throws IOException {
 
-		String filePath = "";
+		String[] command = null;
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			filePath = "/Applications/Midi Automator.app";
+			command = new String[] { "open", "-n",
+					"/Applications/Midi Automator.app" };
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			filePath = SystemUtils
-					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe");
+			command = new String[] { SystemUtils
+					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe") };
 		}
 
-		File file = new File(filePath);
-
-		Desktop.getDesktop().open(file);
+		Runtime.getRuntime().exec(command);
 	}
 
 	/**
@@ -47,8 +44,8 @@ public class GUIAutomations extends SikuliAutomation {
 	 *            the minimum similarity
 	 * @throws FindFailed
 	 */
-	public static void midiLearn(String state1, String state2, String state3,
-			float similarity) throws FindFailed {
+	public static void midiLearnMainScreen(String state1, String state2,
+			String state3, float similarity) throws FindFailed {
 		openPopupMenu(state1, state2, state3, similarity);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_learn.png", MAX_TIMEOUT);
@@ -66,11 +63,57 @@ public class GUIAutomations extends SikuliAutomation {
 	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void midiUnlearn(String state1, String state2, String state3)
-			throws FindFailed {
+	public static void midiUnlearnMainScreen(String state1, String state2,
+			String state3) throws FindFailed {
 		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_unlearn.png", MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Opens a popup menu on the automations table
+	 * 
+	 * @param columnScreenshot
+	 *            The creenshot of the column header
+	 * @param row
+	 *            The row number where the popup shall be opened
+	 * @throws FindFailed
+	 */
+	public static void openPopUpMenuAutomation(String columnScreenshot, int row)
+			throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + columnScreenshot, MAX_TIMEOUT);
+		match.rightClick(match.offset(0, row * 30));
+	}
+
+	/**
+	 * Learns a midi message for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void midiLearnAutomation(int row) throws FindFailed {
+
+		openPopUpMenuAutomation("automation_midi_message.png", row);
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "midi_learn.png", MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Learns a midi message for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void cancelMidiLearnAutomation(int row) throws FindFailed {
+
+		openPopUpMenuAutomation("automation_midi_message.png", row);
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "cancel_midi_learn.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -85,13 +128,40 @@ public class GUIAutomations extends SikuliAutomation {
 	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
 	 * @throws FindFailed
 	 */
-	public static void cancelMidiLearn(String state1, String state2,
+	public static void cancelMidiLearnMainScreen(String state1, String state2,
 			String state3) throws FindFailed {
 		openPopupMenu(state1, state2, state3, LOW_SIMILARITY);
 		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "cancel_midi_learn.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
+		match.click();
+	}
+
+	/**
+	 * Deletes an automation by row number
+	 * 
+	 * @param row
+	 *            The row number to delete
+	 * @throws FindFailed
+	 */
+	public static void deleteAutomation(int row) throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "automation_midi_message.png", MAX_TIMEOUT);
+		match.click(match.offset(0, row * 30));
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "delete_automation_button.png", MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Adds an empty automation
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void addAutomation() throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "add_automation_button.png", MAX_TIMEOUT);
 		match.click();
 	}
 
@@ -155,6 +225,76 @@ public class GUIAutomations extends SikuliAutomation {
 		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + scValue, MAX_TIMEOUT);
 		match.click();
+	}
+
+	/**
+	 * Sets and saves a mouse automation option
+	 * 
+	 * @param scLabel
+	 *            The label of the combo box
+	 * @param scValue
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void setAndSaveAutomationsComboBox(String scLabel,
+			String scValue, int row) throws FindFailed {
+		SikuliAutomation.setSearchRegion(GUIAutomations.openPreferences());
+		setAutomationsComboBox(scLabel, scValue, row);
+		GUIAutomations.saveDialog();
+		SikuliAutomation.setSearchRegion(GUIAutomations
+				.findMidiAutomatorRegion());
+	}
+
+	/**
+	 * Sets a mouse automation combo box option
+	 * 
+	 * @param scLabel
+	 *            The label of the combo box
+	 * @param scValue
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void setAutomationsComboBox(String scLabel, String scValue,
+			int row) throws FindFailed {
+
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scLabel, MAX_TIMEOUT);
+		match.click(match.offset(0, row * 30));
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scValue, MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Sets a mouse automation text field option
+	 * 
+	 * @param scLabel
+	 *            The screenshot of the label of the combo box
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void setAutomationsTextField(String scLabel, String value,
+			int row) throws FindFailed {
+
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scLabel, MAX_TIMEOUT);
+		match.doubleClick(match.offset(0, row * 30));
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			SCREEN.type("a", KeyModifier.CMD);
+		}
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			SCREEN.type("a", KeyModifier.CTRL);
+		}
+		SCREEN.paste(value);
 	}
 
 	/**
@@ -475,13 +615,13 @@ public class GUIAutomations extends SikuliAutomation {
 		try {
 
 			// minimize Midi Automator
-			try {
-				Thread.sleep(1500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			focusMidiAutomator();
-			hideFocusedProgram();
+			// try {
+			// Thread.sleep(1500);
+			// } catch (InterruptedException e) {
+			// e.printStackTrace();
+			// }
+			// focusMidiAutomator();
+			// hideFocusedProgram();
 
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
@@ -503,7 +643,7 @@ public class GUIAutomations extends SikuliAutomation {
 			}
 
 			try {
-				unhideMidiAutomator();
+				// unhideMidiAutomator();
 				focusMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
