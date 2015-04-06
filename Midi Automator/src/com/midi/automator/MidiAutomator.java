@@ -677,9 +677,14 @@ public class MidiAutomator implements IApplication {
 				// Send MIDI change notifier
 				sendItemChangeNotifier(midiOUTSwitchNotifierDevice);
 
+				// activate per change triggered automations
+				for (GUIAutomator guiAutomator : guiAutomators) {
+					guiAutomator.activateOncePerChangeAutomations();
+				}
+
 				// Send MIDI remote open command
 				if (send) {
-					sendItemChangeToSlaves(index);
+					new SendItemChangeToSlavesThread(index).start();
 				}
 
 				// wait a little before opening file...
@@ -688,14 +693,6 @@ public class MidiAutomator implements IApplication {
 				String path = resources.generateRelativeLoadingPath(fileName);
 				FileUtils.openFileFromPath(path);
 				setInfoMessage(infoEntryOpened);
-
-				// activate per change triggered automations
-				for (GUIAutomator guiAutomator : guiAutomators) {
-					guiAutomator.activateOncePerChangeAutomations();
-				}
-
-				// wait a little before sending remote message...
-				Thread.sleep(IApplication.WAIT_BEFORE_SLAVE_SEND);
 
 			} catch (IllegalArgumentException ex) {
 				errMidoFileNotFound = String.format(
@@ -1184,5 +1181,31 @@ public class MidiAutomator implements IApplication {
 	@Override
 	public void setDoNotExecuteMidiMessage(boolean doNotExecuteMidiMessage) {
 		this.doNotExecuteMidiMessage = doNotExecuteMidiMessage;
+	}
+
+	/**
+	 * Sends the changed item to remote slaves with a delay
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class SendItemChangeToSlavesThread extends Thread {
+
+		private int index;
+
+		public SendItemChangeToSlavesThread(int index) {
+			this.index = index;
+		}
+
+		@Override
+		public void run() {
+			// wait a little before sending remote message...
+			try {
+				Thread.sleep(IApplication.WAIT_BEFORE_SLAVE_SEND);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			sendItemChangeToSlaves(index);
+		}
 	}
 }
