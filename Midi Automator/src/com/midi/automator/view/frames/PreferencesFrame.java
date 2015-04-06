@@ -76,6 +76,7 @@ public class PreferencesFrame extends JFrame {
 	private JComboBox<String> midiOUTSwitchNotifierDeviceComboBox;
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private GUIAutomationConfigurationPanel guiAutomationPanel;
+
 	private JButton buttonSendNotify;
 	private JButton buttonSave;
 	private JButton buttonCancel;
@@ -337,16 +338,13 @@ public class PreferencesFrame extends JFrame {
 	public void setMidiSignature(String signature, Component component) {
 
 		// learning for automation list
-		if (component.getName().equals(
-				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
-			GUIAutomationConfigurationTable table = guiAutomationPanel
-					.getConfigurationTable();
-			try {
-				table.setMidiMessage(signature, table.getSelectedRow());
-			} catch (AutomationIndexDoesNotExistException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		GUIAutomationConfigurationTable table = guiAutomationPanel
+				.getConfigurationTable();
+		try {
+			table.setMidiSignature(signature, table.getSelectedRow());
+		} catch (AutomationIndexDoesNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -441,6 +439,10 @@ public class PreferencesFrame extends JFrame {
 
 		GUIUtils.deHighlightTableRow(
 				guiAutomationPanel.getConfigurationTable(), false);
+	}
+
+	public GUIAutomationConfigurationPanel getGuiAutomationPanel() {
+		return guiAutomationPanel;
 	}
 
 	/**

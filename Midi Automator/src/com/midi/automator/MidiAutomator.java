@@ -32,6 +32,7 @@ import com.midi.automator.model.ModelImpl;
 import com.midi.automator.utils.FileUtils;
 import com.midi.automator.utils.MidiUtils;
 import com.midi.automator.utils.SystemUtils;
+import com.midi.automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi.automator.view.frames.MainFrame;
 
 public class MidiAutomator implements IApplication {
@@ -573,7 +574,16 @@ public class MidiAutomator implements IApplication {
 			reloadProperties();
 		}
 
-		PROGRAM_FRAME.setMidiSignature(signature, component);
+		// learning for automation list
+		if (component.getName().equals(
+				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
+			// int automationNo = PROGRAM_FRAME.getPreferencesFrame()
+			// .getGuiAutomationPanel().getConfigurationTable()
+			// .getSelectedRow();
+			//
+			// guiAutomations[automationNo].setMidiSignature(signature);
+			PROGRAM_FRAME.setMidiSignature(signature, component);
+		}
 	}
 
 	@Override

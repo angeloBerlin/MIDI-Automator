@@ -51,7 +51,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final String COLNAME_SCREENSHOT = "Screenshot";
 	private final String COLNAME_TYPE = "Type";
 	private final String COLNAME_TRIGGER = "Trigger";
-	private final String COLNAME_MIN_DELAY = "Delay in (ms)";
+	private final String COLNAME_MIN_DELAY = "Delay (ms)";
 	private final String COLNAME_MIDI = "Midi Message";
 	private final String COLNAME_SEARCH_BUTTON = "";
 	private Vector<String> columnNames;
@@ -288,20 +288,20 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	/**
 	 * Sets the midi message for a GUI automation
 	 * 
-	 * @param message
+	 * @param signature
 	 *            The midi message
 	 * @param row
 	 *            The row of the autoamtion
 	 * @throws AutomationIndexDoesNotExistException
 	 */
-	public void setMidiMessage(String message, int row)
+	public void setMidiSignature(String signature, int row)
 			throws AutomationIndexDoesNotExistException {
 
 		DefaultTableModel model = (DefaultTableModel) getModel();
 
 		try {
 			// set midi signature
-			model.setValueAt(message, row,
+			model.setValueAt(signature, row,
 					ConfigurationTableModel.COLUMN_INDEX_MIDISIGNATURE);
 			// set trigger to midi
 			model.setValueAt(GUIAutomation.CLICKTRIGGER_MIDI, row,

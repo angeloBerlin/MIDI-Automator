@@ -323,7 +323,6 @@ public class MainFrame extends JFrame {
 		if (cache instanceof Color) {
 			fileJList.setSelectionBackground((Color) cache);
 		}
-		reload();
 	}
 
 	/**
@@ -618,8 +617,8 @@ public class MainFrame extends JFrame {
 	public void flashFileList(Color color) {
 
 		final int duration = 100;
-		Color originalColor = null; 
-		
+		Color originalColor = null;
+
 		try {
 			originalColor = fileJList.getBackground();
 			fileJList.setBackground(color);
