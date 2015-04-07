@@ -295,7 +295,7 @@ public class TestMouseAutomation extends GUITest {
 			// check for empty midi message
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath
-							+ "automation_midi_message_empty_Active_row1.png",
+							+ "automation_midi_message_empty_active_row1.png",
 					MAX_TIMEOUT);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -386,7 +386,7 @@ public class TestMouseAutomation extends GUITest {
 			SikuliAutomation.setSearchRegion(GUIAutomations.openPreferences());
 
 			// set delay
-			GUIAutomations.setAutomationsTextField("delay.png", new Integer(
+			GUIAutomations.setAutomationsTextField("automation_delay.png", new Integer(
 					delay).toString(), 1);
 			GUIAutomations.saveDialog();
 			GUIAutomations.focusMidiAutomator();

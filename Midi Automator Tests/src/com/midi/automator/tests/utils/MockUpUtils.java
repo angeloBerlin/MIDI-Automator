@@ -103,7 +103,8 @@ public class MockUpUtils {
 		// copy mockup file
 		File mockupFile = new File(mockUpPath);
 		try {
-			Files.copy(mockupFile.toPath(), getPropertiesFile().toPath());
+			Files.copy(mockupFile.toPath(), getPropertiesFile().toPath(),
+					REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

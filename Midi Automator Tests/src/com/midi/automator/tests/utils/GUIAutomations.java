@@ -25,7 +25,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
 			command = new String[] { SystemUtils
-					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe") };
+					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe"), "-test" };
 		}
 
 		Runtime.getRuntime().exec(command);
