@@ -42,8 +42,10 @@ public class TestMidiLearnNext extends GUITest {
 	public void midiLearnShouldBeCanceled() {
 
 		try {
-			GUIAutomations.midiLearn("next.png", null, null, LOW_SIMILARITY);
-			GUIAutomations.cancelMidiLearn("next_inactive.png", null, null);
+			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+					LOW_SIMILARITY);
+			GUIAutomations.cancelMidiLearnMainScreen("next_inactive.png", null,
+					null);
 		} catch (FindFailed e) {
 			fail(e.toString());
 		}
@@ -65,13 +67,14 @@ public class TestMidiLearnNext extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearn("next.png", null, null, LOW_SIMILARITY);
+			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearn("next.png", null, null);
+			GUIAutomations.midiUnlearnMainScreen("next.png", null, null);
 
 			// check for inactive menu item
 			GUIAutomations
@@ -113,7 +116,8 @@ public class TestMidiLearnNext extends GUITest {
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
-			GUIAutomations.midiLearn("next.png", null, null, LOW_SIMILARITY);
+			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);

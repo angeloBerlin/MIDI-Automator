@@ -10,6 +10,7 @@ public class GUITest extends SikuliAutomation {
 	@After
 	public void deleteAllHelloWorldEntries() {
 
+		setMinSimilarity(DEFAULT_SIMILARITY);
 		MockUpUtils.recoverMidoBackup();
 		MockUpUtils.recoverPropertiesBackup();
 	}

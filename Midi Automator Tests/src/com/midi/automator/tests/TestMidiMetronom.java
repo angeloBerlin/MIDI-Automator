@@ -52,6 +52,7 @@ public class TestMidiMetronom extends GUITest {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
@@ -96,6 +97,7 @@ public class TestMidiMetronom extends GUITest {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device

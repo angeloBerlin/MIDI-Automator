@@ -51,13 +51,14 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
 
 			// cancel midi learn
-			GUIAutomations.cancelMidiLearn("Hello_World_1_entry_learn.png",
-					null, null);
+			GUIAutomations.cancelMidiLearnMainScreen(
+					"Hello_World_1_entry_learn.png", null, null);
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
@@ -79,7 +80,8 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
 			Thread.sleep(1000);
@@ -87,7 +89,8 @@ public class TestMidiLearnList extends GUITest {
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearn("Hello_World_1_entry_active.png",
+			GUIAutomations.midiUnlearnMainScreen(
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png");
 
@@ -132,14 +135,16 @@ public class TestMidiLearnList extends GUITest {
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 
 			// midi learn
-			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
 
-			GUIAutomations.midiLearn("Hello_World_2_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
@@ -187,7 +192,8 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// midi learn master signature
-			GUIAutomations.midiLearn("Hello_World_2_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
@@ -236,13 +242,15 @@ public class TestMidiLearnList extends GUITest {
 			GUIAutomations.restartMidiAutomator();
 
 			// midi learn same signature twice
-			GUIAutomations.midiLearn("Hello_World_2_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			GUIAutomations.midiLearn("Hello_World_1_entry_active.png",
+			GUIAutomations.midiLearnMainScreen(
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);

@@ -614,15 +614,6 @@ public class GUIAutomations extends SikuliAutomation {
 
 		try {
 
-			// minimize Midi Automator
-			// try {
-			// Thread.sleep(1500);
-			// } catch (InterruptedException e) {
-			// e.printStackTrace();
-			// }
-			// focusMidiAutomator();
-			// hideFocusedProgram();
-
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
 			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
@@ -637,13 +628,6 @@ public class GUIAutomations extends SikuliAutomation {
 		} finally {
 
 			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				// unhideMidiAutomator();
 				focusMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();

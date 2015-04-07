@@ -23,6 +23,7 @@ public class TestMidiRemoteOut extends GUITest {
 	private Receiver receiver;
 	private String deviceScreenshot;
 	private String receivedSignature;
+	private int remoteTimeout = 3000;
 
 	public TestMidiRemoteOut() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -51,6 +52,7 @@ public class TestMidiRemoteOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Master Out device
@@ -65,7 +67,7 @@ public class TestMidiRemoteOut extends GUITest {
 
 			// check if midi master message was sent
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(remoteTimeout);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -84,7 +86,7 @@ public class TestMidiRemoteOut extends GUITest {
 
 			// check if midi master message was sent
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(remoteTimeout);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

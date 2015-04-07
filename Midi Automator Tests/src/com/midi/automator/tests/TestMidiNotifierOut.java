@@ -53,6 +53,7 @@ public class TestMidiNotifierOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Notifier Out device
@@ -88,9 +89,8 @@ public class TestMidiNotifierOut extends GUITest {
 
 		try {
 			// mockup
-			// MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			// MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-			// GUIAutomations.restartMidiAutomator();
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Master Out device
 			GUIAutomations.setPreferencesComboBox(
@@ -112,7 +112,7 @@ public class TestMidiNotifierOut extends GUITest {
 				fail(receivedSignature + " is wrong signature for notifier.");
 			}
 
-		} catch (FindFailed /* | IOException */e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
