@@ -116,12 +116,12 @@ public interface IApplication {
 	public boolean isInDebugMode();
 
 	/**
-	 * Returns if the application is in development mode
+	 * Returns if the application is in test mode
 	 * 
 	 * @return <TRUE> if the appplication is in development mode, <FALSE> if the
 	 *         application is not in development mode
 	 */
-	public boolean isInDevelopmentMode();
+	public boolean isInTestMode();
 
 	/**
 	 * Runs the function for the midi message

@@ -21,7 +21,7 @@ public class Main {
 		String wd = "";
 		String os = "";
 		boolean debug = false;
-		boolean dev = false;
+		boolean test = false;
 
 		if (args.length > 0) {
 
@@ -42,14 +42,15 @@ public class Main {
 				if (arg.contains("-debug")) {
 					debug = true;
 				}
-
-				if (arg.contains("-dev")) {
-					dev = true;
+	
+				if (arg.contains("-test")) {
+					test = true;
+					debug = true;
 				}
 			}
 		}
 
-		new MidiAutomator(wd, os, fileName, debug, dev);
+		new MidiAutomator(wd, os, fileName, debug, test);
 	}
 
 	/**

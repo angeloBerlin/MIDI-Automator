@@ -55,8 +55,8 @@ public class MainFrame extends JFrame {
 	private final String TITLE = "Midi Automator";
 	private final int WIDTH = 500;
 	private final int HEIGHT = 600;
-	public static final int DEV_POSITION_X = 1921;
-	public static final int DEV_POSITION_Y = 0;
+	public static final int TEST_POSITION_X = 0;
+	public static final int TEST_POSITION_Y = 50;
 	private final int MAIN_LAYOUT_HORIZONTAL_GAP = 10;
 	private final int MAIN_LAYOUT_VERTICAL_GAP = 10;
 	private final int FONT_SIZE_FILE_LIST = 26;
@@ -123,9 +123,9 @@ public class MainFrame extends JFrame {
 		this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		this.setResizable(true);
 
-		if (application.isInDevelopmentMode()) {
-			this.setLocation(new Point(MainFrame.DEV_POSITION_X,
-					MainFrame.DEV_POSITION_Y));
+		if (application.isInTestMode()) {
+			this.setLocation(new Point(MainFrame.TEST_POSITION_X,
+					MainFrame.TEST_POSITION_Y));
 		}
 
 		String icon16 = application.getResources().getImagePath()

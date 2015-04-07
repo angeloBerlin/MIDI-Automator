@@ -38,7 +38,7 @@ import com.midi.automator.view.frames.MainFrame;
 public class MidiAutomator implements IApplication {
 
 	private final boolean DEBUG;
-	private final boolean DEV;
+	private final boolean TEST;
 	private final String VERSION = "1.0.2";
 	private final IModel MODEL;
 	private final Resources resources;
@@ -95,17 +95,16 @@ public class MidiAutomator implements IApplication {
 	 * @param debug
 	 *            <TRUE> debug information will be written to console, <FALSE>
 	 *            no debug information to console
-	 * @param dev
-	 *            <TRUE> Program GUI will be opened on second monitor, <FALSE>
+	 * @param test <TRUE> Program GUI will be opened on left monitor side with top margin, <FALSE>
 	 *            normal mode
 	 */
 	public MidiAutomator(String wd, String os, String fileName, boolean debug,
-			boolean dev) {
+			boolean test) {
 
 		resources = new Resources(os, wd);
 		this.fileName = fileName;
 		this.DEBUG = debug;
-		this.DEV = dev;
+		this.TEST = test;
 
 		PROPERTIES = new MidiAutomatorProperties(resources.getPropertiesPath()
 				+ PROPERTIES_FILE_NAME);
@@ -960,8 +959,8 @@ public class MidiAutomator implements IApplication {
 	}
 
 	@Override
-	public boolean isInDevelopmentMode() {
-		return DEV;
+	public boolean isInTestMode() {
+		return TEST;
 	}
 
 	@Override
