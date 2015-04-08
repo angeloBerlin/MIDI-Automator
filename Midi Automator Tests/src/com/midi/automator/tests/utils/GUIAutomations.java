@@ -1,5 +1,7 @@
 package com.midi.automator.tests.utils;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 
 import org.sikuli.script.FindFailed;
@@ -24,8 +26,10 @@ public class GUIAutomations extends SikuliAutomation {
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			command = new String[] { SystemUtils
-					.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe"), "-test" };
+			command = new String[] {
+					SystemUtils
+							.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe"),
+					"-test" };
 		}
 
 		Runtime.getRuntime().exec(command);
@@ -168,10 +172,9 @@ public class GUIAutomations extends SikuliAutomation {
 	/**
 	 * Opens the preferences window.
 	 * 
-	 * @return the region of the preferences window
 	 * @throws FindFailed
 	 */
-	public static Region openPreferences() throws FindFailed {
+	public static void openPreferences() throws FindFailed {
 		openFileMenu();
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "preferences.png", MAX_TIMEOUT);
@@ -183,7 +186,7 @@ public class GUIAutomations extends SikuliAutomation {
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.y -= 20;
 		match.h += 20;
-		return match;
+		SikuliAutomation.setSearchRegion(match);
 	}
 
 	/**
@@ -217,8 +220,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void setPreferencesComboBox(String scLabel, String scValue)
 			throws FindFailed {
 
-		Region preferencesRegion = GUIAutomations.openPreferences();
-		SikuliAutomation.setSearchRegion(preferencesRegion);
+		GUIAutomations.openPreferences();
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + scLabel, MAX_TIMEOUT);
 		match.click(match.offset(0, 20));
@@ -240,7 +242,7 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void setAndSaveAutomationsComboBox(String scLabel,
 			String scValue, int row) throws FindFailed {
-		SikuliAutomation.setSearchRegion(GUIAutomations.openPreferences());
+		GUIAutomations.openPreferences();
 		setAutomationsComboBox(scLabel, scValue, row);
 		GUIAutomations.saveDialog();
 		SikuliAutomation.setSearchRegion(GUIAutomations
@@ -270,6 +272,44 @@ public class GUIAutomations extends SikuliAutomation {
 	}
 
 	/**
+	 * Spins up a spinner
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void spinUp() throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "spinner_up.png", MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Spins down a spinner
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void spinDown() throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "spinner_down.png", MAX_TIMEOUT);
+		match.click();
+	}
+
+	/**
+	 * Activates a mouse automation text field option for setting values
+	 * 
+	 * @param scLabel
+	 *            The screenshot of the label of the combo box
+	 * @param row
+	 *            The row of the automation
+	 * @throws FindFailed
+	 */
+	public static void activateAutomationsTextField(String scLabel, int row)
+			throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + scLabel, MAX_TIMEOUT);
+		match.doubleClick(match.offset(0, row * 30));
+	}
+
+	/**
 	 * Sets a mouse automation text field option
 	 * 
 	 * @param scLabel
@@ -283,9 +323,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void setAutomationsTextField(String scLabel, String value,
 			int row) throws FindFailed {
 
-		Region match = SikuliAutomation.getSearchRegion().wait(
-				screenshotpath + scLabel, MAX_TIMEOUT);
-		match.doubleClick(match.offset(0, row * 30));
+		activateAutomationsTextField(scLabel, row);
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type("a", KeyModifier.CMD);
@@ -597,6 +635,84 @@ public class GUIAutomations extends SikuliAutomation {
 			System.err.println("findMidiAutomatorRegion() failed");
 			throw e;
 		}
+	}
+
+	/**
+	 * Fails the test with a given error message if a screenshot was found
+	 * 
+	 * @param screenshot
+	 *            The screenshot to search for
+	 * @param error
+	 *            The error text
+	 */
+	public static void checkIfNoResult(String screenshot, String error) {
+		try {
+			GUIAutomations.checkResult(screenshot, DEFAULT_TIMEOUT);
+			fail(error);
+		} catch (FindFailed e) {
+
+		} finally {
+			setMinSimilarity(DEFAULT_SIMILARITY);
+		}
+	}
+
+	/**
+	 * Checks for the result screenshot
+	 * 
+	 * @param resultScreenshot
+	 *            The screenshot that should be shown
+	 * @throws FindFailed
+	 */
+	public static void checkResult(String resultScreenshot) throws FindFailed {
+		checkResult(resultScreenshot, HIGH_SIMILARITY, MAX_TIMEOUT);
+	}
+
+	/**
+	 * Checks for the result screenshot
+	 * 
+	 * @param resultScreenshot
+	 *            The screenshot that should be shown
+	 * @param timeout
+	 *            The timeout to search for the result screenshot
+	 * @throws FindFailed
+	 */
+	public static void checkResult(String resultScreenshot, double timeout)
+			throws FindFailed {
+		checkResult(resultScreenshot, HIGH_SIMILARITY, timeout);
+	}
+
+	/**
+	 * Checks for the result screenshot
+	 * 
+	 * @param resultScreenshot
+	 *            The screenshot that should be shown
+	 * @param similarity
+	 *            The min similarity
+	 * @throws FindFailed
+	 */
+	public static void checkResult(String resultScreenshot, float similarity)
+			throws FindFailed {
+		checkResult(resultScreenshot, similarity, MAX_TIMEOUT);
+	}
+
+	/**
+	 * Checks for the result screenshot
+	 * 
+	 * @param resultScreenshot
+	 *            The screenshot that should be shown
+	 * @param similarity
+	 *            The min similarity
+	 * @param timeout
+	 *            The timeout to search for the result screenshot
+	 * @throws FindFailed
+	 */
+	public static void checkResult(String resultScreenshot, float similarity,
+			double timeout) throws FindFailed {
+		setMinSimilarity(similarity);
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + resultScreenshot, timeout);
+		setMinSimilarity(DEFAULT_SIMILARITY);
+		match.highlight(HIGHLIGHT_DURATION);
 	}
 
 	/**
