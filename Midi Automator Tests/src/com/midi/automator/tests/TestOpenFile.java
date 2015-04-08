@@ -32,10 +32,9 @@ public class TestOpenFile extends GUITest {
 			}
 
 			// check if file opened
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_RTF.png",
-					"Hello_World_RTF_inactive.png")) {
-				fail("File did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_RTF.png",
+					"Hello_World_RTF_inactive.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}
@@ -58,10 +57,9 @@ public class TestOpenFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png",
-					"Hello_World_ÄÖÜ_RTF_inactive.png")) {
-				fail("File did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png",
+					"Hello_World_ÄÖÜ_RTF_inactive.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		}

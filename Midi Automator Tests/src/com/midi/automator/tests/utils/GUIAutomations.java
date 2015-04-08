@@ -280,6 +280,7 @@ public class GUIAutomations extends SikuliAutomation {
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "spinner_up.png", MAX_TIMEOUT);
 		match.click();
+		match.mouseMove(match.offset(10, 0));
 	}
 
 	/**
@@ -291,6 +292,7 @@ public class GUIAutomations extends SikuliAutomation {
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "spinner_down.png", MAX_TIMEOUT);
 		match.click();
+		match.mouseMove(match.offset(10, 0));
 	}
 
 	/**
@@ -723,8 +725,10 @@ public class GUIAutomations extends SikuliAutomation {
 	 * @param inactive
 	 *            screenshot of inactive window
 	 * @return <TRUE> if file was opened, <FALSE> if not
+	 * @throws FindFailed
 	 */
-	public static boolean checkIfFileOpened(String active, String inactive) {
+	public static void checkIfFileOpened(String active, String inactive)
+			throws FindFailed {
 
 		Region match = null;
 
@@ -732,7 +736,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
-			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
+			match = findMultipleStateRegion(MAX_TIMEOUT, active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close editor
@@ -740,7 +744,7 @@ public class GUIAutomations extends SikuliAutomation {
 			closeFocusedProgram();
 
 		} catch (FindFailed e) {
-			return false;
+			throw e;
 		} finally {
 
 			try {
@@ -749,7 +753,6 @@ public class GUIAutomations extends SikuliAutomation {
 				e.printStackTrace();
 			}
 		}
-		return true;
 	}
 
 	/**

@@ -96,10 +96,8 @@ public class TestEditFile extends GUITest {
 			}
 
 			// check for open edited file
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
-					"Hello_World_Edit_RTF_inactive.png")) {
-				fail("File did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
+					"Hello_World_Edit_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

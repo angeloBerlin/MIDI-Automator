@@ -52,17 +52,13 @@ public class TestMidiRemoteOpen extends GUITest {
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				throw new FindFailed("Hello World 1.rtf did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_2_RTF_inactive.png")) {
-				throw new FindFailed("Hello World 2.rtf did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

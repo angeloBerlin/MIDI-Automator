@@ -49,10 +49,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 			// open second file
 			GUIAutomations.nextFile();
@@ -63,10 +61,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_2_RTF_inactive.png")) {
-				fail("'Hello World 2.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 			// cycle first file
 			GUIAutomations.nextFile();
@@ -77,10 +73,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open in cycle");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -103,10 +97,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 			// delete second file
 			GUIAutomations.deleteEntry("Hello_World_2_entry.png",
@@ -122,10 +114,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
-					"Hello_World_3_RTF_inactive.png")) {
-				fail("'Hello World 3.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
+					"Hello_World_3_RTF_inactive.png");
 
 			// cycle first file
 			GUIAutomations.nextFile();
@@ -136,10 +126,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open in cycle");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -162,10 +150,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 			// open second file
 			GUIAutomations.nextFile();
@@ -176,10 +162,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_2_RTF_inactive.png")) {
-				fail("'Hello World 2.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 			// ad third file
 			GUIAutomations.addFile("Hello World 3", currentPath
@@ -194,10 +178,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
-					"Hello_World_3_RTF_inactive.png")) {
-				fail("'Hello World 3.rtf' did not open");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_3_RTF.png",
+					"Hello_World_3_RTF_inactive.png");
 
 			// cycle first file
 			GUIAutomations.nextFile();
@@ -208,10 +190,8 @@ public class TestButtonNextFile extends GUITest {
 				e.printStackTrace();
 			}
 
-			if (!GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png")) {
-				fail("'Hello World 1.rtf' did not open in cycle");
-			}
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
