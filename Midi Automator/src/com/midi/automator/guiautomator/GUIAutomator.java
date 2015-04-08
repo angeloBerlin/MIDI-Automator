@@ -233,8 +233,6 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 						+ (System.currentTimeMillis() - startingTime) + " ms)");
 			}
 
-			match.highlight(HIGHLIGHT_DURATION);
-
 		} catch (FindFailed e) {
 
 			if (DEBUG) {
