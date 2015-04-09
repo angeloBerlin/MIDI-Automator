@@ -10,11 +10,9 @@ import javax.sound.midi.ShortMessage;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.Region;
 
 import com.midi.automator.tests.utils.GUIAutomations;
 import com.midi.automator.tests.utils.MidiUtils;
-import com.midi.automator.tests.utils.MockUpUtils;
 import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestMidiMetronom extends GUITest {
@@ -51,8 +49,6 @@ public class TestMidiMetronom extends GUITest {
 			failMessage = null;
 
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
@@ -96,8 +92,6 @@ public class TestMidiMetronom extends GUITest {
 			failMessage = null;
 
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Metronom IN device
@@ -144,10 +138,7 @@ public class TestMidiMetronom extends GUITest {
 
 		public void run() {
 			try {
-				SikuliAutomation.setMinSimilarity(HIGH_SIMILARITY);
-				Region match = SikuliAutomation.getSearchRegion().wait(
-						screenshotpath + screenshot, DEFAULT_TIMEOUT);
-				match.highlight(HIGHLIGHT_DURATION);
+				GUIAutomations.checkResult(screenshot);
 			} catch (FindFailed e) {
 				failMessage = e.toString();
 			} finally {

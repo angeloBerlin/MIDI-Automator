@@ -56,13 +56,10 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
-			// open preferences
 			GUIAutomations.openPreferences();
-
-			// add automation
 			GUIAutomations.addAutomation();
 
-			// search new entry
+			// search new automation
 			GUIAutomations.checkResult("automation_empty.png");
 
 		} catch (FindFailed | IOException e) {
@@ -86,13 +83,10 @@ public class TestMouseAutomation extends GUITest {
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
-			// open preferences
 			GUIAutomations.openPreferences();
-
-			// delete automation
 			GUIAutomations.deleteAutomation(1);
 
-			// search new entry
+			// search empty automations
 			GUIAutomations.checkResult("automations_list_empty.png");
 
 		} catch (FindFailed | IOException e) {

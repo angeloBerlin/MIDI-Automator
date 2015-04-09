@@ -12,9 +12,8 @@ import com.midi.automator.tests.utils.SikuliAutomation;
 @RunWith(Suite.class)
 @SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,
 		TestOpenFile.class, TestEditFile.class, TestDeleteFile.class,
-		TestMoveUpFile.class, TestMoveDownFile.class, TestButtonNextFile.class,
-		TestButtonPrevFile.class, TestMidiLearnNext.class,
-		TestMidiLearnPrev.class, TestMidiLearnList.class,
+		TestMoveUpDownFile.class, TestSwitchButtons.class,
+		TestMidiLearnSwitchButtons.class, TestMidiLearnList.class,
 		TestMidiRemoteOpen.class, TestMidiRemoteOut.class,
 		TestMidiMetronom.class, TestMidiNotifierOut.class,
 		TestMouseAutomation.class, TestCloseMidiAutomator.class })

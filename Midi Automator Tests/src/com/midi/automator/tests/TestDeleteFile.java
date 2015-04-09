@@ -6,11 +6,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.Region;
 
 import com.midi.automator.tests.utils.GUIAutomations;
 import com.midi.automator.tests.utils.MockUpUtils;
-import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestDeleteFile extends GUITest {
 
@@ -19,18 +17,13 @@ public class TestDeleteFile extends GUITest {
 
 		try {
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
-			// open popup menu
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
 
 			// check for disabled delete menu entry
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "delete_inactive.png", MAX_TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
-			GUIAutomations.focusMidiAutomator();
+			GUIAutomations.checkResult("delete_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

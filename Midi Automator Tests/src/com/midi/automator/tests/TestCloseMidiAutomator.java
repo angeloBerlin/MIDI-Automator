@@ -15,36 +15,32 @@ public class TestCloseMidiAutomator extends GUITest {
 
 		try {
 			GUIAutomations.openExitMenu();
-		} catch (FindFailed e) {
-			fail(e.toString());
-		}
-
-		try {
 			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
-		// check if process was killed
-		if (System.getProperty("os.name").equals("Mac OS X")) {
+			// check if process was killed
+			if (System.getProperty("os.name").equals("Mac OS X")) {
 
-			String[] cmd = { "/bin/sh", "-c",
-					"ps -ax | grep \"Midi Automator\"" };
-			String output = SystemUtils.runShellCommand(cmd);
+				String[] cmd = { "/bin/sh", "-c",
+						"ps -ax | grep \"Midi Automator\"" };
+				String output = SystemUtils.runShellCommand(cmd);
 
-			if (output.contains("Midi Automator.app")) {
-				fail("Process still active");
+				if (output.contains("Midi Automator.app")) {
+					fail("Process still active");
+				}
 			}
-		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+			if (System.getProperty("os.name").equals("Windows 7")) {
 
-			String[] cmd = { "cmd", "/c", "wmic process list" };
-			String output = SystemUtils.runShellCommand(cmd);
+				String[] cmd = { "cmd", "/c", "wmic process list" };
+				String output = SystemUtils.runShellCommand(cmd);
 
-			if (output.contains("Midi Automator\\jre\\bin\\javaw.exe")) {
-				fail("Process still active");
+				if (output.contains("Midi Automator\\jre\\bin\\javaw.exe")) {
+					fail("Process still active");
+				}
 			}
+
+		} catch (FindFailed | InterruptedException e) {
+			fail(e.toString());
 		}
 	}
 }

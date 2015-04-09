@@ -18,6 +18,7 @@ import com.midi.automator.tests.utils.MockUpUtils;
 public class TestMidiRemoteOpen extends GUITest {
 
 	private String deviceName;
+	private String propertiesFile;
 	private int messageType = ShortMessage.CONTROL_CHANGE;
 	private int channel = 1;
 	private int controlNo = 102;
@@ -25,10 +26,12 @@ public class TestMidiRemoteOpen extends GUITest {
 	public TestMidiRemoteOpen() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
+			propertiesFile = "RemoteINBus_1.properties";
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
 			deviceName = "LoopBe Internal MIDI";
+			propertiesFile = "RemoteINLoopBe_Internal_MIDI.properties";
 		}
 	}
 
@@ -38,14 +41,7 @@ public class TestMidiRemoteOpen extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			if (System.getProperty("os.name").equals("Mac OS X")) {
-				MockUpUtils
-						.setMockupPropertiesFile("mockups/RemoteINBus_1.properties");
-			}
-			if (System.getProperty("os.name").equals("Windows 7")) {
-				MockUpUtils
-						.setMockupPropertiesFile("mockups/RemoteINLoopBe_Internal_MIDI.properties");
-			}
+			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 			GUIAutomations.restartMidiAutomator();
 
 			// open files by learned midi master message

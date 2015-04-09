@@ -52,7 +52,6 @@ public class TestMidiRemoteOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Master Out device

@@ -6,11 +6,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
-import org.sikuli.script.Region;
 
 import com.midi.automator.tests.utils.GUIAutomations;
 import com.midi.automator.tests.utils.MockUpUtils;
-import com.midi.automator.tests.utils.SikuliAutomation;
 
 public class TestAddFile extends GUITest {
 
@@ -19,7 +17,6 @@ public class TestAddFile extends GUITest {
 		try {
 
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
 			// add file
@@ -27,9 +24,7 @@ public class TestAddFile extends GUITest {
 					+ "/testfiles/Hello World.rtf");
 
 			// search new entry
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "Hello_World_entry.png", MAX_TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.checkResult("Hello_World_entry.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -39,17 +34,24 @@ public class TestAddFile extends GUITest {
 	@Test
 	public void fileChooserOfAddDialogShouldBeOpened() {
 		try {
+			// mockup
+			GUIAutomations.restartMidiAutomator();
+
 			GUIAutomations.openAddDialog();
 			GUIAutomations.openSearchDialog();
-			// check search dialog
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "file_chooser.png", MAX_TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
-			GUIAutomations.cancelDialog();
-			GUIAutomations.cancelDialog();
 
-		} catch (FindFailed e) {
+			// check search dialog
+			GUIAutomations.checkResult("file_chooser.png");
+
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.cancelDialog();
+				GUIAutomations.cancelDialog();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -57,9 +59,7 @@ public class TestAddFile extends GUITest {
 	public void addingFileShouldBeCanceled() {
 
 		try {
-
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
 			GUIAutomations.openAddDialog();
@@ -68,11 +68,7 @@ public class TestAddFile extends GUITest {
 			GUIAutomations.cancelDialog();
 
 			// search unmodified midi automator
-			setMinSimilarity(HIGH_SIMILARITY);
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", MAX_TIMEOUT);
-			setMinSimilarity(DEFAULT_SIMILARITY);
-			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -84,7 +80,6 @@ public class TestAddFile extends GUITest {
 
 		try {
 			// mockup
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.restartMidiAutomator();
 
 			// adde empty file
@@ -92,11 +87,7 @@ public class TestAddFile extends GUITest {
 			GUIAutomations.saveDialog();
 
 			// search unmodified midi automator
-			setMinSimilarity(HIGH_SIMILARITY);
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "midi_automator.png", MAX_TIMEOUT);
-			setMinSimilarity(DEFAULT_SIMILARITY);
-			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
@@ -116,9 +107,7 @@ public class TestAddFile extends GUITest {
 					+ "/testfiles/Hello World.rtf");
 
 			// check for failure
-			Region match = SikuliAutomation.getSearchRegion().wait(
-					screenshotpath + "error_129th_file_added.png", MAX_TIMEOUT);
-			match.highlight(HIGHLIGHT_DURATION);
+			GUIAutomations.checkResult("error_129th_file_added.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

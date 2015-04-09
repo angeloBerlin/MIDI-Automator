@@ -53,7 +53,6 @@ public class TestMidiNotifierOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Notifier Out device
@@ -89,7 +88,6 @@ public class TestMidiNotifierOut extends GUITest {
 
 		try {
 			// mockup
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			GUIAutomations.restartMidiAutomator();
 
 			// set MIDI Master Out device
@@ -116,9 +114,7 @@ public class TestMidiNotifierOut extends GUITest {
 			fail(e.toString());
 		} finally {
 			try {
-				Region match = SikuliAutomation.getSearchRegion().wait(
-						screenshotpath + "cancel_button.png", MAX_TIMEOUT);
-				match.click();
+				GUIAutomations.cancelDialog();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
