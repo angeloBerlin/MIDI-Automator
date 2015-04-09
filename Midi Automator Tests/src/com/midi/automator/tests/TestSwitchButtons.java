@@ -15,14 +15,19 @@ public class TestSwitchButtons extends GUITest {
 	@Test
 	public void nextButtonNotActiveOnEmptyList() {
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// check for inactive next button
 			GUIAutomations.checkResult("next_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -31,7 +36,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open first file
 			GUIAutomations.nextFile();
@@ -50,6 +55,12 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -58,7 +69,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open first file
 			GUIAutomations.nextFile();
@@ -82,6 +93,12 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -90,7 +107,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open first file
 			GUIAutomations.nextFile();
@@ -118,20 +135,31 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Test
 	public void prevButtonNotActiveOnEmptyList() {
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// check for disabled prev button
 			GUIAutomations.checkResult("prev_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -140,7 +168,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// cycle second file
 			GUIAutomations.prevFile();
@@ -154,6 +182,12 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -162,7 +196,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// cycle third file
 			GUIAutomations.prevFile();
@@ -181,6 +215,12 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -189,7 +229,7 @@ public class TestSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// cycle second file
 			GUIAutomations.prevFile();
@@ -212,6 +252,12 @@ public class TestSwitchButtons extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

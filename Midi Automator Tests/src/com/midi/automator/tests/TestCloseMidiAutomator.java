@@ -2,6 +2,8 @@ package com.midi.automator.tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
@@ -14,6 +16,7 @@ public class TestCloseMidiAutomator extends GUITest {
 	public void programShallBeClosed() {
 
 		try {
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.openExitMenu();
 			Thread.sleep(3000);
 
@@ -39,7 +42,7 @@ public class TestCloseMidiAutomator extends GUITest {
 				}
 			}
 
-		} catch (FindFailed | InterruptedException e) {
+		} catch (FindFailed | InterruptedException | IOException e) {
 			fail(e.toString());
 		}
 	}

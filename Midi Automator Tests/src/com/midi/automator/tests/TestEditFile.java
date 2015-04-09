@@ -16,9 +16,7 @@ public class TestEditFile extends GUITest {
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
 
@@ -27,6 +25,12 @@ public class TestEditFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -36,7 +40,7 @@ public class TestEditFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// edit entry
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
@@ -50,6 +54,12 @@ public class TestEditFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -59,7 +69,7 @@ public class TestEditFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// edit entry
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
@@ -79,6 +89,12 @@ public class TestEditFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -88,7 +104,7 @@ public class TestEditFile extends GUITest {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// edit entry with search dialog
 			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
@@ -104,6 +120,7 @@ public class TestEditFile extends GUITest {
 			try {
 				GUIAutomations.cancelDialog();
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

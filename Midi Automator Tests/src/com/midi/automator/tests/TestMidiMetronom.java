@@ -44,17 +44,12 @@ public class TestMidiMetronom extends GUITest {
 
 	@Test
 	public void metronomFirstClickShouldBeShown() {
+		failMessage = null;
 
 		try {
-			failMessage = null;
-
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
-			// set MIDI Metronom IN device
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
-
 			Thread.sleep(500);
 
 			// start watching for 1st click metronom
@@ -82,22 +77,24 @@ public class TestMidiMetronom extends GUITest {
 		} catch (IOException | InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Test
 	public void metronomOtherClickShouldBeShown() {
 
+		failMessage = null;
+
 		try {
-			failMessage = null;
-
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
-			// set MIDI Metronom IN device
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
-
 			Thread.sleep(500);
 
 			// start watching for second click metronom
@@ -125,6 +122,12 @@ public class TestMidiMetronom extends GUITest {
 		} catch (IOException | InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

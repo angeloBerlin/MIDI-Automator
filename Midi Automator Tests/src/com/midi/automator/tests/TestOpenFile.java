@@ -18,7 +18,7 @@ public class TestOpenFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_entry_active.png",
@@ -30,6 +30,12 @@ public class TestOpenFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -39,7 +45,7 @@ public class TestOpenFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_ÄÖÜ.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_ÄÖÜ_entry_active.png",
@@ -52,6 +58,12 @@ public class TestOpenFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -16,9 +16,7 @@ public class TestDeleteFile extends GUITest {
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
 
@@ -27,6 +25,12 @@ public class TestDeleteFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -36,7 +40,7 @@ public class TestDeleteFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// delete entry
 			GUIAutomations.deleteEntry("Hello_World_entry.png",
@@ -44,11 +48,22 @@ public class TestDeleteFile extends GUITest {
 					"Hello_World_entry_inactive.png");
 
 			// check if entry was deleted
-			GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
-					"Hello_World_entry.png", "Hello_World_entry_active.png",
-					"Hello_World_entry_inactive.png");
-			fail("Hello World entry still found.");
+			try {
+				GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+						"Hello_World_entry.png",
+						"Hello_World_entry_active.png",
+						"Hello_World_entry_inactive.png");
+				fail("Hello World entry still found.");
+			} catch (FindFailed e) {
+			}
 		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

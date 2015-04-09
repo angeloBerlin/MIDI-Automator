@@ -22,6 +22,12 @@ public class TestOpenMidiAutomator extends SikuliAutomation {
 			GUIAutomations.checkResult("midi_automator.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

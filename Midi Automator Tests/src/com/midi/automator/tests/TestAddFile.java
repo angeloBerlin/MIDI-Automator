@@ -15,11 +15,7 @@ public class TestAddFile extends GUITest {
 	@Test
 	public void newFileShouldBeAdded() {
 		try {
-
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
-			// add file
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
 
@@ -28,15 +24,19 @@ public class TestAddFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Test
 	public void fileChooserOfAddDialogShouldBeOpened() {
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
-
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.openAddDialog();
 			GUIAutomations.openSearchDialog();
 
@@ -49,6 +49,7 @@ public class TestAddFile extends GUITest {
 			try {
 				GUIAutomations.cancelDialog();
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -59,8 +60,7 @@ public class TestAddFile extends GUITest {
 	public void addingFileShouldBeCanceled() {
 
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openAddDialog();
 			GUIAutomations.fillTextField("name_text_field.png", "x");
@@ -72,6 +72,12 @@ public class TestAddFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -79,8 +85,7 @@ public class TestAddFile extends GUITest {
 	public void addingEmptyFileNameShouldNotBePossible() {
 
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// adde empty file
 			GUIAutomations.openAddDialog();
@@ -91,6 +96,12 @@ public class TestAddFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -100,7 +111,7 @@ public class TestAddFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// add file 129
 			GUIAutomations.addFile("Hello World 129", currentPath
@@ -111,6 +122,12 @@ public class TestAddFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -17,8 +17,7 @@ public class TestMoveUpDownFile extends GUITest {
 	public void moveUpDownMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			// mockup
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// check for disabled menu entry
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
@@ -31,6 +30,12 @@ public class TestMoveUpDownFile extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -40,7 +45,7 @@ public class TestMoveUpDownFile extends GUITest {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_world_312.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// move down entry
 			GUIAutomations.moveDownEntry("Hello_World_3_entry.png",
@@ -65,8 +70,7 @@ public class TestMoveUpDownFile extends GUITest {
 			fail(e.toString());
 		} finally {
 			try {
-				// close context menu
-				GUIAutomations.focusMidiAutomator();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -78,7 +82,7 @@ public class TestMoveUpDownFile extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// move entries
 			GUIAutomations.moveUpEntry("Hello_World_3_entry.png",
@@ -104,8 +108,7 @@ public class TestMoveUpDownFile extends GUITest {
 			fail(e.toString());
 		} finally {
 			try {
-				// close context menu
-				GUIAutomations.focusMidiAutomator();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

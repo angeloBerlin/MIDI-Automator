@@ -49,7 +49,7 @@ public class TestMidiLearnList extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearnMainScreen(
@@ -62,6 +62,12 @@ public class TestMidiLearnList extends GUITest {
 					"Hello_World_1_entry_learn.png", null, null);
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -74,7 +80,7 @@ public class TestMidiLearnList extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearnMainScreen(
@@ -114,6 +120,12 @@ public class TestMidiLearnList extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -123,7 +135,7 @@ public class TestMidiLearnList extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
@@ -163,6 +175,12 @@ public class TestMidiLearnList extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -173,7 +191,7 @@ public class TestMidiLearnList extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn master signature
 			GUIAutomations.midiLearnMainScreen(
@@ -199,6 +217,12 @@ public class TestMidiLearnList extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -209,7 +233,7 @@ public class TestMidiLearnList extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn same signature twice
 			GUIAutomations.midiLearnMainScreen(
@@ -242,6 +266,12 @@ public class TestMidiLearnList extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

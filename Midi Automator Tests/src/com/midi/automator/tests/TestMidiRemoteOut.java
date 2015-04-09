@@ -52,52 +52,44 @@ public class TestMidiRemoteOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.restartMidiAutomator();
 
-			// set MIDI Master Out device
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_master_out.png", deviceScreenshot);
-
-			// open first file
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png",
 					"Hello_World_1_entry.png");
 
 			// check if midi master message was sent
-			try {
-				Thread.sleep(remoteTimeout);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			Thread.sleep(remoteTimeout);
 			if (!"channel 1: CONTROL CHANGE 102 value: 0"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
 						+ " is wrong master signature for index 0.");
 			}
 
-			// open second file
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry_inactive.png",
 					"Hello_World_2_entry.png");
 
 			// check if midi master message was sent
-			try {
-				Thread.sleep(remoteTimeout);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			Thread.sleep(remoteTimeout);
 			if (!"channel 1: CONTROL CHANGE 102 value: 1"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
 						+ " is wrong master signature for index 1.");
 			}
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed | IOException | InterruptedException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

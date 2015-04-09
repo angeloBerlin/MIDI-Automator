@@ -43,12 +43,22 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 	public void midiLearnShouldBeCanceledOnNextButton() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.openMidiAutomator();
+
 			GUIAutomations.midiLearnMainScreen("next.png", null, null,
 					LOW_SIMILARITY);
 			GUIAutomations.cancelMidiLearnMainScreen("next_inactive.png", null,
 					null);
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -58,7 +68,7 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearnMainScreen("next.png", null, null,
@@ -91,6 +101,12 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -100,7 +116,7 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
@@ -132,6 +148,12 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -139,12 +161,21 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 	public void midiLearnShouldBeCanceledOnPrevButton() {
 
 		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			GUIAutomations.cancelMidiLearnMainScreen("prev_inactive.png", null,
 					null);
-		} catch (FindFailed e) {
+		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -154,7 +185,7 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// midi learn
 			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
@@ -187,6 +218,12 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -196,7 +233,7 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
@@ -228,6 +265,12 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 		} catch (InterruptedException | MidiUnavailableException
 				| InvalidMidiDataException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

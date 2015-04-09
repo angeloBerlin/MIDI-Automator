@@ -53,33 +53,30 @@ public class TestMidiNotifierOut extends GUITest {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.restartMidiAutomator();
-
-			// set MIDI Notifier Out device
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_notifier_out.png", deviceScreenshot);
-
-			// open first file
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png",
 					"Hello_World_1_entry.png");
 
 			// check if midi master message was sent
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			Thread.sleep(1000);
 			if (!"channel 1: CONTROL CHANGE 103 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
 						+ " is wrong master signature for index 0.");
 			}
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed | IOException | InterruptedException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -88,9 +85,7 @@ public class TestMidiNotifierOut extends GUITest {
 
 		try {
 			// mockup
-			GUIAutomations.restartMidiAutomator();
-
-			// set MIDI Master Out device
+			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setPreferencesComboBox(
 					"combo_box_midi_notifier_out.png", deviceScreenshot);
 			// hit send button
@@ -99,22 +94,18 @@ public class TestMidiNotifierOut extends GUITest {
 			match.click();
 
 			// check if midi master message was sent
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			Thread.sleep(1000);
 			if (!"channel 1: CONTROL CHANGE 103 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature + " is wrong signature for notifier.");
 			}
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed | IOException | InterruptedException e) {
 			fail(e.toString());
 		} finally {
 			try {
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

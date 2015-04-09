@@ -42,7 +42,7 @@ public class TestMidiRemoteOpen extends GUITest {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open files by learned midi master message
 			Thread.sleep(2000);
@@ -56,11 +56,15 @@ public class TestMidiRemoteOpen extends GUITest {
 			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
 					"Hello_World_2_RTF_inactive.png");
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed | IOException | InterruptedException
+				| MidiUnavailableException | InvalidMidiDataException e) {
 			fail(e.toString());
-		} catch (InterruptedException | MidiUnavailableException
-				| InvalidMidiDataException e) {
-			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

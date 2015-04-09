@@ -15,8 +15,9 @@ public class GUIAutomations extends SikuliAutomation {
 	 * Opens the Midi Automator program
 	 * 
 	 * @throws IOException
+	 * @throws FindFailed
 	 */
-	public static void openMidiAutomator() throws IOException {
+	public static void openMidiAutomator() throws IOException, FindFailed {
 
 		String[] command = null;
 
@@ -33,6 +34,12 @@ public class GUIAutomations extends SikuliAutomation {
 		}
 
 		Runtime.getRuntime().exec(command);
+		focusMidiAutomator();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -488,7 +495,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openPopupMenu(String state1, String state2,
 			String state3, float similarity) throws FindFailed {
 		setMinSimilarity(similarity);
-		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+		Region match = findMultipleStateRegion(DEFAULT_TIMEOUT, state1, state2,
 				state3);
 		setMinSimilarity(DEFAULT_SIMILARITY);
 		try {
@@ -605,7 +612,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void focusMidiAutomator() throws FindFailed {
 		try {
 			SikuliAutomation.setSearchRegion(findMidiAutomatorRegion());
-			Region match = findMultipleStateRegion(MIN_TIMEOUT,
+			Region match = findMultipleStateRegion(DEFAULT_TIMEOUT,
 					"Midi_Automator_title.png",
 					"Midi_Automator_title_inactive.png");
 			match.click(match.offset(50, 20));
@@ -736,7 +743,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 			// check if file opened
 			SikuliAutomation.setSearchRegion(SCREEN);
-			match = findMultipleStateRegion(MAX_TIMEOUT, active, inactive);
+			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
 			// close editor
@@ -888,9 +895,6 @@ public class GUIAutomations extends SikuliAutomation {
 			e.printStackTrace();
 		}
 		GUIAutomations.openMidiAutomator();
-
-		SikuliAutomation.setSearchRegion(GUIAutomations
-				.findMidiAutomatorRegion());
 	}
 
 }

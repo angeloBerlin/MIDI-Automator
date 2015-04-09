@@ -54,7 +54,7 @@ public class TestMouseAutomation extends GUITest {
 
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openPreferences();
 			GUIAutomations.addAutomation();
@@ -68,6 +68,7 @@ public class TestMouseAutomation extends GUITest {
 			try {
 				// cancel preferences
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -81,7 +82,7 @@ public class TestMouseAutomation extends GUITest {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openPreferences();
 			GUIAutomations.deleteAutomation(1);
@@ -95,6 +96,7 @@ public class TestMouseAutomation extends GUITest {
 			try {
 				// cancel preferences
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -109,7 +111,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// check if add dialog was canceled
 			GUIAutomations.openAddDialog();
@@ -121,6 +123,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -133,7 +141,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set trigger to once
 			GUIAutomations.setAndSaveAutomationsComboBox(
@@ -162,6 +170,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -174,7 +188,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set trigger to once per opening
 			GUIAutomations.setAndSaveAutomationsComboBox(
@@ -200,6 +214,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -210,7 +230,7 @@ public class TestMouseAutomation extends GUITest {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// cancel midi learn
 			GUIAutomations.openPreferences();
@@ -231,6 +251,7 @@ public class TestMouseAutomation extends GUITest {
 		} finally {
 			try {
 				GUIAutomations.saveDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -246,7 +267,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open preferences
 			GUIAutomations.openPreferences();
@@ -275,11 +296,15 @@ public class TestMouseAutomation extends GUITest {
 			// check if add dialog was canceled
 			GUIAutomations.checkResult("midi_automator.png");
 
-		} catch (FindFailed | IOException e) {
+		} catch (FindFailed | IOException | InvalidMidiDataException
+				| MidiUnavailableException | InterruptedException e) {
 			fail(e.toString());
-		} catch (InvalidMidiDataException | MidiUnavailableException
-				| InterruptedException e) {
-			e.printStackTrace();
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -293,7 +318,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// open preferences
 			GUIAutomations.openPreferences();
@@ -313,6 +338,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -324,7 +355,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiOpenerAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			Region mainFrame = GUIAutomations.findMidiAutomatorRegion();
 
@@ -342,6 +373,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -353,7 +390,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesHelloWorldAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// set trigger to double click once
 			GUIAutomations.openPreferences();
@@ -369,6 +406,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -379,7 +422,7 @@ public class TestMouseAutomation extends GUITest {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openPreferences();
 			GUIAutomations.activateAutomationsTextField("automation_delay.png",
@@ -405,6 +448,7 @@ public class TestMouseAutomation extends GUITest {
 		} finally {
 			try {
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -418,7 +462,7 @@ public class TestMouseAutomation extends GUITest {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.openPreferences();
 			GUIAutomations.activateAutomationsTextField("automation_delay.png",
@@ -443,6 +487,7 @@ public class TestMouseAutomation extends GUITest {
 		} finally {
 			try {
 				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -457,7 +502,7 @@ public class TestMouseAutomation extends GUITest {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesPopupAndCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.restartMidiAutomator();
+			GUIAutomations.openMidiAutomator();
 
 			// check if dialogs are always canceled
 			GUIAutomations.openAddDialog();
@@ -476,6 +521,12 @@ public class TestMouseAutomation extends GUITest {
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
