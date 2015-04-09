@@ -16,6 +16,8 @@ that are way apart from the main idea.
 
 Find additional information here: http://midi-automator.com
 
+This software tries to follow the principales of semantic versioning (http://semver.org/) as good as possible.
+
 License
 -------
 
