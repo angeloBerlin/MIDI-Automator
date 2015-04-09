@@ -20,11 +20,13 @@ public class TestMoveUpDownFile extends GUITest {
 			// mockup
 			GUIAutomations.restartMidiAutomator();
 
+			// check for disabled menu entry
 			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
-
-			// check for disabled menu entry
 			GUIAutomations.checkResult("move_up_inactive.png");
+
+			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+					LOW_SIMILARITY);
 			GUIAutomations.checkResult("move_down_inactive.png");
 
 		} catch (FindFailed | IOException e) {
