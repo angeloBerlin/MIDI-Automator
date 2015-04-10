@@ -137,11 +137,9 @@ public class TestMidiLearnList extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.openMidiAutomator();
 
-			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// midi learn
+			GUIAutomations.focusMidiAutomator();
 			GUIAutomations.midiLearnMainScreen(
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry.png",

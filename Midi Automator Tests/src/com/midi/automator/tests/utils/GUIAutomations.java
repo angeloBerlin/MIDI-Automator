@@ -407,10 +407,8 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void deleteEntry(String state1, String state2, String state3)
 			throws FindFailed {
-		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
-				state3);
-		match.rightClick();
-		match = SikuliAutomation.getSearchRegion().wait(
+		GUIAutomations.openPopupMenu(state1, state2, state3);
+		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "delete.png", MAX_TIMEOUT);
 		match.click();
 	}
@@ -429,7 +427,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void moveUpEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+		Region match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
 				state1, state2, state3);
 
 		match.rightClick();
@@ -452,7 +450,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void moveDownEntry(String state1, String state2, String state3)
 			throws FindFailed {
 
-		Region match = GUIAutomations.findMultipleStateRegion(MIN_TIMEOUT,
+		Region match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
 				state1, state2, state3);
 
 		match.rightClick();
@@ -476,6 +474,23 @@ public class GUIAutomations extends SikuliAutomation {
 		fillTextField("name_text_field.png", name);
 		fillTextField("file_text_field.png", path);
 		saveDialog();
+	}
+
+	/**
+	 * Opens the popup menu
+	 * 
+	 * 
+	 * @param state1
+	 *            first try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state2
+	 *            second try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @param state3
+	 *            third try screenshot (unchoosen, choosen, choosen-unfocused)
+	 * @throws FindFailed
+	 */
+	public static void openPopupMenu(String state1, String state2, String state3)
+			throws FindFailed {
+		openPopupMenu(state1, state2, state3, DEFAULT_SIMILARITY);
 	}
 
 	/**
@@ -535,7 +550,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openEditDialog(String state1, String state2,
 			String state3) throws FindFailed {
 
-		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+		Region match = findMultipleStateRegion(DEFAULT_TIMEOUT, state1, state2,
 				state3);
 		match.click();
 
@@ -599,7 +614,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void openEntryByDoubleClick(String state1, String state2,
 			String state3) throws FindFailed {
 
-		Region match = findMultipleStateRegion(MIN_TIMEOUT, state1, state2,
+		Region match = findMultipleStateRegion(DEFAULT_TIMEOUT, state1, state2,
 				state3);
 		match.doubleClick();
 	}

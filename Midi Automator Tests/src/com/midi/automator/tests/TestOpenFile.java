@@ -20,9 +20,9 @@ public class TestOpenFile extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
 			GUIAutomations.openMidiAutomator();
 
-			GUIAutomations.openEntryByDoubleClick(
+			GUIAutomations.openEntryByDoubleClick("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
-					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
+					"Hello_World_entry_inactive.png");
 
 			// check if file opened
 			GUIAutomations.checkIfFileOpened("Hello_World_RTF.png",
@@ -47,10 +47,9 @@ public class TestOpenFile extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_ÄÖÜ.mido");
 			GUIAutomations.openMidiAutomator();
 
-			GUIAutomations.openEntryByDoubleClick(
+			GUIAutomations.openEntryByDoubleClick("Hello_World_ÄÖÜ_entry.png",
 					"Hello_World_ÄÖÜ_entry_active.png",
-					"Hello_World_ÄÖÜ_entry_inactive.png",
-					"Hello_World_ÄÖÜ_entry.png");
+					"Hello_World_ÄÖÜ_entry_inactive.png");
 
 			// check if file opened
 			GUIAutomations.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png",

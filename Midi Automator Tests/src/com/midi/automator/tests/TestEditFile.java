@@ -43,8 +43,9 @@ public class TestEditFile extends GUITest {
 			GUIAutomations.openMidiAutomator();
 
 			// edit entry
-			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
-					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
+			GUIAutomations.openEditDialog("Hello_World_entry.png",
+					"Hello_World_entry_active.png",
+					"Hello_World_entry_inactive.png");
 			GUIAutomations.fillTextField("name_text_field.png", "x");
 			GUIAutomations.fillTextField("file_text_field.png", "y");
 			GUIAutomations.cancelDialog();
@@ -72,8 +73,9 @@ public class TestEditFile extends GUITest {
 			GUIAutomations.openMidiAutomator();
 
 			// edit entry
-			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
-					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
+			GUIAutomations.openEditDialog("Hello_World_entry.png",
+					"Hello_World_entry_active.png",
+					"Hello_World_entry_inactive.png");
 			GUIAutomations.fillTextField("name_text_field.png",
 					"Hello World Edit");
 			GUIAutomations.fillTextField("file_text_field.png", currentPath
@@ -107,8 +109,9 @@ public class TestEditFile extends GUITest {
 			GUIAutomations.openMidiAutomator();
 
 			// edit entry with search dialog
-			GUIAutomations.openEditDialog("Hello_World_entry_active.png",
-					"Hello_World_entry_inactive.png", "Hello_World_entry.png");
+			GUIAutomations.openEditDialog("Hello_World_entry.png",
+					"Hello_World_entry_active.png",
+					"Hello_World_entry_inactive.png");
 			GUIAutomations.openSearchDialog();
 
 			// check search dialog

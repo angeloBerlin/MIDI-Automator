@@ -8,9 +8,8 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
 import com.midi.automator.tests.utils.GUIAutomations;
-import com.midi.automator.tests.utils.SikuliAutomation;
 
-public class TestOpenMidiAutomator extends SikuliAutomation {
+public class TestOpenMidiAutomator extends GUITest {
 
 	@Test
 	public void programShallBeOpened() {

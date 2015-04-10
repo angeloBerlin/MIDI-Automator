@@ -68,6 +68,8 @@ public class SikuliAutomation {
 			return;
 		}
 
+		System.out.println("Set search region to: "
+				+ searchRegion.toStringShort());
 		if (HIGHLIGHT_SEARCH_REGION) {
 			searchRegion.highlight(HIGHLIGHT_SEARCH_REGION_DURATION, "green");
 		}
@@ -93,6 +95,6 @@ public class SikuliAutomation {
 	protected static void setMinSimilarity(float minSimilarity) {
 		Settings.MinSimilarity = minSimilarity;
 		Settings.CheckLastSeenSimilar = minSimilarity;
-		System.out.println("MinSimilarity: " + minSimilarity);
+		System.out.println("Set MinSimilarity to: " + minSimilarity);
 	}
 }

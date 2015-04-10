@@ -118,11 +118,9 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.openMidiAutomator();
 
-			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// midi learn
+			GUIAutomations.focusMidiAutomator();
 			GUIAutomations.midiLearnMainScreen("next.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
@@ -235,11 +233,9 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.openMidiAutomator();
 
-			// set MIDI IN Remote device
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-
-			// midi learn
+			GUIAutomations.focusMidiAutomator();
 			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
