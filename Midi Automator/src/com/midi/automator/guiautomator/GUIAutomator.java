@@ -16,7 +16,6 @@ import com.midi.automator.utils.SystemUtils;
  */
 public class GUIAutomator extends Thread implements IDeActivateable {
 
-	private final int HIGHLIGHT_DURATION = 1;
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final float MIN_SIMILARITY = 0.99f;
 	private final boolean CHECK_LAST_SEEN = true;
