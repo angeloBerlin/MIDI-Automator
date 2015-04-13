@@ -11,7 +11,7 @@ an ordered set list containing single live-set files. MIDI Automator can listen 
 load the next, previous or desired live-set file. All other features shall support the demand
 of a fully automated stage setup.
 
-MIDI Autopmator shall be hold as generic as possible, so that it can also handle other use cases 
+MIDI Automator shall be hold as generic as possible, so that it can also handle other use cases 
 that are way apart from the main idea. 
 
 Find additional information here: http://midi-automator.com
