@@ -1,145 +1,29 @@
 <?xml version="1.0"?>
-<!--
-Midi Automator ant build file.
+<project name="MIDI Automator" default="dmg" basedir=".">
+	<property environment="env" />
 
-@author Angelo Gülle
-@date 16-02-15
--->
-<project name="Ant-Test" default="main" basedir=".">
-	<property environment="env"/>
-	<property name="name" value="Midi Automator" />
-	<property name="demo.dir" value="demo" />
-	<property name="filelist.file" value="file_list.mido" />
-	<property name="properties.file" value="midiautomator.properties" />
-	<property name="src.dir" value="src" />
-	<property name="application.dir" value="${name}" />
-	<property name="build.dir" value="bin" />
-	<property name="dist.dir" value="build" />
-	<property name="lib.dir" value="lib" />
-	<property name="images.dir" value="images" />
-	<property name="jre.dir" value="jre" />
-	<property name="jar.file" value="MidiAutomator.jar" />
-	<property name="base.package" value="com.midi.automator" />
-	<property name="main.class" value="${base.package}.Main" />
-	<property name="class.path" value="${lib.dir}/sikulixapi.jar" />
-	<property name="build.sysclasspath" value="last"/>
-	<property name="splashscreen.file" value="splash.png" />
-	<property name="encoding" value="UTF-8" />
-	
-    <!-- Check for OS -->
-    <condition property="is_windows">
-        <os family="windows"/>
-    </condition>
-    
-    <condition property="is_macos">
-        <os family="mac"/>
-    </condition>
-	
-	<!-- Windows -->
-	<property name="build.dir.windows" value="${build.dir}/Windows" />
-	<property name="dist.dir.windows" value="${dist.dir}/Windows" />
-	<property name="debug.starter.windows" value="debug.bat" />
-	<property name="launch4j.dir" value="${env.ProgramFiles(x86)}\Launch4j" />
-	<property name="launch4j.config" value="launch4j.xml" />
-	<property name="nsis.exe" value="${env.ProgramFiles(x86)}\NSIS\makensis.exe" />
-	<property name="nsis.config" value="NSIS/installer.nsi" />
-	<property name="windows.jre.dir" value="jre/Windows" />
-	<property name="exe.file" value="${name}.exe" />
-	<property name="icon.file.windows" value="MidiAutomatorIcon.ico" />
-	
 	<!-- MacOS -->
-	<property name="dist.dir.macos" value="${dist.dir}/MacOS" />
-	<property name="macos.bundle.dir" value="${build.dir}/${name}.app/Contents" />
+	<property name="macos.bundle.dir" value="${target.dir}/${name}.app/Contents" />
 	<property name="working.dir.macos.resources" value="$APP_ROOT/Contents/Resources" />
-	<property name="icon.file.macos" value="MidiAutomatorIcon.icns" />
-	<property name="debug.starter.macos" value="debug.command" />
 	<property name="java.runtime" value="jre/Mac/Contents/Home" />
-	<property name="dmgbackground.file" value="DMGBackground.png" />
-	<property name="mountdir" value="/tmp"/>
+	<property name="mountdir" value="/tmp" />
 
-	<!-- Deletes the existing build, docs and dist directory-->
-	<target name="preclean">
-		<delete dir="${build.dir}" />
-		<delete dir="${dist.dir.windows}" />
-		<delete dir="${dist.dir.macos}" />
-	</target>
-	
-	<!-- Creates the  build, docs and dist directory-->
-	<target name="makedir" depends="preclean">
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${build.dir.windows}" />
-		<mkdir dir="${dist.dir.windows}" />
-		<mkdir dir="${dist.dir.macos}" />
-	</target>
-	
-	<!-- Compiles the java code -->
-	<target name="compile" depends="makedir">
-		<javac srcdir="${src.dir}" destdir="${build.dir}">
-			<classpath>
-				<pathelement path="lib/sikulixapi.jar" />
-			</classpath>	
-		</javac>
-	</target>
-	
-	<!-- Creates the deployable jar file  -->
-	<target name="jar" depends="compile">
-		<jar destfile="${build.dir}/${jar.file}" 
-			 basedir="${build.dir}">
-			<manifest>
-				<attribute name="Class-Path" value="${class.path}" />
-				<attribute name="Main-Class" value="${main.class}" />
-			</manifest>
-		</jar>
-	</target>
-	
-	<!-- Generates a Windows exe from the jar -->
-	<target name="exe" depends="jar">
-		<taskdef name="launch4j" 
-				 classname="net.sf.launch4j.ant.Launch4jTask" 
-				 classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-		<launch4j>
-			<config dontWrapJar="true"					
-					headerType="gui"
-					jarPath="${jar.file}"
-					outfile="${build.dir.windows}/${exe.file}"
-					chdir="."
-					priority="normal"
-					stayAlive="false"
-					restartOnCrash="false"
-					icon="${images.dir}/${icon.file.windows}"
-			        cmdLine="-wd=&quot;%APPDATA%\\${name}&quot;\\">
-				<singleInstance mutexName="${name}" />
-				<jre path="jre" 
-					 bundledJre64Bit="true"
-					 bundledJreAsFallback="false"
-					 jdkPreference="preferJre"
-					 runtimeBits="64">
-					<opt>-splash:images/splash.png</opt>
-					<opt>-Dfile.encoding=UTF-8</opt>
-				</jre>
-			</config>
-		</launch4j>
-	</target>
-	
-	<!-- Genertates a MacOS Bundle from the jar -->
-	<target name="macbundle" depends="jar">
-		<taskdef name="bundleapp" 
-			     classname="com.oracle.appbundler.AppBundlerTask" 
-				 classpath="appBundler-1.0.jar" />
-		<bundleapp outputdirectory="${build.dir}"
-				   name="${name}"
-				   displayname="${name}"
-				   identifier="${base.package}"
-				   icon="${images.dir}/${icon.file.macos}"
-				   mainclassname="${main.class}">
+	<!-- Generates a MacOS Bundle from the jar -->
+	<target name="macbundle">
+		<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
+			classpath="lib/appBundler-1.0.jar" />
+		<bundleapp outputdirectory="${target.dir}" name="${name}"
+			displayname="${name}" identifier="${base.package}" icon="${images.dir}/${icon.file.macos}"
+			mainclassname="${main.class}">
 			<runtime dir="${java.runtime}" />
 			<option value="-Dfile.encoding=${encoding}" />
-			<option value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
+			<option
+				value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
 			<argument value="-os=MacOS" />
 			<argument value="-wd=${working.dir.macos.resources}/" />
 		</bundleapp>
-		
-		<copy file="${build.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
+
+		<copy file="${target.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
 		<copy file="${demo.dir}/${filelist.file}" tofile="${macos.bundle.dir}/Resources/${filelist.file}" />
 		<copy file="${demo.dir}/${properties.file}" tofile="${macos.bundle.dir}/Resources/${properties.file}" />
 		<copy todir="${macos.bundle.dir}/Resources/${images.dir}">
@@ -149,123 +33,72 @@ Midi Automator ant build file.
 			<fileset dir="${lib.dir}" />
 		</copy>
 	</target>
-	
-	<!-- Create a DMG - This only works on MacOSX (requires hdiutil) -->
+
+	<!-- Generates a DMG installer image form the app bundle -->
 	<target name="dmg" depends="macbundle">
 
 		<!-- Create a temporary Disk Image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
-			<arg value="create"/>
-			<arg value="-srcfolder"/>
-			<arg value="${build.dir}/${name}.app"/>
-			<arg value="-volname"/>
-			<arg value="${name}"/>
-			<arg value="-ov"/>
-			<arg value="${name}-tmp.dmg"/>
-			<arg value="-format"/>
-			<arg value="UDRW"/>
+			<arg value="create" />
+			<arg value="-srcfolder" />
+			<arg value="${target.dir}/${name}.app" />
+			<arg value="-volname" />
+			<arg value="${name}" />
+			<arg value="-ov" />
+			<arg value="${name}-tmp.dmg" />
+			<arg value="-format" />
+			<arg value="UDRW" />
 		</exec>
-	
+
 		<!-- Attach the temporary image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
-			<arg value="attach"/>
-			<arg value="${name}-tmp.dmg"/>
-			<arg value="-mountroot"/>
-			<arg value="${mountdir}/"/>
+			<arg value="attach" />
+			<arg value="${name}-tmp.dmg" />
+			<arg value="-mountroot" />
+			<arg value="${mountdir}/" />
 		</exec>
-	
+
 		<!-- Copy the background, the volume icon and DS_Store files -->
-		<mkdir dir="${mountdir}/${name}/.background"/>
-		<copy file="${images.dir}/${dmgbackground.file}"
-			  tofile="${mountdir}/${name}/.background/background.png"
-			  overwrite="true"/>
-		<copy file="${images.dir}/${icon.file.macos}"
-		      tofile="${mountdir}/${name}/.VolumeIcon.icns"
-			  overwrite="true"/>
-		<copy file="DS_Store"
-			  tofile="${mountdir}/${name}/.DS_Store"
-			  overwrite="true"/>
-				
+		<mkdir dir="${mountdir}/${name}/.background" />
+		<copy file="${images.dir}/${dmgbackground.file}" tofile="${mountdir}/${name}/.background/background.png"
+			overwrite="true" />
+		<copy file="${images.dir}/${icon.file.macos}" tofile="${mountdir}/${name}/.VolumeIcon.icns"
+			overwrite="true" />
+		<copy file="DS_Store" tofile="${mountdir}/${name}/.DS_Store"
+			overwrite="true" />
+
 		<!-- Indicate that we want a custom icon -->
 		<exec executable="/usr/bin/SetFile" os="Mac OS X">
-			<arg value="-a"/>
-			<arg value="C"/>
-			<arg value="${mountdir}/${name}"/>
+			<arg value="-a" />
+			<arg value="C" />
+			<arg value="${mountdir}/${name}" />
 		</exec>
-				
+
 		<!-- Add a symbolic link to the Applications directory -->
-		<symlink link="${mountdir}/${name}" resource="/Applications"/>
-	
+		<symlink link="${mountdir}/${name}" resource="/Applications" />
+
 		<!-- Detach the temporary image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
-			<arg value="detach"/>
-			<arg value="${mountdir}/${name}"/>
+			<arg value="detach" />
+			<arg value="${mountdir}/${name}" />
 		</exec>
-	
+
+		
 		<!-- Compress it to a new image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
-			<arg value="convert"/>
-			<arg value="${name}-tmp.dmg"/>
-			<arg value="-format"/>
-			<arg value="UDZO"/>
-			<arg value="-o"/>
-			<arg value="${build.dir}/${name}.dmg"/>
-		</exec>
-				
+			<arg value="convert" />
+			<arg value="${name}-tmp.dmg" />
+			<arg value="-format" />
+			<!-- read/write image for changes at the .DS_Store file
+			<arg value="UDRW" /> 
+			-->
+			<arg value="UDZO" />
+			<arg value="-o" />
+			<arg value="${target.dir}/${dist.dmg}" />
+		</exec>      
+		
 		<!-- Delete the temporary image -->
-		<delete file="${name}-tmp.dmg" quiet="yes" failonerror="false"/>
+		<delete file="${name}-tmp.dmg" quiet="yes" failonerror="false" />
 	</target>
-	
-	<!-- Copies the needed assets and files for MacOS -->
-    <target name="copyMac" depends="makedir, dmg">
-        <!-- MacOS -->
-    	<copy file="${build.dir}/${name}.dmg" tofile="${dist.dir.macos}/${name}.dmg" />
-        
-    	<!-- keep file permissions after copy process -->
-        <exec executable="cp">
-            <arg value="${debug.starter.macos}"/>
-            <arg value="${dist.dir.macos}/${debug.starter.macos}"/>
-        </exec>
-    </target>
-	
-	<!-- Copies the needed assets and files for Windows -->
-	<target name="copyWindows" depends="makedir, exe">
+</project>
 
-		<!-- Windows -->
-		<copy file="${build.dir}/${jar.file}" tofile="${build.dir.windows}/${jar.file}" />
-		<copy file="${demo.dir}/${filelist.file}" tofile="${build.dir.windows}/${filelist.file}" />
-		<copy file="${demo.dir}/${properties.file}" tofile="${build.dir.windows}/${properties.file}" />
-		<copy todir="${build.dir.windows}/${images.dir}">
-			<fileset dir="${images.dir}" />
-		</copy>
-		<copy todir="${build.dir.windows}/${lib.dir}">
-			<fileset dir="${lib.dir}" />
-		</copy>
-		<copy file="${debug.starter.windows}" tofile="${build.dir.windows}/${debug.starter.windows}" />
-		<copy todir="${build.dir.windows}/${jre.dir}">
-			<fileset dir="${windows.jre.dir}" />
-		</copy>
-	</target>
-	
-	<!-- Builds an NSIS installer for Windows -->
-	<target name="nsis" depends="copyWindows">
-	    <exec executable="${nsis.exe}" failonerror="true" >
-	    	<arg value="${nsis.config}"/>
-	    </exec>
-	</target>
-	
-	<!-- Runs the Mac build process -->
-	<target name="macBuild" if="is_macos">
-		<antcall target="copyMac" />
-	</target>
-	
-	<!-- Runs the Windows build process -->
-	<target name="windowsBuild" if="is_windows">
-		<antcall target="nsis" />
-	</target>
-	
-	<!-- Runs the build process -->
-	<target name="main" depends="macBuild, windowsBuild">
-		<description>Main target</description>
-	</target>
-</project> 

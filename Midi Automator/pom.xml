@@ -1,0 +1,175 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.midi.automator</groupId>
+	<artifactId>midi-automator</artifactId>
+	<version>1.0.2</version>
+
+	<!-- Project -->
+	<name>MIDI Automator</name>
+	<url>http://midi-automator.com</url>
+	<description>MIDI Automator is a desktop software for automating user actions (i.e. opening files, clicking buttons) triggered by midi messages.
+
+The main idea is to have a little helper for musicians who use laptops on stage. Most musicians use Ableton Live for that purpose. But they have to store their songs in one big live-set file which is hard to maintain. With MIDI Automator they can prepare and change an ordered set list containing single live-set files. MIDI Automator can listen to midi messages and load the next, previous or desired live-set file. All other features shall support the demand of a fully automated stage setup.
+
+MIDI Automator shall be hold as generic as possible, so that it can also handle other use cases that are way apart from the main idea.
+  </description>
+
+	<!-- Properties -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.base.package>com.midi.automator</project.base.package>
+		<project.main.class>${project.base.package}.Main</project.main.class>
+		<project.sikuli.class.path>lib/sikulixapi.jar</project.sikuli.class.path>
+		<project.dist.dir>build</project.dist.dir>
+
+		<!-- MacOS -->
+		<project.dist.dir.macos>${project.dist.dir}/MacOS</project.dist.dir.macos>
+		<project.dmg>${project.name}.dmg</project.dmg>
+		<project.dist.dir.dmg>${project.dist.dir.macos}/${project.dmg}</project.dist.dir.dmg>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>sikulixapi</id>
+			<url>http://oss.sonatype.org/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>com.sikulix</groupId>
+			<artifactId>sikulixapi</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Customize compiler version -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
+			<!-- Customize main class for JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${project.main.class}</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>${project.sikuli.class.path}</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<profiles>
+		<profile>
+			<id>MacOS</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+
+					<!-- Run ANT tasks for bundeling -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<property name="name" value="${project.name}" />
+										<property name="demo.dir" value="demo" />
+										<property name="filelist.file" value="file_list.mido" />
+										<property name="properties.file" value="midiautomator.properties" />
+										<property name="target.dir" value="${project.build.directory}" />
+										<property name="lib.dir" value="lib" />
+										<property name="images.dir" value="images" />
+										<property name="jar.file" value="${project.build.finalName}.jar" />
+										<property name="base.package" value="${project.base.package}" />
+										<property name="main.class" value="${project.main.class}" />
+										<property name="splashscreen.file" value="splash.png" />
+										<property name="encoding" value="${project.build.sourceEncoding}" />
+
+										<!-- MacOS -->
+										<property name="icon.file.macos" value="MidiAutomatorIcon.icns" />
+										<property name="dmgbackground.file" value="DMGBackground.png" />
+										<property name="dist.dmg" value="${project.dmg}" />
+
+										<ant />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Copy deployable packages -->
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.7</version>
+						<executions>
+							<execution>
+								<id>copy-resources</id>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.dist.dir.macos}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.build.directory}</directory>
+											<includes>
+												<include>${project.dmg}</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                </plugins>
+            </build>
+        </profile>
+	</profiles>
+
+</project>

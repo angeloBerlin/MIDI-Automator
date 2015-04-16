@@ -1,7 +1,7 @@
 **/.DS_Store
-**/DS_Store
 /build/
 /bin/
 /.settings/
 /.classpath
 /.project
+/target/
