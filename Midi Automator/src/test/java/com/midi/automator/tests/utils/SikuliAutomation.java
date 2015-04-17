@@ -23,7 +23,7 @@ public class SikuliAutomation {
 	protected static final double MIN_TIMEOUT = 0.5;
 	protected static final double DEFAULT_TIMEOUT = 5;
 	protected static final double MAX_TIMEOUT = 20;
-	protected static final Screen SCREEN = new Screen();
+	protected static Screen screen;
 	protected static String screenshotpath;
 	protected static String currentPath;
 	private static Region searchRegion;
@@ -33,6 +33,7 @@ public class SikuliAutomation {
 	 */
 	public SikuliAutomation() {
 
+		screen = new Screen(1);
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 		setMinSimilarity(DEFAULT_SIMILARITY);
@@ -53,7 +54,7 @@ public class SikuliAutomation {
 
 		SikuliAutomation.setSearchRegion(AllTests.getProgramRegion());
 		if (searchRegion == null) {
-			SikuliAutomation.setSearchRegion(SCREEN);
+			SikuliAutomation.setSearchRegion(screen);
 		}
 	}
 

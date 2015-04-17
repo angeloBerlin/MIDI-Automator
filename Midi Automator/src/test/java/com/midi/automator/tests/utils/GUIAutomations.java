@@ -186,7 +186,7 @@ public class GUIAutomations extends SikuliAutomation {
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "preferences.png", MAX_TIMEOUT);
 		match.click();
-		SikuliAutomation.setSearchRegion(SCREEN);
+		SikuliAutomation.setSearchRegion(screen);
 		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
 		match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "midi_automator_preferences.png", MAX_TIMEOUT);
@@ -335,13 +335,13 @@ public class GUIAutomations extends SikuliAutomation {
 		activateAutomationsTextField(scLabel, row);
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type("a", KeyModifier.CMD);
+			screen.type("a", KeyModifier.CMD);
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			SCREEN.type("a", KeyModifier.CTRL);
+			screen.type("a", KeyModifier.CTRL);
 		}
-		SCREEN.paste(value);
+		screen.paste(value);
 	}
 
 	/**
@@ -647,7 +647,7 @@ public class GUIAutomations extends SikuliAutomation {
 
 		try {
 			setMinSimilarity(LOW_SIMILARITY);
-			SikuliAutomation.setSearchRegion(SCREEN);
+			SikuliAutomation.setSearchRegion(screen);
 			Region searchRegion = findMultipleStateRegion(MAX_TIMEOUT,
 					"midi_automator.png");
 			setMinSimilarity(DEFAULT_SIMILARITY);
@@ -757,7 +757,7 @@ public class GUIAutomations extends SikuliAutomation {
 		try {
 
 			// check if file opened
-			SikuliAutomation.setSearchRegion(SCREEN);
+			SikuliAutomation.setSearchRegion(screen);
 			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
 			match.highlight(HIGHLIGHT_DURATION);
 
@@ -782,10 +782,10 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void hideFocusedProgram() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type("h", KeyModifier.CMD);
+			screen.type("h", KeyModifier.CMD);
 		}
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			SCREEN.type(Key.DOWN, KeyModifier.WIN);
+			screen.type(Key.DOWN, KeyModifier.WIN);
 		}
 	}
 
@@ -794,10 +794,10 @@ public class GUIAutomations extends SikuliAutomation {
 	 */
 	public static void closeFocusedProgram() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type("q", Key.CMD);
+			screen.type("q", Key.CMD);
 		}
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
+			screen.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
 		}
 	}
 
@@ -809,7 +809,7 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void unhideMidiAutomator() throws FindFailed {
 		// show Midi Automator
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type(Key.TAB, Key.CMD);
+			screen.type(Key.TAB, Key.CMD);
 
 			// MAc Dock not recognized by Sikuli
 			// Region match = SCREEN.wait(screenshotpath
@@ -817,8 +817,8 @@ public class GUIAutomations extends SikuliAutomation {
 			// match.click();
 		}
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			SCREEN.type(Key.TAB, Key.ALT);
-			SCREEN.type(Key.TAB, Key.ALT);
+			screen.type(Key.TAB, Key.ALT);
+			screen.type(Key.TAB, Key.ALT);
 		}
 	}
 
@@ -875,13 +875,13 @@ public class GUIAutomations extends SikuliAutomation {
 		match.click(match.offset(50, 0));
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type("a", KeyModifier.CMD);
+			screen.type("a", KeyModifier.CMD);
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			SCREEN.type("a", KeyModifier.CTRL);
+			screen.type("a", KeyModifier.CTRL);
 		}
-		SCREEN.paste(text);
+		screen.paste(text);
 	}
 
 	/**
