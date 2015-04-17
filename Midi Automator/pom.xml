@@ -22,12 +22,31 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.base.package>com.midi.automator</project.base.package>
 		<project.main.class>${project.base.package}.Main</project.main.class>
 		<project.sikuli.class.path>lib/sikulixapi.jar</project.sikuli.class.path>
-		<project.dist.dir>build</project.dist.dir>
+		<project.dist.dir>dist</project.dist.dir>
+		<project.filelist.file>file_list.mido</project.filelist.file>
+		<project.properties.file>midiautomator.properties</project.properties.file>
+		<project.lib.dir>lib</project.lib.dir>
+		<project.splashscreen.file>splash.png</project.splashscreen.file>
+		<project.images.dir>images</project.images.dir>
+		<project.demo.dir>demo</project.demo.dir>
+		<project.jre.dir>jre</project.jre.dir>
 
 		<!-- MacOS -->
 		<project.dist.dir.macos>${project.dist.dir}/MacOS</project.dist.dir.macos>
 		<project.dmg>${project.name}.dmg</project.dmg>
 		<project.dist.dir.dmg>${project.dist.dir.macos}/${project.dmg}</project.dist.dir.dmg>
+		<project.icon.file.macos>MidiAutomatorIcon.icns</project.icon.file.macos>
+		<project.dmgbackground.file>DMGBackground.png</project.dmgbackground.file>
+
+		<!-- Windows -->
+		<project.dist.dir.windows>${project.dist.dir}/Windows</project.dist.dir.windows>
+		<project.nsis.outfile>../${project.dist.dir.windows}/midiautomator_setup.exe</project.nsis.outfile>
+		<project.exe.file>${project.name}.exe</project.exe.file>
+		<project.icon.file.windows>MidiAutomatorIcon.ico</project.icon.file.windows>
+		<project.makensis.exe>${env.PROGRAMFILES(X86)}\NSIS\makensis.exe</project.makensis.exe>
+		<project.nsis.config>NSIS/installer.nsi</project.nsis.config>
+		<project.nsis.build.dir>NSIS/build</project.nsis.build.dir>
+		<project.jre.windows.dir>jre/Windows</project.jre.windows.dir>
 	</properties>
 
 	<repositories>
@@ -36,6 +55,19 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<url>http://oss.sonatype.org/content/groups/public</url>
 		</repository>
 	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Codehaus Snapshots</id>
+			<url>http://nexus.codehaus.org/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<!-- Dependencies -->
 	<dependencies>
@@ -104,23 +136,20 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 								<configuration>
 									<target>
 										<property name="name" value="${project.name}" />
-										<property name="demo.dir" value="demo" />
-										<property name="filelist.file" value="file_list.mido" />
-										<property name="properties.file" value="midiautomator.properties" />
+										<property name="demo.dir" value="${project.demo.dir}" />
+										<property name="filelist.file" value="${project.filelist.file}" />
+										<property name="properties.file" value="${project.properties.file}" />
 										<property name="target.dir" value="${project.build.directory}" />
-										<property name="lib.dir" value="lib" />
-										<property name="images.dir" value="images" />
+										<property name="lib.dir" value="${project.lib.dir}" />
+										<property name="images.dir" value="${project.images.dir}" />
 										<property name="jar.file" value="${project.build.finalName}.jar" />
 										<property name="base.package" value="${project.base.package}" />
 										<property name="main.class" value="${project.main.class}" />
-										<property name="splashscreen.file" value="splash.png" />
+										<property name="splashscreen.file" value="${project.splashscreen.file}" />
 										<property name="encoding" value="${project.build.sourceEncoding}" />
-
-										<!-- MacOS -->
-										<property name="icon.file.macos" value="MidiAutomatorIcon.icns" />
-										<property name="dmgbackground.file" value="DMGBackground.png" />
+										<property name="icon.file.macos" value="${project.icon.file.macos}" />
+										<property name="dmgbackground.file" value="${project.dmgbackground.file}" />
 										<property name="dist.dmg" value="${project.dmg}" />
-
 										<ant />
 									</target>
 								</configuration>
@@ -158,18 +187,159 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			</build>
 		</profile>
 
-        <profile>
-            <id>Windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                </plugins>
-            </build>
-        </profile>
+		<profile>
+			<id>Windows</id>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+
+					<!-- Run Launch4j to build an .exe -->
+					<plugin>
+						<groupId>com.akathist.maven.plugins.launch4j</groupId>
+						<artifactId>launch4j-maven-plugin</artifactId>
+						<version>1.7.5</version>
+						<executions>
+							<execution>
+								<id>l4j-clui</id>
+								<phase>package</phase>
+								<goals>
+									<goal>launch4j</goal>
+								</goals>
+								<configuration>
+									<headerType>gui</headerType>
+									<jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+									<outfile>${project.build.directory}/${project.exe.file}</outfile>
+									<cmdLine>-wd=&quot;%APPDATA%\\${project.name}&quot;\\</cmdLine>
+									<classPath>
+										<mainClass>${project.main.class}</mainClass>
+									</classPath>
+									<icon>${project.images.dir}/${project.icon.file.windows}</icon>
+									<jre>
+										<minVersion>1.7.0</minVersion>
+										<maxVersion>1.7.9</maxVersion>
+										<jdkPreference>preferJre</jdkPreference>
+										<runtimeBits>64</runtimeBits>
+										<opts>
+											<opt>-splash:images/${project.splashscreen.file}</opt>
+											<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt>
+										</opts>
+									</jre>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Copy resources for NSIS installer -->
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.7</version>
+						<executions>
+							<execution>
+								<id>copy-artifacts</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.nsis.build.dir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.build.directory}</directory>
+											<includes>
+												<include>${project.exe.file}</include>
+												<include>${project.build.finalName}.jar</include>
+											</includes>
+										</resource>
+										<resource>
+											<directory>${project.demo.dir}</directory>
+											<includes>
+												<include>${project.filelist.file}</include>
+												<include>${project.properties.file}</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+							<execution>
+								<id>copy-images</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.nsis.build.dir}/${project.images.dir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.images.dir}</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+							<execution>
+								<id>copy-libs</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.nsis.build.dir}/${project.lib.dir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.lib.dir}</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+							<execution>
+								<id>copy-jre</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.nsis.build.dir}/${project.jre.dir}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.jre.windows.dir}</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Build NSIS installer -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>nsis-maven-plugin</artifactId>
+						<version>1.0-SNAPSHOT</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>generate-project</goal>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<makensisBin>${project.makensis.exe}</makensisBin>
+									<setupScript>${project.nsis.config}</setupScript>
+									<outputFile>${project.nsis.outfile}</outputFile>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 </project>

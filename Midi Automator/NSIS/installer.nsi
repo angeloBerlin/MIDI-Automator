@@ -5,16 +5,15 @@
 !include "MUI.nsh"
 !include "EnvVarUpdate.nsh"
 
-Name "Midi Automator Installer"
+Name "MIDI Automator Installer"
 !define INSTALLATIONNAME "Midi Automator"
 !define PROJECTPATH "..\"
 !define ICON "MidiAutomatorIcon.ico"
 !define EXE "${INSTALLATIONNAME}.exe"
 !define LNK "${INSTALLATIONNAME}.lnk"
-!define DISTDIR "..\build\Windows"
+!define BUILD "NSIS\build"
 !define UNINSTALLER "uninstall.exe"
 !define APPDIR "$APPDATA\${INSTALLATIONNAME}"
-OutFile "${DISTDIR}\midiautomator_setup.exe"
 InstallDir "$PROGRAMFILES64\${INSTALLATIONNAME}"
 
 !insertmacro MUI_PAGE_DIRECTORY
@@ -31,13 +30,13 @@ Section
     SetOutPath $INSTDIR
     SetOverwrite on
     File "${PROJECTPATH}\images\${ICON}"
-    File /r /x "file_list.mido" "${PROJECTPATH}\bin\Windows\*"
-    File /r /x "midiautomator.properties" "${PROJECTPATH}\bin\Windows\*"
+    File /r /x "file_list.mido" "${PROJECTPATH}\${BUILD}\*"
+    File /r /x "midiautomator.properties" "${PROJECTPATH}\${BUILD}\*"
     
     # Copy files to data directory
     SetOutPath "${APPDIR}"
-    File "${PROJECTPATH}\bin\Windows\file_list.mido"
-    File "${PROJECTPATH}\bin\Windows\midiautomator.properties"
+    File "${PROJECTPATH}\${BUILD}\file_list.mido"
+    File "${PROJECTPATH}\${BUILD}\midiautomator.properties"
     WriteUninstaller $INSTDIR\${UNINSTALLER}
     
     # Set PATH environment variable
@@ -52,7 +51,7 @@ Section
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayIcon" '"$INSTDIR\${ICON}"'
     WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "UninstallString" '"$INSTDIR\${UNINSTALLER}"'
     WriteRegExpandStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "InstallLocation" '"$INSTDIR"'
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "Publisher" "Angelo G�lle"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "Publisher" "Angelo Gülle"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "NoRepair" 1
 SectionEnd
