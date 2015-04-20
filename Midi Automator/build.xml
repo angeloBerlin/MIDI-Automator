@@ -11,7 +11,7 @@
 	<!-- Generates a MacOS Bundle from the jar -->
 	<target name="macbundle">
 		<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-			classpath="lib/appBundler-1.0.jar" />
+			classpath="ant/appBundler-1.0.jar" />
 		<bundleapp outputdirectory="${target.dir}" name="${name}"
 			displayname="${name}" identifier="${base.package}" icon="${images.dir}/${icon.file.macos}"
 			mainclassname="${main.class}">
@@ -28,9 +28,6 @@
 		<copy file="${demo.dir}/${properties.file}" tofile="${macos.bundle.dir}/Resources/${properties.file}" />
 		<copy todir="${macos.bundle.dir}/Resources/${images.dir}">
 			<fileset dir="${images.dir}" />
-		</copy>
-		<copy todir="${macos.bundle.dir}/Java/${lib.dir}">
-			<fileset dir="${lib.dir}" />
 		</copy>
 	</target>
 

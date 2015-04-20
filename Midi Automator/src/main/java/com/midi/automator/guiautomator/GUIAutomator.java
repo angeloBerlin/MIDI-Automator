@@ -35,7 +35,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	public GUIAutomator(boolean debug) {
 		this.DEBUG = debug;
-		SCREEN = new Screen();
+		SCREEN = new Screen(1);
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.MinSimilarity = MIN_SIMILARITY;
 		Settings.CheckLastSeenSimilar = MIN_SIMILARITY;

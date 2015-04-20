@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi.automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -18,14 +18,19 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 
 	<!-- Properties -->
 	<properties>
+		<skipTests>true</skipTests>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.base.package>com.midi.automator</project.base.package>
 		<project.main.class>${project.base.package}.Main</project.main.class>
-		<project.sikuli.class.path>lib/sikulixapi.jar</project.sikuli.class.path>
 		<project.dist.dir>dist</project.dist.dir>
 		<project.filelist.file>file_list.mido</project.filelist.file>
 		<project.properties.file>midiautomator.properties</project.properties.file>
 		<project.lib.dir>lib</project.lib.dir>
+		<project.sikulix.version>1.1.0-SNAPSHOT</project.sikulix.version>
+		<project.sikuli.class.path>${project.lib.dir}/${project.sikulixapi.jar}</project.sikuli.class.path>
+		<project.jar.descriptor.ref>jar-with-dependencies</project.jar.descriptor.ref>
+		<project.jar>${project.build.finalName}-${project.jar.descriptor.ref}.jar</project.jar>
 		<project.splashscreen.file>splash.png</project.splashscreen.file>
 		<project.images.dir>images</project.images.dir>
 		<project.demo.dir>demo</project.demo.dir>
@@ -51,8 +56,13 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 
 	<repositories>
 		<repository>
-			<id>sikulixapi</id>
+			<id>com.sikulix</id>
+			<name>com.sikulix</name>
 			<url>http://oss.sonatype.org/content/groups/public</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -74,7 +84,13 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<dependency>
 			<groupId>com.sikulix</groupId>
 			<artifactId>sikulixapi</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
+			<version>${project.sikulix.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -90,27 +106,47 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-
-			<!-- Customize main class for JAR -->
+            
+            <!-- Build fat JAR -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<archive>
 						<manifest>
 							<mainClass>${project.main.class}</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
-						<manifestEntries>
-							<Class-Path>${project.sikuli.class.path}</Class-Path>
-						</manifestEntries>
 					</archive>
+					<descriptorRefs>
+						<descriptorRef>${project.jar.descriptor.ref}</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 			</plugin>
+
+			<!-- Cancel build of normal JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
-
 
 	<profiles>
 		<profile>
@@ -142,7 +178,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 										<property name="target.dir" value="${project.build.directory}" />
 										<property name="lib.dir" value="${project.lib.dir}" />
 										<property name="images.dir" value="${project.images.dir}" />
-										<property name="jar.file" value="${project.build.finalName}.jar" />
+										<property name="jar.file" value="${project.jar}" />
 										<property name="base.package" value="${project.base.package}" />
 										<property name="main.class" value="${project.main.class}" />
 										<property name="splashscreen.file" value="${project.splashscreen.file}" />
@@ -151,6 +187,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 										<property name="dmgbackground.file" value="${project.dmgbackground.file}" />
 										<property name="dist.dmg" value="${project.dmg}" />
 										<ant />
+										<!-- for debugging purposes <echo></echo> -->
 									</target>
 								</configuration>
 							</execution>
@@ -211,7 +248,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 								</goals>
 								<configuration>
 									<headerType>gui</headerType>
-									<jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+									<jar>${project.jar}</jar>
 									<outfile>${project.build.directory}/${project.exe.file}</outfile>
 									<cmdLine>-wd=&quot;%APPDATA%\\${project.name}&quot;\\</cmdLine>
 									<classPath>

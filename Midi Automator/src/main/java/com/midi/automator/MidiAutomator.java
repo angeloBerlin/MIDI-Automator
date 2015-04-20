@@ -39,7 +39,7 @@ public class MidiAutomator implements IApplication {
 
 	private final boolean DEBUG;
 	private final boolean TEST;
-	private final String VERSION = "1.0.2";
+	private final String VERSION = "1.0.3";
 	private final IModel MODEL;
 	private final Resources resources;
 	private final MidiAutomatorProperties PROPERTIES;
@@ -95,8 +95,9 @@ public class MidiAutomator implements IApplication {
 	 * @param debug
 	 *            <TRUE> debug information will be written to console, <FALSE>
 	 *            no debug information to console
-	 * @param test <TRUE> Program GUI will be opened on left monitor side with top margin, <FALSE>
-	 *            normal mode
+	 * @param test
+	 *            <TRUE> Program GUI will be opened on left monitor side with
+	 *            top margin, <FALSE> normal mode
 	 */
 	public MidiAutomator(String wd, String os, String fileName, boolean debug,
 			boolean test) {
