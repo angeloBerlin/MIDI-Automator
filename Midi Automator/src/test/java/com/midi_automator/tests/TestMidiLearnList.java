@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.tests.utils.GUIAutomations;
-import com.midi_automator.tests.utils.MidiUtils;
 import com.midi_automator.tests.utils.MockUpUtils;
+import com.midi_automator.utils.MidiUtils;
 
 public class TestMidiLearnList extends GUITest {
 

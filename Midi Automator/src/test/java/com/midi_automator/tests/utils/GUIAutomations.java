@@ -9,6 +9,8 @@ import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
 import org.sikuli.script.Region;
 
+import com.midi_automator.utils.SystemUtils;
+
 public class GUIAutomations extends SikuliAutomation {
 
 	/**

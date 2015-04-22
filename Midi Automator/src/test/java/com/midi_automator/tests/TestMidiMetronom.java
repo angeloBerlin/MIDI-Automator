@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.tests.utils.GUIAutomations;
-import com.midi_automator.tests.utils.MidiUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
+import com.midi_automator.utils.MidiUtils;
 
 public class TestMidiMetronom extends GUITest {
 

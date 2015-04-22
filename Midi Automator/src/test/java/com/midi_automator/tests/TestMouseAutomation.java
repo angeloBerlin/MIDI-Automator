@@ -13,9 +13,9 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import com.midi_automator.tests.utils.GUIAutomations;
-import com.midi_automator.tests.utils.MidiUtils;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
+import com.midi_automator.utils.MidiUtils;
 
 public class TestMouseAutomation extends GUITest {
 

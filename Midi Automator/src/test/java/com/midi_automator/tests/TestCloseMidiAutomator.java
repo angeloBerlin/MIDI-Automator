@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.tests.utils.GUIAutomations;
-import com.midi_automator.tests.utils.SystemUtils;
+import com.midi_automator.utils.SystemUtils;
 
 public class TestCloseMidiAutomator extends GUITest {
 
