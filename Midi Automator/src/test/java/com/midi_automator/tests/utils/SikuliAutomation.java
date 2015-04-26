@@ -7,11 +7,11 @@ import org.sikuli.basics.Settings;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 
-import com.midi_automator.tests.AllTests;
+import com.midi_automator.tests.AllIntegrationTests;
 
 public class SikuliAutomation {
 
-	private final float MOVE_MOUSE_DELAY = 0;
+	private final float MOVE_MOUSE_DELAY = 0.2f;
 	private final boolean CHECK_LAST_SEEN = true;
 	protected static final float MAX_SIMILARITY = 0.999f;
 	protected static final float HIGH_SIMILARITY = 0.99f;
@@ -52,7 +52,8 @@ public class SikuliAutomation {
 			e1.printStackTrace();
 		}
 
-		SikuliAutomation.setSearchRegion(AllTests.getProgramRegion());
+		SikuliAutomation
+				.setSearchRegion(AllIntegrationTests.getProgramRegion());
 		if (searchRegion == null) {
 			SikuliAutomation.setSearchRegion(screen);
 		}

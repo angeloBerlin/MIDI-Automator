@@ -10,7 +10,7 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class TestDeleteFile extends GUITest {
+public class DeleteFileITCase extends IntegrationTestCase {
 
 	@Test
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {

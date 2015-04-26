@@ -10,14 +10,14 @@ import org.sikuli.script.Region;
 import com.midi_automator.tests.utils.SikuliAutomation;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestOpenMidiAutomator.class, TestAddFile.class,
-		TestOpenFile.class, TestEditFile.class, TestDeleteFile.class,
-		TestMoveUpDownFile.class, TestSwitchButtons.class,
-		TestMidiLearnSwitchButtons.class, TestMidiLearnList.class,
-		TestMidiRemoteOpen.class, TestMidiRemoteOut.class,
-		TestMidiMetronom.class, TestMidiNotifierOut.class,
-		TestMouseAutomation.class, TestCloseMidiAutomator.class })
-public class AllTests extends SikuliAutomation {
+@SuiteClasses({ OpenMidiAutomatorITCase.class, AddFileITCase.class,
+		OpenFileITCase.class, EditFileITCase.class, DeleteFileITCase.class,
+		MoveUpDownFileITCase.class, SwitchButtonsITCase.class,
+		MidiLearnSwitchButtonsITCase.class, MidiLearnListITCase.class,
+		MidiRemoteOpenITCase.class, MidiRemoteOutITCase.class,
+		MidiMetronomITCase.class, MidiNotifierOutITCase.class,
+		MouseAutomationITCase.class, CloseMidiAutomatorITCase.class })
+public class AllIntegrationTests extends SikuliAutomation {
 
 	private static Region programRegion;
 
@@ -36,7 +36,7 @@ public class AllTests extends SikuliAutomation {
 	}
 
 	public static void setProgramRegion(Region programRegion) {
-		AllTests.programRegion = programRegion;
+		AllIntegrationTests.programRegion = programRegion;
 	}
 
 }

@@ -20,24 +20,23 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<url>http://opensource.org/licenses/MIT</url>
 		</license>
 	</licenses>
-	 <developers>
-        <developer>
-            <id>aguelle</id>
-            <name>Angelo Gülle</name>
-            <email>angelo@tieffrequent.de</email>
-            <roles>
-                <role>project owner</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>aguelle</id>
+			<name>Angelo Gülle</name>
+			<email>angelo@tieffrequent.de</email>
+			<roles>
+				<role>project owner</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
 
 	<!-- Properties -->
 	<properties>
-		<skipTests>true</skipTests>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.base.package>com.midi.automator</project.base.package>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.base.package>com.midi_automator</project.base.package>
 		<project.main.class>${project.base.package}.Main</project.main.class>
 		<project.dist.dir>dist</project.dist.dir>
 		<project.filelist.file>file_list.mido</project.filelist.file>
@@ -69,6 +68,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.jre.windows.dir>jre/Windows</project.jre.windows.dir>
 	</properties>
 
+	<!-- Repositories -->
 	<repositories>
 		<repository>
 			<id>com.sikulix</id>
@@ -160,10 +160,49 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 				</executions>
 			</plugin>
 
+			<!-- Prepare integration tests -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>my-execution</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.midi_automator.tests.preparation.Main</mainClass>
+					<classpathScope>test</classpathScope>
+				</configuration>
+			</plugin>
+
+			<!-- Run integration tests -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
+	<!-- Profiles -->
 	<profiles>
+
+		<!-- MacProfile -->
 		<profile>
 			<id>MacOS</id>
 			<activation>
@@ -216,7 +255,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 						<executions>
 							<execution>
 								<id>copy-resources</id>
-								<phase>integration-test</phase>
+								<phase>package</phase>
 								<goals>
 									<goal>copy-resources</goal>
 								</goals>
@@ -239,6 +278,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			</build>
 		</profile>
 
+		<!-- Windows Profile -->
 		<profile>
 			<id>Windows</id>
 			<activation>

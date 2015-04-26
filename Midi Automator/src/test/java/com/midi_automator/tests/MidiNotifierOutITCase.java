@@ -11,21 +11,22 @@ import javax.sound.midi.Receiver;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Region;
 
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
+import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
 
-public class TestMidiRemoteOut extends GUITest {
+public class MidiNotifierOutITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private MidiDevice device;
 	private Receiver receiver;
 	private String deviceScreenshot;
 	private String receivedSignature;
-	private int remoteTimeout = 3000;
 
-	public TestMidiRemoteOut() {
+	public MidiNotifierOutITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";
@@ -47,45 +48,63 @@ public class TestMidiRemoteOut extends GUITest {
 	}
 
 	@Test
-	public void masterOutMessageShouldBeSent() {
+	public void notifierMessageShouldBeSentAtOpen() {
 
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-
 			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
-					"combo_box_midi_master_out.png", deviceScreenshot);
+					"combo_box_midi_notifier_out.png", deviceScreenshot);
 			GUIAutomations.openEntryByDoubleClick(
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png",
 					"Hello_World_1_entry.png");
 
 			// check if midi master message was sent
-			Thread.sleep(remoteTimeout);
-			if (!"channel 1: CONTROL CHANGE 102 value: 0"
+			Thread.sleep(1000);
+			if (!"channel 1: CONTROL CHANGE 103 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
 						+ " is wrong master signature for index 0.");
-			}
-
-			GUIAutomations.openEntryByDoubleClick(
-					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry_inactive.png",
-					"Hello_World_2_entry.png");
-
-			// check if midi master message was sent
-			Thread.sleep(remoteTimeout);
-			if (!"channel 1: CONTROL CHANGE 102 value: 1"
-					.equals(receivedSignature)) {
-				fail(receivedSignature
-						+ " is wrong master signature for index 1.");
 			}
 
 		} catch (FindFailed | IOException | InterruptedException e) {
 			fail(e.toString());
 		} finally {
 			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void notifierMessageShouldBeSentByButton() {
+
+		try {
+			// mockup
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.setPreferencesComboBox(
+					"combo_box_midi_notifier_out.png", deviceScreenshot);
+			// hit send button
+			Region match = SikuliAutomation.getSearchRegion().wait(
+					screenshotpath + "send_button.png", MAX_TIMEOUT);
+			match.click();
+
+			// check if midi master message was sent
+			Thread.sleep(1000);
+			if (!"channel 1: CONTROL CHANGE 103 value: 127"
+					.equals(receivedSignature)) {
+				fail(receivedSignature + " is wrong signature for notifier.");
+			}
+
+		} catch (FindFailed | IOException | InterruptedException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.cancelDialog();
 				GUIAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();

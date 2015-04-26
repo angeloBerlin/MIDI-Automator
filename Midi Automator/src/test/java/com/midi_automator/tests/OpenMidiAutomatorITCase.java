@@ -9,7 +9,7 @@ import org.sikuli.script.FindFailed;
 
 import com.midi_automator.tests.utils.GUIAutomations;
 
-public class TestOpenMidiAutomator extends GUITest {
+public class OpenMidiAutomatorITCase extends IntegrationTestCase {
 
 	@Test
 	public void programShallBeOpened() {

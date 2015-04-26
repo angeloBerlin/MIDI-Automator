@@ -14,6 +14,88 @@ import com.midi_automator.utils.SystemUtils;
 public class GUIAutomations extends SikuliAutomation {
 
 	/**
+	 * Opens the Midi Automator installer
+	 * 
+	 * @throws IOException
+	 * @throws FindFailed
+	 */
+	public static void openMidiAutomatorInstaller() throws IOException,
+			FindFailed {
+
+		String[] command = null;
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			command = new String[] { "open", "-n", "target/MIDI Automator.dmg" };
+		}
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			command = new String[] { "target\\midiautomator_setup.exe" };
+		}
+
+		Runtime.getRuntime().exec(command);
+		focusMidiAutomatorInstaller();
+	}
+
+	/**
+	 * Closes the Midi Automator installer
+	 * 
+	 * @throws IOException
+	 */
+	public static void closeMidiAutomatorInstaller() throws IOException {
+
+		String[] command = null;
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			command = new String[] { "diskutil", "unmountDisk",
+					"/Volumes/MIDI Automator" };
+			Runtime.getRuntime().exec(command);
+		}
+
+	}
+
+	/**
+	 * Finds the region of the Midi Automator installer main Window
+	 * 
+	 * @return the found region
+	 * @throws FindFailed
+	 */
+	public static Region findMidiAutomatorInstallerRegion() throws FindFailed {
+
+		try {
+			setMinSimilarity(LOW_SIMILARITY);
+			SikuliAutomation.setSearchRegion(screen);
+			Region searchRegion = findMultipleStateRegion(MAX_TIMEOUT,
+					"midi_automator_installer.png");
+			setMinSimilarity(DEFAULT_SIMILARITY);
+			searchRegion.y -= 41;
+			searchRegion.h += 41;
+			return searchRegion;
+		} catch (FindFailed e) {
+			System.err.println("findMidiAutomatorInstallerRegion() failed");
+			throw e;
+		}
+	}
+
+	/**
+	 * Sets the focus on the Midi Automator installer window
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void focusMidiAutomatorInstaller() throws FindFailed {
+		try {
+			SikuliAutomation
+					.setSearchRegion(findMidiAutomatorInstallerRegion());
+			Region match = findMultipleStateRegion(DEFAULT_TIMEOUT,
+					"Midi_Automator_installer_title.png",
+					"Midi_Automator_installer_title_inactive.png");
+			match.click(match.offset(50, 20));
+		} catch (FindFailed e) {
+			System.err.println("focusMidiAutomatorInstaller() failed");
+			throw e;
+		}
+	}
+
+	/**
 	 * Opens the Midi Automator program
 	 * 
 	 * @throws IOException

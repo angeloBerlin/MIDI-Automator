@@ -15,7 +15,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class TestMidiLearnList extends GUITest {
+public class MidiLearnListITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private String deviceScreenshot;
@@ -30,7 +30,7 @@ public class TestMidiLearnList extends GUITest {
 	private int masterChannel = 1;
 	private int masterControlNo = 102;
 
-	public TestMidiLearnList() {
+	public MidiLearnListITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";

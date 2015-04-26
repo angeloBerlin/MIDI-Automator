@@ -10,7 +10,7 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class TestSwitchButtons extends GUITest {
+public class SwitchButtonsITCase extends IntegrationTestCase {
 
 	@Test
 	public void nextButtonNotActiveOnEmptyList() {

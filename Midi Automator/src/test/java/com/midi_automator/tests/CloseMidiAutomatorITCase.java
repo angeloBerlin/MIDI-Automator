@@ -10,7 +10,7 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.utils.SystemUtils;
 
-public class TestCloseMidiAutomator extends GUITest {
+public class CloseMidiAutomatorITCase extends IntegrationTestCase {
 
 	@Test
 	public void programShallBeClosed() {

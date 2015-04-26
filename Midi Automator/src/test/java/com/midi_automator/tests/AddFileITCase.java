@@ -10,7 +10,7 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class TestAddFile extends GUITest {
+public class AddFileITCase extends IntegrationTestCase {
 
 	@Test
 	public void newFileShouldBeAdded() {

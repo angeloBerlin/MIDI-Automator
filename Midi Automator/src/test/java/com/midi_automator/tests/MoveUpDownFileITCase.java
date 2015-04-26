@@ -11,7 +11,7 @@ import org.sikuli.script.Region;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class TestMoveUpDownFile extends GUITest {
+public class MoveUpDownFileITCase extends IntegrationTestCase {
 
 	@Test
 	public void moveUpDownMenuShouldBeDisabledIfListIsEmpty() {

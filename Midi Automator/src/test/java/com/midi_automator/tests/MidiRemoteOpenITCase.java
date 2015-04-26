@@ -15,7 +15,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class TestMidiRemoteOpen extends GUITest {
+public class MidiRemoteOpenITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private String propertiesFile;
@@ -23,7 +23,7 @@ public class TestMidiRemoteOpen extends GUITest {
 	private int channel = 1;
 	private int controlNo = 102;
 
-	public TestMidiRemoteOpen() {
+	public MidiRemoteOpenITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			propertiesFile = "RemoteINBus_1.properties";

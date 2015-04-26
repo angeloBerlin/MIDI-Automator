@@ -10,7 +10,7 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class TestEditFile extends GUITest {
+public class EditFileITCase extends IntegrationTestCase {
 
 	@Test
 	public void editMenuShouldBeDisabledIfListIsEmpty() {

@@ -15,7 +15,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class TestMidiLearnSwitchButtons extends GUITest {
+public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private String deviceScreenshot;
@@ -25,7 +25,7 @@ public class TestMidiLearnSwitchButtons extends GUITest {
 	private int controlNo = 106;
 	private int value = 127;
 
-	public TestMidiLearnSwitchButtons() {
+	public MidiLearnSwitchButtonsITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";

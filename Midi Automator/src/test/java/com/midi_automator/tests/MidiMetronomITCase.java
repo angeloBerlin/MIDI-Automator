@@ -15,7 +15,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
 
-public class TestMidiMetronom extends GUITest {
+public class MidiMetronomITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private String deviceScreenshot;
@@ -30,7 +30,7 @@ public class TestMidiMetronom extends GUITest {
 	private int clickPause = 110; // in ms, do not decrease as LoopBe fill
 									// recognize it as false loop
 
-	public TestMidiMetronom() {
+	public MidiMetronomITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			deviceScreenshot = "Bus_1.png";

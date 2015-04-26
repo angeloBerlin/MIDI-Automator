@@ -8,7 +8,7 @@ import org.junit.rules.TestName;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
 
-public class GUITest extends SikuliAutomation {
+public class IntegrationTestCase extends SikuliAutomation {
 
 	@Rule
 	public TestName name = new TestName();
