@@ -25,7 +25,7 @@ public class CloseMidiAutomatorITCase extends IntegrationTestCase {
 
 				String[] cmd = { "/bin/sh", "-c",
 						"ps -ax | grep \"Midi Automator\"" };
-				String output = SystemUtils.runShellCommand(cmd);
+				String output = SystemUtils.runShellCommand(cmd).getOutput();
 
 				if (output.contains("Midi Automator.app")) {
 					fail("Process still active");
@@ -35,7 +35,7 @@ public class CloseMidiAutomatorITCase extends IntegrationTestCase {
 			if (System.getProperty("os.name").equals("Windows 7")) {
 
 				String[] cmd = { "cmd", "/c", "wmic process list" };
-				String output = SystemUtils.runShellCommand(cmd);
+				String output = SystemUtils.runShellCommand(cmd).getOutput();
 
 				if (output.contains("Midi Automator\\jre\\bin\\javaw.exe")) {
 					fail("Process still active");

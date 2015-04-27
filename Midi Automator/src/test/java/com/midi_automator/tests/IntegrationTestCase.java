@@ -16,7 +16,8 @@ public class IntegrationTestCase extends SikuliAutomation {
 	@Before
 	public void log() {
 		System.out.println();
-		System.out.println("Running Test: " + name.getMethodName());
+		System.out.println("Running Test: " + this.getClass().getSimpleName()
+				+ " - " + name.getMethodName());
 		System.out
 				.println("====================================================");
 	}

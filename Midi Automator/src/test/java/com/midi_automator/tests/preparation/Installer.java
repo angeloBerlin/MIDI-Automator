@@ -31,10 +31,29 @@ public class Installer extends IntegrationTestCase {
 
 				match.dragDrop(screenshotpath + "Midi_automator_app_icon.png",
 						screenshotpath + "Applications_icon.png");
-				match = screen.wait(screenshotpath + "ersetzen_button.png",
-						MAX_TIMEOUT);
+				match = GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+						"ersetzen_button.png");
 				match.click();
 				Thread.sleep(5000);
+			}
+
+			// Windows
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
+						"NSIS_install_button_active.png",
+						"NSIS_install_button.png");
+				match.click();
+				
+				// wait for installer to finish
+				boolean foundCloseButtonActive = false;
+				while (!foundCloseButtonActive) {
+					try {
+						GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+								"NSIS_close_button_active.png");
+						foundCloseButtonActive = true;
+					} catch (FindFailed e) {
+					}
+				}
 			}
 
 			GUIAutomations.closeMidiAutomatorInstaller();

@@ -59,7 +59,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 
 		<!-- Windows -->
 		<project.dist.dir.windows>${project.dist.dir}/Windows</project.dist.dir.windows>
-		<project.nsis.outfile>../${project.dist.dir.windows}/midiautomator_setup.exe</project.nsis.outfile>
+		<project.nsis.outfile>midiautomator_setup.exe</project.nsis.outfile>
 		<project.exe.file>${project.name}.exe</project.exe.file>
 		<project.icon.file.windows>MidiAutomatorIcon.ico</project.icon.file.windows>
 		<project.makensis.exe>${env.PROGRAMFILES(X86)}\NSIS\makensis.exe</project.makensis.exe>
@@ -111,7 +111,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 
 	<build>
 		<plugins>
-
+		
 			<!-- Customize compiler version -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -248,14 +248,14 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 						</executions>
 					</plugin>
 
-					<!-- Copy deployable packages -->
+					<!-- Copy deployable packages to dist folder -->
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
 						<version>2.7</version>
 						<executions>
 							<execution>
 								<id>copy-resources</id>
-								<phase>package</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>copy-resources</goal>
 								</goals>
@@ -325,11 +325,25 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 						</executions>
 					</plugin>
 
-					<!-- Copy resources for NSIS installer -->
+					<!-- Clean NSIS build directory -->
+					<plugin>
+						<artifactId>maven-clean-plugin</artifactId>
+						<version>2.6.1</version>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${project.nsis.build.dir}</directory>
+								</fileset>
+							</filesets>
+						</configuration>
+					</plugin>
+
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
 						<version>2.7</version>
 						<executions>
+						    
+						    <!-- Copy resources for NSIS installer -->
 							<execution>
 								<id>copy-artifacts</id>
 								<phase>package</phase>
@@ -405,6 +419,27 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									</resources>
 								</configuration>
 							</execution>
+							
+							<!-- Copy deployable packages to dist folder -->
+							<execution>
+                                <id>copy-resources</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.dist.dir.windows}</outputDirectory>
+                                    <overwrite>true</overwrite>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>${project.nsis.outfile}</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
 						</executions>
 					</plugin>
 
@@ -423,7 +458,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 								<configuration>
 									<makensisBin>${project.makensis.exe}</makensisBin>
 									<setupScript>${project.nsis.config}</setupScript>
-									<outputFile>${project.nsis.outfile}</outputFile>
+									<outputFile>${project.build.directory}/${project.nsis.outfile}</outputFile>
 								</configuration>
 							</execution>
 						</executions>

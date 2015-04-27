@@ -29,10 +29,11 @@ public class GUIAutomations extends SikuliAutomation {
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
-			command = new String[] { "target\\midiautomator_setup.exe" };
+			command = new String[] { SystemUtils
+					.replaceSystemVariables("\"%MIDIAUTOMATORGIT%\\Midi Automator\\target\\midiautomator_setup.exe\"") };
 		}
 
-		Runtime.getRuntime().exec(command);
+		SystemUtils.runShellCommand(command);
 		focusMidiAutomatorInstaller();
 	}
 
@@ -40,17 +41,48 @@ public class GUIAutomations extends SikuliAutomation {
 	 * Closes the Midi Automator installer
 	 * 
 	 * @throws IOException
+	 * @throws FindFailed
 	 */
-	public static void closeMidiAutomatorInstaller() throws IOException {
+	public static void closeMidiAutomatorInstaller() throws IOException,
+			FindFailed {
 
 		String[] command = null;
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			command = new String[] { "diskutil", "unmountDisk",
 					"/Volumes/MIDI Automator" };
-			Runtime.getRuntime().exec(command);
+			SystemUtils.runShellCommand(command);
 		}
 
+		if (System.getProperty("os.name").equals("Windows 7")) {
+			try {
+				closeNSISInstaller();
+			} catch (FindFailed e) {
+				cancelNSISInstaller();
+			}
+		}
+	}
+
+	/**
+	 * Cancels the NSIS installer
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void cancelNSISInstaller() throws FindFailed {
+		Region match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
+				"NSIS_cancel_button.png");
+		match.click();
+	}
+
+	/**
+	 * Closes the NSIS installer
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void closeNSISInstaller() throws FindFailed {
+		Region match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
+				"NSIS_close_button_active");
+		match.click();
 	}
 
 	/**
@@ -113,11 +145,11 @@ public class GUIAutomations extends SikuliAutomation {
 		if (System.getProperty("os.name").equals("Windows 7")) {
 			command = new String[] {
 					SystemUtils
-							.replaceSystemVariables("%ProgramFiles%\\Midi Automator\\Midi Automator.exe"),
+							.replaceSystemVariables("%PROGRAMFILES%\\Midi Automator\\Midi Automator.exe"),
 					"-test" };
 		}
 
-		Runtime.getRuntime().exec(command);
+		SystemUtils.runShellCommand(command);
 		focusMidiAutomator();
 		try {
 			Thread.sleep(500);

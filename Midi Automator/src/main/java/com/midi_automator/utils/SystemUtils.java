@@ -1,9 +1,7 @@
 package com.midi_automator.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +19,16 @@ public class SystemUtils {
 		String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
 		Pattern expr = Pattern.compile(pattern);
 		Matcher matcher = expr.matcher(str);
-		Map<String, String> env = System.getenv();
+		TreeMap<String, String> env = new TreeMap<String, String>(
+				System.getenv());
+
+		if (System.getProperty("os.name").equals("Windows 7")) {
+
+			TreeMap<String, String> insensitiveEnv = new TreeMap<String, String>(
+					String.CASE_INSENSITIVE_ORDER);
+			insensitiveEnv.putAll(env);
+			env = insensitiveEnv;
+		}
 
 		while (matcher.find()) {
 
@@ -39,33 +46,25 @@ public class SystemUtils {
 	}
 
 	/**
+	 * Prints the list of system variables to the console.
+	 */
+	public static void printSystemVariables() {
+		Map<String, String> env = System.getenv();
+		for (Map.Entry<String, String> entry : env.entrySet()) {
+			System.out.println(entry.getKey() + " : " + entry.getValue());
+		}
+	}
+
+	/**
 	 * Runs a shell command and returns the output as a String
 	 * 
 	 * @param cmd
 	 *            the command
-	 * @return the command's output
+	 * @return the shell runner thread
 	 */
-	public static String runShellCommand(String[] cmd) {
-
-		StringBuffer output = new StringBuffer();
-
-		try {
-			Process p = Runtime.getRuntime().exec(cmd);
-
-			p.getOutputStream().close();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					p.getInputStream()));
-
-			String line = "";
-
-			while ((line = reader.readLine()) != null) {
-				output.append(line + "\n");
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return (output.toString());
+	public static ShellRunner runShellCommand(String[] cmd) {
+		ShellRunner shellRunner = new ShellRunner(cmd);
+		shellRunner.start();
+		return shellRunner;
 	}
 }
