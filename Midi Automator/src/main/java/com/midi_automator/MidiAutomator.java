@@ -26,9 +26,8 @@ import com.midi_automator.midi.MidiINDetector;
 import com.midi_automator.midi.MidiINExecuteReceiver;
 import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
-import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.model.ModelImpl;
+import com.midi_automator.model.Model;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.utils.SystemUtils;
@@ -40,7 +39,7 @@ public class MidiAutomator {
 	private final boolean DEBUG;
 	private final boolean TEST;
 	private final String VERSION = "1.0.3";
-	private final IModel MODEL;
+	private final Model MODEL;
 	private final Resources resources;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
@@ -129,7 +128,7 @@ public class MidiAutomator {
 				+ PROPERTIES_FILE_NAME);
 
 		infoMessages = new ArrayList<String>();
-		MODEL = ModelImpl.getInstance(this);
+		MODEL = Model.getInstance(this);
 		MODEL.setPersistenceFileName(this.fileName);
 
 		midiLearn = false;

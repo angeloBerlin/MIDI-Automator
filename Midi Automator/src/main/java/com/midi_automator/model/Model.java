@@ -13,7 +13,7 @@ import com.midi_automator.Messages;
 import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.FileUtils;
 
-public class ModelImpl implements IModel {
+public class Model {
 
 	private MidiAutomator application;
 	private List<String> fileMap;
@@ -22,7 +22,7 @@ public class ModelImpl implements IModel {
 	private String errFileNotReadable;
 	private String errFileTooBig;
 
-	private static ModelImpl instance;
+	private static Model instance;
 
 	private String persistenceFileName;
 	private final String VALUE_SEPARATOR = ";";
@@ -33,7 +33,7 @@ public class ModelImpl implements IModel {
 	 * @param application
 	 *            The main application
 	 */
-	private ModelImpl(MidiAutomator application) {
+	private Model(MidiAutomator application) {
 		fileMap = new ArrayList<String>();
 		current = -1;
 		this.application = application;
@@ -48,16 +48,20 @@ public class ModelImpl implements IModel {
 	 *            The main application
 	 * @return Singleton instance
 	 */
-	public static ModelImpl getInstance(MidiAutomator application) {
+	public static Model getInstance(MidiAutomator application) {
 
 		if (instance == null) {
-			instance = new ModelImpl(application);
+			instance = new Model(application);
 		}
 
 		return instance;
 	}
 
-	@Override
+	/**
+	 * Returns the names of the entries in the file list
+	 * 
+	 * @return The names of the list entries
+	 */
 	public List<String> getEntryNames() {
 
 		load();
@@ -68,7 +72,11 @@ public class ModelImpl implements IModel {
 		return result;
 	}
 
-	@Override
+	/**
+	 * Returns the paths of the files
+	 * 
+	 * @return The paths of the files
+	 */
 	public List<String> getFilePaths() {
 
 		load();
@@ -85,7 +93,11 @@ public class ModelImpl implements IModel {
 		return result;
 	}
 
-	@Override
+	/**
+	 * Returns the midi signatures used to open the files
+	 * 
+	 * @return The midi signatures
+	 */
 	public List<String> getMidiSignatures() {
 
 		load();
@@ -100,7 +112,14 @@ public class ModelImpl implements IModel {
 		return result;
 	}
 
-	@Override
+	/**
+	 * Sets the midi signature for the given index
+	 * 
+	 * @param signature
+	 *            The midi signature
+	 * @param index
+	 *            The file index for the signature
+	 */
 	public void setMidiSignature(String signature, int index) {
 
 		load();
@@ -112,12 +131,21 @@ public class ModelImpl implements IModel {
 		save();
 	}
 
-	@Override
+	/**
+	 * Gets the current chosen file
+	 * 
+	 * @return The index of the chosen file
+	 */
 	public int getCurrent() {
 		return current;
 	}
 
-	@Override
+	/**
+	 * Sets the current chosen file
+	 * 
+	 * @param current
+	 *            The index of the chosen file
+	 */
 	public void setCurrent(int current) {
 		this.current = current;
 	}
@@ -191,7 +219,12 @@ public class ModelImpl implements IModel {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets the file name of the persistence file
+	 * 
+	 * @param fileName
+	 *            The file name
+	 */
 	public void setPersistenceFileName(String fileName) {
 
 		if (fileName != null) {
@@ -199,7 +232,14 @@ public class ModelImpl implements IModel {
 		}
 	}
 
-	@Override
+	/**
+	 * Changes the indexes of two items between each other
+	 * 
+	 * @param index1
+	 *            first part of index pair to change
+	 * @param index2
+	 *            second part of index pair to change
+	 */
 	public void exchangeIndexes(int index1, int index2) {
 
 		try {
@@ -214,7 +254,12 @@ public class ModelImpl implements IModel {
 		}
 	}
 
-	@Override
+	/**
+	 * Deletes the the entry with the given index
+	 * 
+	 * @param index
+	 *            the index of the entry to delete
+	 */
 	public void deleteEntry(int index) {
 
 		try {
@@ -225,7 +270,19 @@ public class ModelImpl implements IModel {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets the attributes of an entry
+	 * 
+	 * @param index
+	 *            the index of the entry, if <NULL> entry will be added with the
+	 *            next available index
+	 * @param entryName
+	 *            the name of the entry
+	 * @param filePath
+	 *            the path to the file
+	 * @param midiSignature
+	 *            the midi signature
+	 */
 	public void setEntry(Integer index, String entryName, String filePath,
 			String midiSignature) {
 		String csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR,
