@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -13,7 +13,7 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiINMetronomReceiver extends MidiAutomatorReceiver {
 
-	public MidiINMetronomReceiver(IApplication appl) {
+	public MidiINMetronomReceiver(MidiAutomator appl) {
 		super(appl);
 	}
 
@@ -25,10 +25,10 @@ public class MidiINMetronomReceiver extends MidiAutomatorReceiver {
 			String signature = MidiUtils.messageToString(message);
 
 			if (signature
-					.contains(IApplication.METRONOM_FIRST_CLICK_MIDI_SIGNATURE)) {
+					.contains(MidiAutomator.METRONOM_FIRST_CLICK_MIDI_SIGNATURE)) {
 				application.metronomClick(1);
 			} else if (signature
-					.contains(IApplication.METRONOM_CLICK_MIDI_SIGNATURE)) {
+					.contains(MidiAutomator.METRONOM_CLICK_MIDI_SIGNATURE)) {
 				application.metronomClick(-1);
 			}
 		}

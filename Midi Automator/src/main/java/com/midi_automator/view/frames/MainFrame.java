@@ -37,8 +37,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.midi_automator.IApplication;
 import com.midi_automator.Messages;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.CacheableJButton;
 import com.midi_automator.view.CacheableToolTipJList;
@@ -94,7 +94,7 @@ public class MainFrame extends JFrame {
 	private boolean midiINflasherFlag;
 	private boolean midiOUTflasherFlag;
 
-	private IApplication application;
+	private MidiAutomator application;
 	private List<String> fileEntries;
 	private List<String> midiSignatures;
 
@@ -113,7 +113,7 @@ public class MainFrame extends JFrame {
 	 * @throws HeadlessException
 	 *             Thrown if run on an OS without GUI representation
 	 */
-	public MainFrame(IApplication application, String version)
+	public MainFrame(MidiAutomator application, String version)
 			throws HeadlessException {
 
 		// initialize frame
@@ -735,8 +735,6 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			application.close();
-
 			// Find the active frame before creating and dispatching the event
 			for (Frame frame : Frame.getFrames()) {
 				if (frame.isActive()) {
@@ -882,7 +880,7 @@ public class MainFrame extends JFrame {
 
 		// previous switch button
 		String prevSignature = application
-				.getMidiSignature(IApplication.SWITCH_DIRECTION_PREV);
+				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
 		if (prevSignature != null) {
 			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
 					&& (!prevSignature.equals(""))) {
@@ -892,7 +890,7 @@ public class MainFrame extends JFrame {
 
 		// next switch button
 		String nextSignature = application
-				.getMidiSignature(IApplication.SWITCH_DIRECTION_NEXT);
+				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
 		if (nextSignature != null) {
 			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
 					&& (!nextSignature.equals(""))) {

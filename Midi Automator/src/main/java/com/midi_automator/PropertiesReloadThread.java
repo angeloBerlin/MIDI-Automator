@@ -10,15 +10,15 @@ package com.midi_automator;
  */
 public class PropertiesReloadThread extends Thread {
 
-	private IApplication application;
+	private MidiAutomator application;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param application
-	 *            The MIDI automator alpplication
+	 *            The MIDI Automator application
 	 */
-	public PropertiesReloadThread(IApplication application) {
+	public PropertiesReloadThread(MidiAutomator application) {
 		this.application = application;
 	}
 

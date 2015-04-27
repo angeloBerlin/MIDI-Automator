@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.view.frames.MainFrame;
 
 public class MidiLearnPopupMenu extends JPopupMenu {
@@ -22,7 +22,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	private Action midiLearnAction;
 	private Action midiCancelAction;
 
-	protected IApplication application;
+	protected MidiAutomator application;
 	protected MainFrame mainFrame;
 
 	/**
@@ -33,7 +33,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @param application
 	 *            The main application
 	 */
-	public MidiLearnPopupMenu(JFrame parentFrame, IApplication application) {
+	public MidiLearnPopupMenu(JFrame parentFrame, MidiAutomator application) {
 		super();
 
 		this.application = application;

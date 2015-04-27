@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 
 public class AddFrame extends JFrame {
 
@@ -53,7 +53,7 @@ public class AddFrame extends JFrame {
 	protected JButton buttonSave;
 	private JButton buttonCancel;
 
-	protected IApplication application;
+	protected MidiAutomator application;
 	protected JFrame programFrame;
 
 	protected ActionListener saveListener;
@@ -69,7 +69,7 @@ public class AddFrame extends JFrame {
 	 * @throws HeadlessException
 	 *             If no GUI available
 	 */
-	public AddFrame(IApplication application, JFrame programFrame)
+	public AddFrame(MidiAutomator application, JFrame programFrame)
 			throws HeadlessException {
 		super();
 

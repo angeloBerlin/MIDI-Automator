@@ -20,7 +20,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
@@ -74,7 +74,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param application
 	 *            The application
 	 */
-	public GUIAutomationConfigurationTable(IApplication application) {
+	public GUIAutomationConfigurationTable(MidiAutomator application) {
 
 		data = new Vector<Vector<Object>>();
 

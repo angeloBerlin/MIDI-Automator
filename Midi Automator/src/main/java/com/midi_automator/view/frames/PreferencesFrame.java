@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.PropertiesReloadThread;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -81,7 +81,7 @@ public class PreferencesFrame extends JFrame {
 	private JButton buttonSave;
 	private JButton buttonCancel;
 
-	private IApplication application;
+	private MidiAutomator application;
 	private JFrame programFrame;
 	private int gridRowCount = 0;
 
@@ -95,7 +95,7 @@ public class PreferencesFrame extends JFrame {
 	 * @throws HeadlessException
 	 *             If no GUI available
 	 */
-	public PreferencesFrame(IApplication application, JFrame programFrame)
+	public PreferencesFrame(MidiAutomator application, JFrame programFrame)
 			throws HeadlessException {
 		super();
 

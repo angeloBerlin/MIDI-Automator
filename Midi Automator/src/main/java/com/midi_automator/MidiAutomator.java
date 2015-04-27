@@ -35,7 +35,7 @@ import com.midi_automator.utils.SystemUtils;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.frames.MainFrame;
 
-public class MidiAutomator implements IApplication {
+public class MidiAutomator {
 
 	private final boolean DEBUG;
 	private final boolean TEST;
@@ -83,6 +83,24 @@ public class MidiAutomator implements IApplication {
 	private String errMidiOUTRemoteDeviceUnavailable;
 	private String errMidiOUTSwitchNotifierDeviceUnavailable;
 
+	// configurations
+	public static final String FILE_EXTENSION = ".mido";
+	public static final String SWITCH_DIRECTION_PREV = "previous";
+	public static final String SWITCH_DIRECTION_NEXT = "next";
+	public static final int OPEN_FILE_MIDI_COMMAND = ShortMessage.CONTROL_CHANGE;
+	public static final int OPEN_FILE_MIDI_CHANNEL = 1;
+	public static final int OPEN_FILE_MIDI_CONTROL_NO = 102;
+	public static final int SWITCH_NOTIFIER_MIDI_COMMAND = ShortMessage.CONTROL_CHANGE;
+	public static final int SWITCH_NOTIFIER_MIDI_CHANNEL = 1;
+	public static final int SWITCH_NOTIFIER_MIDI_CONTROL_NO = 103;
+	public static final int SWITCH_NOTIFIER_MIDI_VALUE = 127;
+	public static final long WAIT_BEFORE_OPENING = 100;
+	public static final long WAIT_BEFORE_SLAVE_SEND = 2000;
+	public static final String OPEN_FILE_MIDI_SIGNATURE = "channel 1: CONTROL CHANGE 102";
+	public static final String SWITCH_NOTIFIER_MIDI_SIGNATURE = "channel 1: CONTROL CHANGE 103";
+	public static final String METRONOM_FIRST_CLICK_MIDI_SIGNATURE = "channel 16: NOTE ON A4";
+	public static final String METRONOM_CLICK_MIDI_SIGNATURE = "channel 16: NOTE ON E4";
+
 	/**
 	 * Constructor
 	 * 
@@ -129,7 +147,11 @@ public class MidiAutomator implements IApplication {
 		reloadProperties();
 	}
 
-	@Override
+	/**
+	 * Loads the properties file.
+	 * 
+	 * @throws MidiUnavailableException
+	 */
 	public void reloadProperties() {
 
 		loadPropertiesFile();
@@ -518,12 +540,26 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Returns if the application is in midi learn mode
+	 * 
+	 * @return <TRUE> application is in midi learn mode, <FALSE> application is
+	 *         not in midi learn mode
+	 */
 	public boolean isInMidiLearnMode() {
 		return midiLearn;
 	}
 
-	@Override
+	/**
+	 * Sets the application to midi learn mode
+	 * 
+	 * @param midiLearn
+	 *            <TRUE> application is in midi learn mode, <FALSE> application
+	 *            is not in midi learn mode
+	 * @param learningComponent
+	 *            The component for which shall be learned, may be <NULL> if
+	 *            midi learn is <FALSE>
+	 */
 	public void setMidiLearnMode(boolean midiLearn, JComponent learningComponent) {
 		this.midiLearn = midiLearn;
 		this.learningComponent = learningComponent;
@@ -535,12 +571,25 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets the midi signature. The component will be implicitly taken from the
+	 * learningComponent field
+	 * 
+	 * @param signature
+	 *            The midi signature
+	 */
 	public void setMidiSignature(String signature) {
 		setMidiSignature(signature, learningComponent);
 	}
 
-	@Override
+	/**
+	 * Sets the midi signature for a given Component
+	 * 
+	 * @param signature
+	 *            The midi signature
+	 * @param component
+	 *            The component to set the midi signature for
+	 */
 	public void setMidiSignature(String signature, Component component) {
 
 		// check for unique signature
@@ -586,12 +635,22 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Returns if the application is in debug mode
+	 * 
+	 * @return <TRUE> if the appplication is in debug mode, <FALSE> if the
+	 *         application is not in debug mode
+	 */
 	public boolean isInDebugMode() {
 		return DEBUG;
 	}
 
-	@Override
+	/**
+	 * Runs the function for the midi message
+	 * 
+	 * @param message
+	 *            The midi message
+	 */
 	public void executeMidiMessage(MidiMessage message) {
 
 		// do not execute while midi learning
@@ -607,8 +666,8 @@ public class MidiAutomator implements IApplication {
 			}
 
 			// switch file
-			String prevSignature = getMidiSignature(IApplication.SWITCH_DIRECTION_PREV);
-			String nextSignature = getMidiSignature(IApplication.SWITCH_DIRECTION_NEXT);
+			String prevSignature = getMidiSignature(SWITCH_DIRECTION_PREV);
+			String nextSignature = getMidiSignature(SWITCH_DIRECTION_NEXT);
 
 			if (prevSignature != null) {
 				if (prevSignature.equals(signature)) {
@@ -626,9 +685,9 @@ public class MidiAutomator implements IApplication {
 			if (message instanceof ShortMessage) {
 				ShortMessage shortMessage = (ShortMessage) message;
 
-				if (shortMessage.getCommand() == IApplication.OPEN_FILE_MIDI_COMMAND
-						&& (shortMessage.getChannel() + 1) == IApplication.OPEN_FILE_MIDI_CHANNEL
-						&& shortMessage.getData1() == IApplication.OPEN_FILE_MIDI_CONTROL_NO) {
+				if (shortMessage.getCommand() == OPEN_FILE_MIDI_COMMAND
+						&& (shortMessage.getChannel() + 1) == OPEN_FILE_MIDI_CHANNEL
+						&& shortMessage.getData1() == OPEN_FILE_MIDI_CONTROL_NO) {
 
 					index = shortMessage.getData2();
 					openFileByIndex(index, false);
@@ -641,7 +700,9 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Opens the previous file in the list
+	 */
 	public void openPreviousFile() {
 
 		int current = MODEL.getCurrent() - 1;
@@ -651,7 +712,9 @@ public class MidiAutomator implements IApplication {
 		openFileByIndex(current, true);
 	}
 
-	@Override
+	/**
+	 * Opens the next file in the list
+	 */
 	public void openNextFile() {
 
 		int current = MODEL.getCurrent() + 1;
@@ -661,7 +724,15 @@ public class MidiAutomator implements IApplication {
 		openFileByIndex(current, true);
 	}
 
-	@Override
+	/**
+	 * Opens a file from the file list
+	 * 
+	 * @param index
+	 *            The index of the file to open from the list
+	 * @param send
+	 *            <TRUE> opened index will be sent to slaves, <FALSE> index will
+	 *            not be sent
+	 */
 	public void openFileByIndex(int index, boolean send) {
 
 		List<String> filePaths = null;
@@ -698,7 +769,7 @@ public class MidiAutomator implements IApplication {
 				}
 
 				// wait a little before opening file...
-				Thread.sleep(IApplication.WAIT_BEFORE_OPENING);
+				Thread.sleep(WAIT_BEFORE_OPENING);
 
 				String path = resources.generateRelativeLoadingPath(fileName);
 				FileUtils.openFileFromPath(path);
@@ -736,9 +807,9 @@ public class MidiAutomator implements IApplication {
 
 				try {
 					ShortMessage message = new ShortMessage();
-					message.setMessage(IApplication.OPEN_FILE_MIDI_COMMAND,
-							IApplication.OPEN_FILE_MIDI_CHANNEL - 1,
-							IApplication.OPEN_FILE_MIDI_CONTROL_NO, index);
+					message.setMessage(OPEN_FILE_MIDI_COMMAND,
+							OPEN_FILE_MIDI_CHANNEL - 1,
+							OPEN_FILE_MIDI_CONTROL_NO, index);
 
 					long timeStamp = midiOUTRemoteDevice
 							.getMicrosecondPosition();
@@ -766,7 +837,12 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Sends a midi message as notifier that the item has changed.
+	 * 
+	 * @param device
+	 *            The midi notification device
+	 */
 	public void sendItemChangeNotifier(MidiDevice device) {
 
 		if (device != null) {
@@ -776,10 +852,10 @@ public class MidiAutomator implements IApplication {
 							.getDeviceInfo().getName());
 			try {
 				ShortMessage message = new ShortMessage();
-				message.setMessage(IApplication.SWITCH_NOTIFIER_MIDI_COMMAND,
-						IApplication.SWITCH_NOTIFIER_MIDI_CHANNEL - 1,
-						IApplication.SWITCH_NOTIFIER_MIDI_CONTROL_NO,
-						IApplication.SWITCH_NOTIFIER_MIDI_VALUE);
+				message.setMessage(SWITCH_NOTIFIER_MIDI_COMMAND,
+						SWITCH_NOTIFIER_MIDI_CHANNEL - 1,
+						SWITCH_NOTIFIER_MIDI_CONTROL_NO,
+						SWITCH_NOTIFIER_MIDI_VALUE);
 
 				long timeStamp = device.getMicrosecondPosition();
 				device.open();
@@ -806,15 +882,22 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Gets the midi signature of the switch directions
+	 * 
+	 * @param switchDirection
+	 *            SWITCH_DIRECTION_PREV previous direction,
+	 *            SWITCH_DIRECTION_NEXT next direction
+	 * @return The midi signature
+	 */
 	public String getMidiSignature(String switchDirection) {
 
-		if (switchDirection.equals(IApplication.SWITCH_DIRECTION_PREV)) {
+		if (switchDirection.equals(SWITCH_DIRECTION_PREV)) {
 			return PROPERTIES
 					.getProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
 		}
 
-		if (switchDirection.equals(IApplication.SWITCH_DIRECTION_NEXT)) {
+		if (switchDirection.equals(SWITCH_DIRECTION_NEXT)) {
 			return PROPERTIES
 					.getProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
 		}
@@ -822,7 +905,13 @@ public class MidiAutomator implements IApplication {
 		return null;
 	}
 
-	@Override
+	/**
+	 * Gets the midi signature for the file list index
+	 * 
+	 * @param index
+	 *            The index in the file list
+	 * @return The midi signature
+	 */
 	public String getMidiSignature(int index) {
 		try {
 			return MODEL.getMidiSignatures().get(index);
@@ -831,7 +920,13 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Gets the entry name of the file list by index
+	 * 
+	 * @param index
+	 *            The index
+	 * @return the name of the file entry
+	 */
 	public String getEntryNameByIndex(int index) {
 		try {
 			return MODEL.getEntryNames().get(index);
@@ -840,7 +935,13 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Gets the entry file path of the file list by index
+	 * 
+	 * @param index
+	 *            The index
+	 * @return the file path of the entry
+	 */
 	public String getEntryPathByIndex(int index) {
 		try {
 			return MODEL.getFilePaths().get(index);
@@ -849,14 +950,23 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Gets the name of the remote midi input device
+	 * 
+	 * @return The midi device name
+	 */
 	public String getMidiINRemoteDeviceName() {
 		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 	}
 
-	@Override
+	/**
+	 * Sets the remote midi input device name
+	 * 
+	 * @param midiINDeviceName
+	 *            The midi device name
+	 */
 	public void setMidiINRemoteDeviceName(String midiINDeviceName) {
 		oldMidiINRemoteDeviceSignature = PROPERTIES
 				.getProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
@@ -866,14 +976,23 @@ public class MidiAutomator implements IApplication {
 		storePropertiesFile();
 	}
 
-	@Override
+	/**
+	 * Gets the name of the metronom midi input device
+	 * 
+	 * @return The midi device name
+	 */
 	public String getMidiINMetronomDeviceName() {
 		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 	}
 
-	@Override
+	/**
+	 * Sets the metronom midi input device name
+	 * 
+	 * @param midiINDeviceName
+	 *            The midi device name
+	 */
 	public void setMidiINMetronomDeviceName(String midiINDeviceName) {
 		oldMidiINMetronomDeviceSignature = PROPERTIES
 				.getProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
@@ -883,14 +1002,23 @@ public class MidiAutomator implements IApplication {
 		storePropertiesFile();
 	}
 
-	@Override
+	/**
+	 * Gets the name of the remote midi out device
+	 * 
+	 * @return The midi device name
+	 */
 	public String getMidiOUTRemoteDeviceName() {
 		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 	}
 
-	@Override
+	/**
+	 * Sets the remote midi out device name
+	 * 
+	 * @param midi
+	 *            device name The midi device name
+	 */
 	public void setMidiOUTRemoteDeviceName(String deviceName) {
 		oldMidiOUTRemoteDeviceSignature = PROPERTIES
 				.getProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
@@ -899,14 +1027,23 @@ public class MidiAutomator implements IApplication {
 		storePropertiesFile();
 	}
 
-	@Override
+	/**
+	 * Gets the name of the switch notifier midi out device
+	 * 
+	 * @return The midi device name
+	 */
 	public String getMidiOUTSwitchNotifierDeviceName() {
 		loadPropertiesFile();
 		return (String) PROPERTIES
 				.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 	}
 
-	@Override
+	/**
+	 * Sets the switch notifier midi out device name
+	 * 
+	 * @param midi
+	 *            device name The midi device name
+	 */
 	public void setMidiOUTSwitchNotifierDeviceName(String deviceName) {
 		oldMidiOUTSwitchNotifierDeviceSignature = PROPERTIES
 				.getProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
@@ -946,7 +1083,7 @@ public class MidiAutomator implements IApplication {
 			found = true;
 		}
 
-		if (signature.contains(IApplication.OPEN_FILE_MIDI_SIGNATURE)) {
+		if (signature.contains(OPEN_FILE_MIDI_SIGNATURE)) {
 			found = true;
 		}
 
@@ -959,12 +1096,22 @@ public class MidiAutomator implements IApplication {
 		return found;
 	}
 
-	@Override
+	/**
+	 * Returns if the application is in test mode
+	 * 
+	 * @return <TRUE> if the appplication is in development mode, <FALSE> if the
+	 *         application is not in development mode
+	 */
 	public boolean isInTestMode() {
 		return TEST;
 	}
 
-	@Override
+	/**
+	 * Sets an error message
+	 * 
+	 * @param message
+	 *            The info message
+	 */
 	public void setInfoMessage(String message) {
 		if (!infoMessages.contains(message)) {
 			infoMessages.add(message);
@@ -973,7 +1120,12 @@ public class MidiAutomator implements IApplication {
 
 	}
 
-	@Override
+	/**
+	 * Removes the info message
+	 * 
+	 * @param message
+	 *            The info message
+	 */
 	public void removeInfoMessage(String message) {
 		infoMessages.remove(message);
 		PROGRAM_FRAME.setInfoText(messagesToString(infoMessages));
@@ -996,50 +1148,86 @@ public class MidiAutomator implements IApplication {
 		return result;
 	}
 
-	@Override
+	/**
+	 * Indicates a midi IN signal
+	 */
 	public void showMidiINSignal() {
 		PROGRAM_FRAME.flashMidiINDetect();
 	}
 
-	@Override
+	/**
+	 * Indicates a midi OUT signal
+	 */
 	public void showMidiOUTSignal() {
 		PROGRAM_FRAME.flashMidiOUTDetect();
 	}
 
-	@Override
-	public void close() {
-
-	}
-
-	@Override
+	/**
+	 * Returns the resources handler
+	 * 
+	 * @return The resources handler
+	 */
 	public Resources getResources() {
 		return resources;
 	}
 
-	@Override
+	/**
+	 * Pushes the item at the given index one step up
+	 * 
+	 * @param index
+	 *            index of the item
+	 */
 	public void moveUpItem(int index) {
 		MODEL.exchangeIndexes(index, index - 1);
 		reloadModel();
 	}
 
-	@Override
+	/**
+	 * Pushes the item at the given index one step down
+	 * 
+	 * @param index
+	 *            index of the item
+	 */
 	public void moveDownItem(int index) {
 		MODEL.exchangeIndexes(index, index + 1);
 		reloadModel();
 	}
 
-	@Override
+	/**
+	 * Deletes the item at the given index from the model
+	 * 
+	 * @param index
+	 *            index of the item
+	 */
 	public void deleteItem(int index) {
 		MODEL.deleteEntry(index);
 		reloadModel();
 	}
 
-	@Override
+	/**
+	 * Adds a new item
+	 * 
+	 * @param entryName
+	 *            the name of the entry
+	 * @param filePath
+	 *            the path to the file
+	 */
 	public void addItem(String entryName, String filePath) {
 		setItem(null, entryName, filePath, "");
 	}
 
-	@Override
+	/**
+	 * Sets the attributes of an existing item
+	 * 
+	 * @param index
+	 *            the index of the entry
+	 * @param entryName
+	 *            the name of the entry
+	 * @param filePath
+	 *            the path to the file
+	 * @param midiSignature
+	 *            the midi signature
+	 */
 	public void setItem(Integer index, String entryName, String filePath,
 			String midiSignature) {
 		removeInfoMessage(errFileCouldNotBeAdded);
@@ -1057,7 +1245,11 @@ public class MidiAutomator implements IApplication {
 		reloadModel();
 	}
 
-	@Override
+	/**
+	 * Executes the midi metronom's click
+	 * 
+	 * @beat the current clicked beat
+	 */
 	public void metronomClick(int beat) {
 		if (beat == 1) {
 			PROGRAM_FRAME.flashFileList(Color.RED);
@@ -1066,7 +1258,11 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Sets all GUI automations.
+	 * 
+	 * @param guiAutomations
+	 */
 	public void setGUIAutomations(GUIAutomation[] guiAutomations) {
 
 		removeGUIAutomations();
@@ -1118,12 +1314,18 @@ public class MidiAutomator implements IApplication {
 		storePropertiesFile();
 	}
 
-	@Override
+	/**
+	 * Gets the configured GUI automations.
+	 * 
+	 * @return The GUI automations as an array
+	 */
 	public GUIAutomation[] getGUIAutomations() {
 		return guiAutomations;
 	}
 
-	@Override
+	/**
+	 * Removes all GUI automations.
+	 */
 	public void removeGUIAutomations() {
 		guiAutomations = null;
 
@@ -1138,7 +1340,13 @@ public class MidiAutomator implements IApplication {
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
 	}
 
-	@Override
+	/**
+	 * De-/Activates the GUI automation.
+	 * 
+	 * @param active
+	 *            <TRUE> activete GUI automation, <FALSE> deactivate GUI
+	 *            automation
+	 */
 	public void setGUIAutomationsToActive(boolean active) {
 		for (GUIAutomator guiAutomator : guiAutomators) {
 			guiAutomator.setActive(active);
@@ -1183,12 +1391,23 @@ public class MidiAutomator implements IApplication {
 		}
 	}
 
-	@Override
+	/**
+	 * Gets the state if midi messages shall be executed.
+	 * 
+	 * @return <TRUE> if messages shall not be executed, <FALSE> if they shall
+	 *         be executed
+	 */
 	public boolean isDoNotExecuteMidiMessage() {
 		return doNotExecuteMidiMessage;
 	}
 
-	@Override
+	/**
+	 * Sets the state if midi messages shall be executed.
+	 * 
+	 * @param doNotExecuteMidiMessage
+	 *            <TRUE> if messages shall not be executed, <FALSE> if they
+	 *            shall be executed
+	 */
 	public void setDoNotExecuteMidiMessage(boolean doNotExecuteMidiMessage) {
 		this.doNotExecuteMidiMessage = doNotExecuteMidiMessage;
 	}
@@ -1211,7 +1430,7 @@ public class MidiAutomator implements IApplication {
 		public void run() {
 			// wait a little before sending remote message...
 			try {
-				Thread.sleep(IApplication.WAIT_BEFORE_SLAVE_SEND);
+				Thread.sleep(WAIT_BEFORE_SLAVE_SEND);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

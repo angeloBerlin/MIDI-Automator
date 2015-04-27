@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 
 /**
  * Shows midi out signals
@@ -12,7 +12,7 @@ import com.midi_automator.IApplication;
  */
 public class MidiOUTDetector extends MidiAutomatorReceiver {
 
-	public MidiOUTDetector(IApplication appl) {
+	public MidiOUTDetector(MidiAutomator appl) {
 		super(appl);
 	}
 

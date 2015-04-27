@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -13,7 +13,7 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 
-	public MidiINLearnReceiver(IApplication appl) {
+	public MidiINLearnReceiver(MidiAutomator appl) {
 		super(appl);
 	}
 

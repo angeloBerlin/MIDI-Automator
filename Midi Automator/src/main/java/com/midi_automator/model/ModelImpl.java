@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.midi_automator.IApplication;
 import com.midi_automator.Messages;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.FileUtils;
 
 public class ModelImpl implements IModel {
 
-	private IApplication application;
+	private MidiAutomator application;
 	private List<String> fileMap;
 	private int current;
 	private String errFileNotFound;
@@ -33,7 +33,7 @@ public class ModelImpl implements IModel {
 	 * @param application
 	 *            The main application
 	 */
-	private ModelImpl(IApplication application) {
+	private ModelImpl(MidiAutomator application) {
 		fileMap = new ArrayList<String>();
 		current = -1;
 		this.application = application;
@@ -48,7 +48,7 @@ public class ModelImpl implements IModel {
 	 *            The main application
 	 * @return Singleton instance
 	 */
-	public static ModelImpl getInstance(IApplication application) {
+	public static ModelImpl getInstance(MidiAutomator application) {
 
 		if (instance == null) {
 			instance = new ModelImpl(application);

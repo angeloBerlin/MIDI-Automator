@@ -9,7 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 
 public class EditFrame extends AddFrame {
 
@@ -34,7 +34,7 @@ public class EditFrame extends AddFrame {
 	 * @throws HeadlessException
 	 *             If no GUI available
 	 */
-	public EditFrame(IApplication application, JFrame programFrame, int index)
+	public EditFrame(MidiAutomator application, JFrame programFrame, int index)
 			throws HeadlessException {
 		super(application, programFrame);
 		this.index = index;

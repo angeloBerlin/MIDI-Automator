@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 
 /**
  * Shows midi in signals
@@ -12,7 +12,7 @@ import com.midi_automator.IApplication;
  */
 public class MidiINDetector extends MidiAutomatorReceiver {
 
-	public MidiINDetector(IApplication appl) {
+	public MidiINDetector(MidiAutomator appl) {
 		super(appl);
 		// TODO Auto-generated constructor stub
 	}

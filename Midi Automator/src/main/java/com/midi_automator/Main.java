@@ -35,14 +35,14 @@ public class Main {
 					os = arg.replace("-os=", "");
 				}
 
-				if (arg.contains(IApplication.FILE_EXTENSION)) {
+				if (arg.contains(MidiAutomator.FILE_EXTENSION)) {
 					fileName = arg;
 				}
 
 				if (arg.contains("-debug")) {
 					debug = true;
 				}
-	
+
 				if (arg.contains("-test")) {
 					test = true;
 					debug = true;

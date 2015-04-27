@@ -3,7 +3,7 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 
-import com.midi_automator.IApplication;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -15,7 +15,7 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiAutomatorReceiver implements Receiver {
 
-	protected IApplication application;
+	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
 	protected final long timeTolerance = 1000000; // in microseconds
 
@@ -25,7 +25,7 @@ public class MidiAutomatorReceiver implements Receiver {
 	 * @param application
 	 *            The main application
 	 */
-	public MidiAutomatorReceiver(IApplication appl) {
+	public MidiAutomatorReceiver(MidiAutomator appl) {
 		application = appl;
 	}
 

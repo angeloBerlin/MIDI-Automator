@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.midi_automator.IApplication;
 import com.midi_automator.Messages;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.view.frames.AddFrame;
 import com.midi_automator.view.frames.EditFrame;
 import com.midi_automator.view.frames.MainFrame;
@@ -52,7 +52,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 * @param application
 	 *            The application
 	 */
-	public MainFramePopupMenu(MainFrame parentFrame, IApplication application) {
+	public MainFramePopupMenu(MainFrame parentFrame, MidiAutomator application) {
 		super(parentFrame, application);
 
 		moveUpMenuItem = new JMenuItem(MENU_ITEM_MOVE_UP);
