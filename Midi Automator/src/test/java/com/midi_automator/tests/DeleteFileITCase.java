@@ -56,6 +56,12 @@ public class DeleteFileITCase extends IntegrationTestCase {
 				fail("Hello World entry still found.");
 			} catch (FindFailed e) {
 			}
+
+			// check if deletion was saved
+			GUIAutomations.closeMidiAutomator();
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.checkResult("midi_automator.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {

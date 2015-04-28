@@ -89,6 +89,11 @@ public class EditFileITCase extends IntegrationTestCase {
 			GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
 					"Hello_World_Edit_RTF_inactive.png");
 
+			// check if edited entry was saved
+			GUIAutomations.closeMidiAutomator();
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.checkResult("Hello_World_Edit_entry.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {

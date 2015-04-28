@@ -66,6 +66,11 @@ public class MoveUpDownFileITCase extends IntegrationTestCase {
 			match.rightClick();
 			GUIAutomations.checkResult("move_down_inactive.png");
 
+			// check if moving was saved
+			GUIAutomations.closeMidiAutomator();
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.checkResult("Hello_World_order_123.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
@@ -103,6 +108,11 @@ public class MoveUpDownFileITCase extends IntegrationTestCase {
 
 			match.rightClick();
 			GUIAutomations.checkResult("move_up_inactive.png");
+
+			// check if moving was saved
+			GUIAutomations.closeMidiAutomator();
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.checkResult("Hello_World_order_312.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

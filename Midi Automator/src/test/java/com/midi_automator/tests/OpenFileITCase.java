@@ -65,4 +65,30 @@ public class OpenFileITCase extends IntegrationTestCase {
 			}
 		}
 	}
+
+	@Test
+	public void emptyFileInfoShallBeShown() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			GUIAutomations.openMidiAutomator();
+
+			GUIAutomations.openEntryByDoubleClick("Hello_World_1_entry.png",
+					"Hello_World_1_entry_active.png",
+					"Hello_World_1_entry_inactive.png");
+
+			// check for failure
+			GUIAutomations.checkResult("error_file_not_found");
+
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

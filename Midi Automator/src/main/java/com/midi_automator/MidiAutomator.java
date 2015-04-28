@@ -28,6 +28,7 @@ import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.Model;
+import com.midi_automator.model.TooManyEntriesException;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.utils.SystemUtils;
@@ -72,10 +73,13 @@ public class MidiAutomator {
 	// info messages
 	private String errDuplicateMidiSignature;
 	private String infoEntryOpened;
+	private String errMidoFileIsTooBig;
 	private String errMidoFileNotFound;
-	private String errMidoFileCouldNotBeOpened;
-	private String errFileCouldNotBeAdded;
+	private String errMidoFileNotReadable;
+	private String errFileNotFound;
+	private String errFileNotReadable;
 	private String errPropertiesFileNotFound;
+	private String errTooMuchEntries;
 	private String errPropertiesFileCouldNotBeOpened;
 	private String errMidiINRemoteDeviceUnavailable;
 	private String errMidiINMetronomDeviceUnavailable;
@@ -128,8 +132,15 @@ public class MidiAutomator {
 				+ PROPERTIES_FILE_NAME);
 
 		infoMessages = new ArrayList<String>();
-		MODEL = Model.getInstance(this);
+		MODEL = Model.getInstance(resources);
 		MODEL.setPersistenceFileName(this.fileName);
+		errMidoFileNotFound = String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
+				MODEL.getPersistenceFileName());
+		errMidoFileNotReadable = String.format(
+				Messages.MSG_FILE_LIST_NOT_READABLE,
+				MODEL.getPersistenceFileName());
+		errMidoFileIsTooBig = String.format(Messages.MSG_FILE_LIST_TOO_BIG,
+				MODEL.getPersistenceFileName());
 
 		midiLearn = false;
 		doNotExecuteMidiMessage = false;
@@ -142,7 +153,7 @@ public class MidiAutomator {
 
 		guiAutomators = new ArrayList<GUIAutomator>();
 
-		reloadModel();
+		loadModel();
 		reloadProperties();
 	}
 
@@ -182,11 +193,42 @@ public class MidiAutomator {
 	/**
 	 * Loads the model file.
 	 */
-	private void reloadModel() {
-		PROGRAM_FRAME.setFileEntries(MODEL.getEntryNames());
-		PROGRAM_FRAME.setMidiSignatures(MODEL.getMidiSignatures());
+	private void loadModel() {
+		try {
+			MODEL.load();
+			removeInfoMessage(errMidoFileNotFound);
+			removeInfoMessage(errMidoFileNotReadable);
+			removeInfoMessage(errMidoFileIsTooBig);
+
+			PROGRAM_FRAME.setFileEntries(MODEL.getEntryNames());
+			PROGRAM_FRAME.setMidiSignatures(MODEL.getMidiSignatures());
+
+		} catch (FileNotFoundException e1) {
+			setInfoMessage(errMidoFileNotFound);
+		} catch (IOException e1) {
+			setInfoMessage(errMidoFileNotReadable);
+		} catch (TooManyEntriesException e) {
+			setInfoMessage(errMidoFileIsTooBig);
+		}
+
 		PROGRAM_FRAME.setSelectedIndex(PROGRAM_FRAME.getLastSelectedIndex());
 		PROGRAM_FRAME.reload();
+	}
+
+	/**
+	 * Saves the model to a file.
+	 */
+	private void saveModel() {
+
+		removeInfoMessage(errMidoFileNotFound);
+		removeInfoMessage(errMidoFileNotReadable);
+		try {
+			MODEL.save();
+		} catch (FileNotFoundException e) {
+			setInfoMessage(errMidoFileNotFound);
+		} catch (IOException e) {
+			setInfoMessage(errMidoFileNotReadable);
+		}
 	}
 
 	/**
@@ -599,7 +641,9 @@ public class MidiAutomator {
 		// learning for file list
 		if (component instanceof JList) {
 			JList<?> list = (JList<?>) component;
+
 			MODEL.setMidiSignature(signature, list.getSelectedIndex());
+			saveModel();
 		}
 
 		// learning for switch buttons
@@ -625,11 +669,6 @@ public class MidiAutomator {
 		// learning for automation list
 		if (component.getName().equals(
 				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
-			// int automationNo = PROGRAM_FRAME.getPreferencesFrame()
-			// .getGuiAutomationPanel().getConfigurationTable()
-			// .getSelectedRow();
-			//
-			// guiAutomations[automationNo].setMidiSignature(signature);
 			PROGRAM_FRAME.setMidiSignature(signature, component);
 		}
 	}
@@ -657,7 +696,8 @@ public class MidiAutomator {
 			String signature = MidiUtils.messageToString(message);
 
 			// open file from list
-			int index = MODEL.getMidiSignatures().indexOf(signature);
+			int index = -1;
+			index = MODEL.getMidiSignatures().indexOf(signature);
 
 			if (index > -1) {
 				openFileByIndex(index, true);
@@ -705,6 +745,7 @@ public class MidiAutomator {
 	public void openPreviousFile() {
 
 		int current = MODEL.getCurrent() - 1;
+
 		if (current < 0) {
 			current = (MODEL.getFilePaths().size() - 1);
 		}
@@ -735,19 +776,15 @@ public class MidiAutomator {
 	public void openFileByIndex(int index, boolean send) {
 
 		List<String> filePaths = null;
+		try {
+			filePaths = MODEL.getFilePaths();
 
-		filePaths = MODEL.getFilePaths();
-
-		if (!filePaths.isEmpty()) {
-			String entryName = MODEL.getEntryNames().get(index);
-			String fileName = SystemUtils.replaceSystemVariables(filePaths
-					.get(index));
-
-			try {
+			if (!filePaths.isEmpty()) {
+				String entryName = MODEL.getEntryNames().get(index);
+				String fileName = SystemUtils.replaceSystemVariables(filePaths
+						.get(index));
 
 				removeInfoMessage(infoEntryOpened);
-				removeInfoMessage(errMidoFileNotFound);
-				removeInfoMessage(errMidoFileCouldNotBeOpened);
 				infoEntryOpened = String.format(Messages.MSG_OPENING_ENTRY,
 						entryName);
 
@@ -771,21 +808,23 @@ public class MidiAutomator {
 				Thread.sleep(WAIT_BEFORE_OPENING);
 
 				String path = resources.generateRelativeLoadingPath(fileName);
+
+				removeInfoMessage(errFileNotFound);
+				removeInfoMessage(errFileNotReadable);
+				errFileNotFound = String.format(
+						Messages.MSG_FILE_LIST_NOT_FOUND, fileName);
+				errFileNotReadable = String.format(
+						Messages.MSG_FILE_LIST_NOT_READABLE, fileName);
 				FileUtils.openFileFromPath(path);
 				setInfoMessage(infoEntryOpened);
-
-			} catch (IllegalArgumentException ex) {
-				errMidoFileNotFound = String.format(
-						Messages.MSG_FILE_NOT_FOUND, fileName);
-				setInfoMessage(errMidoFileNotFound);
-			} catch (IOException ex) {
-				errMidoFileCouldNotBeOpened = String.format(
-						Messages.MSG_FILE_COULD_NOT_BE_OPENED, fileName);
-				setInfoMessage(errMidoFileCouldNotBeOpened);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+		} catch (IllegalArgumentException ex) {
+			setInfoMessage(errFileNotFound);
+		} catch (IOException ex) {
+			setInfoMessage(errFileNotReadable);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -1177,8 +1216,10 @@ public class MidiAutomator {
 	 *            index of the item
 	 */
 	public void moveUpItem(int index) {
+
 		MODEL.exchangeIndexes(index, index - 1);
-		reloadModel();
+		saveModel();
+		loadModel();
 	}
 
 	/**
@@ -1188,8 +1229,10 @@ public class MidiAutomator {
 	 *            index of the item
 	 */
 	public void moveDownItem(int index) {
+
 		MODEL.exchangeIndexes(index, index + 1);
-		reloadModel();
+		saveModel();
+		loadModel();
 	}
 
 	/**
@@ -1199,8 +1242,10 @@ public class MidiAutomator {
 	 *            index of the item
 	 */
 	public void deleteItem(int index) {
+
 		MODEL.deleteEntry(index);
-		reloadModel();
+		saveModel();
+		loadModel();
 	}
 
 	/**
@@ -1229,19 +1274,22 @@ public class MidiAutomator {
 	 */
 	public void setItem(Integer index, String entryName, String filePath,
 			String midiSignature) {
-		removeInfoMessage(errFileCouldNotBeAdded);
+
+		removeInfoMessage(errTooMuchEntries);
 
 		if (index == null && MODEL.getEntryNames().size() >= 128) {
-			errFileCouldNotBeAdded = String.format(
-					Messages.MSG_FILE_LIST_IS_FULL, entryName);
-			setInfoMessage(errFileCouldNotBeAdded);
+			errTooMuchEntries = String.format(Messages.MSG_FILE_LIST_IS_FULL,
+					entryName);
+			setInfoMessage(errTooMuchEntries);
 			return;
 		}
 
 		if (entryName != null && !entryName.equals("")) {
 			MODEL.setEntry(index, entryName, filePath, midiSignature);
+			saveModel();
 		}
-		reloadModel();
+
+		loadModel();
 	}
 
 	/**

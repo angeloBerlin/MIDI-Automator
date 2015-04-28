@@ -9,49 +9,41 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.midi_automator.Messages;
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
 public class Model {
 
-	private MidiAutomator application;
 	private List<String> fileMap;
 	private int current;
-	private String errFileNotFound;
-	private String errFileNotReadable;
-	private String errFileTooBig;
-
 	private static Model instance;
-
 	private String persistenceFileName;
 	private final String VALUE_SEPARATOR = ";";
 
 	/**
 	 * Private constructor for singleton pattern
 	 * 
-	 * @param application
-	 *            The main application
+	 * @param resources
+	 *            The resources file
 	 */
-	private Model(MidiAutomator application) {
+	private Model(Resources resources) {
 		fileMap = new ArrayList<String>();
 		current = -1;
-		this.application = application;
-		persistenceFileName = application.getResources()
-				.getDefaultFileListPath() + "file_list.mido";
+		persistenceFileName = resources.getDefaultFileListPath()
+				+ "file_list.mido";
 	}
 
 	/**
 	 * Gets the unique instance of the model
 	 * 
-	 * @param application
-	 *            The main application
+	 * @param resources
+	 *            The resources file
 	 * @return Singleton instance
 	 */
-	public static Model getInstance(MidiAutomator application) {
+	public static Model getInstance(Resources resources) {
 
 		if (instance == null) {
-			instance = new Model(application);
+			instance = new Model(resources);
 		}
 
 		return instance;
@@ -64,7 +56,6 @@ public class Model {
 	 */
 	public List<String> getEntryNames() {
 
-		load();
 		List<String> result = new ArrayList<String>();
 		for (String csvLine : fileMap) {
 			result.add((csvLine.split(VALUE_SEPARATOR))[0]);
@@ -79,7 +70,6 @@ public class Model {
 	 */
 	public List<String> getFilePaths() {
 
-		load();
 		List<String> result = new ArrayList<String>();
 		for (String csvLine : fileMap) {
 			String[] split = csvLine.split(VALUE_SEPARATOR);
@@ -100,7 +90,6 @@ public class Model {
 	 */
 	public List<String> getMidiSignatures() {
 
-		load();
 		List<String> result = new ArrayList<String>();
 		for (String csvLine : fileMap) {
 			try {
@@ -122,13 +111,11 @@ public class Model {
 	 */
 	public void setMidiSignature(String signature, int index) {
 
-		load();
 		String csvLine = fileMap.get(index);
 		String[] split = csvLine.split(";");
 		csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR, split[0],
 				split[1], signature);
 		fileMap.set(index, csvLine);
-		save();
 	}
 
 	/**
@@ -152,71 +139,48 @@ public class Model {
 
 	/**
 	 * Loads the persistent file
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws TooManyEntriesException
 	 */
-	private void load() {
+	public void load() throws FileNotFoundException, IOException,
+			TooManyEntriesException {
 
 		fileMap.clear();
-		try {
 
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(
-					persistenceFileName));
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(
+				persistenceFileName));
 
-			String line = null;
+		String line = null;
 
-			while ((line = bufferedReader.readLine()) != null) {
-				fileMap.add(line);
-			}
-			bufferedReader.close();
-
-			application.removeInfoMessage(errFileNotFound);
-			application.removeInfoMessage(errFileNotReadable);
-			application.removeInfoMessage(errFileTooBig);
-
-			if (fileMap.size() > 128) {
-				fileMap.clear();
-				errFileTooBig = String.format(Messages.MSG_FILE_LIST_TOO_BIG,
-						persistenceFileName);
-				application.setInfoMessage(errFileTooBig);
-			}
-
-		} catch (FileNotFoundException e) {
-
-			errFileNotFound = String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
-					persistenceFileName);
-			application.setInfoMessage(errFileNotFound);
-
-		} catch (IOException e) {
-
-			errFileNotReadable = String.format(
-					Messages.MSG_FILE_LIST_NOT_READABLE, persistenceFileName);
-			application.setInfoMessage(errFileNotReadable);
+		while ((line = bufferedReader.readLine()) != null) {
+			fileMap.add(line);
 		}
+		bufferedReader.close();
 
+		if (fileMap.size() > 128) {
+			fileMap.clear();
+			throw new TooManyEntriesException();
+		}
 	}
 
 	/**
 	 * Saves to the persistent file
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	private void save() {
+	public void save() throws FileNotFoundException, IOException {
 
-		try {
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-					persistenceFileName));
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
+				persistenceFileName));
 
-			for (String csvLine : fileMap) {
-				bufferedWriter.write(csvLine);
-				bufferedWriter.newLine();
-			}
-			bufferedWriter.close();
-
-			application.removeInfoMessage(errFileNotFound);
-			application.removeInfoMessage(errFileNotReadable);
-
-		} catch (FileNotFoundException e) {
-			application.setInfoMessage(errFileNotFound);
-		} catch (IOException e) {
-			application.setInfoMessage(errFileNotReadable);
+		for (String csvLine : fileMap) {
+			bufferedWriter.write(csvLine);
+			bufferedWriter.newLine();
 		}
+		bufferedWriter.close();
 	}
 
 	/**
@@ -230,6 +194,15 @@ public class Model {
 		if (fileName != null) {
 			persistenceFileName = fileName;
 		}
+	}
+
+	/**
+	 * Gets the file name of the model
+	 * 
+	 * @return The name of the persisting file
+	 */
+	public String getPersistenceFileName() {
+		return persistenceFileName;
 	}
 
 	/**
@@ -248,7 +221,7 @@ public class Model {
 
 			fileMap.set(index2, line1);
 			fileMap.set(index1, line2);
-			save();
+
 		} catch (IndexOutOfBoundsException e) {
 
 		}
@@ -264,9 +237,7 @@ public class Model {
 
 		try {
 			fileMap.remove(index);
-			save();
 		} catch (IndexOutOfBoundsException e) {
-
 		}
 	}
 
@@ -285,6 +256,7 @@ public class Model {
 	 */
 	public void setEntry(Integer index, String entryName, String filePath,
 			String midiSignature) {
+
 		String csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR,
 				entryName, filePath, midiSignature);
 
@@ -293,6 +265,5 @@ public class Model {
 		} else {
 			fileMap.set(index, csvLine);
 		}
-		save();
 	}
 }

@@ -198,7 +198,6 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkIfNoResult(
 					"midi_automator_Hello_World_12a.png", error);
-
 			GUIAutomations.cancelDialog();
 
 			// check if add dialog was canceled after opening

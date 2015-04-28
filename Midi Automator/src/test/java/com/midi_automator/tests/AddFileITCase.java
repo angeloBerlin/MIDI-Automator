@@ -22,6 +22,11 @@ public class AddFileITCase extends IntegrationTestCase {
 			// search new entry
 			GUIAutomations.checkResult("Hello_World_entry.png");
 
+			// check if new entry was saved
+			GUIAutomations.closeMidiAutomator();
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations.checkResult("Hello_World_entry.png");
+
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
