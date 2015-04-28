@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.midi_automator.Messages;
 import com.midi_automator.MidiAutomator;
 import com.midi_automator.view.frames.AddFrame;
 import com.midi_automator.view.frames.EditFrame;
@@ -47,43 +46,44 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	/**
 	 * Constructor
 	 * 
-	 * @param parentFrame
+	 * @param program_frame
 	 *            The frame the menu was called from
 	 * @param application
 	 *            The application
 	 */
-	public MainFramePopupMenu(MainFrame parentFrame, MidiAutomator application) {
-		super(parentFrame, application);
+	public MainFramePopupMenu(MainFrame program_frame, MidiAutomator application) {
+		super(program_frame, application);
 
 		moveUpMenuItem = new JMenuItem(MENU_ITEM_MOVE_UP);
 		moveUpMenuItem.setName(NAME_MENU_ITEM_MOVE_UP);
 		moveUpMenuItem.setEnabled(true);
-		moveUpMenuItem.addActionListener(new MoveUpAction(mainFrame));
+		moveUpMenuItem.addActionListener(new MoveUpAction(program_frame));
 
 		moveDownMenuItem = new JMenuItem(MENU_ITEM_MOVE_DOWN);
 		moveDownMenuItem.setName(NAME_MENU_ITEM_MOVE_DOWN);
 		moveDownMenuItem.setEnabled(true);
-		moveDownMenuItem.addActionListener(new MoveDownAction(mainFrame));
+		moveDownMenuItem.addActionListener(new MoveDownAction(program_frame));
 
 		deleteMenuItem = new JMenuItem(MENU_ITEM_DELETE);
 		deleteMenuItem.setName(NAME_MENU_ITEM_DELETE);
 		deleteMenuItem.setEnabled(true);
-		deleteMenuItem.addActionListener(new DeleteAction(mainFrame));
+		deleteMenuItem.addActionListener(new DeleteAction(program_frame));
 
 		addMenuItem = new JMenuItem(MENU_ITEM_ADD);
 		addMenuItem.setName(NAME_MENU_ITEM_ADD);
 		addMenuItem.setEnabled(true);
-		addMenuItem.addActionListener(new AddAction(mainFrame));
+		addMenuItem.addActionListener(new AddAction(program_frame));
 
 		editMenuItem = new JMenuItem(MENU_ITEM_EDIT);
 		editMenuItem.setName(NAME_MENU_ITEM_EDIT);
 		editMenuItem.setEnabled(true);
-		editMenuItem.addActionListener(new EditAction(mainFrame));
+		editMenuItem.addActionListener(new EditAction(program_frame));
 
 		midiUnlearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_UNLEARN);
 		midiUnlearnMenuItem.setName(NAME_MENU_ITEM_MIDI_UNLEARN);
 		midiUnlearnMenuItem.setEnabled(false);
-		midiUnlearnMenuItem.addActionListener(new MidiUnlearnAction(mainFrame));
+		midiUnlearnMenuItem.addActionListener(new MidiUnlearnAction(
+				program_frame));
 
 	}
 
@@ -121,8 +121,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class AddAction extends PopUpMenuAction {
 
-		public AddAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public AddAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -130,7 +130,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			new AddFrame(application, parentFrame);
+			new AddFrame(APPLICATION, PROGRAM_FRAME);
 		}
 	}
 
@@ -142,8 +142,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class DeleteAction extends PopUpMenuAction {
 
-		public DeleteAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public DeleteAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -151,8 +151,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			application
-					.deleteItem(parentFrame.getFileList().getSelectedIndex());
+			APPLICATION.deleteItem(PROGRAM_FRAME.getFileList()
+					.getSelectedIndex());
 		}
 	}
 
@@ -164,8 +164,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class EditAction extends PopUpMenuAction {
 
-		public EditAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public EditAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -173,8 +173,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			new EditFrame(application, parentFrame, parentFrame.getFileList()
-					.getSelectedIndex());
+			new EditFrame(APPLICATION, PROGRAM_FRAME, PROGRAM_FRAME
+					.getFileList().getSelectedIndex());
 		}
 	}
 
@@ -186,8 +186,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class MidiUnlearnAction extends PopUpMenuAction {
 
-		public MidiUnlearnAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public MidiUnlearnAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -199,11 +199,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			Component component = popupMenu.getInvoker();
-			application.setMidiSignature(null, component);
-			parentFrame.getFileList().setLastSelectedIndex();
-
-			parentFrame.setInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
-					parentFrame.getMidiComponentName(component)));
+			APPLICATION.unsetMidiSignature(component);
+			PROGRAM_FRAME.getFileList().setLastSelectedIndex();
 		}
 	}
 
@@ -215,8 +212,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class MoveUpAction extends PopUpMenuAction {
 
-		public MoveUpAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public MoveUpAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -224,8 +221,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			application
-					.moveUpItem(parentFrame.getFileList().getSelectedIndex());
+			APPLICATION.moveUpItem(PROGRAM_FRAME.getFileList()
+					.getSelectedIndex());
 		}
 	}
 
@@ -237,8 +234,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	 */
 	class MoveDownAction extends PopUpMenuAction {
 
-		public MoveDownAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public MoveDownAction(MainFrame PROGRAM_FRAME) {
+			super(PROGRAM_FRAME);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -246,7 +243,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			application.moveDownItem(parentFrame.getFileList()
+			APPLICATION.moveDownItem(PROGRAM_FRAME.getFileList()
 					.getSelectedIndex());
 		}
 	}

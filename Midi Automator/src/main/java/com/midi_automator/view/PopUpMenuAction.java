@@ -14,18 +14,18 @@ import com.midi_automator.view.frames.MainFrame;
  */
 public class PopUpMenuAction extends AbstractAction {
 
+	private static final long serialVersionUID = 1L;
+	protected final MainFrame PROGRAM_FRAME;
+
 	public PopUpMenuAction(MainFrame mainFrame) {
 		super();
-		parentFrame = mainFrame;
+		PROGRAM_FRAME = mainFrame;
 	}
-
-	private static final long serialVersionUID = 1L;
-	protected MainFrame parentFrame;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (parentFrame != null) {
-			parentFrame.setPopupWasShown(false);
+		if (PROGRAM_FRAME != null) {
+			PROGRAM_FRAME.setPopupWasShown(false);
 		}
 	}
 

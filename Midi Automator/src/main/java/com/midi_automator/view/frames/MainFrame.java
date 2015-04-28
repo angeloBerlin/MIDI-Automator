@@ -37,7 +37,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.midi_automator.Messages;
 import com.midi_automator.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.CacheableJButton;
@@ -78,7 +77,7 @@ public class MainFrame extends JFrame {
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
-	private MainFramePopupMenu popupMenu;
+	private final MainFramePopupMenu POPUP_MENU;
 	private JMenuItem exitMenuItem;
 	private JMenuItem preferencesMenuItem;
 	private JLabel midiINdetect;
@@ -94,7 +93,7 @@ public class MainFrame extends JFrame {
 	private boolean midiINflasherFlag;
 	private boolean midiOUTflasherFlag;
 
-	private MidiAutomator application;
+	private final MidiAutomator APPLICATION;
 	private List<String> fileEntries;
 	private List<String> midiSignatures;
 
@@ -118,7 +117,7 @@ public class MainFrame extends JFrame {
 
 		// initialize frame
 		super();
-		this.application = application;
+		this.APPLICATION = application;
 		this.setTitle(TITLE + " " + version);
 		this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		this.setResizable(true);
@@ -154,7 +153,7 @@ public class MainFrame extends JFrame {
 		// Menu
 		createMenuItems();
 		createMenu();
-		popupMenu = new MainFramePopupMenu(this, application);
+		POPUP_MENU = new MainFramePopupMenu(this, application);
 		popupWasShown = false;
 
 		// Layout
@@ -313,7 +312,7 @@ public class MainFrame extends JFrame {
 		GUIUtils.disEnableAllInputs(this, true);
 
 		// change menu item
-		popupMenu.midiLearnOff();
+		POPUP_MENU.midiLearnOff();
 
 		GUIUtils.deHighlightComponent(prevButton, false);
 		GUIUtils.deHighlightComponent(nextButton, false);
@@ -350,11 +349,8 @@ public class MainFrame extends JFrame {
 			}
 		}
 
-		// set info text
-		setInfoText(Messages.MSG_MIDI_LEARN_MODE);
-
 		// change menu item text
-		popupMenu.midiLearnOn();
+		POPUP_MENU.midiLearnOn();
 
 		// highlight component
 		if (learningComponent.getName() != null) {
@@ -362,7 +358,7 @@ public class MainFrame extends JFrame {
 
 				GUIUtils.deHighlightListItem(fileJList, true);
 
-				if (application.isInDebugMode()) {
+				if (APPLICATION.isInDebugMode()) {
 					System.out.println("Learning midi for index: "
 							+ fileJList.getSelectedIndex());
 				}
@@ -373,7 +369,7 @@ public class MainFrame extends JFrame {
 						|| learningComponent.getName().equals(NAME_NEXT_BUTTON)) {
 					GUIUtils.deHighlightComponent(learningComponent, true);
 
-					if (application.isInDebugMode()) {
+					if (APPLICATION.isInDebugMode()) {
 						System.out.println("Learning midi for button: "
 								+ learningComponent.getName());
 					}
@@ -599,7 +595,7 @@ public class MainFrame extends JFrame {
 		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 
 			return "\""
-					+ application.getEntryNameByIndex(fileJList
+					+ APPLICATION.getEntryNameByIndex(fileJList
 							.getSelectedIndex()) + "\"";
 		}
 
@@ -667,7 +663,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			application.openPreviousFile();
+			APPLICATION.openPreviousFile();
 			setEnabled(true);
 		}
 	}
@@ -685,7 +681,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			application.openNextFile();
+			APPLICATION.openNextFile();
 			setEnabled(true);
 		}
 	}
@@ -712,7 +708,7 @@ public class MainFrame extends JFrame {
 					if (me.getButton() == MouseEvent.BUTTON1
 							&& me.getClickCount() == 2) {
 						if (!popupWasShown) {
-							application
+							APPLICATION
 									.openFileByIndex(lastSelectedIndex, true);
 						}
 						popupWasShown = false;
@@ -765,7 +761,7 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			preferencesFrame = new PreferencesFrame(application, programFrame);
+			preferencesFrame = new PreferencesFrame(APPLICATION, programFrame);
 		}
 	}
 
@@ -806,9 +802,9 @@ public class MainFrame extends JFrame {
 				if (name != null) {
 
 					// en/disable midi unlearn
-					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+					POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(false);
 					if (isMidiLearned(name)) {
-						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+						POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(true);
 					}
 
 					// show pop-up of file list
@@ -818,37 +814,37 @@ public class MainFrame extends JFrame {
 						fileJList.setSelectedIndex(fileJList.locationToIndex(e
 								.getPoint()));
 
-						popupMenu.configureFileListPopupMenu();
-						popupMenu.show(e.getComponent(), e.getX(), e.getY());
+						POPUP_MENU.configureFileListPopupMenu();
+						POPUP_MENU.show(e.getComponent(), e.getX(), e.getY());
 
 						// en/disable edit
-						popupMenu.getEditMenuItem().setEnabled(false);
+						POPUP_MENU.getEditMenuItem().setEnabled(false);
 						if (fileJList.getSelectedIndex() > -1) {
-							popupMenu.getEditMenuItem().setEnabled(true);
+							POPUP_MENU.getEditMenuItem().setEnabled(true);
 						}
 
 						// en/disable delete
-						popupMenu.getDeleteMenuItem().setEnabled(false);
+						POPUP_MENU.getDeleteMenuItem().setEnabled(false);
 						if (fileJList.getSelectedIndex() > -1) {
-							popupMenu.getDeleteMenuItem().setEnabled(true);
+							POPUP_MENU.getDeleteMenuItem().setEnabled(true);
 						}
 
 						// en/disable move up
-						popupMenu.getMoveUpMenuItem().setEnabled(false);
+						POPUP_MENU.getMoveUpMenuItem().setEnabled(false);
 						if (!isFirstItem() && fileJList.getSelectedIndex() > -1) {
-							popupMenu.getMoveUpMenuItem().setEnabled(true);
+							POPUP_MENU.getMoveUpMenuItem().setEnabled(true);
 						}
 
 						// en/disable move down
-						popupMenu.getMoveDownMenuItem().setEnabled(false);
+						POPUP_MENU.getMoveDownMenuItem().setEnabled(false);
 						if (!isLastItem() && fileJList.getSelectedIndex() > -1) {
-							popupMenu.getMoveDownMenuItem().setEnabled(true);
+							POPUP_MENU.getMoveDownMenuItem().setEnabled(true);
 						}
 
 						// en/disable midi learn
-						popupMenu.getMidiLearnMenuItem().setEnabled(false);
+						POPUP_MENU.getMidiLearnMenuItem().setEnabled(false);
 						if (fileJList.getSelectedIndex() > -1) {
-							popupMenu.getMidiLearnMenuItem().setEnabled(true);
+							POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
 						}
 
 						popupWasShown = true;
@@ -857,9 +853,9 @@ public class MainFrame extends JFrame {
 					// show pop-up of switch buttons
 					if (name.equals(MainFrame.NAME_NEXT_BUTTON)
 							|| (name.equals(MainFrame.NAME_PREV_BUTTON))) {
-						popupMenu.getMidiLearnMenuItem().setEnabled(true);
-						popupMenu.configureSwitchButtonPopupMenu();
-						popupMenu.show(e.getComponent(), e.getX(), e.getY());
+						POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+						POPUP_MENU.configureSwitchButtonPopupMenu();
+						POPUP_MENU.show(e.getComponent(), e.getX(), e.getY());
 						popupWasShown = true;
 					}
 				}
@@ -879,7 +875,7 @@ public class MainFrame extends JFrame {
 		boolean isLearned = false;
 
 		// previous switch button
-		String prevSignature = application
+		String prevSignature = APPLICATION
 				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
 		if (prevSignature != null) {
 			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
@@ -889,7 +885,7 @@ public class MainFrame extends JFrame {
 		}
 
 		// next switch button
-		String nextSignature = application
+		String nextSignature = APPLICATION
 				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
 		if (nextSignature != null) {
 			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
@@ -899,7 +895,7 @@ public class MainFrame extends JFrame {
 		}
 
 		// file list item
-		String selectedSignature = application.getMidiSignature(fileJList
+		String selectedSignature = APPLICATION.getMidiSignature(fileJList
 				.getSelectedIndex());
 		if (componentName.equals(MainFrame.NAME_FILE_LIST)
 				&& (selectedSignature != null)) {

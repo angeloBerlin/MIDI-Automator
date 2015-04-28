@@ -31,7 +31,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	private final String DELETE_LABEL = "-";
 	private final int EDITOR_BUTTON_SIZE = 41; // min size for Windows
 
-	private GUIAutomationConfigurationTable configurationTable;
+	private final GUIAutomationConfigurationTable CONFIGURATION_TABLE;
 	private JPanel editorPanel;
 	private JButton addButton;
 	private JButton deleteButton;
@@ -48,11 +48,11 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		super(new GridBagLayout());
 
 		// configuration table
-		configurationTable = new GUIAutomationConfigurationTable(application);
-		configurationTable.setName(NAME_CONFIGURATION_TABLE);
-		configurationTable
-				.setCache(configurationTable.getSelectionBackground());
-		JScrollPane scrollPane = new JScrollPane(configurationTable);
+		CONFIGURATION_TABLE = new GUIAutomationConfigurationTable(application);
+		CONFIGURATION_TABLE.setName(NAME_CONFIGURATION_TABLE);
+		CONFIGURATION_TABLE.setCache(CONFIGURATION_TABLE
+				.getSelectionBackground());
+		JScrollPane scrollPane = new JScrollPane(CONFIGURATION_TABLE);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -69,7 +69,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 * @return The popup menu
 	 */
 	public MidiLearnPopupMenu getPopupMenu() {
-		return configurationTable.getPopupMenu();
+		return CONFIGURATION_TABLE.getPopupMenu();
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 * @return The configuration JTable
 	 */
 	public GUIAutomationConfigurationTable getConfigurationTable() {
-		return configurationTable;
+		return CONFIGURATION_TABLE;
 	}
 
 	/**
@@ -88,13 +88,13 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 */
 	public GUIAutomation[] getGUIAutomations() {
 
-		TableModel model = configurationTable.getModel();
+		TableModel model = CONFIGURATION_TABLE.getModel();
 		int numberOfConfigurations = model.getRowCount();
 		GUIAutomation[] guiAutomations = new GUIAutomation[numberOfConfigurations];
 
 		// stop open edits
-		if (configurationTable.isEditing()) {
-			configurationTable.getCellEditor().stopCellEditing();
+		if (CONFIGURATION_TABLE.isEditing()) {
+			CONFIGURATION_TABLE.getCellEditor().stopCellEditing();
 		}
 
 		// build GUI automation objects
@@ -159,7 +159,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			configurationTable.setAutomation(null, null, null, 0, null, -1);
+			CONFIGURATION_TABLE.setAutomation(null, null, null, 0, null, -1);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			configurationTable.deleteAutomation(configurationTable
+			CONFIGURATION_TABLE.deleteAutomation(CONFIGURATION_TABLE
 					.getSelectedRow());
 		}
 	}

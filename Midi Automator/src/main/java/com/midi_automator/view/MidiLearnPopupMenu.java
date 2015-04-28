@@ -22,8 +22,8 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	private Action midiLearnAction;
 	private Action midiCancelAction;
 
-	protected MidiAutomator application;
-	protected MainFrame mainFrame;
+	protected final MidiAutomator APPLICATION;
+	protected MainFrame program_frame;
 
 	/**
 	 * Constructor
@@ -36,17 +36,17 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	public MidiLearnPopupMenu(JFrame parentFrame, MidiAutomator application) {
 		super();
 
-		this.application = application;
+		this.APPLICATION = application;
 		if (parentFrame instanceof MainFrame) {
-			mainFrame = (MainFrame) parentFrame;
+			program_frame = (MainFrame) parentFrame;
 		}
 		midiLearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setEnabled(true);
-		midiLearnAction = new MidiLearnAction(mainFrame);
+		midiLearnAction = new MidiLearnAction(program_frame);
 		midiLearnMenuItem.addActionListener(midiLearnAction);
 		add(midiLearnMenuItem);
 
-		midiCancelAction = new MidiLearnCancelAction(mainFrame);
+		midiCancelAction = new MidiLearnCancelAction(program_frame);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 			JMenuItem menuItem = (JMenuItem) e.getSource();
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			JComponent component = (JComponent) popupMenu.getInvoker();
-			application.setMidiLearnMode(true, component);
+			APPLICATION.setMidiLearnMode(true, component);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			application.setMidiLearnMode(false, null);
+			APPLICATION.setMidiLearnMode(false, null);
 		}
 	}
 }

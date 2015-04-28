@@ -52,9 +52,8 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.openMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
 
 			// cancel midi learn
@@ -83,23 +82,21 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.openMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearnMainScreen(
+			GUIAutomations.midiUnlearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png");
 
 			// check for inactive menu item
-			GUIAutomations.openPopupMenu("Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
+			GUIAutomations.openPopupMenu("Hello_World_1_entry.png",
+					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
 			GUIAutomations.checkResult("midi_unlearn_inactive.png");
 
@@ -140,17 +137,15 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
 			GUIAutomations.focusMidiAutomator();
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
 
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_2_entry.png",
 					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
@@ -192,9 +187,8 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.openMidiAutomator();
 
 			// midi learn master signature
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_2_entry.png",
 					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, masterMessageType,
@@ -234,16 +228,14 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.openMidiAutomator();
 
 			// midi learn same signature twice
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_2_entry.png",
 					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry.png",
 					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			GUIAutomations.midiLearnMainScreen(
+			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry.png",
 					"Hello_World_1_entry_inactive.png", DEFAULT_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,

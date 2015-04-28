@@ -89,7 +89,7 @@ public class EditFrame extends AddFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			application.setItem(index, nameTextField.getText(),
+			APPLICATION.setItem(index, nameTextField.getText(),
 					fileTextField.getText(), midiSignatureValueLabel.getText());
 			new CancelAction().actionPerformed(e);
 		}

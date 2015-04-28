@@ -41,7 +41,7 @@ public class MidiAutomator {
 	private final boolean TEST;
 	private final String VERSION = "1.0.3";
 	private final Model MODEL;
-	private final Resources resources;
+	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
 	private final MainFrame PROGRAM_FRAME;
@@ -123,16 +123,16 @@ public class MidiAutomator {
 	public MidiAutomator(String wd, String os, String fileName, boolean debug,
 			boolean test) {
 
-		resources = new Resources(os, wd);
+		RESOURCES = new Resources(os, wd);
 		this.fileName = fileName;
 		this.DEBUG = debug;
 		this.TEST = test;
 
-		PROPERTIES = new MidiAutomatorProperties(resources.getPropertiesPath()
+		PROPERTIES = new MidiAutomatorProperties(RESOURCES.getPropertiesPath()
 				+ PROPERTIES_FILE_NAME);
 
 		infoMessages = new ArrayList<String>();
-		MODEL = Model.getInstance(resources);
+		MODEL = Model.getInstance(RESOURCES);
 		MODEL.setPersistenceFileName(this.fileName);
 		errMidoFileNotFound = String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
 				MODEL.getPersistenceFileName());
@@ -606,6 +606,7 @@ public class MidiAutomator {
 		this.learningComponent = learningComponent;
 
 		if (midiLearn) {
+			PROGRAM_FRAME.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
 			PROGRAM_FRAME.midiLearnOn(learningComponent);
 		} else {
 			PROGRAM_FRAME.midiLearnOff();
@@ -671,6 +672,18 @@ public class MidiAutomator {
 				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
 			PROGRAM_FRAME.setMidiSignature(signature, component);
 		}
+	}
+
+	/**
+	 * Unsets the midi signature for a given Component
+	 * 
+	 * @param component
+	 *            The component to unset the midi signature for
+	 */
+	public void unsetMidiSignature(Component component) {
+		setMidiSignature(null, component);
+		PROGRAM_FRAME.setInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
+				PROGRAM_FRAME.getMidiComponentName(component)));
 	}
 
 	/**
@@ -807,7 +820,7 @@ public class MidiAutomator {
 				// wait a little before opening file...
 				Thread.sleep(WAIT_BEFORE_OPENING);
 
-				String path = resources.generateRelativeLoadingPath(fileName);
+				String path = RESOURCES.generateRelativeLoadingPath(fileName);
 
 				removeInfoMessage(errFileNotFound);
 				removeInfoMessage(errFileNotReadable);
@@ -1206,7 +1219,7 @@ public class MidiAutomator {
 	 * @return The resources handler
 	 */
 	public Resources getResources() {
-		return resources;
+		return RESOURCES;
 	}
 
 	/**
@@ -1410,14 +1423,14 @@ public class MidiAutomator {
 			PROPERTIES.load();
 		} catch (FileNotFoundException e) {
 			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, resources.getPropertiesPath()
+					Messages.MSG_FILE_NOT_FOUND, RESOURCES.getPropertiesPath()
 							+ PROPERTIES_FILE_NAME);
 			setInfoMessage(errPropertiesFileNotFound);
 
 		} catch (IOException e) {
 			errPropertiesFileCouldNotBeOpened = String.format(
 					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
+					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
 			setInfoMessage(errPropertiesFileCouldNotBeOpened);
 		}
 	}
@@ -1433,7 +1446,7 @@ public class MidiAutomator {
 		} catch (IOException e) {
 			errPropertiesFileCouldNotBeOpened = String.format(
 					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					resources.getPropertiesPath() + PROPERTIES_FILE_NAME);
+					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
 			setInfoMessage(errPropertiesFileCouldNotBeOpened);
 		}
 	}

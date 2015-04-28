@@ -53,8 +53,8 @@ public class AddFrame extends JFrame {
 	protected JButton buttonSave;
 	private JButton buttonCancel;
 
-	protected MidiAutomator application;
-	protected JFrame programFrame;
+	protected final MidiAutomator APPLICATION;
+	protected final JFrame PARENT_FRAME;
 
 	protected ActionListener saveListener;
 	protected ActionListener cancelListener;
@@ -73,13 +73,13 @@ public class AddFrame extends JFrame {
 			throws HeadlessException {
 		super();
 
-		this.application = application;
-		this.programFrame = programFrame;
+		this.APPLICATION = application;
+		this.PARENT_FRAME = programFrame;
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
-		setLocation(this.programFrame.getLocationOnScreen().x
-				+ LOCATION_X_OFFSET, this.programFrame.getLocationOnScreen().y
+		setLocation(this.PARENT_FRAME.getLocationOnScreen().x
+				+ LOCATION_X_OFFSET, this.PARENT_FRAME.getLocationOnScreen().y
 				+ LOCATION_Y_OFFSET);
 
 		// set layout
@@ -227,7 +227,7 @@ public class AddFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			application.addItem(nameTextField.getText(),
+			APPLICATION.addItem(nameTextField.getText(),
 					fileTextField.getText());
 			new CancelAction().actionPerformed(e);
 		}
