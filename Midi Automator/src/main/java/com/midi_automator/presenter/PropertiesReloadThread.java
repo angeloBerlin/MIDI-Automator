@@ -1,4 +1,4 @@
-package com.midi_automator;
+package com.midi_automator.presenter;
 
 /**
  * This is a helper thread for loading the properties. As java.awt.Robot methods

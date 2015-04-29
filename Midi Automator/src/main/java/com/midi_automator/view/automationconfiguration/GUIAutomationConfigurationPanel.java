@@ -18,8 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
-import com.midi_automator.MidiAutomator;
 import com.midi_automator.guiautomator.GUIAutomation;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
 

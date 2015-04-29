@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="Resources" class="com.midi_automator.Resources"
+		factory-method="getInstance" scope="prototype">
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+	</bean>
+
+	<bean id="Model" class="com.midi_automator.model.Model"
+		factory-method="getInstance" scope="prototype">
+		<constructor-arg ref="Resources"/>
+	</bean>
+
+	<bean id="Presenter" class="com.midi_automator.presenter.MidiAutomator"
+		factory-method="getInstance" scope="prototype">
+		<constructor-arg>
+			<null />
+		</constructor-arg>
+		<constructor-arg>
+            <null />
+        </constructor-arg>
+        <constructor-arg>
+            <null />
+        </constructor-arg>
+        <constructor-arg>
+            <null />
+        </constructor-arg>
+        <constructor-arg>
+            <null />
+        </constructor-arg>
+	</bean>
+
+</beans>

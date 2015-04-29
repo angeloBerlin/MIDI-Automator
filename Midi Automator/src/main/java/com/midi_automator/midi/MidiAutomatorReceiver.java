@@ -3,7 +3,7 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
 /**

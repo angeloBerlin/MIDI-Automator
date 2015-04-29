@@ -5,7 +5,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 import org.sikuli.script.Screen;
 
-import com.midi_automator.IDeActivateable;
+import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
 
 /**

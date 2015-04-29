@@ -20,8 +20,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import com.midi_automator.MidiAutomator;
 import com.midi_automator.guiautomator.GUIAutomation;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
 import com.midi_automator.view.MidiLearnPopupMenu;

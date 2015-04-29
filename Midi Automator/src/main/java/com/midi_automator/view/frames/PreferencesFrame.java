@@ -26,10 +26,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
-import com.midi_automator.MidiAutomator;
-import com.midi_automator.PropertiesReloadThread;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.PropertiesReloadThread;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;

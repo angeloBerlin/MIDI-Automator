@@ -9,7 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 
 public class EditFrame extends AddFrame {
 

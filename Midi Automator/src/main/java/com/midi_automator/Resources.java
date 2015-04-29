@@ -10,6 +10,8 @@ import java.io.File;
  */
 public class Resources {
 
+	private static Resources instance;
+
 	private final String OPERATING_SYSTEM;
 	private final String WORKING_DIRECTORY;
 	private final String IMAGE_PATH;
@@ -24,28 +26,39 @@ public class Resources {
 	 * @param workingDirectory
 	 *            The working directory
 	 */
-	public Resources(String operatingSystem, String workingDirectory) {
-		super();
+	private Resources(String operatingSystem, String workingDirectory) {
+
 		OPERATING_SYSTEM = operatingSystem;
 		WORKING_DIRECTORY = workingDirectory;
 
 		// initialize resources
+		IMAGE_PATH = "images" + File.separator;
+		PROPERTIES_PATH = WORKING_DIRECTORY;
+		DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
+
 		switch (OPERATING_SYSTEM) {
 		case "MacOS":
-			IMAGE_PATH = WORKING_DIRECTORY + "/images/";
-			PROPERTIES_PATH = WORKING_DIRECTORY;
-			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 			break;
 		case "Win":
-			IMAGE_PATH = "";
-			PROPERTIES_PATH = "";
-			DEFAULT_FILE_LIST_PATH = "";
 			break;
-		default:
-			IMAGE_PATH = "images" + File.separator;
-			PROPERTIES_PATH = WORKING_DIRECTORY;
-			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 		}
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param operatingSystem
+	 *            The operating system
+	 * @param workingDirectory
+	 *            The working directory
+	 */
+	public static Resources getInstance(String operatingSystem,
+			String workingDirectory) {
+
+		if (instance == null) {
+			instance = new Resources(operatingSystem, workingDirectory);
+		}
+		return instance;
 	}
 
 	public String getImagePath() {

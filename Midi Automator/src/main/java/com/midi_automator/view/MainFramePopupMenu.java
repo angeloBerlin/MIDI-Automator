@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.frames.AddFrame;
 import com.midi_automator.view.frames.EditFrame;
 import com.midi_automator.view.frames.MainFrame;

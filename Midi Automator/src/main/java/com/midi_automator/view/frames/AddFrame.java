@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 
 public class AddFrame extends JFrame {
 

@@ -1,4 +1,4 @@
-package com.midi_automator;
+package com.midi_automator.presenter;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
 
+import com.midi_automator.Resources;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.midi.MidiAutomatorReceiver;
@@ -26,8 +27,8 @@ import com.midi_automator.midi.MidiINDetector;
 import com.midi_automator.midi.MidiINExecuteReceiver;
 import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
+import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.model.Model;
 import com.midi_automator.model.TooManyEntriesException;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
@@ -37,10 +38,12 @@ import com.midi_automator.view.frames.MainFrame;
 
 public class MidiAutomator {
 
+	private static MidiAutomator instance;
+
 	private final boolean DEBUG;
 	private final boolean TEST;
 	private final String VERSION = "1.0.3";
-	private final Model MODEL;
+	private IModel model;
 	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
@@ -107,10 +110,10 @@ public class MidiAutomator {
 	/**
 	 * Constructor
 	 * 
-	 * @param wd
-	 *            The working directory
-	 * @param os
-	 *            The operating system
+	 * @param model
+	 *            The model of the application
+	 * @param resources
+	 *            The resources with working directory and operating system
 	 * @param fileName
 	 *            The name of the file list
 	 * @param debug
@@ -120,10 +123,11 @@ public class MidiAutomator {
 	 *            <TRUE> Program GUI will be opened on left monitor side with
 	 *            top margin, <FALSE> normal mode
 	 */
-	public MidiAutomator(String wd, String os, String fileName, boolean debug,
-			boolean test) {
+	private MidiAutomator(IModel model, Resources resources, String fileName,
+			boolean debug, boolean test) {
 
-		RESOURCES = new Resources(os, wd);
+		this.model = model;
+		RESOURCES = resources;
 		this.fileName = fileName;
 		this.DEBUG = debug;
 		this.TEST = test;
@@ -132,15 +136,16 @@ public class MidiAutomator {
 				+ PROPERTIES_FILE_NAME);
 
 		infoMessages = new ArrayList<String>();
-		MODEL = Model.getInstance(RESOURCES);
-		MODEL.setPersistenceFileName(this.fileName);
+
+		// TODO:
+		// model = Model.getInstance(RESOURCES);
+		model.setPersistenceFileName(this.fileName);
 		errMidoFileNotFound = String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
-				MODEL.getPersistenceFileName());
+				this.fileName);
 		errMidoFileNotReadable = String.format(
-				Messages.MSG_FILE_LIST_NOT_READABLE,
-				MODEL.getPersistenceFileName());
+				Messages.MSG_FILE_LIST_NOT_READABLE, this.fileName);
 		errMidoFileIsTooBig = String.format(Messages.MSG_FILE_LIST_TOO_BIG,
-				MODEL.getPersistenceFileName());
+				this.fileName);
 
 		midiLearn = false;
 		doNotExecuteMidiMessage = false;
@@ -155,6 +160,30 @@ public class MidiAutomator {
 
 		loadModel();
 		reloadProperties();
+	}
+
+	/**
+	 * @param model
+	 *            The model of the application
+	 * @param resources
+	 *            The resources with working directory and operating system
+	 * @param fileName
+	 *            The name of the file list
+	 * @param debug
+	 *            <TRUE> debug information will be written to console, <FALSE>
+	 *            no debug information to console
+	 * @param test
+	 *            <TRUE> Program GUI will be opened on left monitor side with
+	 *            top margin, <FALSE> normal mode
+	 */
+	public static MidiAutomator getInstance(IModel model, Resources resources,
+			String fileName, boolean debug, boolean test) {
+
+		if (instance == null) {
+			instance = new MidiAutomator(model, resources, fileName, debug,
+					test);
+		}
+		return instance;
 	}
 
 	/**
@@ -195,13 +224,13 @@ public class MidiAutomator {
 	 */
 	private void loadModel() {
 		try {
-			MODEL.load();
+			model.load();
 			removeInfoMessage(errMidoFileNotFound);
 			removeInfoMessage(errMidoFileNotReadable);
 			removeInfoMessage(errMidoFileIsTooBig);
 
-			PROGRAM_FRAME.setFileEntries(MODEL.getEntryNames());
-			PROGRAM_FRAME.setMidiSignatures(MODEL.getMidiSignatures());
+			PROGRAM_FRAME.setFileEntries(model.getEntryNames());
+			PROGRAM_FRAME.setMidiSignatures(model.getMidiSignatures());
 
 		} catch (FileNotFoundException e1) {
 			setInfoMessage(errMidoFileNotFound);
@@ -223,7 +252,7 @@ public class MidiAutomator {
 		removeInfoMessage(errMidoFileNotFound);
 		removeInfoMessage(errMidoFileNotReadable);
 		try {
-			MODEL.save();
+			model.save();
 		} catch (FileNotFoundException e) {
 			setInfoMessage(errMidoFileNotFound);
 		} catch (IOException e) {
@@ -643,7 +672,7 @@ public class MidiAutomator {
 		if (component instanceof JList) {
 			JList<?> list = (JList<?>) component;
 
-			MODEL.setMidiSignature(signature, list.getSelectedIndex());
+			model.setMidiSignature(signature, list.getSelectedIndex());
 			saveModel();
 		}
 
@@ -710,7 +739,7 @@ public class MidiAutomator {
 
 			// open file from list
 			int index = -1;
-			index = MODEL.getMidiSignatures().indexOf(signature);
+			index = model.getMidiSignatures().indexOf(signature);
 
 			if (index > -1) {
 				openFileByIndex(index, true);
@@ -757,10 +786,10 @@ public class MidiAutomator {
 	 */
 	public void openPreviousFile() {
 
-		int current = MODEL.getCurrent() - 1;
+		int current = model.getCurrent() - 1;
 
 		if (current < 0) {
-			current = (MODEL.getFilePaths().size() - 1);
+			current = (model.getFilePaths().size() - 1);
 		}
 		openFileByIndex(current, true);
 	}
@@ -770,8 +799,8 @@ public class MidiAutomator {
 	 */
 	public void openNextFile() {
 
-		int current = MODEL.getCurrent() + 1;
-		if (current >= MODEL.getFilePaths().size()) {
+		int current = model.getCurrent() + 1;
+		if (current >= model.getFilePaths().size()) {
 			current = 0;
 		}
 		openFileByIndex(current, true);
@@ -790,10 +819,10 @@ public class MidiAutomator {
 
 		List<String> filePaths = null;
 		try {
-			filePaths = MODEL.getFilePaths();
+			filePaths = model.getFilePaths();
 
 			if (!filePaths.isEmpty()) {
-				String entryName = MODEL.getEntryNames().get(index);
+				String entryName = model.getEntryNames().get(index);
 				String fileName = SystemUtils.replaceSystemVariables(filePaths
 						.get(index));
 
@@ -802,7 +831,7 @@ public class MidiAutomator {
 						entryName);
 
 				PROGRAM_FRAME.setSelectedIndex(index);
-				MODEL.setCurrent(index);
+				model.setCurrent(index);
 
 				// Send MIDI change notifier
 				sendItemChangeNotifier(midiOUTSwitchNotifierDevice);
@@ -965,7 +994,7 @@ public class MidiAutomator {
 	 */
 	public String getMidiSignature(int index) {
 		try {
-			return MODEL.getMidiSignatures().get(index);
+			return model.getMidiSignatures().get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -980,7 +1009,7 @@ public class MidiAutomator {
 	 */
 	public String getEntryNameByIndex(int index) {
 		try {
-			return MODEL.getEntryNames().get(index);
+			return model.getEntryNames().get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -995,7 +1024,7 @@ public class MidiAutomator {
 	 */
 	public String getEntryPathByIndex(int index) {
 		try {
-			return MODEL.getFilePaths().get(index);
+			return model.getFilePaths().get(index);
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -1130,7 +1159,7 @@ public class MidiAutomator {
 			}
 		}
 
-		if (MODEL.getMidiSignatures().contains(signature)) {
+		if (model.getMidiSignatures().contains(signature)) {
 			found = true;
 		}
 
@@ -1230,7 +1259,7 @@ public class MidiAutomator {
 	 */
 	public void moveUpItem(int index) {
 
-		MODEL.exchangeIndexes(index, index - 1);
+		model.exchangeIndexes(index, index - 1);
 		saveModel();
 		loadModel();
 	}
@@ -1243,7 +1272,7 @@ public class MidiAutomator {
 	 */
 	public void moveDownItem(int index) {
 
-		MODEL.exchangeIndexes(index, index + 1);
+		model.exchangeIndexes(index, index + 1);
 		saveModel();
 		loadModel();
 	}
@@ -1256,7 +1285,7 @@ public class MidiAutomator {
 	 */
 	public void deleteItem(int index) {
 
-		MODEL.deleteEntry(index);
+		model.deleteEntry(index);
 		saveModel();
 		loadModel();
 	}
@@ -1290,7 +1319,7 @@ public class MidiAutomator {
 
 		removeInfoMessage(errTooMuchEntries);
 
-		if (index == null && MODEL.getEntryNames().size() >= 128) {
+		if (index == null && model.getEntryNames().size() >= 128) {
 			errTooMuchEntries = String.format(Messages.MSG_FILE_LIST_IS_FULL,
 					entryName);
 			setInfoMessage(errTooMuchEntries);
@@ -1298,7 +1327,7 @@ public class MidiAutomator {
 		}
 
 		if (entryName != null && !entryName.equals("")) {
-			MODEL.setEntry(index, entryName, filePath, midiSignature);
+			model.setEntry(index, entryName, filePath, midiSignature);
 			saveModel();
 		}
 

@@ -1,6 +1,6 @@
 package com.midi_automator.guiautomator;
 
-import com.midi_automator.IDeActivateable;
+import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
 
 /**

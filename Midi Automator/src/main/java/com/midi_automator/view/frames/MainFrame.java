@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.CacheableJButton;
 import com.midi_automator.view.CacheableToolTipJList;

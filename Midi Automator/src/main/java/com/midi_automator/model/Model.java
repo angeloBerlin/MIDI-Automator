@@ -12,13 +12,21 @@ import java.util.List;
 import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
-public class Model {
+public class Model implements IModel {
 
 	private List<String> fileMap;
 	private int current;
 	private static Model instance;
 	private String persistenceFileName;
 	private final String VALUE_SEPARATOR = ";";
+
+	/**
+	 * Private constructor for singleton pattern
+	 * 
+	 */
+	private Model() {
+
+	}
 
 	/**
 	 * Private constructor for singleton pattern
@@ -49,11 +57,7 @@ public class Model {
 		return instance;
 	}
 
-	/**
-	 * Returns the names of the entries in the file list
-	 * 
-	 * @return The names of the list entries
-	 */
+	@Override
 	public List<String> getEntryNames() {
 
 		List<String> result = new ArrayList<String>();
@@ -63,11 +67,7 @@ public class Model {
 		return result;
 	}
 
-	/**
-	 * Returns the paths of the files
-	 * 
-	 * @return The paths of the files
-	 */
+	@Override
 	public List<String> getFilePaths() {
 
 		List<String> result = new ArrayList<String>();
@@ -83,11 +83,7 @@ public class Model {
 		return result;
 	}
 
-	/**
-	 * Returns the midi signatures used to open the files
-	 * 
-	 * @return The midi signatures
-	 */
+	@Override
 	public List<String> getMidiSignatures() {
 
 		List<String> result = new ArrayList<String>();
@@ -101,14 +97,7 @@ public class Model {
 		return result;
 	}
 
-	/**
-	 * Sets the midi signature for the given index
-	 * 
-	 * @param signature
-	 *            The midi signature
-	 * @param index
-	 *            The file index for the signature
-	 */
+	@Override
 	public void setMidiSignature(String signature, int index) {
 
 		String csvLine = fileMap.get(index);
@@ -118,32 +107,17 @@ public class Model {
 		fileMap.set(index, csvLine);
 	}
 
-	/**
-	 * Gets the current chosen file
-	 * 
-	 * @return The index of the chosen file
-	 */
+	@Override
 	public int getCurrent() {
 		return current;
 	}
 
-	/**
-	 * Sets the current chosen file
-	 * 
-	 * @param current
-	 *            The index of the chosen file
-	 */
+	@Override
 	public void setCurrent(int current) {
 		this.current = current;
 	}
 
-	/**
-	 * Loads the persistent file
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws TooManyEntriesException
-	 */
+	@Override
 	public void load() throws FileNotFoundException, IOException,
 			TooManyEntriesException {
 
@@ -165,12 +139,7 @@ public class Model {
 		}
 	}
 
-	/**
-	 * Saves to the persistent file
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
+	@Override
 	public void save() throws FileNotFoundException, IOException {
 
 		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
@@ -183,12 +152,7 @@ public class Model {
 		bufferedWriter.close();
 	}
 
-	/**
-	 * Sets the file name of the persistence file
-	 * 
-	 * @param fileName
-	 *            The file name
-	 */
+	@Override
 	public void setPersistenceFileName(String fileName) {
 
 		if (fileName != null) {
@@ -196,23 +160,12 @@ public class Model {
 		}
 	}
 
-	/**
-	 * Gets the file name of the model
-	 * 
-	 * @return The name of the persisting file
-	 */
+	@Override
 	public String getPersistenceFileName() {
 		return persistenceFileName;
 	}
 
-	/**
-	 * Changes the indexes of two items between each other
-	 * 
-	 * @param index1
-	 *            first part of index pair to change
-	 * @param index2
-	 *            second part of index pair to change
-	 */
+	@Override
 	public void exchangeIndexes(int index1, int index2) {
 
 		try {
@@ -227,12 +180,7 @@ public class Model {
 		}
 	}
 
-	/**
-	 * Deletes the the entry with the given index
-	 * 
-	 * @param index
-	 *            the index of the entry to delete
-	 */
+	@Override
 	public void deleteEntry(int index) {
 
 		try {
@@ -241,19 +189,7 @@ public class Model {
 		}
 	}
 
-	/**
-	 * Sets the attributes of an entry
-	 * 
-	 * @param index
-	 *            the index of the entry, if <NULL> entry will be added with the
-	 *            next available index
-	 * @param entryName
-	 *            the name of the entry
-	 * @param filePath
-	 *            the path to the file
-	 * @param midiSignature
-	 *            the midi signature
-	 */
+	@Override
 	public void setEntry(Integer index, String entryName, String filePath,
 			String midiSignature) {
 

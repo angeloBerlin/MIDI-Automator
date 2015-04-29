@@ -1,10 +1,20 @@
 package com.midi_automator;
 
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.midi_automator.model.IModel;
+import com.midi_automator.model.Model;
+import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.utils.SystemUtils;
 
 public class Main {
+
+	private static String fileName = null;
+	private static String wd = "";
+	private static String os = "";
+	private static boolean debug = false;
+	private static boolean test = false;
 
 	/**
 	 * The main program
@@ -17,18 +27,13 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		String fileName = null;
-		String wd = "";
-		String os = "";
-		boolean debug = false;
-		boolean test = false;
-
 		if (args.length > 0) {
 
 			for (String arg : args) {
 
 				if (arg.contains("-wd=")) {
-					wd = replaceSystemVariables(arg.replace("-wd=", ""));
+					wd = SystemUtils.replaceSystemVariables(arg.replace("-wd=",
+							""));
 				}
 
 				if (arg.contains("-os=")) {
@@ -49,34 +54,20 @@ public class Main {
 				}
 			}
 		}
-
-		new MidiAutomator(wd, os, fileName, debug, test);
+		config();
 	}
 
 	/**
-	 * Replaces all system variables in a String with their corresponding value.
-	 * 
-	 * @param str
-	 *            The string with possible system variables
-	 * @return the string with substituted variables
+	 * Configures the application dependencies
 	 */
-	public static String replaceSystemVariables(String str) {
+	private static void config() {
 
-		String pattern = "%[A-Za-z0-9_]+%";
-		Pattern expr = Pattern.compile(pattern);
-		Matcher matcher = expr.matcher(str);
-		Map<String, String> env = System.getenv();
-
-		while (matcher.find()) {
-
-			String sysVar = matcher.group(0);
-			String sysVarValue = env.get(sysVar.replace("%", ""));
-
-			if (sysVarValue != null) {
-				str = str.replace(sysVar, sysVarValue);
-			}
-		}
-
-		return str;
+		ApplicationContext ctx = new FileSystemXmlApplicationContext(
+				"src/main/resources/spring.xml");
+		Resources resources = (Resources) ctx.getBean("Resources",
+				new Object[] { os, wd });
+		IModel model = (Model) ctx.getBean("Model");
+		ctx.getBean("Presenter", new Object[] { model, resources, fileName,
+				debug, test });
 	}
 }

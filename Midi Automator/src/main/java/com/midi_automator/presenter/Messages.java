@@ -1,4 +1,4 @@
-package com.midi_automator;
+package com.midi_automator.presenter;
 
 public class Messages {
 

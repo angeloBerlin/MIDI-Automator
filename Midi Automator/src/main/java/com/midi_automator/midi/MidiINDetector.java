@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.MidiAutomator;
+import com.midi_automator.presenter.MidiAutomator;
 
 /**
  * Shows midi in signals

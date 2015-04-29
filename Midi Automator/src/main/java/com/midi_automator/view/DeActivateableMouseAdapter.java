@@ -2,7 +2,7 @@ package com.midi_automator.view;
 
 import java.awt.event.MouseAdapter;
 
-import com.midi_automator.IDeActivateable;
+import com.midi_automator.presenter.IDeActivateable;
 
 /**
  * A MouseAdapter with a boolean "active" field.
