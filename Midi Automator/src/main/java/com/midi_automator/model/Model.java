@@ -6,26 +6,28 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
 public class Model implements IModel {
 
-	private List<String> fileMap;
-	private int current;
 	private static Model instance;
 	private String persistenceFileName;
+	private final String DEFAULT_FILE_NAME = "file_list.mido";
 	private final String VALUE_SEPARATOR = ";";
+	private SetList setList;
+	private ApplicationContext ctx;
 
 	/**
 	 * Private constructor for singleton pattern
 	 * 
 	 */
 	private Model() {
-
+		ctx = new ClassPathXmlApplicationContext("Beans.xml");
 	}
 
 	/**
@@ -35,10 +37,9 @@ public class Model implements IModel {
 	 *            The resources file
 	 */
 	private Model(Resources resources) {
-		fileMap = new ArrayList<String>();
-		current = -1;
+		this();
 		persistenceFileName = resources.getDefaultFileListPath()
-				+ "file_list.mido";
+				+ DEFAULT_FILE_NAME;
 	}
 
 	/**
@@ -58,101 +59,6 @@ public class Model implements IModel {
 	}
 
 	@Override
-	public List<String> getEntryNames() {
-
-		List<String> result = new ArrayList<String>();
-		for (String csvLine : fileMap) {
-			result.add((csvLine.split(VALUE_SEPARATOR))[0]);
-		}
-		return result;
-	}
-
-	@Override
-	public List<String> getFilePaths() {
-
-		List<String> result = new ArrayList<String>();
-		for (String csvLine : fileMap) {
-			String[] split = csvLine.split(VALUE_SEPARATOR);
-
-			if (split.length > 1) {
-				result.add(split[1]);
-			} else {
-				result.add("");
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public List<String> getMidiSignatures() {
-
-		List<String> result = new ArrayList<String>();
-		for (String csvLine : fileMap) {
-			try {
-				result.add((csvLine.split(VALUE_SEPARATOR))[2]);
-			} catch (ArrayIndexOutOfBoundsException e) {
-				result.add(null);
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public void setMidiSignature(String signature, int index) {
-
-		String csvLine = fileMap.get(index);
-		String[] split = csvLine.split(";");
-		csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR, split[0],
-				split[1], signature);
-		fileMap.set(index, csvLine);
-	}
-
-	@Override
-	public int getCurrent() {
-		return current;
-	}
-
-	@Override
-	public void setCurrent(int current) {
-		this.current = current;
-	}
-
-	@Override
-	public void load() throws FileNotFoundException, IOException,
-			TooManyEntriesException {
-
-		fileMap.clear();
-
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(
-				persistenceFileName));
-
-		String line = null;
-
-		while ((line = bufferedReader.readLine()) != null) {
-			fileMap.add(line);
-		}
-		bufferedReader.close();
-
-		if (fileMap.size() > 128) {
-			fileMap.clear();
-			throw new TooManyEntriesException();
-		}
-	}
-
-	@Override
-	public void save() throws FileNotFoundException, IOException {
-
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-				persistenceFileName));
-
-		for (String csvLine : fileMap) {
-			bufferedWriter.write(csvLine);
-			bufferedWriter.newLine();
-		}
-		bufferedWriter.close();
-	}
-
-	@Override
 	public void setPersistenceFileName(String fileName) {
 
 		if (fileName != null) {
@@ -166,40 +72,69 @@ public class Model implements IModel {
 	}
 
 	@Override
-	public void exchangeIndexes(int index1, int index2) {
+	public void load() throws FileNotFoundException, IOException,
+			TooManyEntriesException {
 
-		try {
-			String line1 = fileMap.get(index1);
-			String line2 = fileMap.get(index2);
+		setList.clear();
 
-			fileMap.set(index2, line1);
-			fileMap.set(index1, line2);
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(
+				persistenceFileName));
 
-		} catch (IndexOutOfBoundsException e) {
+		String line = null;
 
+		while ((line = bufferedReader.readLine()) != null) {
+
+			String name = "";
+			String filePath = "";
+			String midiSignature = "";
+
+			try {
+				name = (line.split(VALUE_SEPARATOR))[0];
+				filePath = (line.split(VALUE_SEPARATOR))[1];
+				midiSignature = (line.split(VALUE_SEPARATOR))[2];
+			} catch (IndexOutOfBoundsException e) {
+				// catch empty csv values
+			}
+
+			SetListItem item = (SetListItem) ctx.getBean("SetListItem");
+			item.setName(name);
+			item.setFilePath(filePath);
+			item.setMidiSignature(midiSignature);
+
+			setList.addItem(item);
+		}
+		bufferedReader.close();
+
+		if (setList.getItems().size() > 128) {
+			throw new TooManyEntriesException();
 		}
 	}
 
 	@Override
-	public void deleteEntry(int index) {
+	public void save() throws FileNotFoundException, IOException {
 
-		try {
-			fileMap.remove(index);
-		} catch (IndexOutOfBoundsException e) {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
+				persistenceFileName));
+
+		for (SetListItem item : setList.getItems()) {
+
+			String csvLine = FileUtils
+					.buildCSVLineFromStrings(VALUE_SEPARATOR, item.getName(),
+							item.getFilePath(), item.getMidiSignature());
+			bufferedWriter.write(csvLine);
+			bufferedWriter.newLine();
 		}
+		bufferedWriter.close();
 	}
 
 	@Override
-	public void setEntry(Integer index, String entryName, String filePath,
-			String midiSignature) {
-
-		String csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR,
-				entryName, filePath, midiSignature);
-
-		if (index == null) {
-			fileMap.add(csvLine);
-		} else {
-			fileMap.set(index, csvLine);
-		}
+	public SetList getSetList() {
+		return setList;
 	}
+
+	@Override
+	public void setSetList(SetList setList) {
+		this.setList = setList;
+	}
+
 }

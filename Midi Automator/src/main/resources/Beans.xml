@@ -12,10 +12,18 @@
 			<null />
 		</constructor-arg>
 	</bean>
-
+    
+    <bean id="SetListItem" class="com.midi_automator.model.SetListItem" >
+        <constructor-arg>
+            <null />
+        </constructor-arg>
+    </bean>
+    <bean id="SetList" class="com.midi_automator.model.SetList" />
+    
 	<bean id="Model" class="com.midi_automator.model.Model"
 		factory-method="getInstance" scope="prototype">
 		<constructor-arg ref="Resources"/>
+		<property name="setList" ref="SetList" />
 	</bean>
 
 	<bean id="Presenter" class="com.midi_automator.presenter.MidiAutomator"

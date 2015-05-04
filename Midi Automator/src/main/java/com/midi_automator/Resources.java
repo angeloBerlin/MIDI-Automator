@@ -31,16 +31,21 @@ public class Resources {
 		OPERATING_SYSTEM = operatingSystem;
 		WORKING_DIRECTORY = workingDirectory;
 
-		// initialize resources
-		IMAGE_PATH = "images" + File.separator;
-		PROPERTIES_PATH = WORKING_DIRECTORY;
-		DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
-
 		switch (OPERATING_SYSTEM) {
 		case "MacOS":
+			IMAGE_PATH = WORKING_DIRECTORY + "/images/";
+			PROPERTIES_PATH = WORKING_DIRECTORY;
+			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 			break;
 		case "Win":
+			IMAGE_PATH = "";
+			PROPERTIES_PATH = "";
+			DEFAULT_FILE_LIST_PATH = "";
 			break;
+		default:
+			IMAGE_PATH = "images" + File.separator;
+			PROPERTIES_PATH = WORKING_DIRECTORY;
+			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 		}
 	}
 

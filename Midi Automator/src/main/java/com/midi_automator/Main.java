@@ -1,7 +1,7 @@
 package com.midi_automator;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.Model;
@@ -62,11 +62,14 @@ public class Main {
 	 */
 	private static void config() {
 
-		ApplicationContext ctx = new FileSystemXmlApplicationContext(
-				"src/main/resources/spring.xml");
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("Beans.xml");
 		Resources resources = (Resources) ctx.getBean("Resources",
 				new Object[] { os, wd });
 		IModel model = (Model) ctx.getBean("Model");
+
+		if (fileName == null) {
+			fileName = model.getPersistenceFileName();
+		}
 		ctx.getBean("Presenter", new Object[] { model, resources, fileName,
 				debug, test });
 	}

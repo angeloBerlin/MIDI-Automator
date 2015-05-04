@@ -17,7 +17,6 @@ public class FileUtils {
 	public static void openFileFromPath(String filePath)
 			throws IllegalArgumentException, IOException {
 
-		System.out.println(filePath);
 		File file = new File(filePath);
 		Desktop.getDesktop().open(file);
 	}

@@ -1008,6 +1008,11 @@ public class GUIAutomations extends SikuliAutomation {
 	public static void closeMidiAutomator() throws FindFailed {
 
 		focusMidiAutomator();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		closeFocusedProgram();
 	}
 

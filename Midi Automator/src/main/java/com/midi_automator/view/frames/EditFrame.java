@@ -50,7 +50,7 @@ public class EditFrame extends AddFrame {
 		createMidiSignature();
 
 		nameTextField.setText(application.getEntryNameByIndex(index));
-		fileTextField.setText(application.getEntryPathByIndex(index));
+		fileTextField.setText(application.getEntryFilePathByIndex(index));
 		midiSignatureValueLabel.setText(application.getMidiSignature(index));
 	}
 
