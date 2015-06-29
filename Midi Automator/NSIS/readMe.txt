@@ -1,0 +1,1 @@
+Copy EnvVarUpdate.nsh to [NSIS installation]\Include
