@@ -33,7 +33,7 @@ public class SikuliAutomation {
 	 */
 	public SikuliAutomation() {
 
-		screen = new Screen(1);
+		screen = new Screen(0);
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 		setMinSimilarity(DEFAULT_SIMILARITY);
