@@ -16,7 +16,8 @@ import com.midi_automator.tests.utils.SikuliAutomation;
 		MidiLearnSwitchButtonsITCase.class, MidiLearnListITCase.class,
 		MidiRemoteOpenITCase.class, MidiRemoteOutITCase.class,
 		MidiMetronomITCase.class, MidiNotifierOutITCase.class,
-		MouseAutomationITCase.class, CloseMidiAutomatorITCase.class })
+		MidiListEntrySendITCase.class, MouseAutomationITCase.class,
+		CloseMidiAutomatorITCase.class })
 public class AllIntegrationTests extends SikuliAutomation {
 
 	private static Region programRegion;
