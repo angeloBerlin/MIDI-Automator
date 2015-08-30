@@ -871,10 +871,12 @@ public class MainFrame extends JFrame {
 
 						// en/disable send midi
 						POPUP_MENU.getSendMidiMenuItem().setEnabled(false);
-						if (!switchItemDeviceName
-								.equals(MidiAutomatorProperties.VALUE_NULL)
-								&& switchItemDeviceName != null) {
-							POPUP_MENU.getSendMidiMenuItem().setEnabled(true);
+						if (switchItemDeviceName != null) {
+							if (!switchItemDeviceName
+									.equals(MidiAutomatorProperties.VALUE_NULL)) {
+								POPUP_MENU.getSendMidiMenuItem().setEnabled(
+										true);
+							}
 						}
 
 						popupWasShown = true;
