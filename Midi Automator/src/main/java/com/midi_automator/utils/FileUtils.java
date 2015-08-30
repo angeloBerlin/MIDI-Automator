@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class FileUtils {
+
+	static Logger log = Logger.getLogger(FileUtils.class.getName());
 
 	/**
 	 * Opens a file with the application configured in the OS
@@ -16,6 +20,10 @@ public class FileUtils {
 	 */
 	public static void openFileFromPath(String filePath)
 			throws IllegalArgumentException, IOException {
+
+		if (filePath == null) {
+			filePath = "";
+		}
 
 		File file = new File(filePath);
 		Desktop.getDesktop().open(file);
@@ -62,6 +70,7 @@ public class FileUtils {
 	 */
 	public static String buildCSVLineFromStrings(String separator,
 			String... strings) {
+		log.debug("Build CSV from String");
 		return buildCSVLineFromArray(separator, strings);
 	}
 
@@ -78,16 +87,18 @@ public class FileUtils {
 			String[] strings) {
 		String result = "";
 
+		log.debug("Begin building CSV line...");
 		for (int i = 0; i < strings.length; i++) {
 			String value = strings[i];
 
-			if (value == null) {
+			if (value == null || value.equals(" ")) {
 				value = "";
 			}
 
 			result = result + value + separator;
 		}
 		result = result.substring(0, result.length() - 1);
+		log.debug("Built CSV line: \"" + result + "\"");
 
 		return result;
 	}

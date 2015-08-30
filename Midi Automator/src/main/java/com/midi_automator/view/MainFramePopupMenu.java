@@ -1,10 +1,8 @@
 package com.midi_automator.view;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.frames.AddFrame;
@@ -21,27 +19,26 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String MENU_ITEM_MIDI_UNLEARN = "Midi unlearn";
 	private final String MENU_ITEM_MOVE_UP = "Move up";
 	private final String MENU_ITEM_MOVE_DOWN = "Move down";
 	private final String MENU_ITEM_DELETE = "Delete";
 	private final String MENU_ITEM_ADD = "Add";
 	private final String MENU_ITEM_EDIT = "Edit";
+	private final String MENU_ITEM_SEND_MIDI = "Send midi";
 
 	private final String NAME_MENU_ITEM_MOVE_UP = "move up";
 	private final String NAME_MENU_ITEM_MOVE_DOWN = "move down";
 	private final String NAME_MENU_ITEM_DELETE = "delete";
 	private final String NAME_MENU_ITEM_ADD = "add";
 	private final String NAME_MENU_ITEM_EDIT = "edit";
+	private final String NAME_MENU_ITEM_SEND_MIDI = "send midi";
 
-	private final String NAME_MENU_ITEM_MIDI_UNLEARN = "midi unlearn";
-
-	private JMenuItem midiUnlearnMenuItem;
 	private JMenuItem moveUpMenuItem;
 	private JMenuItem moveDownMenuItem;
 	private JMenuItem deleteMenuItem;
 	private JMenuItem addMenuItem;
 	private JMenuItem editMenuItem;
+	private JMenuItem sendMidiMenuItem;
 
 	/**
 	 * Constructor
@@ -79,11 +76,10 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		editMenuItem.setEnabled(true);
 		editMenuItem.addActionListener(new EditAction(program_frame));
 
-		midiUnlearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_UNLEARN);
-		midiUnlearnMenuItem.setName(NAME_MENU_ITEM_MIDI_UNLEARN);
-		midiUnlearnMenuItem.setEnabled(false);
-		midiUnlearnMenuItem.addActionListener(new MidiUnlearnAction(
-				program_frame));
+		sendMidiMenuItem = new JMenuItem(MENU_ITEM_SEND_MIDI);
+		sendMidiMenuItem.setName(NAME_MENU_ITEM_SEND_MIDI);
+		sendMidiMenuItem.setEnabled(false);
+		sendMidiMenuItem.addActionListener(new SendMidiAction(program_frame));
 
 	}
 
@@ -101,6 +97,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		addSeparator();
 		add(midiLearnMenuItem);
 		add(midiUnlearnMenuItem);
+		addSeparator();
+		add(sendMidiMenuItem);
 	}
 
 	/**
@@ -179,32 +177,6 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	}
 
 	/**
-	 * Deletes the learned midi signature from the component
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class MidiUnlearnAction extends PopUpMenuAction {
-
-		public MidiUnlearnAction(MainFrame PROGRAM_FRAME) {
-			super(PROGRAM_FRAME);
-		}
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			super.actionPerformed(e);
-			JMenuItem menuItem = (JMenuItem) e.getSource();
-
-			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
-			Component component = popupMenu.getInvoker();
-			APPLICATION.unsetMidiSignature(component);
-			PROGRAM_FRAME.getFileList().setLastSelectedIndex();
-		}
-	}
-
-	/**
 	 * Moves the selected item one step up in the list
 	 * 
 	 * @author aguelle
@@ -248,16 +220,34 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		}
 	}
 
+	/**
+	 * Sends the midi signature of the current selected item.
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class SendMidiAction extends PopUpMenuAction {
+
+		public SendMidiAction(MainFrame parentFrame) {
+			super(parentFrame);
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			super.actionPerformed(e);
+			APPLICATION.sendItemSignature(PROGRAM_FRAME.getFileList()
+					.getSelectedIndex());
+		}
+	}
+
 	public JMenuItem getMoveUpMenuItem() {
 		return moveUpMenuItem;
 	}
 
 	public JMenuItem getMoveDownMenuItem() {
 		return moveDownMenuItem;
-	}
-
-	public JMenuItem getMidiUnlearnMenuItem() {
-		return midiUnlearnMenuItem;
 	}
 
 	public JMenuItem getDeleteMenuItem() {
@@ -268,4 +258,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		return editMenuItem;
 	}
 
+	public JMenuItem getSendMidiMenuItem() {
+		return sendMidiMenuItem;
+	}
 }

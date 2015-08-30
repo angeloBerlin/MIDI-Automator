@@ -31,6 +31,8 @@ package com.midi_automator.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
@@ -43,6 +45,8 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Transmitter;
 
+import org.apache.log4j.Logger;
+
 /**
  * Supports several utilities for MIDI handling.
  * 
@@ -51,14 +55,16 @@ import javax.sound.midi.Transmitter;
  */
 public class MidiUtils {
 
-	private static final String NOTE_ON = "NOTE ON";
-	private static final String NOTE_OFF = "NOTE OFF";
-	private static final String POLYPHONIC_KEY_PRESSURE = "POLYPHONIC KEY PRESSURE";
-	private static final String CONTROL_CHANGE = "CONTROL CHANGE";
-	private static final String PROGRAM_CHANGE = "PROGRAM CHANGE";
-	private static final String KEY_PRESSURE = "KEY PRESSURE";
-	private static final String PITCH_WHEEL_CHANGE = "PITCH WHEEL CHANGE";
-	private static final String SYSTEM_MESSAGE = "SYSTEM MESSAGE";
+	static Logger log = Logger.getLogger(MidiUtils.class.getName());
+
+	public static final String NOTE_ON = "NOTE ON";
+	public static final String NOTE_OFF = "NOTE OFF";
+	public static final String POLYPHONIC_KEY_PRESSURE = "POLYPHONIC KEY PRESSURE";
+	public static final String CONTROL_CHANGE = "CONTROL CHANGE";
+	public static final String PROGRAM_CHANGE = "PROGRAM CHANGE";
+	public static final String KEY_PRESSURE = "KEY PRESSURE";
+	public static final String PITCH_WHEEL_CHANGE = "PITCH WHEEL CHANGE";
+	public static final String SYSTEM_MESSAGE = "SYSTEM MESSAGE";
 	public static final String UNKNOWN_MESSAGE = "UNKNOWN MESSAGE";
 
 	public static long seByteCount = 0;
@@ -138,7 +144,7 @@ public class MidiUtils {
 				}
 
 			} catch (MidiUnavailableException e) {
-				e.printStackTrace();
+				log.error("A MIDI device is not available", e);
 			}
 		}
 
@@ -200,8 +206,8 @@ public class MidiUtils {
 	 * @throws MidiUnavailableException
 	 *             If the midi device can not be found
 	 */
-	public static MidiDevice getMidiDevice(String midiDeviceName, String inout)
-			throws MidiUnavailableException {
+	public static MidiDevice getMidiDevice(String midiDeviceName,
+			String direction) throws MidiUnavailableException {
 
 		MidiDevice.Info[] midiInfos;
 		MidiDevice device = null;
@@ -214,24 +220,40 @@ public class MidiUtils {
 				if (midiInfos[i].getName().equals(midiDeviceName)) {
 					device = MidiSystem.getMidiDevice(midiInfos[i]);
 
-					boolean allowsInput = (device.getMaxTransmitters() != 0);
-					boolean allowsOutput = (device.getMaxReceivers() != 0);
-					if ((allowsOutput && inout.equals("OUT"))
-							|| (allowsInput && inout.equals("IN"))) {
+					if (getDirectionOfMidiDevice(device).equals(direction)) {
 						return device;
 					}
 				}
 			}
 
 		}
-		return device;
+		throw new MidiUnavailableException();
+	}
+
+	/**
+	 * Returns the allowed direction of the given midi device
+	 * 
+	 * @param device
+	 *            The midi device
+	 * @return "IN" for inbound devices, "OUT" for outbound devices, else <NULL>
+	 */
+	public static String getDirectionOfMidiDevice(MidiDevice device) {
+
+		if (device.getMaxTransmitters() != 0) {
+			return "IN";
+		}
+
+		if (device.getMaxReceivers() != 0) {
+			return "OUT";
+		}
+		return null;
 	}
 
 	/**
 	 * Sets a midi receiver to a midi device
 	 * 
-	 * @param deviceName
-	 *            The name of the midi device
+	 * @param device
+	 *            The midi device
 	 * @param receiver
 	 *            The midi receiver
 	 * @throws MidiUnavailableException
@@ -253,6 +275,28 @@ public class MidiUtils {
 	}
 
 	/**
+	 * Removes a midi receiver from a midi device
+	 * 
+	 * @param device
+	 *            The midi device
+	 * @param receiver
+	 *            The midi receiver
+	 * @throws MidiUnavailableException
+	 *             If midi device is not available
+	 */
+	public static void removeReceiverFromDevice(MidiDevice device,
+			Receiver receiver) throws MidiUnavailableException {
+
+		List<Transmitter> transmitters = device.getTransmitters();
+		for (Transmitter transmitter : transmitters) {
+			if (receiver.equals(transmitter.getReceiver())) {
+				transmitter.getReceiver().close();
+				transmitter.close();
+			}
+		}
+	}
+
+	/**
 	 * Formats a midi message to a readable String.
 	 * 
 	 * @param message
@@ -270,6 +314,104 @@ public class MidiUtils {
 		} else {
 			return MidiUtils.UNKNOWN_MESSAGE;
 		}
+	}
+
+	/**
+	 * Creates a midi message from a readable signature string
+	 * 
+	 * @param signature
+	 *            The signature
+	 * @return a midi message
+	 * @throws InvalidMidiDataException
+	 */
+	public static MidiMessage signatureToMessage(String signature)
+			throws InvalidMidiDataException {
+
+		System.out.println(signature);
+
+		int channel = -1;
+		Pattern pattern = Pattern.compile("channel [0-9]*");
+		Matcher matcher = pattern.matcher(signature);
+		if (matcher.find()) {
+
+			String[] split = matcher.group(0).split(" ");
+			channel = Integer.parseInt(split[1]);
+
+		}
+
+		int command = -1;
+		int controlNo = -1;
+		pattern = Pattern.compile(": .* value");
+		matcher = pattern.matcher(signature);
+		if (matcher.find()) {
+
+			String[] split = matcher.group(0).split(" ");
+			String commandString = split[1] + " " + split[2];
+			command = encodeCommand(commandString);
+			controlNo = Integer.parseInt(split[3]);
+		}
+
+		int value = -1;
+		pattern = Pattern.compile("value: [0-9]*");
+		matcher = pattern.matcher(signature);
+		if (matcher.find()) {
+
+			String[] split = matcher.group(0).split(" ");
+			value = Integer.parseInt(split[1]);
+		}
+
+		ShortMessage message = new ShortMessage();
+		message.setMessage(command, channel - 1, controlNo, value);
+
+		return message;
+	}
+
+	/**
+	 * Encodes the midi command from a readable string
+	 * 
+	 * @param command
+	 *            The command as readable string
+	 * @return The midi encoded command, -1 if it could not be encoded
+	 */
+	private static int encodeCommand(String command) {
+		int result;
+		switch (command) {
+		case NOTE_OFF:
+			result = ShortMessage.NOTE_OFF;
+			break;
+
+		case NOTE_ON:
+			result = ShortMessage.NOTE_ON;
+			break;
+
+		case POLYPHONIC_KEY_PRESSURE:
+			result = ShortMessage.POLY_PRESSURE;
+			break;
+
+		case CONTROL_CHANGE:
+			result = ShortMessage.CONTROL_CHANGE;
+			break;
+
+		case PROGRAM_CHANGE:
+			result = ShortMessage.PROGRAM_CHANGE;
+			break;
+
+		case KEY_PRESSURE:
+			result = 0xd0;
+			break;
+
+		case PITCH_WHEEL_CHANGE:
+			result = 0xe0;
+			break;
+
+		case SYSTEM_MESSAGE:
+			result = 0xF0;
+
+		default:
+			result = -1;
+			break;
+		}
+		return result;
 	}
 
 	/**
@@ -569,7 +711,7 @@ public class MidiUtils {
 				}
 
 			} catch (InvalidMidiDataException e) {
-				e.printStackTrace();
+				log.error("The MIDI message to normalize is invalid", e);
 			}
 		}
 
@@ -667,7 +809,32 @@ public class MidiUtils {
 
 		for (Receiver receiver : device.getReceivers()) {
 			receiver.close();
+
 		}
+	}
+
+	/**
+	 * Checks if a given receiver is already connected to the device
+	 * 
+	 * @param device
+	 *            The midi device
+	 * @param receiver
+	 *            The receiver
+	 * @return <TRUE> if receiver is already used by the device, else <FALSE>
+	 */
+	public static boolean isReceiverUsedByDevice(MidiDevice device,
+			Receiver receiver) {
+
+		boolean used = false;
+		for (Transmitter transmitter : device.getTransmitters()) {
+
+			if (transmitter.getReceiver().getClass()
+					.equals(receiver.getClass())) {
+				used = true;
+			}
+		}
+
+		return used;
 	}
 
 	/**

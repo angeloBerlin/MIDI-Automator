@@ -12,11 +12,11 @@ import com.midi_automator.tests.AllIntegrationTests;
 public class SikuliAutomation {
 
 	private final float MOVE_MOUSE_DELAY = 0.2f;
-	private final boolean CHECK_LAST_SEEN = true;
+	public static final boolean CHECK_LAST_SEEN = true;
 	protected static final float MAX_SIMILARITY = 0.999f;
 	protected static final float HIGH_SIMILARITY = 0.99f;
 	protected static final float DEFAULT_SIMILARITY = 0.97f;
-	protected static final float LOW_SIMILARITY = 0.7f;
+	protected static final float LOW_SIMILARITY = 0.6f;
 	protected static final int HIGHLIGHT_DURATION = 1;
 	private static final int HIGHLIGHT_SEARCH_REGION_DURATION = 1;
 	private static boolean HIGHLIGHT_SEARCH_REGION = false;

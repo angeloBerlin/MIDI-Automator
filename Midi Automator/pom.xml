@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.0.3</version>
+	<version>1.1.0</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -102,21 +102,26 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<version>${project.sikulix.version}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
-        </dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-		
+
 			<!-- Customize compiler version -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -347,8 +352,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 						<artifactId>maven-resources-plugin</artifactId>
 						<version>2.7</version>
 						<executions>
-						    
-						    <!-- Copy resources for NSIS installer -->
+
+							<!-- Copy resources for NSIS installer -->
 							<execution>
 								<id>copy-artifacts</id>
 								<phase>package</phase>
@@ -424,27 +429,27 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									</resources>
 								</configuration>
 							</execution>
-							
+
 							<!-- Copy deployable packages to dist folder -->
 							<execution>
-                                <id>copy-resources</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.dist.dir.windows}</outputDirectory>
-                                    <overwrite>true</overwrite>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}</directory>
-                                            <includes>
-                                                <include>${project.nsis.outfile}</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
+								<id>copy-resources</id>
+								<phase>install</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.dist.dir.windows}</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>${project.build.directory}</directory>
+											<includes>
+												<include>${project.nsis.outfile}</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 

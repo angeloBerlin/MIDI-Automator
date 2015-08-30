@@ -1,5 +1,6 @@
 package com.midi_automator.guiautomator;
 
+import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
@@ -16,13 +17,14 @@ import com.midi_automator.utils.SystemUtils;
  */
 public class GUIAutomator extends Thread implements IDeActivateable {
 
+	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
+
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final float MIN_SIMILARITY = 0.99f;
 	private final boolean CHECK_LAST_SEEN = true;
 
 	private final Screen SCREEN;
 	private volatile boolean running = true;
-	private final boolean DEBUG;
 	private boolean active = true;
 
 	private GUIAutomation[] guiAutomations;
@@ -33,8 +35,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * @param debug
 	 *            Indicates if the program is working in debug mode
 	 */
-	public GUIAutomator(boolean debug) {
-		this.DEBUG = debug;
+	public GUIAutomator() {
 		SCREEN = new Screen(0);
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.MinSimilarity = MIN_SIMILARITY;
@@ -47,11 +48,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * 
 	 * @param guiAutomations
 	 *            An array of GUI automations to run
-	 * @param debug
-	 *            Indicates if the program is working in debug mode
 	 */
-	public GUIAutomator(GUIAutomation[] guiAutomations, boolean debug) {
-		this(debug);
+	public GUIAutomator(GUIAutomation[] guiAutomations) {
+		this();
 		setGUIAutomations(guiAutomations);
 	}
 
@@ -86,13 +85,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	public void setGUIAutomations(GUIAutomation[] guiAutomations) {
 		this.guiAutomations = guiAutomations;
 
-		if (DEBUG) {
-			for (GUIAutomation guiAutomation : guiAutomations) {
-				System.out.println(this.getClass().getCanonicalName() + "("
-						+ getName() + "): Activated Automation: "
-						+ guiAutomation.toString());
-			}
+		for (GUIAutomation guiAutomation : guiAutomations) {
+			log.info(("(" + getName() + "): Activated Automation: " + guiAutomation
+					.toString()));
 		}
+
 	}
 
 	/**
@@ -147,6 +144,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		for (GUIAutomation guiAutomation : guiAutomations) {
 			if (guiAutomation.getTrigger().equals(
 					GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
+				log.info("Activate automation once per change:" + guiAutomation);
 				guiAutomation.setActive(true);
 			}
 		}
@@ -185,27 +183,24 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		try {
 
-			if (DEBUG) {
-				System.out.println(this.getClass().getCanonicalName()
-						+ "("
-						+ getName()
-						+ "): Search for match of \""
-						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\"");
-			}
+			log.debug("("
+					+ getName()
+					+ "): Search for match of \""
+					+ SystemUtils.replaceSystemVariables(guiAutomation
+							.getImagePath()) + "\"");
 
 			startingTime = System.currentTimeMillis();
-
-			try {
-				Thread.sleep(guiAutomation.getMinDelay());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 
 			Match match = SCREEN.wait(SystemUtils
 					.replaceSystemVariables(guiAutomation.getImagePath()),
 					guiAutomation.getTimeout());
 			found = true;
+
+			try {
+				Thread.sleep(guiAutomation.getMinDelay());
+			} catch (InterruptedException e) {
+				log.error("Delay before GUI automation run failed.", e);
+			}
 
 			// left click
 			if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)) {
@@ -222,27 +217,21 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 				match.doubleClick();
 			}
 
-			if (DEBUG) {
-				System.out.println(this.getClass().getCanonicalName()
-						+ "("
-						+ getName()
-						+ "): Found match on screen for \""
-						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Timeout after "
-						+ (System.currentTimeMillis() - startingTime) + " ms)");
-			}
+			log.info("("
+					+ getName()
+					+ "): Found match on screen for \""
+					+ SystemUtils.replaceSystemVariables(guiAutomation
+							.getImagePath()) + "\" (Timeout after "
+					+ (System.currentTimeMillis() - startingTime) + " ms)");
 
 		} catch (FindFailed e) {
 
-			if (DEBUG) {
-				System.out.println(this.getClass().getCanonicalName()
-						+ "("
-						+ getName()
-						+ "): Could not find match on screen for \""
-						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Timeout after "
-						+ (System.currentTimeMillis() - startingTime) + " ms)");
-			}
+			log.info("("
+					+ getName()
+					+ "): Could not find match on screen for \""
+					+ SystemUtils.replaceSystemVariables(guiAutomation
+							.getImagePath()) + "\" (Timeout after "
+					+ (System.currentTimeMillis() - startingTime) + " ms)");
 		}
 
 		return found;

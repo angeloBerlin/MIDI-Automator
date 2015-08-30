@@ -22,6 +22,7 @@ public class MidiAutomatorProperties extends Properties {
 	public static final String KEY_MIDI_IN_METRONOM_DEVICE = "MIDI_IN_METRONOM_DEVICE";
 	public static final String KEY_MIDI_OUT_REMOTE_DEVICE = "MIDI_OUT_REMOTE_DEVICE";
 	public static final String KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE = "MIDI_OUT_SWITCH_NOTIFIER_DEVICE";
+	public static final String KEY_MIDI_OUT_SWITCH_ITEM_DEVICE = "MIDI_OUT_SWITCH_ITEM_DEVICE";
 	public static final String KEY_PREV_MIDI_SIGNATURE = "PREV_MIDI_SIGNATURE";
 	public static final String KEY_NEXT_MIDI_SIGNATURE = "NEXT_MIDI_SIGNATURE";
 	public static final String KEY_GUI_AUTOMATION_IMAGES = "GUI_AUTOMATION_IMAGE";

@@ -24,21 +24,25 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.apache.log4j.Logger;
+
 import com.midi_automator.presenter.MidiAutomator;
 
 public class AddFrame extends JFrame {
 
+	static Logger log = Logger.getLogger(AddFrame.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	private final String TITLE = "Add";
-	protected final int WIDTH = 500;
-	protected final int HEIGHT = 130;
+	protected final int WIDTH = 530;
+	protected final int HEIGHT = 140;
 	private final int LOCATION_X_OFFSET = 50;
 	private final int LOCATION_Y_OFFSET = 50;
-	protected final int LABEL_WIDTH = 50;
+	protected final int LABEL_WIDTH = 70;
 	protected final int TEXT_PANE_WIDTH = 340;
 	private final String LABEL_NAME = "Name:";
 	private final String LABEL_FILE = "File:";
+	private final String LABEL_SENDING_MIDI = "Sending:";
 	private final String BUTTON_SEARCH = "Search...";
 	private final String BUTTON_SAVE = "Save";
 	private final String BUTTON_CANCEL = "Cancel";
@@ -49,6 +53,8 @@ public class AddFrame extends JFrame {
 	private JLabel fileLabel;
 	protected JTextField nameTextField;
 	protected JTextField fileTextField;
+	protected JLabel midiSendingSignatureLabel;
+	protected JLabel midiSendingSignatureValueLabel;
 	private JButton searchButton;
 	protected JButton buttonSave;
 	private JButton buttonCancel;
@@ -94,6 +100,9 @@ public class AddFrame extends JFrame {
 
 		// File
 		createEntryFile();
+
+		// sending midi signature
+		createMidiSedningSignature();
 
 		// Save
 		buttonSave = new JButton(BUTTON_SAVE);
@@ -170,6 +179,31 @@ public class AddFrame extends JFrame {
 	}
 
 	/**
+	 * Creates the label for the midi sending signature
+	 */
+	private void createMidiSedningSignature() {
+
+		GridBagConstraints c = new GridBagConstraints();
+		midiSendingSignatureLabel = new JLabel(LABEL_SENDING_MIDI);
+		midiSendingSignatureLabel.setPreferredSize(new Dimension(LABEL_WIDTH,
+				midiSendingSignatureLabel.getPreferredSize().height));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 3;
+		middlePanel.add(midiSendingSignatureLabel, c);
+
+		midiSendingSignatureValueLabel = new JLabel(
+				APPLICATION.getUniqueSendingMidiSignature());
+		midiSendingSignatureValueLabel.setPreferredSize(new Dimension(
+				TEXT_PANE_WIDTH, midiSendingSignatureValueLabel
+						.getPreferredSize().height));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 3;
+		middlePanel.add(midiSendingSignatureValueLabel, c);
+	}
+
+	/**
 	 * Returns the text pane with the file path to open
 	 * 
 	 * @return the file text pane
@@ -228,7 +262,8 @@ public class AddFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			APPLICATION.addItem(nameTextField.getText(),
-					fileTextField.getText());
+					fileTextField.getText(),
+					midiSendingSignatureValueLabel.getText());
 			new CancelAction().actionPerformed(e);
 		}
 	}

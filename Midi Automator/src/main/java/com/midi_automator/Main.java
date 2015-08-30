@@ -1,5 +1,6 @@
 package com.midi_automator;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,20 +11,20 @@ import com.midi_automator.utils.SystemUtils;
 
 public class Main {
 
+	static Logger log = Logger.getLogger(Main.class.getName());
+
 	private static String fileName = null;
 	private static String wd = "";
 	private static String os = "";
-	private static boolean debug = false;
 	private static boolean test = false;
 
 	/**
 	 * The main program
 	 * 
 	 * @param args
-	 *            -debug puts debug information to the console, -dev puts the
-	 *            application to development mode, -wd specifies the working
-	 *            directory, -os specifies the current operating system
-	 *            ["MacOS"|"Win"], no prefix specifies the .mido file to load
+	 *            -wd specifies the working directory, -os specifies the current
+	 *            operating system ["MacOS"|"Win"], no prefix specifies the
+	 *            .mido file to load
 	 */
 	public static void main(String[] args) {
 
@@ -34,23 +35,22 @@ public class Main {
 				if (arg.contains("-wd=")) {
 					wd = SystemUtils.replaceSystemVariables(arg.replace("-wd=",
 							""));
+					log.info("Working Driectory (-wd) set to: " + wd);
 				}
 
 				if (arg.contains("-os=")) {
 					os = arg.replace("-os=", "");
+					log.info("Operating System (-os) set to: " + os);
 				}
 
 				if (arg.contains(MidiAutomator.FILE_EXTENSION)) {
 					fileName = arg;
-				}
-
-				if (arg.contains("-debug")) {
-					debug = true;
+					log.info("File in argument: " + fileName);
 				}
 
 				if (arg.contains("-test")) {
+					log.info("Set \"-test\"");
 					test = true;
-					debug = true;
 				}
 			}
 		}
@@ -71,6 +71,6 @@ public class Main {
 			fileName = model.getPersistenceFileName();
 		}
 		ctx.getBean("Presenter", new Object[] { model, resources, fileName,
-				debug, test });
+				test });
 	}
 }

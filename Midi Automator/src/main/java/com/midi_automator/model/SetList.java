@@ -41,14 +41,27 @@ public class SetList {
 	}
 
 	/**
-	 * Gets all midi signatures
+	 * Gets all midi listening signatures
 	 * 
-	 * @return a list of midi signatures
+	 * @return a list of midi listening signatures
 	 */
-	public List<String> getMidiSignatures() {
+	public List<String> getMidiListeningSignatures() {
 		List<String> midiSignatures = new ArrayList<String>();
 		for (SetListItem item : items) {
-			midiSignatures.add(item.getMidiSignature());
+			midiSignatures.add(item.getMidiListeningSignature());
+		}
+		return midiSignatures;
+	}
+
+	/**
+	 * Gets all midi sending signatures
+	 * 
+	 * @return a list of midi sending signatures
+	 */
+	public List<String> getMidiSendingSignatures() {
+		List<String> midiSignatures = new ArrayList<String>();
+		for (SetListItem item : items) {
+			midiSignatures.add(item.getMidiSendingSignature());
 		}
 		return midiSignatures;
 	}

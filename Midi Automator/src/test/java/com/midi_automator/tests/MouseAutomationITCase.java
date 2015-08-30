@@ -149,12 +149,12 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 
 			// check if add dialog was canceled
 			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12a.png");
+			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if add dialog was not canceled again
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkIfNoResult(
-					"midi_automator_Hello_World_12a.png", error);
+					"midi_automator_Hello_World_12i.png", error);
 
 			// cancel open dialog
 			GUIAutomations.cancelDialog();
@@ -163,7 +163,7 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 			GUIAutomations.nextFile();
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkIfNoResult(
-					"midi_automator_Hello_World_12a.png", error);
+					"midi_automator_Hello_World_12i.png", error);
 
 			// cancel open dialog
 			GUIAutomations.cancelDialog();
@@ -197,18 +197,18 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 			// check if add dialog was canceled before opening
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkIfNoResult(
-					"midi_automator_Hello_World_12a.png", error);
+					"midi_automator_Hello_World_12i.png", error);
 			GUIAutomations.cancelDialog();
 
 			// check if add dialog was canceled after opening
 			GUIAutomations.nextFile();
 			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12a.png");
+			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if add dialog was canceled twice after opening
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkIfNoResult(
-					"midi_automator_Hello_World_12a.png", error);
+					"midi_automator_Hello_World_12i.png", error);
 			GUIAutomations.cancelDialog();
 
 		} catch (FindFailed | IOException e) {
@@ -455,7 +455,7 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 	}
 
 	@Test
-	public void delayShouldNotTakeDumbValues() {
+	public void delayShouldNotTakeInvalidValues() {
 
 		try {
 			// mockup
@@ -505,7 +505,7 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 
 			// check if dialogs are always canceled
 			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12a.png");
+			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if popup menu is opened after file opening
 			GUIAutomations.openEntryByDoubleClick("Hello_World_2_entry.png",
@@ -516,7 +516,7 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 
 			// check if dialogs are always canceled
 			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12a.png");
+			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

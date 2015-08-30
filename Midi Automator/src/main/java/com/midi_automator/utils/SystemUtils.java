@@ -5,7 +5,11 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 public class SystemUtils {
+
+	static Logger log = Logger.getLogger(SystemUtils.class.getName());
 
 	/**
 	 * Replaces all system variables in a String with their corresponding value.
@@ -16,31 +20,36 @@ public class SystemUtils {
 	 */
 	public static String replaceSystemVariables(String str) {
 
-		String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
-		Pattern expr = Pattern.compile(pattern);
-		Matcher matcher = expr.matcher(str);
-		TreeMap<String, String> env = new TreeMap<String, String>(
-				System.getenv());
+		log.debug("String to replace with system variables: " + str);
+		if (str != null) {
+			String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
+			Pattern expr = Pattern.compile(pattern);
+			Matcher matcher = expr.matcher(str);
+			TreeMap<String, String> env = new TreeMap<String, String>(
+					System.getenv());
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+			if (System.getProperty("os.name").equals("Windows 7")) {
 
-			TreeMap<String, String> insensitiveEnv = new TreeMap<String, String>(
-					String.CASE_INSENSITIVE_ORDER);
-			insensitiveEnv.putAll(env);
-			env = insensitiveEnv;
-		}
+				TreeMap<String, String> insensitiveEnv = new TreeMap<String, String>(
+						String.CASE_INSENSITIVE_ORDER);
+				insensitiveEnv.putAll(env);
+				env = insensitiveEnv;
+			}
 
-		while (matcher.find()) {
+			while (matcher.find()) {
 
-			String sysVar = matcher.group(0);
-			String varName = sysVar.replace("%", "");
-			varName = varName.replace("$", "");
-			String sysVarValue = env.get(varName);
+				String sysVar = matcher.group(0);
+				String varName = sysVar.replace("%", "");
+				varName = varName.replace("$", "");
+				String sysVarValue = env.get(varName);
 
-			if (sysVarValue != null) {
-				str = str.replace(sysVar, sysVarValue);
+				if (sysVarValue != null) {
+					str = str.replace(sysVar, sysVarValue);
+				}
 			}
 		}
+
+		log.debug("Replaced system variables: " + str);
 
 		return str;
 	}

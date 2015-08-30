@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -14,6 +15,8 @@ import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
 public class Model implements IModel {
+
+	static Logger log = Logger.getLogger(Model.class.getName());
 
 	private static Model instance;
 	private String persistenceFileName;
@@ -84,14 +87,16 @@ public class Model implements IModel {
 
 		while ((line = bufferedReader.readLine()) != null) {
 
-			String name = "";
-			String filePath = "";
-			String midiSignature = "";
+			String name = null;
+			String filePath = null;
+			String midiListeningSignature = null;
+			String midiSendingSignature = null;
 
 			try {
 				name = (line.split(VALUE_SEPARATOR))[0];
 				filePath = (line.split(VALUE_SEPARATOR))[1];
-				midiSignature = (line.split(VALUE_SEPARATOR))[2];
+				midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
+				midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
 			} catch (IndexOutOfBoundsException e) {
 				// catch empty csv values
 			}
@@ -99,7 +104,8 @@ public class Model implements IModel {
 			SetListItem item = (SetListItem) ctx.getBean("SetListItem");
 			item.setName(name);
 			item.setFilePath(filePath);
-			item.setMidiSignature(midiSignature);
+			item.setMidiListeningSignature(midiListeningSignature);
+			item.setMidiSendingSignature(midiSendingSignature);
 
 			setList.addItem(item);
 		}
@@ -117,13 +123,17 @@ public class Model implements IModel {
 				persistenceFileName));
 
 		for (SetListItem item : setList.getItems()) {
-
-			String csvLine = FileUtils
-					.buildCSVLineFromStrings(VALUE_SEPARATOR, item.getName(),
-							item.getFilePath(), item.getMidiSignature());
+			log.debug("Save item: " + item.getName() + " " + item.getFilePath());
+			String csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR,
+					item.getName(), item.getFilePath(),
+					item.getMidiListeningSignature(),
+					item.getMidiSendingSignature());
+			log.debug("Save \"" + csvLine + "\"");
 			bufferedWriter.write(csvLine);
 			bufferedWriter.newLine();
 		}
+
+		log.debug("Save model to file");
 		bufferedWriter.close();
 	}
 

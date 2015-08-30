@@ -768,7 +768,7 @@ public class GUIAutomations extends SikuliAutomation {
 					"midi_automator.png");
 			setMinSimilarity(DEFAULT_SIMILARITY);
 			searchRegion.y = searchRegion.y - 21;
-			searchRegion.w = searchRegion.w + 100;
+			searchRegion.w = searchRegion.w + 500;
 			searchRegion.h = searchRegion.h + 100;
 			return searchRegion;
 		} catch (FindFailed e) {

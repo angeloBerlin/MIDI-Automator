@@ -9,10 +9,12 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 
 import org.junit.Test;
+import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
+import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
 
 public class MidiLearnListITCase extends IntegrationTestCase {
@@ -49,6 +51,7 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 			GUIAutomations.openMidiAutomator();
 
 			// midi learn
@@ -59,6 +62,30 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			// cancel midi learn
 			GUIAutomations.cancelMidiLearnMainScreen(
 					"Hello_World_1_entry_learn.png", null, null);
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void midiLearnShouldBeInactive() {
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.openMidiAutomator();
+
+			// midi learn
+			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
+					"Hello_World_1_entry_active.png",
+					"Hello_World_1_entry_inactive.png", LOW_SIMILARITY);
+
+			GUIAutomations.checkResult("midi_learn_inactive.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
@@ -129,6 +156,8 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 	@Test
 	public void midiShouldBeLearned() {
 
+		Settings.CheckLastSeen = false;
+
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
@@ -139,14 +168,14 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 			GUIAutomations.focusMidiAutomator();
 			GUIAutomations.midiLearnMainScreen("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry_inactive.png", DEFAULT_SIMILARITY);
+					"Hello_World_1_entry_inactive.png", HIGH_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
 
 			GUIAutomations.midiLearnMainScreen("Hello_World_2_entry.png",
 					"Hello_World_2_entry_active.png",
-					"Hello_World_2_entry_inactive.png", DEFAULT_SIMILARITY);
+					"Hello_World_2_entry_inactive.png", HIGH_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
@@ -171,6 +200,7 @@ public class MidiLearnListITCase extends IntegrationTestCase {
 		} finally {
 			try {
 				GUIAutomations.closeMidiAutomator();
+				Settings.CheckLastSeen = SikuliAutomation.CHECK_LAST_SEEN;
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

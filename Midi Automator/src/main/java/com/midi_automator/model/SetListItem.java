@@ -10,6 +10,11 @@ import com.midi_automator.utils.SystemUtils;
  */
 public class SetListItem {
 
+	private String name;
+	private String filePath;
+	private String midiListeningSignature;
+	private String midiSendingSignature;
+
 	public SetListItem(String name) {
 		super();
 		this.name = name;
@@ -21,16 +26,14 @@ public class SetListItem {
 		this.filePath = filePath;
 	}
 
-	public SetListItem(String name, String filePath, String midiSignature) {
+	public SetListItem(String name, String filePath,
+			String midiListeningSignature, String midiSendingSignature) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
-		this.midiSignature = midiSignature;
+		this.midiListeningSignature = midiListeningSignature;
+		this.midiSendingSignature = midiSendingSignature;
 	}
-
-	private String name;
-	private String filePath;
-	private String midiSignature;
 
 	public String getName() {
 		return name;
@@ -41,6 +44,9 @@ public class SetListItem {
 	}
 
 	public String getFilePath() {
+		if (filePath == null) {
+			return "";
+		}
 		return SystemUtils.replaceSystemVariables(filePath);
 	}
 
@@ -48,11 +54,19 @@ public class SetListItem {
 		this.filePath = filePath;
 	}
 
-	public String getMidiSignature() {
-		return midiSignature;
+	public String getMidiListeningSignature() {
+		return midiListeningSignature;
 	}
 
-	public void setMidiSignature(String midiSignature) {
-		this.midiSignature = midiSignature;
+	public void setMidiListeningSignature(String midiSignature) {
+		this.midiListeningSignature = midiSignature;
+	}
+
+	public String getMidiSendingSignature() {
+		return midiSendingSignature;
+	}
+
+	public void setMidiSendingSignature(String midiSendingSignature) {
+		this.midiSendingSignature = midiSendingSignature;
 	}
 }

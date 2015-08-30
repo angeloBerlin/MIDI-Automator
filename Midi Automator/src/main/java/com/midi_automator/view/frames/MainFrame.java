@@ -37,6 +37,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import org.apache.log4j.Logger;
+
+import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.CacheableJButton;
@@ -50,6 +53,8 @@ import com.midi_automator.view.ToolTipItemImpl;
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+
+	static Logger log = Logger.getLogger(MainFrame.class.getName());
 
 	private final String TITLE = "Midi Automator";
 	private final int WIDTH = 500;
@@ -95,7 +100,8 @@ public class MainFrame extends JFrame {
 
 	private final MidiAutomator APPLICATION;
 	private List<String> fileEntries;
-	private List<String> midiSignatures;
+	private List<String> midiListeningSignatures;
+	private List<String> midiSendingSignatures;
 
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
@@ -212,13 +218,23 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Sets the midi signatures
+	 * Sets the midi signatures the items are listening to
+	 * 
+	 * @param signatures
+	 *            The signatures for the items
+	 */
+	public void setMidiListeningSignatures(List<String> signatures) {
+		midiListeningSignatures = signatures;
+	}
+
+	/**
+	 * Sets the midi signatures the items are sending on opening
 	 * 
 	 * @param signatures
 	 *            The signatures for the files
 	 */
-	public void setMidiSignatures(List<String> signatures) {
-		midiSignatures = signatures;
+	public void setMidiSendingSignatures(List<String> signatures) {
+		midiSendingSignatures = signatures;
 	}
 
 	/**
@@ -237,12 +253,13 @@ public class MainFrame extends JFrame {
 		}
 
 		// set tooltips
-		if (midiSignatures != null) {
-			int index = 0;
-			for (String signature : midiSignatures) {
-				setListItemTooltip(signature, MainFrame.NAME_FILE_LIST, index);
-				index++;
-			}
+		for (int i = 0; i < midiListeningSignatures.size(); i++) {
+			String listeningSignature = midiListeningSignatures.get(i);
+			String sendingSignature = midiSendingSignatures.get(i);
+
+			setListItemTooltip("Listening: " + listeningSignature
+					+ "\nSending: " + sendingSignature,
+					MainFrame.NAME_FILE_LIST, i);
 		}
 
 		// reload preferences frame
@@ -358,10 +375,8 @@ public class MainFrame extends JFrame {
 
 				GUIUtils.deHighlightListItem(fileJList, true);
 
-				if (APPLICATION.isInDebugMode()) {
-					System.out.println("Learning midi for index: "
-							+ fileJList.getSelectedIndex());
-				}
+				log.info("Learning midi for index: "
+						+ (fileJList.getSelectedIndex() + 1));
 
 			} else {
 
@@ -369,10 +384,8 @@ public class MainFrame extends JFrame {
 						|| learningComponent.getName().equals(NAME_NEXT_BUTTON)) {
 					GUIUtils.deHighlightComponent(learningComponent, true);
 
-					if (APPLICATION.isInDebugMode()) {
-						System.out.println("Learning midi for button: "
-								+ learningComponent.getName());
-					}
+					log.info("Learning midi for button: "
+							+ learningComponent.getName());
 				}
 			}
 		}
@@ -620,7 +633,7 @@ public class MainFrame extends JFrame {
 			fileJList.setBackground(color);
 			Thread.sleep(duration);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log.error("The delay of the file list flasher failed", e);
 		} finally {
 			fileJList.setBackground(originalColor);
 		}
@@ -797,18 +810,24 @@ public class MainFrame extends JFrame {
 
 				// getting the name of the component
 				Component component = (Component) e.getSource();
-				String name = component.getName();
+				String componentName = component.getName();
 
-				if (name != null) {
+				// getting midi device names
+				String midiInRemoteDeviceName = APPLICATION
+						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+				String switchItemDeviceName = APPLICATION
+						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
+
+				if (componentName != null) {
 
 					// en/disable midi unlearn
 					POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(false);
-					if (isMidiLearned(name)) {
+					if (isMidiLearned(componentName)) {
 						POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(true);
 					}
 
 					// show pop-up of file list
-					if (name.equals(MainFrame.NAME_FILE_LIST)) {
+					if (componentName.equals(MainFrame.NAME_FILE_LIST)) {
 
 						// set selection in file list
 						fileJList.setSelectedIndex(fileJList.locationToIndex(e
@@ -843,17 +862,35 @@ public class MainFrame extends JFrame {
 
 						// en/disable midi learn
 						POPUP_MENU.getMidiLearnMenuItem().setEnabled(false);
-						if (fileJList.getSelectedIndex() > -1) {
+						if (fileJList.getSelectedIndex() > -1
+								&& midiInRemoteDeviceName != null
+								&& !midiInRemoteDeviceName
+										.equals(MidiAutomatorProperties.VALUE_NULL)) {
 							POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+						}
+
+						// en/disable send midi
+						POPUP_MENU.getSendMidiMenuItem().setEnabled(false);
+						if (!switchItemDeviceName
+								.equals(MidiAutomatorProperties.VALUE_NULL)
+								&& switchItemDeviceName != null) {
+							POPUP_MENU.getSendMidiMenuItem().setEnabled(true);
 						}
 
 						popupWasShown = true;
 					}
 
 					// show pop-up of switch buttons
-					if (name.equals(MainFrame.NAME_NEXT_BUTTON)
-							|| (name.equals(MainFrame.NAME_PREV_BUTTON))) {
-						POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+					if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
+							|| (componentName
+									.equals(MainFrame.NAME_PREV_BUTTON))) {
+
+						if (midiInRemoteDeviceName != null
+								&& !midiInRemoteDeviceName
+										.equals(MidiAutomatorProperties.VALUE_NULL)) {
+							POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+						}
+
 						POPUP_MENU.configureSwitchButtonPopupMenu();
 						POPUP_MENU.show(e.getComponent(), e.getX(), e.getY());
 						popupWasShown = true;
@@ -897,9 +934,11 @@ public class MainFrame extends JFrame {
 		// file list item
 		String selectedSignature = APPLICATION.getMidiSignature(fileJList
 				.getSelectedIndex());
-		if (componentName.equals(MainFrame.NAME_FILE_LIST)
-				&& (selectedSignature != null)) {
-			isLearned = true;
+		if (selectedSignature != null) {
+			if (componentName.equals(MainFrame.NAME_FILE_LIST)
+					&& (!selectedSignature.equals(""))) {
+				isLearned = true;
+			}
 		}
 
 		return isLearned;
@@ -986,8 +1025,7 @@ public class MainFrame extends JFrame {
 				label.setBackground(null);
 				Thread.sleep(duration);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("The delay of the label flasher failed", e);
 			}
 		}
 	}

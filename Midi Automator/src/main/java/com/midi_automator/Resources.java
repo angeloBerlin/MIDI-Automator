@@ -2,6 +2,8 @@ package com.midi_automator;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class handles the OS specific resource locations
  * 
@@ -9,6 +11,8 @@ import java.io.File;
  * 
  */
 public class Resources {
+
+	static Logger log = Logger.getLogger(Resources.class.getName());
 
 	private static Resources instance;
 
@@ -105,6 +109,7 @@ public class Resources {
 			result = path;
 		}
 
+		log.debug("Relative loading path: " + result);
 		return result;
 	}
 

@@ -5,7 +5,10 @@ import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -15,9 +18,12 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Transmitter;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
+
+import org.apache.log4j.Logger;
 
 import com.midi_automator.Resources;
 import com.midi_automator.guiautomator.GUIAutomation;
@@ -38,11 +44,12 @@ import com.midi_automator.view.frames.MainFrame;
 
 public class MidiAutomator {
 
+	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
+
 	private static MidiAutomator instance;
 
-	private final boolean DEBUG;
 	private final boolean TEST;
-	private final String VERSION = "1.0.3";
+	private final String VERSION = "1.1.0";
 	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
@@ -56,38 +63,17 @@ public class MidiAutomator {
 	private boolean midiLearn;
 	private boolean doNotExecuteMidiMessage;
 	private JComponent learningComponent;
-	private String oldMidiINRemoteDeviceSignature;
-	private String oldMidiINMetronomDeviceSignature;
-	private String oldMidiOUTRemoteDeviceSignature;
-	private String oldMidiOUTSwitchNotifierDeviceSignature;
-	private MidiDevice midiINRemoteDevice;
-	private MidiDevice midiINMetronomDevice;
-	private MidiDevice midiOUTRemoteDevice;
-	private MidiDevice midiOUTSwitchNotifierDevice;
-	private MidiAutomatorReceiver midiLearnReceiver;
-	private MidiAutomatorReceiver midiExecuteReceiver;
-	private MidiAutomatorReceiver midiMetronomReceiver;
-	private MidiAutomatorReceiver midiINDetectorReceiver;
+	private Map<String, MidiDevice> midiDevices = new HashMap<String, MidiDevice>();
+	private Map<String, Set<Receiver>> midiFunctionReceiverMapping = new HashMap<String, Set<Receiver>>();
+	private Map<String, MidiAutomatorReceiver> midiReceivers = new HashMap<String, MidiAutomatorReceiver>();
+	private final String KEY_MIDI_RECEIVER_MIDI_LEARN = "KEY_MIDI_RECEIVER_MIDI_LEARN";
+	private final String KEY_MIDI_RECEIVER_EXECUTE = "KEY_MIDI_RECEIVER_EXECUTE";
+	private final String KEY_MIDI_RECEIVER_METRONOM = "KEY_MIDI_RECEIVER_METRONOM";
+	private final String KEY_MIDI_RECEIVER_IN_DETECTOR = "KEY_MIDI_RECEIVER_IN_DETECTOR";
 
 	// gui automation
 	private GUIAutomation[] guiAutomations;
 	private List<GUIAutomator> guiAutomators;
-
-	// info messages
-	private String errDuplicateMidiSignature;
-	private String infoEntryOpened;
-	private String errMidoFileIsTooBig;
-	private String errMidoFileNotFound;
-	private String errMidoFileNotReadable;
-	private String errFileNotFound;
-	private String errFileNotReadable;
-	private String errPropertiesFileNotFound;
-	private String errTooMuchEntries;
-	private String errPropertiesFileCouldNotBeOpened;
-	private String errMidiINRemoteDeviceUnavailable;
-	private String errMidiINMetronomDeviceUnavailable;
-	private String errMidiOUTRemoteDeviceUnavailable;
-	private String errMidiOUTSwitchNotifierDeviceUnavailable;
 
 	// configurations
 	public static final String FILE_EXTENSION = ".mido";
@@ -100,6 +86,9 @@ public class MidiAutomator {
 	public static final int SWITCH_NOTIFIER_MIDI_CHANNEL = 1;
 	public static final int SWITCH_NOTIFIER_MIDI_CONTROL_NO = 103;
 	public static final int SWITCH_NOTIFIER_MIDI_VALUE = 127;
+	public static final int ITEM_SEND_MIDI_COMMAND = ShortMessage.CONTROL_CHANGE;
+	public static final int ITEM_SEND_MIDI_CHANNEL = 16;
+	public static final int ITEM_SEND_MIDI_VALUE = 127;
 	public static final long WAIT_BEFORE_OPENING = 100;
 	public static final long WAIT_BEFORE_SLAVE_SEND = 2000;
 	public static final String OPEN_FILE_MIDI_SIGNATURE = "channel 1: CONTROL CHANGE 102";
@@ -116,19 +105,15 @@ public class MidiAutomator {
 	 *            The resources with working directory and operating system
 	 * @param fileName
 	 *            The name of the file list
-	 * @param debug
-	 *            <TRUE> debug information will be written to console, <FALSE>
-	 *            no debug information to console
 	 * @param test
 	 *            <TRUE> Program GUI will be opened on left monitor side with
 	 *            top margin, <FALSE> normal mode
 	 */
 	private MidiAutomator(IModel model, Resources resources, String fileName,
-			boolean debug, boolean test) {
+			boolean test) {
 
 		this.model = model;
 		RESOURCES = resources;
-		this.DEBUG = debug;
 		this.TEST = test;
 
 		PROPERTIES = new MidiAutomatorProperties(RESOURCES.getPropertiesPath()
@@ -138,19 +123,33 @@ public class MidiAutomator {
 
 		model.setPersistenceFileName(fileName);
 
-		errMidoFileNotFound = String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
-				fileName);
-		errMidoFileNotReadable = String.format(
+		String errMidoFileNotFound = String.format(
+				Messages.MSG_FILE_LIST_NOT_FOUND, fileName);
+		String errMidoFileNotReadable = String.format(
 				Messages.MSG_FILE_LIST_NOT_READABLE, fileName);
-		errMidoFileIsTooBig = String.format(Messages.MSG_FILE_LIST_TOO_BIG,
-				fileName);
+		String errMidoFileIsTooBig = String.format(
+				Messages.MSG_FILE_LIST_TOO_BIG, fileName);
+
+		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_NOT_FOUND,
+				errMidoFileNotFound);
+		Messages.builtMessages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
+				errMidoFileNotReadable);
+		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG,
+				errMidoFileIsTooBig);
 
 		midiLearn = false;
 		doNotExecuteMidiMessage = false;
-		midiLearnReceiver = new MidiINLearnReceiver(this);
-		midiExecuteReceiver = new MidiINExecuteReceiver(this);
-		midiMetronomReceiver = new MidiINMetronomReceiver(this);
-		midiINDetectorReceiver = new MidiINDetector(this);
+		midiReceivers.put(KEY_MIDI_RECEIVER_MIDI_LEARN,
+				new MidiINLearnReceiver(this));
+		midiReceivers.put(KEY_MIDI_RECEIVER_EXECUTE, new MidiINExecuteReceiver(
+				this));
+		midiReceivers.put(KEY_MIDI_RECEIVER_METRONOM,
+				new MidiINMetronomReceiver(this));
+		midiReceivers.put(KEY_MIDI_RECEIVER_IN_DETECTOR, new MidiINDetector(
+				this));
+		// midiReceivers.put(KEY_MIDI_RECEIVER_OUT_DETECTOR, new
+		// MidiOUTDetector(
+		// this));
 
 		PROGRAM_FRAME = new MainFrame(this, VERSION);
 
@@ -167,19 +166,15 @@ public class MidiAutomator {
 	 *            The resources with working directory and operating system
 	 * @param fileName
 	 *            The name of the file list
-	 * @param debug
-	 *            <TRUE> debug information will be written to console, <FALSE>
-	 *            no debug information to console
 	 * @param test
 	 *            <TRUE> Program GUI will be opened on left monitor side with
 	 *            top margin, <FALSE> normal mode
 	 */
 	public static MidiAutomator getInstance(IModel model, Resources resources,
-			String fileName, boolean debug, boolean test) {
+			String fileName, boolean test) {
 
 		if (instance == null) {
-			instance = new MidiAutomator(model, resources, fileName, debug,
-					test);
+			instance = new MidiAutomator(model, resources, fileName, test);
 		}
 		return instance;
 	}
@@ -205,6 +200,9 @@ public class MidiAutomator {
 		// MIDI OUT Switch Notifier
 		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 
+		// MIDI OUT Switch Items
+		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
+
 		// PREV
 		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
 
@@ -223,28 +221,37 @@ public class MidiAutomator {
 	private void load() {
 		try {
 			model.load();
-			removeInfoMessage(errMidoFileNotFound);
-			removeInfoMessage(errMidoFileNotReadable);
-			removeInfoMessage(errMidoFileIsTooBig);
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_IO));
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 
 			List<SetListItem> items = model.getSetList().getItems();
 			List<String> entryNames = new ArrayList<String>();
-			List<String> midiSignatures = new ArrayList<String>();
+			List<String> midiListeningSignatures = new ArrayList<String>();
+			List<String> midiSedningSignatures = new ArrayList<String>();
 
 			for (SetListItem item : items) {
 				entryNames.add(item.getName());
-				midiSignatures.add(item.getMidiSignature());
+				midiListeningSignatures.add(item.getMidiListeningSignature());
+				midiSedningSignatures.add(item.getMidiSendingSignature());
 			}
 
 			PROGRAM_FRAME.setFileEntries(entryNames);
-			PROGRAM_FRAME.setMidiSignatures(midiSignatures);
+			PROGRAM_FRAME.setMidiListeningSignatures(midiListeningSignatures);
+			PROGRAM_FRAME.setMidiSendingSignatures(midiSedningSignatures);
 
 		} catch (FileNotFoundException e1) {
-			setInfoMessage(errMidoFileNotFound);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
 		} catch (IOException e1) {
-			setInfoMessage(errMidoFileNotReadable);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		} catch (TooManyEntriesException e) {
-			setInfoMessage(errMidoFileIsTooBig);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 		}
 
 		PROGRAM_FRAME.setSelectedIndex(PROGRAM_FRAME.getLastSelectedIndex());
@@ -256,14 +263,18 @@ public class MidiAutomator {
 	 */
 	private void save() {
 
-		removeInfoMessage(errMidoFileNotFound);
-		removeInfoMessage(errMidoFileNotReadable);
+		removeInfoMessage(Messages.builtMessages
+				.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+		removeInfoMessage(Messages.builtMessages
+				.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		try {
 			model.save();
 		} catch (FileNotFoundException e) {
-			setInfoMessage(errMidoFileNotFound);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
 		} catch (IOException e) {
-			setInfoMessage(errMidoFileNotReadable);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		}
 	}
 
@@ -343,7 +354,7 @@ public class MidiAutomator {
 
 		// generate GUI automators
 		for (int i = 0; i < guiAutomations.length; i++) {
-			GUIAutomator guiAutomator = new GUIAutomator(DEBUG);
+			GUIAutomator guiAutomator = new GUIAutomator();
 			guiAutomator.setName("Thread" + i);
 			GUIAutomation[] automations = new GUIAutomation[] { guiAutomations[i] };
 			guiAutomator.setGUIAutomations(automations);
@@ -383,143 +394,107 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Gets the old midi device
-	 * 
-	 * @param oldDeviceName
-	 *            Name of of the old device
-	 * @param oldDeviceType
-	 *            Direction of the old device <"IN"|"OUT">
-	 * @param newDeviceName
-	 *            The new device name
-	 * @return The old device, <NULL> if there is no old device or device has
-	 *         not changed
-	 * @throws MidiUnavailableException
-	 */
-	private MidiDevice getOldMidiDevice(String oldDeviceName,
-			String oldDeviceType, String newDeviceName) {
-		MidiDevice oldDevice = null;
-
-		if (oldDeviceName != null) {
-			if (!oldDeviceName.equals(newDeviceName)) {
-
-				try {
-					oldDevice = MidiUtils.getMidiDevice(oldDeviceName,
-							oldDeviceType);
-				} catch (MidiUnavailableException e) {
-					e.printStackTrace();
-					return null;
-				}
-			}
-		}
-
-		return oldDevice;
-	}
-
-	/**
-	 * Loads the MIDI IN Remote device
+	 * Loads a MIDI device
 	 * 
 	 * @param deviceName
 	 *            The name of the midi device
-	 * @param error
-	 *            The error String
+	 * @param functionKey
+	 *            The key name of the midi function
+	 * @param receivers
+	 *            A set of midi receivers for the device
+	 * @param direction
+	 *            The direction "IN"/"OUT" of the midi device
+	 * @param loadingErrorMessage
+	 *            An error String for loading failures
 	 */
-	private void loadMidiInRemoteDevice(String deviceName, String error) {
+	private void loadMidiDevice(String deviceName, String functionKey,
+			Set<Receiver> receivers, String direction,
+			String loadingErrorMessage) {
 
-		if (!deviceName.equals(oldMidiINRemoteDeviceSignature)) {
+		// get old MidiDevice
+		MidiDevice oldMidiDevice = midiDevices.get(functionKey);
+		String oldDeviceName = null;
+
+		if (oldMidiDevice != null) {
+			oldDeviceName = midiDevices.get(functionKey).getDeviceInfo()
+					.getName();
+		}
+
+		if (!deviceName.equals(oldDeviceName)) {
+
+			// unregister old function
+			midiDevices.put(functionKey, null);
+
+			// load new device
+			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				try {
+					MidiDevice device = MidiUtils.getMidiDevice(deviceName,
+							direction);
+
+					if (!device.isOpen()) {
+						device.open();
+						log.info("Opened MIDI " + direction + " device "
+								+ device.getDeviceInfo().getName());
+					}
+
+					if (receivers != null) {
+						for (Receiver receiver : receivers) {
+							connectMidiDeviceWithReceiver(device, receiver,
+									direction);
+							midiFunctionReceiverMapping.put(functionKey,
+									receivers);
+						}
+					}
+
+					// register new device for function
+					midiDevices.put(functionKey, device);
+
+					removeInfoMessage(loadingErrorMessage);
+
+				} catch (MidiUnavailableException e) {
+					setInfoMessage(loadingErrorMessage);
+				}
+			} else {
+				midiDevices.remove(functionKey);
+			}
+
+			// unload old device
+			unloadMidiDevice(oldDeviceName, functionKey, direction);
+		}
+	}
+
+	/**
+	 * Unloads a midi device
+	 * 
+	 * @param deviceName
+	 *            The name of the device
+	 * @param functionKey
+	 *            The name of the function key
+	 * @param midiDirection
+	 *            The direction of the midi port "IN"/"OUT"
+	 */
+	private void unloadMidiDevice(String deviceName, String functionKey,
+			String midiDirection) {
+
+		if (deviceName != null
+				&& !deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
 			try {
+				MidiDevice device = MidiUtils.getMidiDevice(deviceName,
+						midiDirection);
 
-				midiINRemoteDevice = MidiUtils.getMidiDevice(deviceName, "IN");
+				removeReceiversFromDevice(device,
+						midiFunctionReceiverMapping.get(functionKey));
 
-				// connect MIDI learner
-				connectMidiDeviceWithReceiver(midiINRemoteDevice,
-						midiLearnReceiver);
+				if (!midiDevices.containsValue(device)) {
+					device.close();
 
-				// connect MIDI executer
-				connectMidiDeviceWithReceiver(midiINRemoteDevice,
-						midiExecuteReceiver);
-
-				removeInfoMessage(errMidiINRemoteDeviceUnavailable);
+					log.info("Closed MIDI "
+							+ MidiUtils.getDirectionOfMidiDevice(device)
+							+ " device: " + device.getDeviceInfo().getName());
+				}
 
 			} catch (MidiUnavailableException e) {
-				if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
-					setInfoMessage(error);
-					errMidiINRemoteDeviceUnavailable = error;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Loads the MIDI OUT Remote device
-	 * 
-	 * @param deviceName
-	 *            The name of the device
-	 * @param error
-	 *            The error String
-	 */
-	private void loadMidiOutRemoteDevice(String deviceName, String error) {
-
-		try {
-			midiOUTRemoteDevice = MidiUtils.getMidiDevice(deviceName, "OUT");
-
-			if (midiOUTRemoteDevice != null) {
-				midiOUTRemoteDevice.open();
-			}
-
-			removeInfoMessage(errMidiOUTRemoteDeviceUnavailable);
-		} catch (MidiUnavailableException e) {
-			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
-				setInfoMessage(error);
-				errMidiOUTRemoteDeviceUnavailable = error;
-			}
-		}
-	}
-
-	/**
-	 * Loads the MIDI IN Metronom device
-	 * 
-	 * @param deviceName
-	 *            The name of the device
-	 * @param error
-	 *            The error String
-	 */
-	private void loadMidiInMetronomDevice(String deviceName, String error) {
-
-		try {
-			midiINMetronomDevice = MidiUtils.getMidiDevice(deviceName, "IN");
-
-			// connect MIDI metronom
-			connectMidiDeviceWithReceiver(midiINMetronomDevice,
-					midiMetronomReceiver);
-
-			removeInfoMessage(errMidiINMetronomDeviceUnavailable);
-		} catch (MidiUnavailableException e) {
-			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
-				setInfoMessage(error);
-				errMidiINMetronomDeviceUnavailable = error;
-			}
-		}
-	}
-
-	/**
-	 * Loads the MIDI OUT Switch Notifier
-	 * 
-	 * @param deviceName
-	 *            The name of the device
-	 * @param error
-	 *            The error String
-	 */
-	private void loadMidiOutSwitchNotifier(String deviceName, String error) {
-
-		try {
-			midiOUTSwitchNotifierDevice = MidiUtils.getMidiDevice(deviceName,
-					"OUT");
-
-			removeInfoMessage(errMidiOUTSwitchNotifierDeviceUnavailable);
-		} catch (MidiUnavailableException e) {
-			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
-				setInfoMessage(error);
-				errMidiOUTSwitchNotifierDeviceUnavailable = error;
+				log.error("Unloading MIDI device failed.", e);
 			}
 		}
 	}
@@ -534,63 +509,63 @@ public class MidiAutomator {
 	 */
 	private void loadMidiDeviceProperty(String propertyKey) {
 
-		String propertyValue = PROPERTIES.getProperty(propertyKey);
+		String deviceName = PROPERTIES.getProperty(propertyKey);
 
 		String errMidiDeviceNotAvailable = String.format(
-				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, propertyValue);
+				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, deviceName);
 
-		if (propertyValue != null) {
-			if (!propertyValue.equals("")) {
+		Messages.builtMessages.put(propertyKey + "_UNVAILABLE",
+				errMidiDeviceNotAvailable);
 
-				MidiDevice oldDevice = null;
+		if (deviceName != null && !deviceName.equals("")) {
 
-				// MIDI IN Remote
-				if (propertyKey
-						.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
-					oldDevice = getOldMidiDevice(
-							oldMidiINRemoteDeviceSignature, "IN", propertyValue);
+			// MIDI IN Remote
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
 
-					loadMidiInRemoteDevice(propertyValue,
-							errMidiDeviceNotAvailable);
-				}
+				Set<Receiver> receivers = new HashSet<Receiver>();
+				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_MIDI_LEARN));
+				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_EXECUTE));
 
-				// MIDI OUT Remote
-				if (propertyKey
-						.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
-
-					oldDevice = getOldMidiDevice(
-							oldMidiOUTRemoteDeviceSignature, "OUT",
-							propertyValue);
-					loadMidiOutRemoteDevice(propertyValue,
-							errMidiDeviceNotAvailable);
-				}
-
-				// MIDI IN Metronom
-				if (propertyKey
-						.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
-
-					oldDevice = getOldMidiDevice(
-							oldMidiINMetronomDeviceSignature, "IN",
-							propertyValue);
-					loadMidiInMetronomDevice(propertyValue,
-							errMidiDeviceNotAvailable);
-				}
-
-				// MIDI OUT Switch Notifier
-				if (propertyKey
-						.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
-
-					oldDevice = getOldMidiDevice(
-							oldMidiOUTSwitchNotifierDeviceSignature, "OUT",
-							propertyValue);
-					loadMidiOutSwitchNotifier(propertyValue,
-							errMidiDeviceNotAvailable);
-				}
-
-				if (oldDevice != null) {
-					MidiUtils.closeAllTransmittersAndReceivers(oldDevice);
-				}
+				loadMidiDevice(deviceName, propertyKey, receivers, "IN",
+						errMidiDeviceNotAvailable);
 			}
+
+			// MIDI IN Metronom
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
+
+				Set<Receiver> receivers = new HashSet<Receiver>();
+				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_METRONOM));
+
+				loadMidiDevice(deviceName, propertyKey, receivers, "IN",
+						errMidiDeviceNotAvailable);
+			}
+
+			// MIDI OUT Remote
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
+
+				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+						errMidiDeviceNotAvailable);
+			}
+
+			// MIDI OUT Switch Notifier
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
+
+				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+						errMidiDeviceNotAvailable);
+			}
+
+			// MIDI OUT Switch Items
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE)) {
+
+				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+						errMidiDeviceNotAvailable);
+			}
+
 		}
 
 	}
@@ -602,18 +577,86 @@ public class MidiAutomator {
 	 *            The midi device
 	 * @param receiver
 	 *            The receiver
+	 * @param direction
+	 *            The direction of the midi device
 	 * @throws MidiUnavailableException
 	 *             If the midi device is not available
 	 */
 	private void connectMidiDeviceWithReceiver(MidiDevice device,
-			Receiver receiver) throws MidiUnavailableException {
+			Receiver receiver, String direction)
+			throws MidiUnavailableException {
 
 		if (device != null) {
-			device.open();
+
 			MidiUtils.setReceiverToDevice(device, receiver);
-			MidiUtils.setReceiverToDevice(device, midiINDetectorReceiver);
+
+			log.info("Connected " + receiver.getClass().getSimpleName()
+					+ " with " + device.getDeviceInfo().getName());
+
+			// connect MIDI IN detector
+			if (direction.equals("IN")) {
+				Receiver midiINDetector = midiReceivers
+						.get(KEY_MIDI_RECEIVER_IN_DETECTOR);
+
+				if (!MidiUtils.isReceiverUsedByDevice(device, midiINDetector)) {
+
+					MidiUtils.setReceiverToDevice(device, midiINDetector);
+
+					log.info("Connected "
+							+ midiINDetector.getClass().getSimpleName()
+							+ " with " + device.getDeviceInfo().getName());
+				}
+			}
+
 		} else {
 			throw new MidiUnavailableException();
+		}
+	}
+
+	/**
+	 * Removes the receivers from the device
+	 * 
+	 * @param device
+	 *            The midi device
+	 * @param registeredReceivers
+	 *            The midi receivers
+	 * @throws MidiUnavailableException
+	 *             If the midi device is not available
+	 * 
+	 */
+	private void removeReceiversFromDevice(MidiDevice device,
+			Set<Receiver> registeredReceivers) throws MidiUnavailableException {
+
+		if (device != null) {
+
+			if (registeredReceivers != null) {
+				for (Receiver receiver : registeredReceivers) {
+					MidiUtils.removeReceiverFromDevice(device, receiver);
+
+					log.info("Removed " + receiver.getClass().getSimpleName()
+							+ " from " + device.getDeviceInfo().getName());
+				}
+			}
+
+			// remove MIDI IN detector
+			List<Transmitter> transmitters = device.getTransmitters();
+
+			if (transmitters.size() <= 1) {
+
+				Receiver detectorReceiver = null;
+				if (transmitters.size() > 0) {
+					detectorReceiver = transmitters.get(0).getReceiver();
+				}
+
+				if (detectorReceiver != null) {
+					MidiUtils
+							.removeReceiverFromDevice(device, detectorReceiver);
+
+					log.info("Removed "
+							+ detectorReceiver.getClass().getSimpleName()
+							+ " from " + device.getDeviceInfo().getName());
+				}
+			}
 		}
 	}
 
@@ -642,6 +685,7 @@ public class MidiAutomator {
 		this.learningComponent = learningComponent;
 
 		if (midiLearn) {
+			setDoNotExecuteMidiMessage(true);
 			PROGRAM_FRAME.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
 			PROGRAM_FRAME.midiLearnOn(learningComponent);
 		} else {
@@ -680,7 +724,7 @@ public class MidiAutomator {
 			JList<?> list = (JList<?>) component;
 
 			model.getSetList().getItems().get(list.getSelectedIndex())
-					.setMidiSignature(midiSignature);
+					.setMidiListeningSignature(midiSignature);
 			save();
 		}
 
@@ -724,16 +768,6 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Returns if the application is in debug mode
-	 * 
-	 * @return <TRUE> if the appplication is in debug mode, <FALSE> if the
-	 *         application is not in debug mode
-	 */
-	public boolean isInDebugMode() {
-		return DEBUG;
-	}
-
-	/**
 	 * Runs the function for the midi message
 	 * 
 	 * @param message
@@ -747,8 +781,9 @@ public class MidiAutomator {
 
 			// open file from list
 			int index = -1;
-			index = model.getSetList().getMidiSignatures().indexOf(signature);
-
+			index = model.getSetList().getMidiListeningSignatures()
+					.indexOf(signature);
+			log.debug("Open file with index: " + index);
 			if (index > -1) {
 				openFileByIndex(index, true);
 				return;
@@ -833,15 +868,19 @@ public class MidiAutomator {
 			if (!model.getSetList().getItems().isEmpty()) {
 				SetListItem item = model.getSetList().getItems().get(index);
 
-				removeInfoMessage(infoEntryOpened);
-				infoEntryOpened = String.format(Messages.MSG_OPENING_ENTRY,
-						item.getName());
+				removeInfoMessage(Messages.builtMessages
+						.get(Messages.KEY_INFO_ENTRY_OPENED));
+				String infoEntryOpened = String.format(
+						Messages.MSG_OPENING_ENTRY, item.getName());
+				Messages.builtMessages.put(Messages.KEY_INFO_ENTRY_OPENED,
+						infoEntryOpened);
 
 				PROGRAM_FRAME.setSelectedIndex(index);
 				currentItem = index;
 
 				// Send MIDI change notifier
-				sendItemChangeNotifier(midiOUTSwitchNotifierDevice);
+				sendItemChangeNotifier(midiDevices
+						.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE));
 
 				// activate per change triggered automations
 				for (GUIAutomator guiAutomator : guiAutomators) {
@@ -854,27 +893,60 @@ public class MidiAutomator {
 				}
 
 				// wait a little before opening file...
-				Thread.sleep(WAIT_BEFORE_OPENING);
+				try {
+					Thread.sleep(WAIT_BEFORE_OPENING);
+				} catch (InterruptedException e) {
+					log.error("Delay before opening a file failed.", e);
+				}
+
+				// Send MIDI item signature
+				sendItemSignature(
+						midiDevices
+								.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
+						item.getMidiSendingSignature());
 
 				String filePath = item.getFilePath();
+
 				String path = RESOURCES.generateRelativeLoadingPath(filePath);
 
-				removeInfoMessage(errFileNotFound);
-				removeInfoMessage(errFileNotReadable);
-				errFileNotFound = String.format(
+				removeInfoMessage(Messages.builtMessages
+						.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+				removeInfoMessage(Messages.builtMessages
+						.get(Messages.KEY_ERROR_ITEM_FILE_IO));
+
+				String errFileNotFound = String.format(
 						Messages.MSG_FILE_LIST_NOT_FOUND, filePath);
-				errFileNotReadable = String.format(
+				String errFileNotReadable = String.format(
 						Messages.MSG_FILE_LIST_NOT_READABLE, filePath);
-				FileUtils.openFileFromPath(path);
-				setInfoMessage(infoEntryOpened);
+
+				Messages.builtMessages
+						.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND,
+								errFileNotFound);
+				Messages.builtMessages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
+						errFileNotReadable);
+
+				if (path.equals("")) {
+					setInfoMessage(Messages.builtMessages
+							.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+					log.info(Messages.builtMessages
+							.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+				} else {
+					log.info("Opening file: " + path);
+					FileUtils.openFileFromPath(path);
+					setInfoMessage(infoEntryOpened);
+				}
 			}
 		} catch (IllegalArgumentException ex) {
-			setInfoMessage(errFileNotFound);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+			log.error(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND), ex);
 		} catch (IOException ex) {
-			setInfoMessage(errFileNotReadable);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_ITEM_FILE_IO));
+			log.error(
+					Messages.builtMessages.get(Messages.KEY_ERROR_ITEM_FILE_IO),
+					ex);
 		}
 	}
 
@@ -886,7 +958,7 @@ public class MidiAutomator {
 	 */
 	private void sendItemChangeToSlaves(int index) {
 
-		String deviceName = getMidiOUTRemoteDeviceName();
+		String deviceName = getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 		String errMidiDeviceNotAvailable = String.format(
 				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, deviceName);
 
@@ -899,27 +971,30 @@ public class MidiAutomator {
 							OPEN_FILE_MIDI_CHANNEL - 1,
 							OPEN_FILE_MIDI_CONTROL_NO, index);
 
-					long timeStamp = midiOUTRemoteDevice
+					long timeStamp = midiDevices.get(
+							MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)
 							.getMicrosecondPosition();
-					midiOUTRemoteDevice.getReceiver().send(message, timeStamp);
+					midiDevices
+							.get(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)
+							.getReceiver().send(message, timeStamp);
 					showMidiOUTSignal();
 
-					if (isInDebugMode()) {
-						System.out.println(this.getClass().getName()
-								+ " send: " + timeStamp + " "
-								+ MidiUtils.messageToString(message));
-					}
+					log.debug("Send MIDI message: "
+							+ MidiUtils.messageToString(message));
 
 					removeInfoMessage(errMidiDeviceNotAvailable);
 
 				} catch (MidiUnavailableException e) {
 
+					log.error(errMidiDeviceNotAvailable, e);
+
 					setInfoMessage(errMidiDeviceNotAvailable);
-					errMidiOUTRemoteDeviceUnavailable = errMidiDeviceNotAvailable;
+					Messages.builtMessages.put(
+							Messages.KEY_MIDI_OUT_REMOTE_DEVICE_UNAVAILABLE,
+							errMidiDeviceNotAvailable);
 
 				} catch (InvalidMidiDataException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Sending invalid MIDI message to slaves", e);
 				}
 			}
 		}
@@ -939,35 +1014,97 @@ public class MidiAutomator {
 					Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, device
 							.getDeviceInfo().getName());
 			try {
+				log.info("Send item change notifier...");
 				ShortMessage message = new ShortMessage();
 				message.setMessage(SWITCH_NOTIFIER_MIDI_COMMAND,
 						SWITCH_NOTIFIER_MIDI_CHANNEL - 1,
 						SWITCH_NOTIFIER_MIDI_CONTROL_NO,
 						SWITCH_NOTIFIER_MIDI_VALUE);
 
-				long timeStamp = device.getMicrosecondPosition();
-				device.open();
-				device.getReceiver().send(message, timeStamp);
-				showMidiOUTSignal();
-
-				if (isInDebugMode()) {
-					System.out.println(this.getClass().getName() + " send: "
-							+ timeStamp + " "
-							+ MidiUtils.messageToString(message));
-				}
-
+				sendMidiMessage(device, message);
 				removeInfoMessage(errMidiDeviceNotAvailable);
 
 			} catch (MidiUnavailableException e) {
 
 				setInfoMessage(errMidiDeviceNotAvailable);
-				errMidiOUTSwitchNotifierDeviceUnavailable = errMidiDeviceNotAvailable;
+				Messages.builtMessages
+						.put(Messages.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE,
+								errMidiDeviceNotAvailable);
+				log.error(errMidiDeviceNotAvailable, e);
 
 			} catch (InvalidMidiDataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Send invalid MIDI messsage as change notifier", e);
 			}
 		}
+	}
+
+	/**
+	 * Sends the midi signature a specific item from the list.
+	 * 
+	 * @param itemNo
+	 *            The number of the item in the list
+	 */
+	public void sendItemSignature(int itemNo) {
+		SetListItem item = model.getSetList().getItems().get(itemNo);
+		sendItemSignature(
+				midiDevices
+						.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
+				item.getMidiSendingSignature());
+	}
+
+	/**
+	 * Sends the midi message of the item.
+	 * 
+	 * @param device
+	 *            The midi item device
+	 * @param signature
+	 *            The item's midi signature
+	 */
+	private void sendItemSignature(MidiDevice device, String signature) {
+
+		if (device != null) {
+
+			String errMidiDeviceNotAvailable = String.format(
+					Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, device
+							.getDeviceInfo().getName());
+			try {
+				MidiMessage message = MidiUtils.signatureToMessage(signature);
+
+				log.info("Sending MIDI signature of item: " + signature);
+				sendMidiMessage(device, message);
+				removeInfoMessage(errMidiDeviceNotAvailable);
+
+			} catch (MidiUnavailableException e) {
+
+				setInfoMessage(errMidiDeviceNotAvailable);
+				Messages.builtMessages.put(
+						Messages.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE_UNAVAILABLE,
+						errMidiDeviceNotAvailable);
+				log.error(errMidiDeviceNotAvailable, e);
+
+			} catch (InvalidMidiDataException e) {
+				log.error("Send invalid MIDI message for item", e);
+			}
+		}
+	}
+
+	/**
+	 * Sends a midi signature to a given device
+	 * 
+	 * @param device
+	 *            The midi device
+	 * @param midiSignature
+	 *            The midi signature
+	 */
+	private void sendMidiMessage(MidiDevice device, MidiMessage message)
+			throws MidiUnavailableException {
+
+		long timeStamp = device.getMicrosecondPosition();
+		device.open();
+		device.getReceiver().send(message, timeStamp);
+		showMidiOUTSignal();
+
+		log.debug("Send MIDI message: " + MidiUtils.messageToString(message));
 	}
 
 	/**
@@ -1002,7 +1139,8 @@ public class MidiAutomator {
 	 */
 	public String getMidiSignature(int index) {
 		try {
-			return model.getSetList().getItems().get(index).getMidiSignature();
+			return model.getSetList().getItems().get(index)
+					.getMidiListeningSignature();
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
@@ -1039,106 +1177,29 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Gets the name of the remote midi input device
+	 * Sets the name of a midi out device
 	 * 
-	 * @return The midi device name
+	 * @param deviceName
+	 *            The name of the midi device
+	 * @param deviceKey
+	 *            The key to store the mdidi device
 	 */
-	public String getMidiINRemoteDeviceName() {
-		loadPropertiesFile();
-		return (String) PROPERTIES
-				.get(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-	}
+	public void setMidiDeviceName(String deviceName, String deviceKey) {
 
-	/**
-	 * Sets the remote midi input device name
-	 * 
-	 * @param midiINDeviceName
-	 *            The midi device name
-	 */
-	public void setMidiINRemoteDeviceName(String midiINDeviceName) {
-		oldMidiINRemoteDeviceSignature = PROPERTIES
-				.getProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-		PROPERTIES.setProperty(
-				MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE,
-				midiINDeviceName);
+		PROPERTIES.setProperty(deviceKey, deviceName);
 		storePropertiesFile();
 	}
 
 	/**
-	 * Gets the name of the metronom midi input device
+	 * Gets the name of a midi device by a properties key
 	 * 
-	 * @return The midi device name
+	 * @param key
+	 *            The properties key
+	 * @return The name of the midid device
 	 */
-	public String getMidiINMetronomDeviceName() {
+	public String getMidiDeviceName(String key) {
 		loadPropertiesFile();
-		return (String) PROPERTIES
-				.get(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-	}
-
-	/**
-	 * Sets the metronom midi input device name
-	 * 
-	 * @param midiINDeviceName
-	 *            The midi device name
-	 */
-	public void setMidiINMetronomDeviceName(String midiINDeviceName) {
-		oldMidiINMetronomDeviceSignature = PROPERTIES
-				.getProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-		PROPERTIES.setProperty(
-				MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE,
-				midiINDeviceName);
-		storePropertiesFile();
-	}
-
-	/**
-	 * Gets the name of the remote midi out device
-	 * 
-	 * @return The midi device name
-	 */
-	public String getMidiOUTRemoteDeviceName() {
-		loadPropertiesFile();
-		return (String) PROPERTIES
-				.get(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-	}
-
-	/**
-	 * Sets the remote midi out device name
-	 * 
-	 * @param midi
-	 *            device name The midi device name
-	 */
-	public void setMidiOUTRemoteDeviceName(String deviceName) {
-		oldMidiOUTRemoteDeviceSignature = PROPERTIES
-				.getProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-		PROPERTIES.setProperty(
-				MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE, deviceName);
-		storePropertiesFile();
-	}
-
-	/**
-	 * Gets the name of the switch notifier midi out device
-	 * 
-	 * @return The midi device name
-	 */
-	public String getMidiOUTSwitchNotifierDeviceName() {
-		loadPropertiesFile();
-		return (String) PROPERTIES
-				.get(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-	}
-
-	/**
-	 * Sets the switch notifier midi out device name
-	 * 
-	 * @param midi
-	 *            device name The midi device name
-	 */
-	public void setMidiOUTSwitchNotifierDeviceName(String deviceName) {
-		oldMidiOUTSwitchNotifierDeviceSignature = PROPERTIES
-				.getProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-		PROPERTIES.setProperty(
-				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE,
-				deviceName);
-		storePropertiesFile();
+		return (String) PROPERTIES.get(key);
 	}
 
 	/**
@@ -1152,7 +1213,8 @@ public class MidiAutomator {
 	 */
 	private boolean midiSignatureIsAlreadyStored(String signature) {
 
-		removeInfoMessage(errDuplicateMidiSignature);
+		removeInfoMessage(Messages.builtMessages
+				.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
 
 		if (signature == null) {
 			signature = "";
@@ -1167,7 +1229,7 @@ public class MidiAutomator {
 			}
 		}
 
-		if (model.getSetList().getMidiSignatures().contains(signature)) {
+		if (model.getSetList().getMidiListeningSignatures().contains(signature)) {
 			found = true;
 		}
 
@@ -1176,9 +1238,13 @@ public class MidiAutomator {
 		}
 
 		if (found == true) {
-			errDuplicateMidiSignature = String.format(
+			String errDuplicateMidiSignature = String.format(
 					Messages.MSG_DUPLICATE_MIDI_SIGNATURE, signature);
-			setInfoMessage(errDuplicateMidiSignature);
+			Messages.builtMessages.put(
+					Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE,
+					errDuplicateMidiSignature);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
 		}
 
 		return found;
@@ -1304,9 +1370,12 @@ public class MidiAutomator {
 	 *            the name of the entry
 	 * @param filePath
 	 *            the path to the file
+	 * @param midiSendingSignature
+	 *            the midi signature the item will send on opening
 	 */
-	public void addItem(String entryName, String filePath) {
-		setItem(null, entryName, filePath, "");
+	public void addItem(String entryName, String filePath,
+			String midiSendingSignature) {
+		setItem(null, entryName, filePath, "", midiSendingSignature);
 	}
 
 	/**
@@ -1318,29 +1387,73 @@ public class MidiAutomator {
 	 *            the name of the entry
 	 * @param filePath
 	 *            the path to the file
-	 * @param midiSignature
-	 *            the midi signature
+	 * @param midiListeningSignature
+	 *            the midi signature the item is listening to
+	 * @param midiSendingSignature
+	 *            the midi signature the item will send on opening
+	 * 
 	 */
 	public void setItem(Integer index, String entryName, String filePath,
-			String midiSignature) {
+			String midiListeningSignature, String midiSendingSignature) {
 
-		removeInfoMessage(errTooMuchEntries);
+		removeInfoMessage(Messages.builtMessages
+				.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
 
 		if (index == null && model.getSetList().getItems().size() >= 128) {
-			errTooMuchEntries = String.format(Messages.MSG_FILE_LIST_IS_FULL,
+			String error = String.format(Messages.MSG_FILE_LIST_IS_FULL,
 					entryName);
-			setInfoMessage(errTooMuchEntries);
+			Messages.builtMessages.put(Messages.KEY_ERROR_TOO_MUCH_ENTRIES,
+					error);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
 			return;
 		}
 
 		if (entryName != null && !entryName.equals("")) {
 			SetListItem item = new SetListItem(entryName, filePath,
-					midiSignature);
+					midiListeningSignature, midiSendingSignature);
 			model.getSetList().setItem(item, index);
+			log.debug("Set item on index: " + index + ", entry: " + entryName
+					+ ", file: " + filePath + ", listening: \""
+					+ midiListeningSignature + "\", sending: \""
+					+ midiSendingSignature + "\"");
 			save();
 		}
 
 		load();
+	}
+
+	/**
+	 * Gets a unique midi signature that is not used for any item yet.
+	 * 
+	 * @return The midi signature, <NULL> if there is no unique signature left
+	 */
+	public String getUniqueSendingMidiSignature() {
+
+		List<String> signatures = model.getSetList().getMidiSendingSignatures();
+
+		ShortMessage message = new ShortMessage();
+
+		int controlNo = 1;
+		boolean found = true;
+		String signature = null;
+		while (found && controlNo <= 127) {
+			try {
+				message.setMessage(ShortMessage.CONTROL_CHANGE,
+						ITEM_SEND_MIDI_CHANNEL - 1, controlNo,
+						ITEM_SEND_MIDI_VALUE);
+			} catch (InvalidMidiDataException e) {
+				log.error("Created invalid MIDI message for item", e);
+			}
+			signature = MidiUtils.messageToString(message);
+
+			if (!signatures.contains(signature)) {
+				found = false;
+			}
+			controlNo++;
+		}
+
+		return signature;
 	}
 
 	/**
@@ -1452,24 +1565,36 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Tries to load the properties file.
+	 * Loads the properties file.
 	 */
 	private void loadPropertiesFile() {
+
 		try {
-			removeInfoMessage(errPropertiesFileNotFound);
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
+
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
+
 			PROPERTIES.load();
+
 		} catch (FileNotFoundException e) {
-			errPropertiesFileNotFound = String.format(
-					Messages.MSG_FILE_NOT_FOUND, RESOURCES.getPropertiesPath()
-							+ PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileNotFound);
+
+			String error = String.format(Messages.MSG_FILE_NOT_FOUND,
+					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
+			Messages.builtMessages.put(
+					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND, error);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
 
 		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
+
+			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
 					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
+			Messages.builtMessages.put(
+					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
 
@@ -1477,15 +1602,21 @@ public class MidiAutomator {
 	 * Tries to store the properties file.
 	 */
 	private void storePropertiesFile() {
+
 		try {
-			removeInfoMessage(errPropertiesFileCouldNotBeOpened);
+			removeInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
+
 			PROPERTIES.store();
 
 		} catch (IOException e) {
-			errPropertiesFileCouldNotBeOpened = String.format(
-					Messages.MSG_FILE_COULD_NOT_BE_OPENED,
+
+			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
 					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
-			setInfoMessage(errPropertiesFileCouldNotBeOpened);
+			Messages.builtMessages.put(
+					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
+			setInfoMessage(Messages.builtMessages
+					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
 
@@ -1530,8 +1661,12 @@ public class MidiAutomator {
 			try {
 				Thread.sleep(WAIT_BEFORE_SLAVE_SEND);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.error("Delay for sending remote message to slaves failed",
+						e);
 			}
+
+			log.info("Sending open index " + index
+					+ " MIDI message to slaves...");
 			sendItemChangeToSlaves(index);
 		}
 	}

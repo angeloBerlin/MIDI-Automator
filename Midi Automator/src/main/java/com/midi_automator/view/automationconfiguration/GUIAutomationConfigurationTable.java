@@ -20,7 +20,10 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
+
 import com.midi_automator.guiautomator.GUIAutomation;
+import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
@@ -34,6 +37,8 @@ import com.midi_automator.view.ScaleableImageIcon;
  * 
  */
 public class GUIAutomationConfigurationTable extends CacheableJTable {
+
+	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,6 +72,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private Vector<Vector<Object>> data;
 
 	private MidiLearnPopupMenu popupMenu;
+	private final MidiAutomator APPLICATION;
 
 	/**
 	 * Constructor
@@ -76,6 +82,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	public GUIAutomationConfigurationTable(MidiAutomator application) {
 
+		APPLICATION = application;
 		data = new Vector<Vector<Object>>();
 
 		columnNames = new Vector<String>();
@@ -416,8 +423,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 				File file = fc.getSelectedFile();
 				try {
 					parent.setClickImage(file.getAbsolutePath(), row);
-				} catch (AutomationIndexDoesNotExistException e1) {
-					e1.printStackTrace();
+				} catch (AutomationIndexDoesNotExistException ex) {
+					log.error(
+							"The automation for the click image does not exist.",
+							ex);
 				}
 			}
 		}
@@ -462,6 +471,14 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					table.changeSelection(row, column, false, false);
 				}
 
+				String midiInRemoteDeviceName = APPLICATION
+						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+
+				if (midiInRemoteDeviceName != null
+						&& !midiInRemoteDeviceName
+								.equals(MidiAutomatorProperties.VALUE_NULL)) {
+					popupMenu.getMidiLearnMenuItem().setEnabled(true);
+				}
 				popupMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}

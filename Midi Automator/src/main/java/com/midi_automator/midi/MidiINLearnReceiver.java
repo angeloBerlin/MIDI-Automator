@@ -2,6 +2,8 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
+import org.apache.log4j.Logger;
+
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
@@ -12,6 +14,8 @@ import com.midi_automator.utils.MidiUtils;
  * 
  */
 public class MidiINLearnReceiver extends MidiAutomatorReceiver {
+
+	static Logger log = Logger.getLogger(MidiINLearnReceiver.class.getName());
 
 	public MidiINLearnReceiver(MidiAutomator appl) {
 		super(appl);
@@ -27,16 +31,11 @@ public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 		if (application.isInMidiLearnMode() && signature != null
 				&& !signature.equals(MidiUtils.UNKNOWN_MESSAGE)) {
 
-			if (application.isInDebugMode()) {
-				System.out.println(this.getClass().getName() + " learned: "
-						+ timeStamp + " " + signature);
-			}
+			log.debug("MIDI message learned: " + signature);
 
 			// learn midi signal
 			application.setMidiSignature(signature);
 			application.setMidiLearnMode(false, null);
-			application.setDoNotExecuteMidiMessage(true);
 		}
-
 	}
 }

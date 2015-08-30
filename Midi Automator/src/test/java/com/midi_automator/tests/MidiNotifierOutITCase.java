@@ -55,11 +55,10 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setAndSavePreferencesComboBox(
-					"combo_box_midi_notifier_out.png", deviceScreenshot);
-			GUIAutomations.openEntryByDoubleClick(
+					"combo_box_switch_midi_notifier_out.png", deviceScreenshot);
+			GUIAutomations.openEntryByDoubleClick("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
-					"Hello_World_1_entry_inactive.png",
-					"Hello_World_1_entry.png");
+					"Hello_World_1_entry_inactive.png");
 
 			// check if midi master message was sent
 			Thread.sleep(1000);
@@ -87,7 +86,7 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 			// mockup
 			GUIAutomations.openMidiAutomator();
 			GUIAutomations.setPreferencesComboBox(
-					"combo_box_midi_notifier_out.png", deviceScreenshot);
+					"combo_box_switch_midi_notifier_out.png", deviceScreenshot);
 			// hit send button
 			Region match = SikuliAutomation.getSearchRegion().wait(
 					screenshotpath + "send_button.png", MAX_TIMEOUT);

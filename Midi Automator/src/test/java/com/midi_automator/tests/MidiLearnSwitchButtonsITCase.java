@@ -45,6 +45,7 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 			GUIAutomations.openMidiAutomator();
 
 			GUIAutomations.midiLearnMainScreen("next.png", null, null,
@@ -161,11 +162,54 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 			GUIAutomations.openMidiAutomator();
 			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			GUIAutomations.cancelMidiLearnMainScreen("prev_inactive.png", null,
 					null);
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void midiLearnShouldBeInactiveOnPrevButton() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations
+					.openPopupMenu("prev.png", null, null, LOW_SIMILARITY);
+			GUIAutomations.checkResult("midi_learn_inactive.png");
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void midiLearnShouldBeInactiveOnNextButton() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.openMidiAutomator();
+			GUIAutomations
+					.openPopupMenu("next.png", null, null, LOW_SIMILARITY);
+			GUIAutomations.checkResult("midi_learn_inactive.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
@@ -267,6 +311,52 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	// @Test
+	public void MidiShouldBeLearnedOnPrevButtonManual() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			GUIAutomations.focusMidiAutomator();
+			// GUIAutomations.openMidiAutomator();
+
+			GUIAutomations.setAndSavePreferencesComboBox(
+					"combo_box_midi_remote_in.png", deviceScreenshot);
+			GUIAutomations.focusMidiAutomator();
+			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
+					LOW_SIMILARITY);
+			Thread.sleep(1000);
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					controlNo, value);
+
+			// open first files by learned midi message
+			Thread.sleep(2000);
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					controlNo, value);
+			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
+
+			// open second files by learned midi message
+			Thread.sleep(1000);
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					controlNo, value);
+			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
+
+		} catch (FindFailed /* | IOException */e) {
+			fail(e.toString());
+		} catch (InterruptedException | MidiUnavailableException
+				| InvalidMidiDataException e) {
+			e.printStackTrace();
+		} finally {
+			// try {
+			// GUIAutomations.closeMidiAutomator();
+			// } catch (FindFailed e) {
+			// e.printStackTrace();
+			// }
 		}
 	}
 }

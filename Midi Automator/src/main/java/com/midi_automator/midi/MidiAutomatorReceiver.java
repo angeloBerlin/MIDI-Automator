@@ -3,6 +3,8 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 
+import org.apache.log4j.Logger;
+
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
 
@@ -14,6 +16,8 @@ import com.midi_automator.utils.MidiUtils;
  *         out debug information.
  */
 public class MidiAutomatorReceiver implements Receiver {
+
+	static Logger log = Logger.getLogger(MidiAutomatorReceiver.class.getName());
 
 	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
@@ -32,10 +36,8 @@ public class MidiAutomatorReceiver implements Receiver {
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
 
-		if (application.isInDebugMode()) {
-			System.out.println(this.getClass().getName() + " received: "
-					+ timeStamp + " " + MidiUtils.messageToString(message));
-		}
+		log.debug("MIDI message received: "
+				+ MidiUtils.messageToString(message));
 	}
 
 	@Override

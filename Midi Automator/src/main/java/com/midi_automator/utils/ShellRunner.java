@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Logger;
+
 /**
  * Runs a command in the OS shell
  * 
@@ -11,6 +13,8 @@ import java.io.InputStreamReader;
  *
  */
 public class ShellRunner extends Thread {
+
+	static Logger log = Logger.getLogger(ShellRunner.class.getName());
 
 	private String[] cmd;
 	private String output;
@@ -56,7 +60,7 @@ public class ShellRunner extends Thread {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Reading shell output failed", e);
 		}
 
 		this.output = output.toString();

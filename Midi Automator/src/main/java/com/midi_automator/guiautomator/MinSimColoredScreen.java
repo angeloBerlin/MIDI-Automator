@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
+import org.apache.log4j.Logger;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 import org.sikuli.script.Screen;
@@ -20,6 +21,8 @@ import com.midi_automator.utils.ImageUtils;
  * 
  */
 public class MinSimColoredScreen extends Screen {
+
+	static Logger log = Logger.getLogger(MinSimColoredScreen.class.getName());
 
 	private final double MAX_COLOR_DIFFERENCE = 0.08;
 
@@ -37,7 +40,7 @@ public class MinSimColoredScreen extends Screen {
 			foundImage = new Robot().createScreenCapture(new Rectangle(
 					targetRect));
 		} catch (AWTException e) {
-			e.printStackTrace();
+			log.error("Creating screen capture failed.", e);
 		}
 
 		// compare average colors of target image and screenshot of the found

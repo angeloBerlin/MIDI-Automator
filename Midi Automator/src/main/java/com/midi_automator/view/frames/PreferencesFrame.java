@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
+import org.apache.log4j.Logger;
+
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
@@ -42,14 +44,19 @@ public class PreferencesFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
+	static Logger log = Logger.getLogger(PreferencesFrame.class.getName());
+
 	private final int PADDING_HORIZONTAL = 20;
 	private final int PADDING_VERTICAL = 10;
+
 	private final String TITLE = "Preferences";
 	private final String LABEL_MIDI_IN_REMOTE_DEVICES = "Midi Remote IN:";
 	private final String LABEL_MIDI_OUT_REMOTE_DEVICES = "Midi Master OUT:";
-	private final String LABEL_MIDI_OUT_REMOTE_OPEN = "Master open: ch 1 CC 102 &lt;file number - 1&gt;";
-	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_DEVICES = "Midi Notifier OUT:";
+	private final String LABEL_MIDI_OUT_REMOTE_OPEN = "Master open: ch 1 CC 102 &lt;list entry - 1&gt;";
+	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_DEVICES = "Midi Switch Notifier OUT:";
 	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO = "Notifier: ch 1 CC 103 value 127";
+	private final String LABEL_MIDI_OUT_SWITCH_ITEM_DEVICES = "Midi Switch List Entry OUT:";
+	private final String LABEL_MIDI_OUT_SWITCH_ITEM_INFO = "Switch item: ch 16 CC [1 - 127] value 127";
 	private final String LABEL_MIDI_IN_METRONOM_DEVICES = "Midi Metronom IN:";
 	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16 NOTE ON A4<br/>"
 			+ "Other clicks: ch 16 NOTE ON E4";
@@ -60,6 +67,7 @@ public class PreferencesFrame extends JFrame {
 	private final String MIDI_IN_REMOTE_DEVICE_COMBO_BOX_NAME = "midiINRemoteDeviceComboBox";
 	private final String MIDI_OUT_REMOTE_DEVICE_COMBO_BOX_NAME = " midiOUTRemoteDeviceComboBox";
 	private final String MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX_NAME = "midiOUTSwitchNotifierDeviceComboBox";
+	private final String MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX_NAME = "midiOUTSwitchItemDeviceComboBox";
 	private final String MIDI_IN_METRONROM_DEVICE_COMBO_BOX_NAME = "midiINMetronomDeviceComboBox";
 
 	private JPanel middlePanel;
@@ -67,23 +75,31 @@ public class PreferencesFrame extends JFrame {
 	private JLabel midiINRemoteDevicesLabel;
 	private JLabel midiOUTRemoteDevicesLabel;
 	private JLabel midiOUTSwitchNotifierDevicesLabel;
+	private JLabel midiOUTSwitchItemDevicesLabel;
+	private JLabel labelHeader;
 	private JLabel guiAutomationLabel;
 	private HTMLLabel midiOUTSwitchNotifierInfoLabel;
-	private JLabel midiINMetronomDevicesLabel;
+	private HTMLLabel midiOUTSwitchItemInfoLabel;
 	private HTMLLabel midiINMetronomInfoLabel;
 	private JComboBox<String> midiINRemoteDeviceComboBox;
 	private JComboBox<String> midiOUTRemoteDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchNotifierDeviceComboBox;
 	private JComboBox<String> midiINMetronomDeviceComboBox;
+	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
 	private final GUIAutomationConfigurationPanel GUI_AUTOMATION_PANEL;
 
 	private JButton buttonSendNotify;
 	private JButton buttonSave;
 	private JButton buttonCancel;
 
+	private final Insets INSETS_LABEL_HEADER = new Insets(0, 5, 0, 10);
+	private final Insets INSETS_COMBO_BOX = new Insets(0, 0, 0, 10);
+	private final Insets INSETS_LABEL_INFO = new Insets(0, 5, 0, 10);
+	private final int CONSTRAINT_FILL_COMBO_BOX = GridBagConstraints.NONE;
+	private final int CONSTRAINT_ANCHOR_COMBO_BOX = GridBagConstraints.WEST;
+
 	private final MidiAutomator APPLICATION;
 	private final JFrame PARENT_FRAME;
-	private int gridRowCount = 0;
 
 	/**
 	 * Constructor
@@ -125,6 +141,9 @@ public class PreferencesFrame extends JFrame {
 		// MIDI IN Metronom
 		createMetronomMidiInDevices();
 
+		// MIDI OUT Switch Item
+		createSwitchItemOutDevices();
+
 		// MIDI OUT Switch Notifier
 		createSwitchNotifierMidiOutDevices();
 
@@ -164,9 +183,10 @@ public class PreferencesFrame extends JFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiINRemoteDevicesLabel = new JLabel(LABEL_MIDI_IN_REMOTE_DEVICES);
+		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridy = 0;
 		middlePanel.add(midiINRemoteDevicesLabel, c);
 
 		List<String> midiINDevices = MidiUtils.getMidiDeviceSignatures("IN");
@@ -176,9 +196,12 @@ public class PreferencesFrame extends JFrame {
 		midiINRemoteDeviceComboBox
 				.setName(MIDI_IN_METRONROM_DEVICE_COMBO_BOX_NAME);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c = new GridBagConstraints();
+		c.insets = INSETS_COMBO_BOX;
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
 		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridy = 1;
 		middlePanel.add(midiINRemoteDeviceComboBox, c);
 
 	}
@@ -190,10 +213,10 @@ public class PreferencesFrame extends JFrame {
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiOUTRemoteDevicesLabel = new JLabel(LABEL_MIDI_OUT_REMOTE_DEVICES);
-		c.insets = new Insets(10, 0, 0, 0);
+		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridx = 1;
+		c.gridy = 0;
 		middlePanel.add(midiOUTRemoteDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -204,57 +227,23 @@ public class PreferencesFrame extends JFrame {
 				.setName(MIDI_OUT_REMOTE_DEVICE_COMBO_BOX_NAME);
 
 		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.insets = INSETS_COMBO_BOX;
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.gridx = 1;
+		c.gridy = 1;
 		middlePanel.add(midiOUTRemoteDeviceComboBox, c);
 
 		// Info label
 		c = new GridBagConstraints();
+		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridx = 1;
+		c.gridy = 2;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_OUT_REMOTE_OPEN + "</span>");
 		middlePanel.add(midiOUTSwitchNotifierInfoLabel, c);
-	}
-
-	/**
-	 * Creates the midi in devices combo box for metronom with a label.
-	 */
-	private void createMetronomMidiInDevices() {
-
-		GridBagConstraints c = new GridBagConstraints();
-		midiINMetronomDevicesLabel = new JLabel(LABEL_MIDI_IN_METRONOM_DEVICES);
-		c.insets = new Insets(10, 0, 0, 0);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
-		middlePanel.add(midiINMetronomDevicesLabel, c);
-
-		List<String> midiInDevices = MidiUtils.getMidiDeviceSignatures("IN");
-		midiInDevices.add(0, MidiAutomatorProperties.VALUE_NULL);
-		midiINMetronomDeviceComboBox = new JComboBox<String>(
-				(String[]) midiInDevices.toArray(new String[0]));
-		midiINMetronomDeviceComboBox
-				.setName(MIDI_IN_REMOTE_DEVICE_COMBO_BOX_NAME);
-
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
-		middlePanel.add(midiINMetronomDeviceComboBox, c);
-
-		// Info label
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
-		midiINMetronomInfoLabel = new HTMLLabel(
-				"<span style='font-family:Arial; font-size:8px'>"
-						+ LABEL_MIDI_IN_METRONOM_INFO + "</span>");
-		middlePanel.add(midiINMetronomInfoLabel, c);
 	}
 
 	/**
@@ -266,10 +255,10 @@ public class PreferencesFrame extends JFrame {
 		GridBagConstraints c = new GridBagConstraints();
 		midiOUTSwitchNotifierDevicesLabel = new JLabel(
 				LABEL_MIDI_OUT_SWITCH_NOTIFIER_DEVICES);
-		c.insets = new Insets(10, 0, 0, 0);
+		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridx = 2;
+		c.gridy = 0;
 		middlePanel.add(midiOUTSwitchNotifierDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -280,16 +269,19 @@ public class PreferencesFrame extends JFrame {
 				.setName(MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX_NAME);
 
 		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount;
+		c.insets = new Insets(0, 0, 0, 0);
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.gridx = 2;
+		c.gridy = 1;
 		middlePanel.add(midiOUTSwitchNotifierDeviceComboBox, c);
 
 		// Button test notification
 		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 1;
-		c.gridy = gridRowCount++;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 3;
+		c.gridy = 1;
 		buttonSendNotify = new JButton(BUTTON_SEND_NOTIFIER);
 		buttonSendNotify.addActionListener(new SendNotificationAction());
 		buttonSendNotify.setMaximumSize(new Dimension(7, 10));
@@ -297,13 +289,95 @@ public class PreferencesFrame extends JFrame {
 
 		// Info label
 		c = new GridBagConstraints();
+		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridx = 2;
+		c.gridy = 2;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO + "</span>");
 		middlePanel.add(midiOUTSwitchNotifierInfoLabel, c);
+	}
+
+	/**
+	 * Creates the midi out devices combo box for item switch with a label.
+	 */
+	private void createSwitchItemOutDevices() {
+
+		GridBagConstraints c = new GridBagConstraints();
+		midiOUTSwitchItemDevicesLabel = new JLabel(
+				LABEL_MIDI_OUT_SWITCH_ITEM_DEVICES);
+		c.insets = INSETS_LABEL_HEADER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 3;
+		middlePanel.add(midiOUTSwitchItemDevicesLabel, c);
+
+		List<String> devices = MidiUtils.getMidiDeviceSignatures("OUT");
+		devices.add(0, MidiAutomatorProperties.VALUE_NULL);
+		midiOUTSwitchItemDeviceComboBox = new JComboBox<String>(
+				(String[]) devices.toArray(new String[0]));
+		midiOUTSwitchItemDeviceComboBox
+				.setName(MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX_NAME);
+
+		c = new GridBagConstraints();
+		c.insets = INSETS_COMBO_BOX;
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.gridx = 0;
+		c.gridy = 4;
+		middlePanel.add(midiOUTSwitchItemDeviceComboBox, c);
+
+		// Info label
+		c = new GridBagConstraints();
+		c.insets = INSETS_LABEL_INFO;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 5;
+		midiOUTSwitchItemInfoLabel = new HTMLLabel(
+				"<span style='font-family:Arial; font-size:8px'>"
+						+ this.LABEL_MIDI_OUT_SWITCH_ITEM_INFO + "</span>");
+		middlePanel.add(midiOUTSwitchItemInfoLabel, c);
+	}
+
+	/**
+	 * Creates the midi in devices combo box for metronom with a label.
+	 */
+	private void createMetronomMidiInDevices() {
+
+		GridBagConstraints c = new GridBagConstraints();
+		labelHeader = new JLabel(LABEL_MIDI_IN_METRONOM_DEVICES);
+		c.insets = INSETS_LABEL_HEADER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 3;
+		middlePanel.add(labelHeader, c);
+
+		List<String> midiInDevices = MidiUtils.getMidiDeviceSignatures("IN");
+		midiInDevices.add(0, MidiAutomatorProperties.VALUE_NULL);
+		midiINMetronomDeviceComboBox = new JComboBox<String>(
+				(String[]) midiInDevices.toArray(new String[0]));
+		midiINMetronomDeviceComboBox
+				.setName(MIDI_IN_REMOTE_DEVICE_COMBO_BOX_NAME);
+
+		c = new GridBagConstraints();
+		c.insets = INSETS_COMBO_BOX;
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.gridx = 1;
+		c.gridy = 4;
+		middlePanel.add(midiINMetronomDeviceComboBox, c);
+
+		// Info label
+		c = new GridBagConstraints();
+		c.insets = INSETS_LABEL_INFO;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 5;
+		midiINMetronomInfoLabel = new HTMLLabel(
+				"<span style='font-family:Arial; font-size:8px'>"
+						+ LABEL_MIDI_IN_METRONOM_INFO + "</span>");
+		middlePanel.add(midiINMetronomInfoLabel, c);
 	}
 
 	/**
@@ -315,15 +389,16 @@ public class PreferencesFrame extends JFrame {
 		guiAutomationLabel = new JLabel(LABEL_GUI_AUTOMATION);
 
 		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(10, 0, 0, 0);
 		c.gridx = 0;
-		c.gridy = gridRowCount++;
+		c.gridy = 7;
 		middlePanel.add(guiAutomationLabel, c);
 
 		GUI_AUTOMATION_PANEL.setOpaque(true);
 
 		c.gridx = 0;
-		c.gridy = gridRowCount++;
-		c.gridwidth = 3;
+		c.gridy = 8;
+		c.gridwidth = 4;
 		middlePanel.add(GUI_AUTOMATION_PANEL, c);
 	}
 
@@ -343,7 +418,7 @@ public class PreferencesFrame extends JFrame {
 		try {
 			table.setMidiSignature(signature, table.getSelectedRow());
 		} catch (AutomationIndexDoesNotExistException e) {
-			e.printStackTrace();
+			log.error("The automation for the MIDI signature does not exist", e);
 		}
 	}
 
@@ -353,21 +428,24 @@ public class PreferencesFrame extends JFrame {
 	public void reload() {
 
 		// midi in remote opener
-		String midiInDeviceName = APPLICATION.getMidiINRemoteDeviceName();
+		String midiInRemoteDeviceName = APPLICATION
+				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 
-		if (midiInDeviceName != null) {
-			midiINRemoteDeviceComboBox.setSelectedItem(midiInDeviceName);
+		if (midiInRemoteDeviceName != null) {
+			midiINRemoteDeviceComboBox.setSelectedItem(midiInRemoteDeviceName);
 		}
 
 		// midi out remote opener
-		String midiOUTDevice = APPLICATION.getMidiOUTRemoteDeviceName();
+		String midiOUTRemoteDevice = APPLICATION
+				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 
-		if (midiOUTDevice != null) {
-			midiOUTRemoteDeviceComboBox.setSelectedItem(midiOUTDevice);
+		if (midiOUTRemoteDevice != null) {
+			midiOUTRemoteDeviceComboBox.setSelectedItem(midiOUTRemoteDevice);
 		}
 
 		// midi in metronom
-		String midiINMetronomDevice = APPLICATION.getMidiINMetronomDeviceName();
+		String midiINMetronomDevice = APPLICATION
+				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 
 		if (midiINMetronomDevice != null) {
 			midiINMetronomDeviceComboBox.setSelectedItem(midiINMetronomDevice);
@@ -375,11 +453,20 @@ public class PreferencesFrame extends JFrame {
 
 		// midi out switch notifier
 		String midiOUTSwitchNotifierDevice = APPLICATION
-				.getMidiOUTSwitchNotifierDeviceName();
+				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 
 		if (midiOUTSwitchNotifierDevice != null) {
 			midiOUTSwitchNotifierDeviceComboBox
 					.setSelectedItem(midiOUTSwitchNotifierDevice);
+		}
+
+		// midi out item switch
+		String midiOUTSwitchItemDevice = APPLICATION
+				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
+
+		if (midiOUTSwitchItemDevice != null) {
+			midiOUTSwitchItemDeviceComboBox
+					.setSelectedItem(midiOUTSwitchItemDevice);
 		}
 
 		// gui automations
@@ -416,10 +503,8 @@ public class PreferencesFrame extends JFrame {
 
 				GUIUtils.deHighlightTableRow(table, true);
 
-				if (APPLICATION.isInDebugMode()) {
-					System.out.println("Learning midi for automation index: "
-							+ table.getSelectedRow());
-				}
+				log.info("Learning midi for automation index: "
+						+ table.getSelectedRow());
 
 			}
 		}
@@ -465,14 +550,23 @@ public class PreferencesFrame extends JFrame {
 					.getSelectedItem();
 			String midiOUTSwitchNotifierDeviceName = (String) midiOUTSwitchNotifierDeviceComboBox
 					.getSelectedItem();
+			String midiOUTSwitchItemDeviceName = (String) midiOUTSwitchItemDeviceComboBox
+					.getSelectedItem();
 			GUIAutomation[] guiAutomations = GUI_AUTOMATION_PANEL
 					.getGUIAutomations();
 
-			APPLICATION.setMidiINRemoteDeviceName(midiINRemoteDeviceName);
-			APPLICATION.setMidiOUTRemoteDeviceName(midiOUTRemoteDeviceName);
-			APPLICATION.setMidiINMetronomDeviceName(midiINMetronomDeviceName);
+			APPLICATION.setMidiDeviceName(midiINRemoteDeviceName,
+					MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+			APPLICATION.setMidiDeviceName(midiINMetronomDeviceName,
+					MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
+			APPLICATION.setMidiDeviceName(midiOUTRemoteDeviceName,
+					MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 			APPLICATION
-					.setMidiOUTSwitchNotifierDeviceName(midiOUTSwitchNotifierDeviceName);
+					.setMidiDeviceName(
+							midiOUTSwitchNotifierDeviceName,
+							MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
+			APPLICATION.setMidiDeviceName(midiOUTSwitchItemDeviceName,
+					MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 			APPLICATION.setGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
@@ -518,8 +612,10 @@ public class PreferencesFrame extends JFrame {
 			try {
 				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
 				APPLICATION.sendItemChangeNotifier(device);
-			} catch (MidiUnavailableException e1) {
-				e1.printStackTrace();
+			} catch (MidiUnavailableException ex) {
+				log.error(
+						"The MIDI device for the switch notification is unavailable",
+						ex);
 			}
 		}
 	}
