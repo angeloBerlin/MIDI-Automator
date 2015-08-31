@@ -915,7 +915,7 @@ public class MainFrame extends JFrame {
 
 		// previous switch button
 		String prevSignature = APPLICATION
-				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
+				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
 		if (prevSignature != null) {
 			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
 					&& (!prevSignature.equals(""))) {
@@ -925,7 +925,7 @@ public class MainFrame extends JFrame {
 
 		// next switch button
 		String nextSignature = APPLICATION
-				.getMidiSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
+				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
 		if (nextSignature != null) {
 			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
 					&& (!nextSignature.equals(""))) {
@@ -934,8 +934,8 @@ public class MainFrame extends JFrame {
 		}
 
 		// file list item
-		String selectedSignature = APPLICATION.getMidiSignature(fileJList
-				.getSelectedIndex());
+		String selectedSignature = APPLICATION
+				.getMidiListeningSignature(fileJList.getSelectedIndex());
 		if (selectedSignature != null) {
 			if (componentName.equals(MainFrame.NAME_FILE_LIST)
 					&& (!selectedSignature.equals(""))) {

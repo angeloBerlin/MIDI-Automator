@@ -51,11 +51,12 @@ public class EditFrame extends AddFrame {
 		buttonSave.addActionListener(saveListener);
 
 		createMidiListeningSignature();
+		setMidiSendingSignatureValueLabelText();
 
 		nameTextField.setText(application.getEntryNameByIndex(index));
 		fileTextField.setText(application.getEntryFilePathByIndex(index));
 		midiListeningSignatureValueLabel.setText(application
-				.getMidiSignature(index));
+				.getMidiListeningSignature(index));
 	}
 
 	/**
@@ -80,6 +81,12 @@ public class EditFrame extends AddFrame {
 		c.gridx = 1;
 		c.gridy = 4;
 		middlePanel.add(midiListeningSignatureValueLabel, c);
+	}
+
+	@Override
+	protected void setMidiSendingSignatureValueLabelText() {
+		midiSendingSignatureValueLabel.setText(APPLICATION
+				.getMidiSendingSignature(index));
 	}
 
 	/**

@@ -102,7 +102,7 @@ public class AddFrame extends JFrame {
 		createEntryFile();
 
 		// sending midi signature
-		createMidiSedningSignature();
+		createMidiSendingSignature();
 
 		// Save
 		buttonSave = new JButton(BUTTON_SAVE);
@@ -181,7 +181,7 @@ public class AddFrame extends JFrame {
 	/**
 	 * Creates the label for the midi sending signature
 	 */
-	private void createMidiSedningSignature() {
+	private void createMidiSendingSignature() {
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiSendingSignatureLabel = new JLabel(LABEL_SENDING_MIDI);
@@ -192,8 +192,8 @@ public class AddFrame extends JFrame {
 		c.gridy = 3;
 		middlePanel.add(midiSendingSignatureLabel, c);
 
-		midiSendingSignatureValueLabel = new JLabel(
-				APPLICATION.getUniqueSendingMidiSignature());
+		midiSendingSignatureValueLabel = new JLabel();
+		setMidiSendingSignatureValueLabelText();
 		midiSendingSignatureValueLabel.setPreferredSize(new Dimension(
 				TEXT_PANE_WIDTH, midiSendingSignatureValueLabel
 						.getPreferredSize().height));
@@ -201,6 +201,14 @@ public class AddFrame extends JFrame {
 		c.gridx = 1;
 		c.gridy = 3;
 		middlePanel.add(midiSendingSignatureValueLabel, c);
+	}
+
+	/**
+	 * Sets the text of the midi sending signature lbel
+	 */
+	protected void setMidiSendingSignatureValueLabelText() {
+		midiSendingSignatureValueLabel.setText(APPLICATION
+				.getUniqueSendingMidiSignature());
 	}
 
 	/**

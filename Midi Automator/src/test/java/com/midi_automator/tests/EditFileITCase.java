@@ -134,4 +134,44 @@ public class EditFileITCase extends IntegrationTestCase {
 			}
 		}
 	}
+
+	@Test
+	public void sendingMidiSignatureShouldBeShown() {
+		try {
+
+			// mockup
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			GUIAutomations.openMidiAutomator();
+
+			// edit entry 1
+			GUIAutomations.openEditDialog("Hello_World_1_entry.png",
+					"Hello_World_entry_1_active.png",
+					"Hello_World_entry_1_inactive.png");
+
+			// check midi signature
+			GUIAutomations.checkResult("midi_signature_sending_1.png",
+					GUIAutomations.DEFAULT_SIMILARITY);
+
+			GUIAutomations.cancelDialog();
+
+			// edit entry 2
+			GUIAutomations.openEditDialog("Hello_World_2_entry.png",
+					"Hello_World_entry_2_active.png",
+					"Hello_World_entry_2_inactive.png");
+
+			// check midi signature
+			GUIAutomations.checkResult("midi_signature_sending_2.png",
+					GUIAutomations.DEFAULT_SIMILARITY);
+
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.cancelDialog();
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

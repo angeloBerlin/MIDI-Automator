@@ -35,6 +35,7 @@ import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.SetList;
 import com.midi_automator.model.SetListItem;
 import com.midi_automator.model.TooManyEntriesException;
 import com.midi_automator.utils.FileUtils;
@@ -147,9 +148,6 @@ public class MidiAutomator {
 				new MidiINMetronomReceiver(this));
 		midiReceivers.put(KEY_MIDI_RECEIVER_IN_DETECTOR, new MidiINDetector(
 				this));
-		// midiReceivers.put(KEY_MIDI_RECEIVER_OUT_DETECTOR, new
-		// MidiOUTDetector(
-		// this));
 
 		PROGRAM_FRAME = new MainFrame(this, VERSION);
 
@@ -790,8 +788,8 @@ public class MidiAutomator {
 			}
 
 			// switch file
-			String prevSignature = getMidiSignature(SWITCH_DIRECTION_PREV);
-			String nextSignature = getMidiSignature(SWITCH_DIRECTION_NEXT);
+			String prevSignature = getMidiListeningSignature(SWITCH_DIRECTION_PREV);
+			String nextSignature = getMidiListeningSignature(SWITCH_DIRECTION_NEXT);
 
 			if (prevSignature != null) {
 				if (prevSignature.equals(signature)) {
@@ -1108,14 +1106,14 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Gets the midi signature of the switch directions
+	 * Gets the midi listening signature of the switch directions
 	 * 
 	 * @param switchDirection
 	 *            SWITCH_DIRECTION_PREV previous direction,
 	 *            SWITCH_DIRECTION_NEXT next direction
 	 * @return The midi signature
 	 */
-	public String getMidiSignature(String switchDirection) {
+	public String getMidiListeningSignature(String switchDirection) {
 
 		if (switchDirection.equals(SWITCH_DIRECTION_PREV)) {
 			return PROPERTIES
@@ -1131,16 +1129,34 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Gets the midi signature for the file list index
+	 * Gets the midi listening signature for the file list index
 	 * 
 	 * @param index
 	 *            The index in the file list
 	 * @return The midi signature
 	 */
-	public String getMidiSignature(int index) {
+	public String getMidiListeningSignature(int index) {
 		try {
-			return model.getSetList().getItems().get(index)
-					.getMidiListeningSignature();
+			SetList setList = model.getSetList();
+			List<SetListItem> list = setList.getItems();
+			return list.get(index).getMidiListeningSignature();
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the midi signature a file list index is sending
+	 * 
+	 * @param index
+	 *            The index in the file list
+	 * @return The midi signature
+	 */
+	public String getMidiSendingSignature(int index) {
+		try {
+			SetList setList = model.getSetList();
+			List<SetListItem> list = setList.getItems();
+			return list.get(index).getMidiSendingSignature();
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
