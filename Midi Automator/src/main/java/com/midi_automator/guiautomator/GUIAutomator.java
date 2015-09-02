@@ -19,7 +19,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final float MIN_SIMILARITY = 0.987f;
+	private final float MIN_SIMILARITY = 0.98f;
 	private final boolean CHECK_LAST_SEEN = true;
 
 	private final MinSimColoredScreen SCREEN;
