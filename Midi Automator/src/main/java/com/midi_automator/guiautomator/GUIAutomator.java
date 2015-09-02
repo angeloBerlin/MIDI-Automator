@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
-import org.sikuli.script.Screen;
 
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
@@ -20,10 +19,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final float MIN_SIMILARITY = 0.99f;
+	private final float MIN_SIMILARITY = 0.987f;
 	private final boolean CHECK_LAST_SEEN = true;
 
-	private final Screen SCREEN;
+	private final MinSimColoredScreen SCREEN;
 	private volatile boolean running = true;
 	private boolean active = true;
 
@@ -36,7 +35,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 *            Indicates if the program is working in debug mode
 	 */
 	public GUIAutomator() {
-		SCREEN = new Screen(0);
+		SCREEN = new MinSimColoredScreen();
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.MinSimilarity = MIN_SIMILARITY;
 		Settings.CheckLastSeenSimilar = MIN_SIMILARITY;

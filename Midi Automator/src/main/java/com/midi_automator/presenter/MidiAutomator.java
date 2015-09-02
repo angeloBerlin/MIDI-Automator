@@ -50,7 +50,7 @@ public class MidiAutomator {
 	private static MidiAutomator instance;
 
 	private final boolean TEST;
-	private final String VERSION = "1.1.0";
+	private final String VERSION = "1.1.1";
 	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
