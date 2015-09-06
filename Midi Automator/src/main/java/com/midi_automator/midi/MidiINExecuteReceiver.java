@@ -31,7 +31,9 @@ public class MidiINExecuteReceiver extends MidiAutomatorReceiver {
 
 		log.debug("Property doNotExecute="
 				+ application.isDoNotExecuteMidiMessage());
-
+		log.debug("Property interpretedMessage="
+				+ interpretedMessage);
+		
 		if (!application.isInMidiLearnMode() && interpretedMessage != null
 				&& !signature.equals(MidiUtils.UNKNOWN_MESSAGE)
 				&& !application.isDoNotExecuteMidiMessage()) {

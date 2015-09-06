@@ -19,7 +19,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final float MIN_SIMILARITY = 0.98f;
+	private final float MIN_SIMILARITY = 0.97f;
 	private final boolean CHECK_LAST_SEEN = true;
 
 	private final MinSimColoredScreen SCREEN;
@@ -158,9 +158,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	public void activateMidiAutomations(String midiSignature) {
 
 		for (GUIAutomation guiAutomation : guiAutomations) {
-			if ((guiAutomation.getTrigger().equals(
-					GUIAutomation.CLICKTRIGGER_MIDI) && (guiAutomation
-					.getMidiSignature().equals(midiSignature)))) {
+			String trigger = guiAutomation.getTrigger();
+			String signature = guiAutomation.getMidiSignature();
+			if ((trigger.equals(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
+					.equals(midiSignature)))) {
 				guiAutomation.setActive(true);
 			}
 		}

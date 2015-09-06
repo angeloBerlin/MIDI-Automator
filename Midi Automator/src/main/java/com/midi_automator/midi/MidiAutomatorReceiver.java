@@ -21,7 +21,7 @@ public class MidiAutomatorReceiver implements Receiver {
 
 	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
-	protected final long timeTolerance = 1000000; // in microseconds
+	protected final long timeTolerance = 0; // 1000000; // in microseconds
 
 	/**
 	 * Constructor

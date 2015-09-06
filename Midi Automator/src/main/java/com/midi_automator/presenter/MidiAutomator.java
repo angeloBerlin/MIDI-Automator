@@ -353,7 +353,7 @@ public class MidiAutomator {
 		// generate GUI automators
 		for (int i = 0; i < guiAutomations.length; i++) {
 			GUIAutomator guiAutomator = new GUIAutomator();
-			guiAutomator.setName("Thread" + i);
+			guiAutomator.setName("GUIAutomator " + i);
 			GUIAutomation[] automations = new GUIAutomation[] { guiAutomations[i] };
 			guiAutomator.setGUIAutomations(automations);
 			guiAutomators.add(guiAutomator);
