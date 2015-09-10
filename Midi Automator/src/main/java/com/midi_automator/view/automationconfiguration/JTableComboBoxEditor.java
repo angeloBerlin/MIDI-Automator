@@ -23,4 +23,14 @@ public class JTableComboBoxEditor extends DefaultCellEditor {
 		super(new JComboBox<String>(items));
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param comboBox
+	 *            A JComboBox
+	 */
+	public JTableComboBoxEditor(JComboBox<?> comboBox) {
+		super(comboBox);
+	}
+
 }

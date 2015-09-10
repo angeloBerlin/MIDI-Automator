@@ -20,7 +20,8 @@ public class SystemUtils {
 	 */
 	public static String replaceSystemVariables(String str) {
 
-		log.debug("String to replace with system variables: " + str);
+		log.trace("String to replace with system variables: " + str);
+
 		if (str != null) {
 			String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
 			Pattern expr = Pattern.compile(pattern);
@@ -49,7 +50,7 @@ public class SystemUtils {
 			}
 		}
 
-		log.debug("Replaced system variables: " + str);
+		log.trace("Replaced system variables: " + str);
 
 		return str;
 	}

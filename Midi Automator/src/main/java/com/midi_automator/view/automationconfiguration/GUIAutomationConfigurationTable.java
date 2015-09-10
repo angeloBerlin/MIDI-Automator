@@ -6,8 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -25,6 +28,7 @@ import org.apache.log4j.Logger;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
 import com.midi_automator.view.MidiLearnPopupMenu;
@@ -67,7 +71,15 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final Long DEFAULT_MINDELAY = GUIAutomation.MINDELAY_MIN_VALUE;
 	private final Long MINDELAY_STEP_SIZE = 1L;
 
+	private final int COLUMN_SCREENSHOT = 0;
+	private final int COLUMN_TYPE = 1;
+	private final int COLUMN_TRIGGER = 2;
+	private final int COLUMN_MIN_DELAY = 3;
+	private final int COLUMN_MIDI = 4;
+	private final int COLUMN_SEARCH_BUTTON = 5;
+
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
+	private final String NAME_COMBOBOX_TRIGGER = "COMBOBOX_TRIGGER";
 
 	private Vector<Vector<Object>> data;
 
@@ -86,16 +98,16 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		data = new Vector<Vector<Object>>();
 
 		columnNames = new Vector<String>();
-		columnNames.add(COLNAME_SCREENSHOT);
-		columnNames.add(COLNAME_TYPE);
-		columnNames.add(COLNAME_TRIGGER);
-		columnNames.add(COLNAME_MIN_DELAY);
-		columnNames.add(COLNAME_MIDI);
-		columnNames.add(COLNAME_SEARCH_BUTTON);
+		columnNames.add(COLUMN_SCREENSHOT, COLNAME_SCREENSHOT);
+		columnNames.add(COLUMN_TYPE, COLNAME_TYPE);
+		columnNames.add(COLUMN_TRIGGER, COLNAME_TRIGGER);
+		columnNames.add(COLUMN_MIN_DELAY, COLNAME_MIN_DELAY);
+		columnNames.add(COLUMN_MIDI, COLNAME_MIDI);
+		columnNames.add(COLUMN_SEARCH_BUTTON, COLNAME_SEARCH_BUTTON);
 
-		ConfigurationTableModel model = new ConfigurationTableModel();
-		model.setDataVector(data, columnNames);
-		setModel(model);
+		ConfigurationTableModel tableModel = new ConfigurationTableModel();
+		tableModel.setDataVector(data, columnNames);
+		setModel(tableModel);
 
 		setPreferredScrollableViewportSize(new Dimension(TABLEWIDTH,
 				TABLEHEIGHT));
@@ -197,21 +209,31 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		getColumn(COLNAME_TYPE).setCellRenderer(clickTypeComboBoxRenderer);
 		getColumn(COLNAME_TYPE).setCellEditor(clickTypeComboBoxEditor);
 
-		// generate click trigger ComboBox
-		String[] triggerTypes = { GUIAutomation.CLICKTRIGGER_ALWAYS,
-				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE,
-				GUIAutomation.CLICKTRIGGER_ONCE,
-				GUIAutomation.CLICKTRIGGER_MIDI };
-		JTableComboBoxRenderer frequencyComboBoxRenderer = new JTableComboBoxRenderer(
-				triggerTypes);
-		JTableComboBoxEditor frequencyComboBoxEditor = new JTableComboBoxEditor(
-				triggerTypes);
-		getColumn(COLNAME_TRIGGER).setCellRenderer(frequencyComboBoxRenderer);
-		getColumn(COLNAME_TRIGGER).setCellEditor(frequencyComboBoxEditor);
-
 		// extend table model
 		DefaultTableModel model = (DefaultTableModel) getModel();
 		Vector<Object> rowData = new Vector<Object>();
+
+		// generate click trigger ComboBox
+		List<String> triggerTypes = new ArrayList<String>();
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ALWAYS);
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE);
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE);
+
+		for (String deviceName : MidiUtils.getMidiDeviceSignatures("IN")) {
+			triggerTypes.add(GUIAutomation.CLICKTRIGGER_MIDI + deviceName);
+		}
+
+		JTableComboBoxRenderer triggerComboBoxRenderer = new JTableComboBoxRenderer(
+				triggerTypes.toArray(new String[0]));
+		JComboBox<String> triggerComboBox = new JComboBox<String>(
+				triggerTypes.toArray(new String[0]));
+		triggerComboBox.setName(NAME_COMBOBOX_TRIGGER + "_"
+				+ model.getRowCount());
+		triggerComboBox.addActionListener(new TriggerComboBoxListener());
+		JTableComboBoxEditor triggerComboBoxEditor = new JTableComboBoxEditor(
+				triggerComboBox);
+		getColumn(COLNAME_TRIGGER).setCellRenderer(triggerComboBoxRenderer);
+		getColumn(COLNAME_TRIGGER).setCellEditor(triggerComboBoxEditor);
 
 		// fill table data
 		rowData.add(ConfigurationTableModel.COLUMN_INDEX_IMAGE,
@@ -310,9 +332,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			// set midi signature
 			model.setValueAt(signature, row,
 					ConfigurationTableModel.COLUMN_INDEX_MIDISIGNATURE);
-			// set trigger to midi
-			model.setValueAt(GUIAutomation.CLICKTRIGGER_MIDI, row,
-					ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new AutomationIndexDoesNotExistException();
 		}
@@ -460,6 +479,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		 * @param e
 		 *            The mouse event
 		 */
+		@SuppressWarnings("unchecked")
 		private void maybeShowPopup(MouseEvent e) {
 			if (e.isPopupTrigger()) {
 
@@ -471,15 +491,65 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					table.changeSelection(row, column, false, false);
 				}
 
-				String midiInRemoteDeviceName = APPLICATION
-						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+				// de-/activate midi learn item
+				JComboBox<String> cellRenderer = (JComboBox<String>) table
+						.getCellRenderer(row, COLUMN_TRIGGER);
 
-				if (midiInRemoteDeviceName != null
-						&& !midiInRemoteDeviceName
-								.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				String midiInAutomationDeviceName = (String) cellRenderer
+						.getSelectedItem();
+
+				popupMenu.getMidiLearnMenuItem().setEnabled(false);
+
+				if (midiInAutomationDeviceName != null
+						&& !midiInAutomationDeviceName
+								.equals(MidiAutomatorProperties.VALUE_NULL)
+						&& midiInAutomationDeviceName
+								.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
 					popupMenu.getMidiLearnMenuItem().setEnabled(true);
 				}
+
+				// de-/activate midi unlearn item
+				String midiSignature = (String) table.getModel().getValueAt(
+						row, COLUMN_MIDI);
+
+				popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+
+				if (midiSignature != null) {
+					if (!midiSignature.equals("")) {
+						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+					}
+				}
+
 				popupMenu.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class TriggerComboBoxListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			@SuppressWarnings("unchecked")
+			JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
+			String automationIndex = comboBox.getName().replace(
+					NAME_COMBOBOX_TRIGGER + "_", "");
+
+			String functionKey = MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
+					+ "_" + automationIndex;
+			String trigger = (String) comboBox.getSelectedItem();
+
+			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+				APPLICATION.loadMidiDeviceByFunctionKey(functionKey,
+						trigger.replace(GUIAutomation.CLICKTRIGGER_MIDI, ""));
+			} else {
+				APPLICATION.loadMidiDeviceByFunctionKey(functionKey,
+						MidiAutomatorProperties.VALUE_NULL);
 			}
 		}
 	}

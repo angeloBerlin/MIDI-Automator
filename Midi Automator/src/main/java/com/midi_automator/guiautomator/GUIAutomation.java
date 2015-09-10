@@ -32,7 +32,7 @@ public class GUIAutomation implements IDeActivateable {
 	public static final String CLICKTRIGGER_ALWAYS = "always";
 	public static final String CLICKTRIGGER_ONCE_PER_CHANGE = "once per opening";
 	public static final String CLICKTRIGGER_ONCE = "once";
-	public static final String CLICKTRIGGER_MIDI = "midi";
+	public static final String CLICKTRIGGER_MIDI = "MIDI: ";
 
 	public static final Long MINDELAY_MIN_VALUE = 0L;
 	public static final Long MINDELAY_MAX_VALUE = Long.MAX_VALUE;

@@ -21,7 +21,8 @@ public class MidiAutomatorReceiver implements Receiver {
 
 	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
-	protected final long timeTolerance = 0; // 1000000; // in microseconds
+	protected final long timeTolerance = 0; // in microseconds
+	protected String name;
 
 	/**
 	 * Constructor
@@ -64,5 +65,13 @@ public class MidiAutomatorReceiver implements Receiver {
 			result = MidiUtils.normalizeMidiMesage(message);
 		}
 		return result;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

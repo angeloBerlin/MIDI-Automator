@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import com.midi_automator.Resources;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.guiautomator.GUIAutomator;
-import com.midi_automator.midi.MidiAutomatorReceiver;
+import com.midi_automator.midi.MidiINAutomationReceiver;
 import com.midi_automator.midi.MidiINDetector;
 import com.midi_automator.midi.MidiINExecuteReceiver;
 import com.midi_automator.midi.MidiINLearnReceiver;
@@ -50,7 +50,7 @@ public class MidiAutomator {
 	private static MidiAutomator instance;
 
 	private final boolean TEST;
-	private final String VERSION = "1.1.1";
+	private final String VERSION = "1.2.0";
 	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
@@ -66,11 +66,6 @@ public class MidiAutomator {
 	private JComponent learningComponent;
 	private Map<String, MidiDevice> midiDevices = new HashMap<String, MidiDevice>();
 	private Map<String, Set<Receiver>> midiFunctionReceiverMapping = new HashMap<String, Set<Receiver>>();
-	private Map<String, MidiAutomatorReceiver> midiReceivers = new HashMap<String, MidiAutomatorReceiver>();
-	private final String KEY_MIDI_RECEIVER_MIDI_LEARN = "KEY_MIDI_RECEIVER_MIDI_LEARN";
-	private final String KEY_MIDI_RECEIVER_EXECUTE = "KEY_MIDI_RECEIVER_EXECUTE";
-	private final String KEY_MIDI_RECEIVER_METRONOM = "KEY_MIDI_RECEIVER_METRONOM";
-	private final String KEY_MIDI_RECEIVER_IN_DETECTOR = "KEY_MIDI_RECEIVER_IN_DETECTOR";
 
 	// gui automation
 	private GUIAutomation[] guiAutomations;
@@ -140,14 +135,6 @@ public class MidiAutomator {
 
 		midiLearn = false;
 		doNotExecuteMidiMessage = false;
-		midiReceivers.put(KEY_MIDI_RECEIVER_MIDI_LEARN,
-				new MidiINLearnReceiver(this));
-		midiReceivers.put(KEY_MIDI_RECEIVER_EXECUTE, new MidiINExecuteReceiver(
-				this));
-		midiReceivers.put(KEY_MIDI_RECEIVER_METRONOM,
-				new MidiINMetronomReceiver(this));
-		midiReceivers.put(KEY_MIDI_RECEIVER_IN_DETECTOR, new MidiINDetector(
-				this));
 
 		PROGRAM_FRAME = new MainFrame(this, VERSION);
 
@@ -209,6 +196,12 @@ public class MidiAutomator {
 
 		// GUI automation
 		loadGUIAutomationsProperties();
+
+		// MIDI IN Automation Triggers
+		for (int i = 0; i < guiAutomations.length; i++) {
+			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
+					+ "_" + i);
+		}
 
 		PROGRAM_FRAME.reload();
 	}
@@ -318,7 +311,15 @@ public class MidiAutomator {
 		for (Entry<Object, Object> property : guiAutomationProperties_Triggers) {
 			int index = MidiAutomatorProperties
 					.getIndexOfPropertyKey((String) property.getKey());
-			guiAutomations[index].setTrigger((String) property.getValue());
+			String trigger = (String) property.getValue();
+			guiAutomations[index].setTrigger(trigger);
+
+			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+				loadMidiDeviceByFunctionKey(
+						MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
+								+ "_" + index,
+						trigger.replace(GUIAutomation.CLICKTRIGGER_MIDI, ""));
+			}
 		}
 
 		// initiate midi signatures
@@ -507,60 +508,89 @@ public class MidiAutomator {
 	 */
 	private void loadMidiDeviceProperty(String propertyKey) {
 
-		String deviceName = PROPERTIES.getProperty(propertyKey);
+		String propertyValue = PROPERTIES.getProperty(propertyKey);
+		loadMidiDeviceByFunctionKey(propertyKey, propertyValue);
+	}
+
+	/**
+	 * Loads a midi device property by opening and connecting the configured
+	 * midi devices.
+	 * 
+	 * @param functionKey
+	 *            The function key for the midi device
+	 * @param midiDeviceName
+	 *            The midi device name
+	 */
+	public void loadMidiDeviceByFunctionKey(String functionKey,
+			String midiDeviceName) {
 
 		String errMidiDeviceNotAvailable = String.format(
-				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, deviceName);
+				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, midiDeviceName);
 
-		Messages.builtMessages.put(propertyKey + "_UNVAILABLE",
+		Messages.builtMessages.put(functionKey + "_UNVAILABLE",
 				errMidiDeviceNotAvailable);
 
-		if (deviceName != null && !deviceName.equals("")) {
+		if (midiDeviceName != null && !midiDeviceName.equals("")) {
 
 			// MIDI IN Remote
-			if (propertyKey
+			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
 
 				Set<Receiver> receivers = new HashSet<Receiver>();
-				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_MIDI_LEARN));
-				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_EXECUTE));
+				receivers.add(new MidiINLearnReceiver(this));
+				receivers.add(new MidiINExecuteReceiver(this));
 
-				loadMidiDevice(deviceName, propertyKey, receivers, "IN",
+				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
+						errMidiDeviceNotAvailable);
+			}
+
+			// MIDI IN Automation Trigger
+			if (functionKey
+					.contains(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE)) {
+
+				Set<Receiver> receivers = new HashSet<Receiver>();
+				receivers.add(new MidiINLearnReceiver(this));
+				MidiINAutomationReceiver automationReceiver = new MidiINAutomationReceiver(
+						this);
+				automationReceiver.setName(functionKey);
+				receivers.add(automationReceiver);
+
+				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
 						errMidiDeviceNotAvailable);
 			}
 
 			// MIDI IN Metronom
-			if (propertyKey
+			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
 
 				Set<Receiver> receivers = new HashSet<Receiver>();
-				receivers.add(midiReceivers.get(KEY_MIDI_RECEIVER_METRONOM));
+				receivers.add(new MidiINMetronomReceiver(this));
 
-				loadMidiDevice(deviceName, propertyKey, receivers, "IN",
+				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
 						errMidiDeviceNotAvailable);
 			}
 
 			// MIDI OUT Remote
-			if (propertyKey
+			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
 
-				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
 						errMidiDeviceNotAvailable);
 			}
 
 			// MIDI OUT Switch Notifier
-			if (propertyKey
+			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
 
-				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
 						errMidiDeviceNotAvailable);
 			}
 
 			// MIDI OUT Switch Items
-			if (propertyKey
+			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE)) {
 
-				loadMidiDevice(deviceName, propertyKey, null, "OUT",
+				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
 						errMidiDeviceNotAvailable);
 			}
 
@@ -593,8 +623,7 @@ public class MidiAutomator {
 
 			// connect MIDI IN detector
 			if (direction.equals("IN")) {
-				Receiver midiINDetector = midiReceivers
-						.get(KEY_MIDI_RECEIVER_IN_DETECTOR);
+				Receiver midiINDetector = new MidiINDetector(this);
 
 				if (!MidiUtils.isReceiverUsedByDevice(device, midiINDetector)) {
 
@@ -815,10 +844,22 @@ public class MidiAutomator {
 					openFileByIndex(index, false);
 				}
 			}
-			// activate midi automations
-			for (GUIAutomator guiAutomator : guiAutomators) {
-				guiAutomator.activateMidiAutomations(signature);
-			}
+		}
+	}
+
+	/**
+	 * Activates all GUI automations that listen to the given message
+	 * 
+	 * @param message
+	 *            The midi message
+	 */
+	public void activateAutomationsByMidiMessage(MidiMessage message) {
+
+		String signature = MidiUtils.messageToString(message);
+
+		// activate midi automations
+		for (GUIAutomator guiAutomator : guiAutomators) {
+			guiAutomator.activateMidiAutomations(signature);
 		}
 	}
 
@@ -1515,10 +1556,11 @@ public class MidiAutomator {
 					guiAutomations[i].getType());
 
 			// click trigger
+			String trigger = guiAutomations[i].getTrigger();
 			PROPERTIES.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					guiAutomations[i].getTrigger());
+					trigger);
 
 			// midi signature
 			String midiSignature = guiAutomations[i].getMidiSignature();
