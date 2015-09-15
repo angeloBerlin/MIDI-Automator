@@ -79,7 +79,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int COLUMN_SEARCH_BUTTON = 5;
 
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
-	private final String NAME_COMBOBOX_TRIGGER = "COMBOBOX_TRIGGER";
+	private final String NAME_COMBOBOX_TRIGGER_EDITOR = "COMBOBOX_TRIGGER_EDITOR";
 
 	private Vector<Vector<Object>> data;
 
@@ -121,6 +121,37 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		// screenshot
 		getColumn(COLNAME_SCREENSHOT).setPreferredWidth(COLWIDTH_SCREENSHOT);
 
+		// generate click type ComboBox
+		String[] clickTypes = { GUIAutomation.CLICKTYPE_LEFT,
+				GUIAutomation.CLICKTYPE_RIGHT, GUIAutomation.CLICKTYPE_DOUBLE };
+		TableCellRenderer clickTypeComboBoxRenderer = new JTableComboBoxRenderer(
+				clickTypes);
+		TableCellEditor clickTypeComboBoxEditor = new JTableComboBoxEditor(
+				clickTypes);
+
+		getColumn(COLNAME_TYPE).setCellRenderer(clickTypeComboBoxRenderer);
+		getColumn(COLNAME_TYPE).setCellEditor(clickTypeComboBoxEditor);
+
+		// click trigger
+		List<String> triggerTypes = new ArrayList<String>();
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ALWAYS);
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE);
+		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE);
+
+		for (String deviceName : MidiUtils.getMidiDeviceSignatures("IN")) {
+			triggerTypes.add(GUIAutomation.CLICKTRIGGER_MIDI + deviceName);
+		}
+
+		JTableComboBoxRenderer triggerComboBoxRenderer = new JTableComboBoxRenderer(
+				triggerTypes.toArray(new String[0]));
+		JComboBox<String> triggerComboBox = new JComboBox<String>(
+				triggerTypes.toArray(new String[0]));
+		triggerComboBox.addActionListener(new TriggerComboBoxListener());
+		JTableComboBoxEditor triggerComboBoxEditor = new JTableComboBoxEditor(
+				triggerComboBox);
+		getColumn(COLNAME_TRIGGER).setCellRenderer(triggerComboBoxRenderer);
+		getColumn(COLNAME_TRIGGER).setCellEditor(triggerComboBoxEditor);
+
 		// min delay field
 		getColumn(COLNAME_MIN_DELAY).setPreferredWidth(COLWIDTH_MIN_DELAY);
 		SpinnerModel minDelaySpinnerModel = new SpinnerNumberModel(
@@ -137,8 +168,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		// browse button
 		getColumn(COLNAME_SEARCH_BUTTON).setPreferredWidth(COLWIDTH_SEARCH);
-		JTableButtonRenderer buttonRenderer = new JTableButtonRenderer();
-		JTableButtonEditor buttonEditor = new JTableButtonEditor();
+		JTableButtonRenderer buttonRenderer = new JTableButtonRenderer(
+				LABEL_SEARCHBUTTON);
+		JTableButtonEditor buttonEditor = new JTableButtonEditor(
+				LABEL_SEARCHBUTTON);
 		buttonEditor.addActionListener(new ImageSearchButtonListener(this));
 		getColumn(COLNAME_SEARCH_BUTTON).setCellRenderer(buttonRenderer);
 		getColumn(COLNAME_SEARCH_BUTTON).setCellEditor(buttonEditor);
@@ -198,42 +231,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private void addAutomation(String imagePath, String type, String trigger,
 			long minDelay, String midiSignature) {
 
-		// generate click type ComboBox
-		String[] clickTypes = { GUIAutomation.CLICKTYPE_LEFT,
-				GUIAutomation.CLICKTYPE_RIGHT, GUIAutomation.CLICKTYPE_DOUBLE };
-		TableCellRenderer clickTypeComboBoxRenderer = new JTableComboBoxRenderer(
-				clickTypes);
-		TableCellEditor clickTypeComboBoxEditor = new JTableComboBoxEditor(
-				clickTypes);
-
-		getColumn(COLNAME_TYPE).setCellRenderer(clickTypeComboBoxRenderer);
-		getColumn(COLNAME_TYPE).setCellEditor(clickTypeComboBoxEditor);
-
 		// extend table model
 		DefaultTableModel model = (DefaultTableModel) getModel();
 		Vector<Object> rowData = new Vector<Object>();
-
-		// generate click trigger ComboBox
-		List<String> triggerTypes = new ArrayList<String>();
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ALWAYS);
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE);
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE);
-
-		for (String deviceName : MidiUtils.getMidiDeviceSignatures("IN")) {
-			triggerTypes.add(GUIAutomation.CLICKTRIGGER_MIDI + deviceName);
-		}
-
-		JTableComboBoxRenderer triggerComboBoxRenderer = new JTableComboBoxRenderer(
-				triggerTypes.toArray(new String[0]));
-		JComboBox<String> triggerComboBox = new JComboBox<String>(
-				triggerTypes.toArray(new String[0]));
-		triggerComboBox.setName(NAME_COMBOBOX_TRIGGER + "_"
-				+ model.getRowCount());
-		triggerComboBox.addActionListener(new TriggerComboBoxListener());
-		JTableComboBoxEditor triggerComboBoxEditor = new JTableComboBoxEditor(
-				triggerComboBox);
-		getColumn(COLNAME_TRIGGER).setCellRenderer(triggerComboBoxRenderer);
-		getColumn(COLNAME_TRIGGER).setCellEditor(triggerComboBoxEditor);
 
 		// fill table data
 		rowData.add(ConfigurationTableModel.COLUMN_INDEX_IMAGE,
@@ -245,11 +245,15 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(ConfigurationTableModel.COLUMN_INDEX_MIDISIGNATURE,
 				initMidiMessage(midiSignature));
 
-		// search button
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_BROWSE_BUTTON,
-				LABEL_SEARCHBUTTON);
-
 		model.addRow(rowData);
+
+		JTableComboBoxEditor cellEditor = (JTableComboBoxEditor) getCellEditor(
+				model.getRowCount() - 1, COLUMN_TRIGGER);
+		@SuppressWarnings("unchecked")
+		JComboBox<String> triggerEditorComboBox = (JComboBox<String>) cellEditor
+				.getComponent();
+		triggerEditorComboBox.setName(NAME_COMBOBOX_TRIGGER_EDITOR + "_"
+				+ (model.getRowCount() - 1));
 	}
 
 	/**
@@ -479,7 +483,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		 * @param e
 		 *            The mouse event
 		 */
-		@SuppressWarnings("unchecked")
 		private void maybeShowPopup(MouseEvent e) {
 			if (e.isPopupTrigger()) {
 
@@ -492,11 +495,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 				}
 
 				// de-/activate midi learn item
-				JComboBox<String> cellRenderer = (JComboBox<String>) table
-						.getCellRenderer(row, COLUMN_TRIGGER);
-
-				String midiInAutomationDeviceName = (String) cellRenderer
-						.getSelectedItem();
+				String midiInAutomationDeviceName = (String) table.getValueAt(
+						row, COLUMN_TRIGGER);
 
 				popupMenu.getMidiLearnMenuItem().setEnabled(false);
 
@@ -538,7 +538,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			@SuppressWarnings("unchecked")
 			JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
 			String automationIndex = comboBox.getName().replace(
-					NAME_COMBOBOX_TRIGGER + "_", "");
+					NAME_COMBOBOX_TRIGGER_EDITOR + "_", "");
 
 			String functionKey = MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
 					+ "_" + automationIndex;

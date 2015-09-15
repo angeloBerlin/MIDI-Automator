@@ -19,25 +19,22 @@ class JTableButtonRenderer extends JPanel implements TableCellRenderer {
 	JTableButton button;
 
 	/**
-	 * Standard constructor
+	 * Constructor
+	 * 
+	 * @param buttonText
+	 *            The text of the button
 	 */
-	public JTableButtonRenderer() {
+	public JTableButtonRenderer(String buttonText) {
 		super();
 		button = new JTableButton();
+		button.setText(buttonText);
+		add(button);
 	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 
-		if (table.isRowSelected(row)) {
-			setBackground(table.getSelectionBackground());
-		} else {
-			setBackground(table.getBackground());
-		}
-
-		button.setText(value.toString());
-		add(button);
 		return this;
 	}
 }

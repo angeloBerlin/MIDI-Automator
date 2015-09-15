@@ -30,30 +30,46 @@ public class MinSimColoredScreen extends Screen {
 	public <PatternOrString> Match wait(PatternOrString target, double timeout)
 			throws FindFailed {
 
-		Match match = super.wait(target, timeout);
-		Rectangle targetRect = match.getRect();
-		BufferedImage targetImage = match.getImage().get();
+		long startingTime = System.currentTimeMillis();
+		long timeoutMS = (long) (timeout * 1000);
 
-		// take screenshot of found region
-		BufferedImage foundImage = null;
-		try {
-			foundImage = new Robot().createScreenCapture(new Rectangle(
-					targetRect));
-		} catch (AWTException e) {
-			log.error("Creating screen capture failed.", e);
+		boolean found = false;
+		Match match = null;
+		long usedTime = 0;
+		while (usedTime < timeoutMS && found == false) {
+
+			match = super.wait(target, timeout);
+			Rectangle targetRect = match.getRect();
+			BufferedImage targetImage = match.getImage().get();
+
+			// take screenshot of found region
+			BufferedImage foundImage = null;
+			try {
+				foundImage = new Robot().createScreenCapture(new Rectangle(
+						targetRect));
+			} catch (AWTException e) {
+				log.error("Creating screen capture failed.", e);
+			}
+
+			// compare average colors of target image and screenshot of the
+			// found
+			// region
+			Color colorFoundImage = new Color(
+					ImageUtils.getAverageColor(foundImage));
+			Color colorTargetImage = new Color(
+					ImageUtils.getAverageColor(targetImage));
+
+			double colorDifference = ImageUtils.getColorDifference(
+					colorFoundImage, colorTargetImage);
+
+			if (colorDifference <= MAX_COLOR_DIFFERENCE) {
+				found = true;
+			}
+
+			usedTime = System.currentTimeMillis() - startingTime;
 		}
 
-		// compare average colors of target image and screenshot of the found
-		// region
-		Color colorFoundImage = new Color(
-				ImageUtils.getAverageColor(foundImage));
-		Color colorTargetImage = new Color(
-				ImageUtils.getAverageColor(targetImage));
-
-		double colorDifference = ImageUtils.getColorDifference(colorFoundImage,
-				colorTargetImage);
-
-		if (colorDifference > MAX_COLOR_DIFFERENCE) {
+		if (!found) {
 			throw new FindFailed("Color does not match");
 		}
 

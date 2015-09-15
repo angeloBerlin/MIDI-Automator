@@ -5,6 +5,7 @@ import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
 
+import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
 
@@ -19,14 +20,14 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final float MIN_SIMILARITY = 0.97f;
+	private final float MIN_SIMILARITY = 0.98f;
 	private final boolean CHECK_LAST_SEEN = true;
 
 	private final MinSimColoredScreen SCREEN;
 	private volatile boolean running = true;
 	private boolean active = true;
 
-	private GUIAutomation[] guiAutomations;
+	private GUIAutomation guiAutomation;
 
 	/**
 	 * Standard Constructor
@@ -48,9 +49,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * @param guiAutomations
 	 *            An array of GUI automations to run
 	 */
-	public GUIAutomator(GUIAutomation[] guiAutomations) {
+	public GUIAutomator(GUIAutomation guiAutomation) {
 		this();
-		setGUIAutomations(guiAutomations);
+		setGUIAutomation(guiAutomation);
 	}
 
 	@Override
@@ -58,12 +59,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		while (running) {
 
 			if (isActive()) {
-				try {
-					for (GUIAutomation guiAutomation : guiAutomations) {
-						triggerAutomation(guiAutomation);
-					}
-				} catch (IndexOutOfBoundsException e) {
-				}
+				triggerAutomation(guiAutomation);
 			}
 		}
 	}
@@ -76,19 +72,16 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Sets the GUI automations that shall be run.
+	 * Sets the GUI automation that shall be run.
 	 * 
-	 * @param clickimagepaths
-	 *            Paths to the images
+	 * @param guiAutomation
+	 *            A GUI automation
 	 */
-	public void setGUIAutomations(GUIAutomation[] guiAutomations) {
-		this.guiAutomations = guiAutomations;
+	public void setGUIAutomation(GUIAutomation guiAutomation) {
+		this.guiAutomation = guiAutomation;
 
-		for (GUIAutomation guiAutomation : guiAutomations) {
-			log.info(("(" + getName() + "): Activated Automation: " + guiAutomation
-					.toString()));
-		}
-
+		log.info(("(" + getName() + "): Activated Automation: " + guiAutomation
+				.toString()));
 	}
 
 	/**
@@ -141,12 +134,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	public void activateOncePerChangeAutomations() {
 
-		for (GUIAutomation guiAutomation : guiAutomations) {
-			if (guiAutomation.getTrigger().equals(
-					GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
-				log.info("Activate automation once per change:" + guiAutomation);
-				guiAutomation.setActive(true);
-			}
+		if (guiAutomation.getTrigger().equals(
+				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
+			log.info("Activate automation once per change:" + guiAutomation);
+			guiAutomation.setActive(true);
 		}
 	}
 
@@ -158,13 +149,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	public void activateMidiAutomations(String midiSignature) {
 
-		for (GUIAutomation guiAutomation : guiAutomations) {
-			String trigger = guiAutomation.getTrigger();
-			String signature = guiAutomation.getMidiSignature();
-			if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
-					.equals(midiSignature)))) {
-				guiAutomation.setActive(true);
-			}
+		String trigger = guiAutomation.getTrigger();
+		String signature = guiAutomation.getMidiSignature();
+		if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
+				.equals(midiSignature)))) {
+			guiAutomation.setActive(true);
 		}
 	}
 
@@ -180,61 +169,66 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private boolean runAutomation(GUIAutomation guiAutomation) {
 
 		boolean found = false;
-		double startingTime = 0.0;
+		long startingTime = 0;
 
-		try {
-
-			log.debug("("
-					+ getName()
-					+ "): Search for match of \""
-					+ SystemUtils.replaceSystemVariables(guiAutomation
-							.getImagePath()) + "\"");
-
-			startingTime = System.currentTimeMillis();
-
-			Match match = SCREEN.wait(SystemUtils
-					.replaceSystemVariables(guiAutomation.getImagePath()),
-					guiAutomation.getTimeout());
-			found = true;
-
+		if (!guiAutomation.getImagePath().equals(
+				MidiAutomatorProperties.VALUE_NULL)) {
 			try {
-				Thread.sleep(guiAutomation.getMinDelay());
-			} catch (InterruptedException e) {
-				log.error("Delay before GUI automation run failed.", e);
+
+				log.debug("("
+						+ getName()
+						+ "): Search for match of \""
+						+ SystemUtils.replaceSystemVariables(guiAutomation
+								.getImagePath()) + "\"");
+
+				startingTime = System.currentTimeMillis();
+
+				Match match = SCREEN.wait(SystemUtils
+						.replaceSystemVariables(guiAutomation.getImagePath()),
+						guiAutomation.getTimeout());
+				found = true;
+
+				try {
+					Thread.sleep(guiAutomation.getMinDelay());
+				} catch (InterruptedException e) {
+					log.error("Delay before GUI automation run failed.", e);
+				}
+
+				// left click
+				if (guiAutomation.getType()
+						.equals(GUIAutomation.CLICKTYPE_LEFT)) {
+					match.click();
+				}
+
+				// right click
+				if (guiAutomation.getType().equals(
+						GUIAutomation.CLICKTYPE_RIGHT)) {
+					match.rightClick();
+				}
+
+				// double click
+				if (guiAutomation.getType().equals(
+						GUIAutomation.CLICKTYPE_DOUBLE)) {
+					match.doubleClick();
+				}
+
+				log.info("("
+						+ getName()
+						+ "): Found match on screen for \""
+						+ SystemUtils.replaceSystemVariables(guiAutomation
+								.getImagePath()) + "\" (Timeout after "
+						+ (System.currentTimeMillis() - startingTime) + " ms)");
+
+			} catch (FindFailed e) {
+
+				log.info("("
+						+ getName()
+						+ "): Could not find match on screen for \""
+						+ SystemUtils.replaceSystemVariables(guiAutomation
+								.getImagePath()) + "\" (Timeout after "
+						+ (System.currentTimeMillis() - startingTime) + " ms)");
 			}
-
-			// left click
-			if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)) {
-				match.click();
-			}
-
-			// right click
-			if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_RIGHT)) {
-				match.rightClick();
-			}
-
-			// double click
-			if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_DOUBLE)) {
-				match.doubleClick();
-			}
-
-			log.info("("
-					+ getName()
-					+ "): Found match on screen for \""
-					+ SystemUtils.replaceSystemVariables(guiAutomation
-							.getImagePath()) + "\" (Timeout after "
-					+ (System.currentTimeMillis() - startingTime) + " ms)");
-
-		} catch (FindFailed e) {
-
-			log.info("("
-					+ getName()
-					+ "): Could not find match on screen for \""
-					+ SystemUtils.replaceSystemVariables(guiAutomation
-							.getImagePath()) + "\" (Timeout after "
-					+ (System.currentTimeMillis() - startingTime) + " ms)");
 		}
-
 		return found;
 	}
 

@@ -20,7 +20,7 @@ public class GUIAutomation implements IDeActivateable {
 	private double minTimeOut;
 	private long minDelay;
 
-	private final double DEFAULT_MIN_TIMEOUT = 0.1;
+	private final double DEFAULT_MIN_TIMEOUT = 10; // in seconds
 	private final long DEFAULT_MIN_DELAY = 0;
 
 	public static final String[] SCREENSHOT_FILE_EXTENSIONS = { "png", "PNG" };

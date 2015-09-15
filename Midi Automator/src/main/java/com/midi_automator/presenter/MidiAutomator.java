@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -355,8 +356,7 @@ public class MidiAutomator {
 		for (int i = 0; i < guiAutomations.length; i++) {
 			GUIAutomator guiAutomator = new GUIAutomator();
 			guiAutomator.setName("GUIAutomator " + i);
-			GUIAutomation[] automations = new GUIAutomation[] { guiAutomations[i] };
-			guiAutomator.setGUIAutomations(automations);
+			guiAutomator.setGUIAutomation(guiAutomations[i]);
 			guiAutomators.add(guiAutomator);
 			guiAutomator.start();
 		}
@@ -658,7 +658,8 @@ public class MidiAutomator {
 
 			if (registeredReceivers != null) {
 				for (Receiver receiver : registeredReceivers) {
-					MidiUtils.removeReceiverFromDevice(device, receiver);
+					MidiUtils.removeReceiverFromDevice(device, receiver
+							.getClass().getName());
 
 					log.info("Removed " + receiver.getClass().getSimpleName()
 							+ " from " + device.getDeviceInfo().getName());
@@ -676,8 +677,8 @@ public class MidiAutomator {
 				}
 
 				if (detectorReceiver != null) {
-					MidiUtils
-							.removeReceiverFromDevice(device, detectorReceiver);
+					MidiUtils.removeReceiverFromDevice(device, detectorReceiver
+							.getClass().getName());
 
 					log.info("Removed "
 							+ detectorReceiver.getClass().getSimpleName()
@@ -741,14 +742,14 @@ public class MidiAutomator {
 	 */
 	public void setMidiSignature(String midiSignature, Component component) {
 
-		// check for unique signature
-		if (midiSignatureIsAlreadyStored(midiSignature)) {
-			return;
-		}
-
 		// learning for file list
 		if (component instanceof JList) {
 			JList<?> list = (JList<?>) component;
+
+			// check for unique signature
+			if (isMidiSignatureAlreadyStored(midiSignature)) {
+				return;
+			}
 
 			model.getSetList().getItems().get(list.getSelectedIndex())
 					.setMidiListeningSignature(midiSignature);
@@ -758,6 +759,11 @@ public class MidiAutomator {
 		// learning for switch buttons
 		if (component instanceof JButton) {
 			JButton button = (JButton) component;
+
+			// check for unique signature
+			if (isMidiSignatureAlreadyStored(midiSignature)) {
+				return;
+			}
 
 			if (button.getName().equals(MainFrame.NAME_PREV_BUTTON)) {
 				PROPERTIES.setProperty(
@@ -1268,7 +1274,7 @@ public class MidiAutomator {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private boolean midiSignatureIsAlreadyStored(String signature) {
+	private boolean isMidiSignatureAlreadyStored(String signature) {
 
 		removeInfoMessage(Messages.builtMessages
 				.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
@@ -1281,8 +1287,18 @@ public class MidiAutomator {
 		boolean found = false;
 
 		if (PROPERTIES != null) {
-			if (PROPERTIES.containsValue(signature)) {
-				found = true;
+			@SuppressWarnings("unchecked")
+			Enumeration<String> propertyNames = (Enumeration<String>) PROPERTIES
+					.propertyNames();
+
+			while (propertyNames.hasMoreElements()) {
+				String key = propertyNames.nextElement();
+				String value = (String) PROPERTIES.get(key);
+
+				if (value.equals(signature)
+						&& !key.contains(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES)) {
+					found = true;
+				}
 			}
 		}
 

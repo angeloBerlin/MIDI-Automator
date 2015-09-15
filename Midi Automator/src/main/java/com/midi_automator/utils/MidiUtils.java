@@ -285,12 +285,14 @@ public class MidiUtils {
 	 *             If midi device is not available
 	 */
 	public static void removeReceiverFromDevice(MidiDevice device,
-			Receiver receiver) throws MidiUnavailableException {
+			String receiverName) throws MidiUnavailableException {
 
 		List<Transmitter> transmitters = device.getTransmitters();
 		for (Transmitter transmitter : transmitters) {
-			if (receiver.equals(transmitter.getReceiver())) {
+			if (receiverName.equals(transmitter.getReceiver().getClass()
+					.getName())) {
 				transmitter.getReceiver().close();
+				transmitter.setReceiver(null);
 				transmitter.close();
 			}
 		}

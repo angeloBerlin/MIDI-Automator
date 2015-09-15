@@ -17,7 +17,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
 
-public class MouseAutomationITCase extends IntegrationTestCase {
+public class GUIAutomationITCase extends IntegrationTestCase {
 
 	private String deviceName;
 	private String propertiesCancelAutomation;
@@ -29,7 +29,7 @@ public class MouseAutomationITCase extends IntegrationTestCase {
 	private int controlNo = 109;
 	private int value = 127;
 
-	public MouseAutomationITCase() {
+	public GUIAutomationITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			propertiesCancelAutomation = "automation_cancel_always_left_Mac.properties";

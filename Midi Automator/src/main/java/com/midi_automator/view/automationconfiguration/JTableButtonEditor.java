@@ -23,12 +23,17 @@ class JTableButtonEditor extends AbstractCellEditor implements TableCellEditor {
 	String txt;
 
 	/**
-	 * Standard constructor
+	 * Constructor
+	 * 
+	 * @param buttonText
+	 *            The text of the button
 	 */
-	public JTableButtonEditor() {
+	public JTableButtonEditor(String buttonText) {
 		super();
 		button = new JTableButton();
+		button.setText(buttonText);
 		panel = new JPanel();
+		panel.add(button);
 	}
 
 	@Override
@@ -48,19 +53,9 @@ class JTableButtonEditor extends AbstractCellEditor implements TableCellEditor {
 	public Component getTableCellEditorComponent(JTable table, Object value,
 			boolean isSelected, int row, int column) {
 
-		txt = (value == null) ? "" : value.toString();
-		button.setText(txt);
 		button.setRow(row);
 		button.setColumn(column);
-		panel.add(button);
 
-		if (table.isRowSelected(row)) {
-			panel.setBackground(table.getSelectionBackground());
-		} else {
-			panel.setBackground(table.getBackground());
-		}
-
-		table.repaint();
 		return panel;
 	}
 
