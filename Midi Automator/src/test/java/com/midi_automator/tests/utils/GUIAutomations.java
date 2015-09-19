@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Key;
 import org.sikuli.script.KeyModifier;
+import org.sikuli.script.Location;
+import org.sikuli.script.Mouse;
 import org.sikuli.script.Region;
 
 import com.midi_automator.utils.SystemUtils;
@@ -415,7 +417,21 @@ public class GUIAutomations extends SikuliAutomation {
 		Region match = SikuliAutomation.getSearchRegion().wait(
 				screenshotpath + "spinner_down.png", MAX_TIMEOUT);
 		match.click();
-		match.mouseMove(match.offset(10, 0));
+		match.mouseMove(match.offset(15, 10));
+	}
+
+	/**
+	 * Clicks a checkbox in the first automation
+	 * 
+	 * @param automationHeaderImage
+	 *            The automation column header
+	 * @throws FindFailed
+	 */
+	public static void clickAutomationCheckBox(String automationHeaderImage)
+			throws FindFailed {
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + automationHeaderImage, MAX_TIMEOUT);
+		match.click(match.offset(0, 20));
 	}
 
 	/**
@@ -650,6 +666,26 @@ public class GUIAutomations extends SikuliAutomation {
 				screenshotpath + "add.png", MAX_TIMEOUT);
 		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
 		match.click();
+	}
+
+	/**
+	 * Drags an element to the given location.
+	 * 
+	 * @param location
+	 *            The location to drag to
+	 * @param state
+	 *            The different states of the element (focused, unfocused,
+	 *            etc...)
+	 * @throws FindFailed
+	 */
+	public static void dragElement(Location location, String... states)
+			throws FindFailed {
+
+		Region match = findMultipleStateRegion(DEFAULT_TIMEOUT, states);
+		match.hover(match);
+		match.mouseDown(Mouse.LEFT);
+		match.drag(location);
+		match.mouseUp();
 	}
 
 	/**

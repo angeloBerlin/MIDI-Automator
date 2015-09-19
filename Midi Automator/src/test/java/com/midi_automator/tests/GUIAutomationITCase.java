@@ -10,6 +10,7 @@ import javax.sound.midi.ShortMessage;
 
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
+import org.sikuli.script.Location;
 import org.sikuli.script.Region;
 
 import com.midi_automator.tests.utils.GUIAutomations;
@@ -20,31 +21,97 @@ import com.midi_automator.utils.MidiUtils;
 public class GUIAutomationITCase extends IntegrationTestCase {
 
 	private String deviceName;
-	private String propertiesCancelAutomation;
-	private String propertiesMidiOpenerAutomation;
-	private String propertiesHelloWorldAutomation;
-	private String propertiesPopupAndCancelAutomation;
+	private String propertiesAlwaysCancelAutomation;
+	private String propertiesMidiCancelAutomation;
+	private String propertiesMidiMainFrameAutomation;
+	private String propertiesMidiFullMainFrameAutomation;
+	private String propertiesMidiHelloWorldAutomation;
+	private String propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation;
+
 	private int messageType = ShortMessage.CONTROL_CHANGE;
 	private int channel = 1;
 	private int controlNo = 109;
 	private int value = 127;
 
 	public GUIAutomationITCase() {
+
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
-			propertiesCancelAutomation = "automation_cancel_always_left_Mac.properties";
-			propertiesMidiOpenerAutomation = "automation_main_frame_midi_left_Mac.properties";
-			propertiesHelloWorldAutomation = "automation_hello_world_1_midi_left_Mac.properties";
-			propertiesPopupAndCancelAutomation = "automation_popup_and_cancel_Mac.properties";
+			propertiesAlwaysCancelAutomation = "automation_cancel_always_left_Mac.properties";
+			propertiesMidiMainFrameAutomation = "automation_main_frame_midi_left_Mac.properties";
+			propertiesMidiHelloWorldAutomation = "automation_hello_world_1_midi_left_Mac.properties";
+			propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation = "automation_popup_and_cancel_Mac.properties";
+			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Mac.properties";
+			propertiesMidiFullMainFrameAutomation = "automation_midi_automator_midi_left_Mac.properties";
 		}
 
 		if (System.getProperty("os.name").equals("Windows 7")) {
 			deviceName = "LoopBe Internal MIDI";
-			propertiesCancelAutomation = "automation_cancel_always_left_Windows"
+			propertiesAlwaysCancelAutomation = "automation_cancel_always_left_Windows"
 					+ ".properties";
-			propertiesMidiOpenerAutomation = "automation_main_frame_midi_left_Windows.properties";
-			propertiesHelloWorldAutomation = "automation_hello_world_1_midi_left_Windows.properties";
-			propertiesPopupAndCancelAutomation = "automation_popup_and_cancel_Windows.properties";
+			propertiesMidiMainFrameAutomation = "automation_main_frame_midi_left_Windows.properties";
+			propertiesMidiHelloWorldAutomation = "automation_hello_world_1_midi_left_Windows.properties";
+			propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation = "automation_popup_and_cancel_Windows.properties";
+			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Windows.properties";
+		}
+	}
+
+	@Test
+	public void minMaxSimilarMidiAutomatorShouldBeClicked() {
+
+		try {
+			// GUIAutomations.focusMidiAutomator();
+
+			// mockup
+			MockUpUtils.setMockupPropertiesFile("mockups/"
+					+ propertiesMidiFullMainFrameAutomation);
+			MockUpUtils.setMockupMidoFile("mockups/full_list.mido");
+			GUIAutomations.openMidiAutomator();
+
+			// send midi trigger
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					controlNo, value);
+
+			// search clicked Midi Automator
+			GUIAutomations
+					.checkResult("midi_automator_Hello_World_3_active.png");
+
+			// change view of Midi Automator
+			GUIAutomations.moveUpEntry("Hello_World_3_entry_active.png",
+					"Hello_World_3_entry.png",
+					"Hello_World_3_entry_inactive.png");
+
+			// search clicked Midi Automator
+			try {
+				GUIAutomations
+						.checkResult("midi_automator_Neon_Farben_active.png");
+				fail("Automation found unsimilar image.");
+			} catch (FindFailed e) {
+			}
+
+			// decrease similarity
+			GUIAutomations.openPreferences();
+			GUIAutomations.setAutomationsTextField("automation_similarity.png",
+					"0,5", 1);
+			GUIAutomations.saveDialog();
+			GUIAutomations.focusMidiAutomator();
+
+			// send midi trigger
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					controlNo, value);
+
+			// search clicked Midi Automator
+			GUIAutomations.checkResult("midi_automator_Neon_Farben_active.png");
+
+		} catch (FindFailed | InvalidMidiDataException
+				| MidiUnavailableException | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -109,7 +176,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -139,7 +206,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -186,7 +253,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -228,7 +295,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesMidiCancelAutomation);
 			GUIAutomations.openMidiAutomator();
 
 			// cancel midi learn
@@ -264,7 +331,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesMidiCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -315,7 +382,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesCancelAutomation);
+					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -352,7 +419,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesMidiOpenerAutomation);
+					+ propertiesMidiMainFrameAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -387,7 +454,7 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesHelloWorldAutomation);
+					+ propertiesMidiHelloWorldAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -498,8 +565,9 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 
 		try {
 			// mockup
-			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesPopupAndCancelAutomation);
+			MockUpUtils
+					.setMockupPropertiesFile("mockups/"
+							+ propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			GUIAutomations.openMidiAutomator();
 
@@ -517,6 +585,67 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			// check if dialogs are always canceled
 			GUIAutomations.openAddDialog();
 			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
+
+		} catch (FindFailed | IOException e) {
+			fail(e.toString());
+		} finally {
+			try {
+				GUIAutomations.closeMidiAutomator();
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void movableVsNonMovableAutomation() {
+
+		try {
+			// mockup
+			MockUpUtils.setMockupPropertiesFile("mockups/"
+					+ propertiesAlwaysCancelAutomation);
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+
+			GUIAutomations.openMidiAutomator();
+
+			// check if add dialog was canceled unmoved
+			GUIAutomations.openAddDialog();
+			GUIAutomations.checkResult("midi_automator.png");
+
+			// move cancel button
+			GUIAutomations.dragElement(new Location(500, 200),
+					"Midi_Automator_title.png",
+					"Midi_Automator_title_inactive.png");
+			GUIAutomations.focusMidiAutomator();
+
+			// check if dialog was not canceled
+			GUIAutomations.openAddDialog();
+			try {
+				GUIAutomations.checkResult("midi_automator.png");
+				fail("Automation was done, though image was moved");
+			} catch (FindFailed e) {
+				GUIAutomations.cancelDialog();
+			}
+
+			// activate movable
+			GUIAutomations.openPreferences();
+			GUIAutomations.clickAutomationCheckBox("Movable.png");
+			GUIAutomations.saveDialog();
+
+			// check if add dialog was canceled unmoved
+			GUIAutomations.focusMidiAutomator();
+			GUIAutomations.openAddDialog();
+			GUIAutomations.checkResult("midi_automator.png");
+
+			// move cancel button
+			GUIAutomations.dragElement(new Location(300, 100),
+					"Midi_Automator_title.png",
+					"Midi_Automator_title_inactive.png");
+			GUIAutomations.focusMidiAutomator();
+
+			// check if add dialog was canceled unmoved
+			GUIAutomations.openAddDialog();
+			GUIAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());

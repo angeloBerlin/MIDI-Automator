@@ -30,8 +30,10 @@ public class MidiAutomatorProperties extends Properties {
 	public static final String KEY_GUI_AUTOMATION_IMAGES = "GUI_AUTOMATION_IMAGE";
 	public static final String KEY_GUI_AUTOMATION_TYPES = "GUI_AUTOMATION_TYPE";
 	public static final String KEY_GUI_AUTOMATION_TRIGGERS = "GUI_AUTOMATION_TRIGGER";
-	public static final String KEY_GUI_AUTOMATION_MIDI_SIGNATURES = "GUI_AUTOMATION_MIDI_SIGNATURE";
 	public static final String KEY_GUI_AUTOMATION_MIN_DELAYS = "GUI_AUTOMATION_MIN_DELAY";
+	public static final String KEY_GUI_AUTOMATION_MIDI_SIGNATURES = "GUI_AUTOMATION_MIDI_SIGNATURE";
+	public static final String KEY_GUI_AUTOMATION_MIN_SIMILARITIES = "GUI_AUTOMATION_MIN_SIMILARITY";
+	public static final String KEY_GUI_AUTOMATION_MOVABLES = "GUI_AUTOMATION_IS_MOVABLE";
 
 	public static final String INDEX_SEPARATOR = "_";
 	public static final String VALUE_NULL = "-none-";

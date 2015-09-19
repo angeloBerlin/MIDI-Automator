@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
+import org.sikuli.script.Region;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.IDeActivateable;
@@ -20,7 +21,6 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	private final float MOVE_MOUSE_DELAY = 0;
-	private final float MIN_SIMILARITY = 0.98f;
 	private final boolean CHECK_LAST_SEEN = true;
 
 	private final MinSimColoredScreen SCREEN;
@@ -31,15 +31,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Standard Constructor
-	 * 
-	 * @param debug
-	 *            Indicates if the program is working in debug mode
 	 */
 	public GUIAutomator() {
 		SCREEN = new MinSimColoredScreen();
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
-		Settings.MinSimilarity = MIN_SIMILARITY;
-		Settings.CheckLastSeenSimilar = MIN_SIMILARITY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 	}
 
@@ -170,22 +165,36 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		boolean found = false;
 		long startingTime = 0;
+		Region searchRegion = SCREEN;
 
 		if (!guiAutomation.getImagePath().equals(
 				MidiAutomatorProperties.VALUE_NULL)) {
 			try {
 
+				// prepare search parameters
+				Settings.MinSimilarity = guiAutomation.getMinSimilarity();
+				Settings.CheckLastSeenSimilar = guiAutomation
+						.getMinSimilarity();
+
+				Region lastFound = guiAutomation.getLastFoundRegion();
+				if (lastFound != null && !guiAutomation.isMovable()) {
+					searchRegion = new MinSimColoredScreen(lastFound);
+				}
+
 				log.debug("("
 						+ getName()
 						+ "): Search for match of \""
 						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\"");
+								.getImagePath()) + "\" "
+						+ "with a minimum smimilarity of "
+						+ guiAutomation.getMinSimilarity());
 
+				// search for image
 				startingTime = System.currentTimeMillis();
-
-				Match match = SCREEN.wait(SystemUtils
+				Match match = searchRegion.wait(SystemUtils
 						.replaceSystemVariables(guiAutomation.getImagePath()),
 						guiAutomation.getTimeout());
+				guiAutomation.setLastFoundRegion(match);
 				found = true;
 
 				try {

@@ -114,12 +114,16 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			String trigger = (String) model.getValueAt(i,
 					ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
 			String midiSignature = (String) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_MIDISIGNATURE);
-			long minDelay = (long) model.getValueAt(i,
+					ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE);
+			long delay = (long) model.getValueAt(i,
 					ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY);
+			float minSimilarity = (float) model.getValueAt(i,
+					ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY);
+			boolean isMovable = (boolean) model.getValueAt(i,
+					ConfigurationTableModel.COLUMN_INDEX_MOVABLE);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
-					trigger, minDelay, midiSignature);
+					trigger, delay, midiSignature, minSimilarity, isMovable);
 			guiAutomations[i] = guiAutomation;
 		}
 
@@ -159,7 +163,10 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CONFIGURATION_TABLE.setAutomation(null, null, null, 0, null, -1);
+			CONFIGURATION_TABLE.setAutomation(null, null, null,
+					GUIAutomation.DEFAULT_MIN_DELAY, null,
+					GUIAutomation.DEFAULT_MIN_SIMILARITY,
+					GUIAutomation.DEFAULT_IS_MOVABLE, -1);
 		}
 	}
 

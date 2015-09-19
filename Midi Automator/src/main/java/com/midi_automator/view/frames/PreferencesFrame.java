@@ -479,7 +479,9 @@ public class PreferencesFrame extends JFrame {
 					guiAutomations[i].getType(),
 					guiAutomations[i].getTrigger(),
 					guiAutomations[i].getMinDelay(),
-					guiAutomations[i].getMidiSignature(), i);
+					guiAutomations[i].getMidiSignature(),
+					guiAutomations[i].getMinSimilarity(),
+					guiAutomations[i].isMovable(), i);
 		}
 	}
 

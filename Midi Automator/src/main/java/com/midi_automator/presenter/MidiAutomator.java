@@ -285,6 +285,10 @@ public class MidiAutomator {
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
 		Set<Entry<Object, Object>> guiAutomationProperties_MinDelays = PROPERTIES
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
+		Set<Entry<Object, Object>> guiAutomationProperties_MinSimilarities = PROPERTIES
+				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
+		Set<Entry<Object, Object>> guiAutomationProperties_AreMovable = PROPERTIES
+				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
 
 		// initiate array with GUI automations
 		guiAutomations = new GUIAutomation[guiAutomationProperties_Images
@@ -323,6 +327,14 @@ public class MidiAutomator {
 			}
 		}
 
+		// initiate min delays
+		for (Entry<Object, Object> property : guiAutomationProperties_MinDelays) {
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			long minDelay = Long.valueOf((String) property.getValue());
+			guiAutomations[index].setMinDelay(minDelay);
+		}
+
 		// initiate midi signatures
 		for (Entry<Object, Object> property : guiAutomationProperties_MidiSignatures) {
 
@@ -338,12 +350,20 @@ public class MidiAutomator {
 			guiAutomations[index].setMidiSignature(value);
 		}
 
-		// initiate min delays
-		for (Entry<Object, Object> property : guiAutomationProperties_MinDelays) {
+		// initiate min similarities
+		for (Entry<Object, Object> property : guiAutomationProperties_MinSimilarities) {
 			int index = MidiAutomatorProperties
 					.getIndexOfPropertyKey((String) property.getKey());
-			long minDelay = Long.valueOf((String) property.getValue());
-			guiAutomations[index].setMinDelay(minDelay);
+			float minSimilarity = Float.valueOf((String) property.getValue());
+			guiAutomations[index].setMinSimilarity(minSimilarity);
+		}
+
+		// initiate is movable
+		for (Entry<Object, Object> property : guiAutomationProperties_AreMovable) {
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			boolean isMovable = Boolean.valueOf((String) property.getValue());
+			guiAutomations[index].setMovable(isMovable);
 		}
 
 		// remove all existing GUI automators
@@ -1578,6 +1598,13 @@ public class MidiAutomator {
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					trigger);
 
+			// min delay
+			String minDelay = String.valueOf(guiAutomations[i].getMinDelay());
+			PROPERTIES.setProperty(
+					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS
+							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
+					minDelay);
+
 			// midi signature
 			String midiSignature = guiAutomations[i].getMidiSignature();
 
@@ -1589,12 +1616,20 @@ public class MidiAutomator {
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					midiSignature);
 
-			// min delay
-			String minDelay = String.valueOf(guiAutomations[i].getMinDelay());
+			// min similarity
+			String minSimilarity = String.valueOf(guiAutomations[i]
+					.getMinSimilarity());
 			PROPERTIES.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS
+					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					minDelay);
+					minSimilarity);
+
+			// movable
+			String isMovable = Boolean.toString(guiAutomations[i].isMovable());
+			PROPERTIES.setProperty(
+					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES
+							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
+					isMovable);
 		}
 		storePropertiesFile();
 	}
@@ -1623,6 +1658,10 @@ public class MidiAutomator {
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
 		PROPERTIES
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
+		PROPERTIES
+				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
+		PROPERTIES
+				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
 	}
 
 	/**

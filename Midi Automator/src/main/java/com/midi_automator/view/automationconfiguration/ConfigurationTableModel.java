@@ -16,11 +16,13 @@ public class ConfigurationTableModel extends DefaultTableModel {
 	public static final int COLUMN_INDEX_TYPE = 1;
 	public static final int COLUMN_INDEX_TRIGGER = 2;
 	public static final int COLUMN_INDEX_MIN_DELAY = 3;
-	public static final int COLUMN_INDEX_MIDISIGNATURE = 4;
-	public static final int COLUMN_INDEX_BROWSE_BUTTON = 5;
+	public static final int COLUMN_INDEX_MIDI_SIGNATURE = 4;
+	public static final int COLUMN_INDEX_MIN_SIMILARITY = 5;
+	public static final int COLUMN_INDEX_MOVABLE = 6;
+	public static final int COLUMN_INDEX_SEARCH_BUTTON = 7;
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return column != COLUMN_INDEX_MIDISIGNATURE;
+		return column != COLUMN_INDEX_MIDI_SIGNATURE;
 	}
 }

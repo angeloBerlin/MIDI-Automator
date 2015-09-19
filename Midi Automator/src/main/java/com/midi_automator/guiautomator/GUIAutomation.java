@@ -1,5 +1,7 @@
 package com.midi_automator.guiautomator;
 
+import org.sikuli.script.Region;
+
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
 
@@ -11,17 +13,7 @@ import com.midi_automator.utils.SystemUtils;
  */
 public class GUIAutomation implements IDeActivateable {
 
-	private String imagePath;
-	private String type;
-	private String trigger;
-	private String midiSignature;
-	private Double timeout;
-	private boolean active;
-	private double minTimeOut;
-	private long minDelay;
-
-	private final double DEFAULT_MIN_TIMEOUT = 10; // in seconds
-	private final long DEFAULT_MIN_DELAY = 0;
+	private final double DEFAULT_MIN_TIMEOUT = 0.5; // in seconds
 
 	public static final String[] SCREENSHOT_FILE_EXTENSIONS = { "png", "PNG" };
 	public static final String SCREENSHOT_FILE_TYPE = "Portable Network Graphics (png)";
@@ -34,8 +26,27 @@ public class GUIAutomation implements IDeActivateable {
 	public static final String CLICKTRIGGER_ONCE = "once";
 	public static final String CLICKTRIGGER_MIDI = "MIDI: ";
 
-	public static final Long MINDELAY_MIN_VALUE = 0L;
-	public static final Long MINDELAY_MAX_VALUE = Long.MAX_VALUE;
+	public static final Long DEFAULT_MIN_DELAY = 0L;
+	public static final Long MIN_DELAY_MIN_VALUE = 0L;
+	public static final Long MIN_DELAY_MAX_VALUE = Long.MAX_VALUE;
+
+	public static final Float DEFAULT_MIN_SIMILARITY = 0.98f;
+	public static final Float MIN_SIMILARITY_MIN_VALUE = 0.5f;
+	public static final Float MIN_SIMILARITY_MAX_VALUE = 0.99f;
+
+	public static final boolean DEFAULT_IS_MOVABLE = false;
+
+	private String imagePath;
+	private String type;
+	private String trigger;
+	private String midiSignature;
+	private boolean active;
+	private double minTimeOut;
+	private long minDelay = DEFAULT_MIN_DELAY;
+	private float minSimilarity = DEFAULT_MIN_SIMILARITY;
+	private boolean movable = DEFAULT_IS_MOVABLE;
+	private Double timeout;
+	private Region lastFoundRegion;
 
 	/**
 	 * Standard constructor
@@ -54,21 +65,28 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The automation type
 	 * @param trigger
 	 *            The automation trigger
-	 * @param midiSignature
-	 *            The midi signature. Used if trigger is set to midi
-	 * @param minDelay
+	 * @param delay
 	 *            The minimum delay before the automation runs
 	 * @param delay
 	 *            The delay for that automation in seconds
+	 * @param midiSignature
+	 *            The midi signature. Used if trigger is set to a midi port
+	 * @param minSimilarity
+	 *            The minimum similarity for the image recognition
+	 * @param isMovable
+	 *            Flag if the image is movable
 	 */
 	public GUIAutomation(String imagePath, String type, String trigger,
-			long delay, String midiSignature) {
+			long delay, String midiSignature, float minSimilarity,
+			boolean isMovable) {
 		new GUIAutomation();
 		setImagePath(imagePath);
 		setType(type);
 		setTrigger(trigger);
 		setMinDelay(delay);
 		setMidiSignature(midiSignature);
+		setMinSimilarity(minSimilarity);
+		setMovable(isMovable);
 	}
 
 	/**
@@ -212,5 +230,29 @@ public class GUIAutomation implements IDeActivateable {
 		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
 				+ "\" TYPE: " + type + " TRIGGER: " + trigger + " MIDI: "
 				+ midiSignature;
+	}
+
+	public float getMinSimilarity() {
+		return minSimilarity;
+	}
+
+	public void setMinSimilarity(float minSimilarity) {
+		this.minSimilarity = minSimilarity;
+	}
+
+	public boolean isMovable() {
+		return movable;
+	}
+
+	public void setMovable(boolean movable) {
+		this.movable = movable;
+	}
+
+	public Region getLastFoundRegion() {
+		return lastFoundRegion;
+	}
+
+	public void setLastFoundRegion(Region lastFoundRegion) {
+		this.lastFoundRegion = lastFoundRegion;
 	}
 }
