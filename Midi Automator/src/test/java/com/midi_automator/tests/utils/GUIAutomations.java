@@ -315,6 +315,26 @@ public class GUIAutomations extends SikuliAutomation {
 	}
 
 	/**
+	 * Opens the import window.
+	 * 
+	 * @throws FindFailed
+	 */
+	public static void openImport() throws FindFailed {
+		openFileMenu();
+		Region match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "import.png", MAX_TIMEOUT);
+		match.click();
+		SikuliAutomation.setSearchRegion(screen);
+		SikuliAutomation.setMinSimilarity(LOW_SIMILARITY);
+		match = SikuliAutomation.getSearchRegion().wait(
+				screenshotpath + "midi_automator_import.png", MAX_TIMEOUT);
+		SikuliAutomation.setMinSimilarity(DEFAULT_SIMILARITY);
+		match.y -= 20;
+		match.h += 20;
+		SikuliAutomation.setSearchRegion(match);
+	}
+
+	/**
 	 * Sets the Midi Remote IN device to the given screenshot and saves the
 	 * preferences
 	 * 

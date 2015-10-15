@@ -15,18 +15,29 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.DropMode;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -35,7 +46,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
 
@@ -49,6 +64,7 @@ import com.midi_automator.view.HTMLLabel;
 import com.midi_automator.view.IToolTipItem;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.ToolTipItemImpl;
+import com.midi_automator.view.TransferableJListToolTipItem;
 
 public class MainFrame extends JFrame {
 
@@ -68,6 +84,8 @@ public class MainFrame extends JFrame {
 	private final String ICON_PATH_PREV;
 	private final String ICON_PATH_NEXT;
 	private final String MENU_FILE = "File";
+	private final String MENU_ITEM_IMPORT = "Import...";
+	private final String MENU_ITEM_EXPORT = "Export...";
 	private final String MENU_ITEM_EXIT = "Exit";
 	private final String MENU_ITEM_PREFERENCES = "Preferences";
 	private final String LABEL_MIDI_IN_DETECT = "IN";
@@ -77,19 +95,23 @@ public class MainFrame extends JFrame {
 	public static final String NAME_NEXT_BUTTON = "next button";
 	public static final String NAME_FILE_LIST = "file list";
 
+	private final String NAME_MENU_ITEM_IMPORT = "import";
+	private final String NAME_MENU_ITEM_EXPORT = "export";
 	private final String NAME_MENU_ITEM_PREFERENCES = "preferences";
 	private final String NAME_MENU_ITEM_EXIT = "exit";
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
 	private final MainFramePopupMenu POPUP_MENU;
+	private JMenuItem importMenuItem;
+	private JMenuItem exportMenuItem;
 	private JMenuItem exitMenuItem;
 	private JMenuItem preferencesMenuItem;
 	private JLabel midiINdetect;
 	private JLabel midiOUTdetect;
 	private HTMLLabel infoLabel;
-	private JScrollPane fileJScrollPane;
-	private CacheableToolTipJList<IToolTipItem> fileJList;
+	private JScrollPane fileListScrollPane;
+	private CacheableToolTipJList<IToolTipItem> fileList;
 	private CacheableJButton prevButton;
 	private CacheableJButton nextButton;
 
@@ -98,7 +120,6 @@ public class MainFrame extends JFrame {
 	private boolean midiINflasherFlag;
 	private boolean midiOUTflasherFlag;
 
-	private final MidiAutomator APPLICATION;
 	private List<String> fileEntries;
 	private List<String> midiListeningSignatures;
 	private List<String> midiSendingSignatures;
@@ -108,25 +129,25 @@ public class MainFrame extends JFrame {
 
 	private PreferencesFrame preferencesFrame;
 
+	private final MidiAutomator APPLICATION;
+
 	/**
 	 * The main window.
 	 * 
 	 * @param application
 	 *            The main application
-	 * @param version
-	 *            The version of the application
 	 * @throws HeadlessException
 	 *             Thrown if run on an OS without GUI representation
 	 */
-	public MainFrame(MidiAutomator application, String version)
-			throws HeadlessException {
+	public MainFrame(MidiAutomator application) throws HeadlessException {
 
 		// initialize frame
 		super();
-		this.APPLICATION = application;
-		this.setTitle(TITLE + " " + version);
-		this.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		this.setResizable(true);
+		APPLICATION = application;
+
+		setTitle("");
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setResizable(true);
 
 		if (application.isInTestMode()) {
 			this.setLocation(new Point(MainFrame.TEST_POSITION_X,
@@ -195,12 +216,17 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(TITLE + " " + APPLICATION.getVersion() + title);
+	}
+
 	public HTMLLabel getInfoLabel() {
 		return infoLabel;
 	}
 
 	public CacheableToolTipJList<IToolTipItem> getFileList() {
-		return fileJList;
+		return fileList;
 	}
 
 	public int getLastSelectedIndex() {
@@ -243,7 +269,7 @@ public class MainFrame extends JFrame {
 	public void reload() {
 
 		// set list entries
-		fileJList.setListData(createViewableFileList(fileEntries));
+		fileList.setListData(createViewableFileList(fileEntries));
 		if (fileEntries.isEmpty()) {
 			prevButton.setEnabled(false);
 			nextButton.setEnabled(false);
@@ -333,11 +359,11 @@ public class MainFrame extends JFrame {
 
 		GUIUtils.deHighlightComponent(prevButton, false);
 		GUIUtils.deHighlightComponent(nextButton, false);
-		GUIUtils.deHighlightListItem(fileJList, false);
+		GUIUtils.deHighlightListItem(fileList, false);
 
-		Object cache = fileJList.getCache();
+		Object cache = fileList.getCache();
 		if (cache instanceof Color) {
-			fileJList.setSelectionBackground((Color) cache);
+			fileList.setSelectionBackground((Color) cache);
 		}
 	}
 
@@ -373,10 +399,10 @@ public class MainFrame extends JFrame {
 		if (learningComponent.getName() != null) {
 			if (learningComponent.getName().equals(NAME_FILE_LIST)) {
 
-				GUIUtils.deHighlightListItem(fileJList, true);
+				GUIUtils.deHighlightListItem(fileList, true);
 
 				log.info("Learning midi for index: "
-						+ (fileJList.getSelectedIndex() + 1));
+						+ (fileList.getSelectedIndex() + 1));
 
 			} else {
 
@@ -398,8 +424,8 @@ public class MainFrame extends JFrame {
 	 *            The index
 	 */
 	public void setSelectedIndex(int index) {
-		fileJList.setSelectedIndex(index);
-		fileJList.ensureIndexIsVisible(index);
+		fileList.setSelectedIndex(index);
+		fileList.ensureIndexIsVisible(index);
 	}
 
 	/**
@@ -433,8 +459,11 @@ public class MainFrame extends JFrame {
 		fileMenu = new JMenu(MENU_FILE);
 
 		menuBar.add(fileMenu);
-
+		fileMenu.add(importMenuItem);
+		fileMenu.add(exportMenuItem);
+		fileMenu.addSeparator();
 		fileMenu.add(preferencesMenuItem);
+		fileMenu.addSeparator();
 		fileMenu.add(exitMenuItem);
 
 		setJMenuBar(menuBar);
@@ -444,6 +473,16 @@ public class MainFrame extends JFrame {
 	 * Creates all menu items
 	 */
 	private void createMenuItems() {
+
+		importMenuItem = new JMenuItem(MENU_ITEM_IMPORT);
+		importMenuItem.setName(NAME_MENU_ITEM_IMPORT);
+		importMenuItem.setEnabled(true);
+		importMenuItem.addActionListener(new ImportAction(this));
+
+		exportMenuItem = new JMenuItem(MENU_ITEM_EXPORT);
+		exportMenuItem.setName(NAME_MENU_ITEM_EXPORT);
+		exportMenuItem.setEnabled(true);
+		exportMenuItem.addActionListener(new ExportAction(this));
 
 		preferencesMenuItem = new JMenuItem(MENU_ITEM_PREFERENCES);
 		preferencesMenuItem.setName(NAME_MENU_ITEM_PREFERENCES);
@@ -521,18 +560,23 @@ public class MainFrame extends JFrame {
 	 */
 	private void createFileList(Container parent) {
 
-		fileJList = new CacheableToolTipJList<IToolTipItem>();
-		fileJList.addMouseListener(new OpenFileOnDoubleClick());
-		fileJList.addMouseListener(new PopupListener());
-		fileJList
-				.setFont(new Font(FONT_FAMILY, Font.BOLD, FONT_SIZE_FILE_LIST));
-		fileJList.setName(NAME_FILE_LIST);
-		fileJList.setCache(fileJList.getSelectionBackground());
-		fileJList.setFocusable(false);
+		fileList = new CacheableToolTipJList<IToolTipItem>();
+		fileList.addMouseListener(new OpenFileOnDoubleClick());
+		fileList.addMouseListener(new PopupListener());
+		fileList.setFont(new Font(FONT_FAMILY, Font.BOLD, FONT_SIZE_FILE_LIST));
+		fileList.setName(NAME_FILE_LIST);
+		fileList.setCache(fileList.getSelectionBackground());
+		fileList.setFocusable(false);
+		fileList.setDropMode(DropMode.INSERT);
+		fileList.setTransferHandler(new FileListTransferHandler());
 
-		fileJScrollPane = new JScrollPane(fileJList);
-		fileJScrollPane.setViewportView(fileJList);
-		parent.add(fileJScrollPane, BorderLayout.CENTER);
+		DragSource fileListDragSource = new DragSource();
+		fileListDragSource.createDefaultDragGestureRecognizer(fileList,
+				DnDConstants.ACTION_MOVE, new FileListDragGestureListener());
+
+		fileListScrollPane = new JScrollPane(fileList);
+		fileListScrollPane.setViewportView(fileList);
+		parent.add(fileListScrollPane, BorderLayout.CENTER);
 	}
 
 	/**
@@ -608,7 +652,7 @@ public class MainFrame extends JFrame {
 		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 
 			return "\""
-					+ APPLICATION.getEntryNameByIndex(fileJList
+					+ APPLICATION.getEntryNameByIndex(fileList
 							.getSelectedIndex()) + "\"";
 		}
 
@@ -629,13 +673,13 @@ public class MainFrame extends JFrame {
 		Color originalColor = null;
 
 		try {
-			originalColor = fileJList.getBackground();
-			fileJList.setBackground(color);
+			originalColor = fileList.getBackground();
+			fileList.setBackground(color);
 			Thread.sleep(duration);
 		} catch (InterruptedException e) {
 			log.error("The delay of the file list flasher failed", e);
 		} finally {
-			fileJList.setBackground(originalColor);
+			fileList.setBackground(originalColor);
 		}
 	}
 
@@ -757,6 +801,80 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Opens the dialog for importing the zip file.
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class ImportAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+		private JFrame programFrame;
+		private final JFileChooser fc = new JFileChooser();
+
+		public ImportAction(JFrame programFrame) {
+			super();
+			this.programFrame = programFrame;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FileFilter filter = new FileNameExtensionFilter(
+					MidiAutomator.MIDI_AUTOMATOR_FILE_TYPE,
+					MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS);
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.setFileFilter(filter);
+			int returnVal = fc.showOpenDialog(programFrame);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				APPLICATION.importMidautoFile(file);
+
+			}
+		}
+	}
+
+	/**
+	 * Exports the set list and the preferences to a zipped file.
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class ExportAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+		private JFrame programFrame;
+		private final JFileChooser fc = new JFileChooser();
+
+		public ExportAction(JFrame programFrame) {
+			super();
+			this.programFrame = programFrame;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FileFilter filter = new FileNameExtensionFilter(
+					MidiAutomator.MIDI_AUTOMATOR_FILE_TYPE,
+					MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS);
+			fc.setAcceptAllFileFilterUsed(false);
+			fc.setFileFilter(filter);
+			int returnVal = fc.showSaveDialog(programFrame);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				String filePath = fc.getSelectedFile().getAbsolutePath();
+				String fileExtension = "."
+						+ MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS[0];
+
+				if (!filePath.endsWith(fileExtension)) {
+					filePath += fileExtension;
+				}
+
+				APPLICATION.exportMidautoFile(filePath);
+			}
+		}
+	}
+
+	/**
 	 * Opens the preferences window
 	 * 
 	 * @author aguelle
@@ -830,7 +948,7 @@ public class MainFrame extends JFrame {
 					if (componentName.equals(MainFrame.NAME_FILE_LIST)) {
 
 						// set selection in file list
-						fileJList.setSelectedIndex(fileJList.locationToIndex(e
+						fileList.setSelectedIndex(fileList.locationToIndex(e
 								.getPoint()));
 
 						POPUP_MENU.configureFileListPopupMenu();
@@ -838,31 +956,31 @@ public class MainFrame extends JFrame {
 
 						// en/disable edit
 						POPUP_MENU.getEditMenuItem().setEnabled(false);
-						if (fileJList.getSelectedIndex() > -1) {
+						if (fileList.getSelectedIndex() > -1) {
 							POPUP_MENU.getEditMenuItem().setEnabled(true);
 						}
 
 						// en/disable delete
 						POPUP_MENU.getDeleteMenuItem().setEnabled(false);
-						if (fileJList.getSelectedIndex() > -1) {
+						if (fileList.getSelectedIndex() > -1) {
 							POPUP_MENU.getDeleteMenuItem().setEnabled(true);
 						}
 
 						// en/disable move up
 						POPUP_MENU.getMoveUpMenuItem().setEnabled(false);
-						if (!isFirstItem() && fileJList.getSelectedIndex() > -1) {
+						if (!isFirstItem() && fileList.getSelectedIndex() > -1) {
 							POPUP_MENU.getMoveUpMenuItem().setEnabled(true);
 						}
 
 						// en/disable move down
 						POPUP_MENU.getMoveDownMenuItem().setEnabled(false);
-						if (!isLastItem() && fileJList.getSelectedIndex() > -1) {
+						if (!isLastItem() && fileList.getSelectedIndex() > -1) {
 							POPUP_MENU.getMoveDownMenuItem().setEnabled(true);
 						}
 
 						// en/disable midi learn
 						POPUP_MENU.getMidiLearnMenuItem().setEnabled(false);
-						if (fileJList.getSelectedIndex() > -1
+						if (fileList.getSelectedIndex() > -1
 								&& midiInRemoteDeviceName != null
 								&& !midiInRemoteDeviceName
 										.equals(MidiAutomatorProperties.VALUE_NULL)) {
@@ -903,6 +1021,106 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Drag listener for the file list. This allows to drag list items from one
+	 * index to another.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class FileListDragGestureListener implements DragGestureListener {
+
+		@Override
+		public void dragGestureRecognized(DragGestureEvent dge) {
+
+			Component component = dge.getComponent();
+
+			@SuppressWarnings("unchecked")
+			JList<IToolTipItem> fileList = (JList<IToolTipItem>) component;
+
+			IToolTipItem item = fileList.getSelectedValue();
+			int index = fileList.getSelectedIndex();
+
+			dge.startDrag(null, new TransferableJListToolTipItem(item, index));
+			log.debug("Dragging \"" + item.getValue() + "\"");
+		}
+
+	}
+
+	/**
+	 * The transfer handler for drag and dropping the file list items.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class FileListTransferHandler extends TransferHandler {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean canImport(TransferSupport support) {
+			if (!support.isDrop()) {
+				return false;
+			}
+
+			return support.isDataFlavorSupported(DataFlavor.stringFlavor);
+		}
+
+		@Override
+		public boolean importData(TransferSupport support) {
+
+			if (!canImport(support)) {
+				return false;
+			}
+
+			Transferable transferable = support.getTransferable();
+
+			try {
+				TransferableJListToolTipItem transferItem = (TransferableJListToolTipItem) transferable
+						.getTransferData(TransferableJListToolTipItem.toolTipItemFlavor);
+				JList.DropLocation dl = (JList.DropLocation) support
+						.getDropLocation();
+
+				int oldIndex = transferItem.getIndex();
+
+				// temporarily save item data before deleting the item
+				String entryName = APPLICATION.getEntryNameByIndex(oldIndex);
+				String filePath = APPLICATION.getEntryFilePathByIndex(oldIndex);
+				String midiListeningSignature = APPLICATION
+						.getMidiListeningSignature(oldIndex);
+				String midiSendingSignature = APPLICATION
+						.getMidiSendingSignature(oldIndex);
+
+				// delete the item from the list
+				APPLICATION.deleteItem(transferItem.getIndex());
+
+				// set item to the new index
+				int newIndex = dl.getIndex();
+				ListModel<IToolTipItem> model = fileList.getModel();
+
+				if (newIndex > model.getSize()) {
+					newIndex = model.getSize();
+				}
+
+				APPLICATION.insertItem(newIndex, entryName, filePath,
+						midiListeningSignature, midiSendingSignature, false);
+
+				reload();
+				log.debug("Moved \"" + entryName + "\" from index " + oldIndex
+						+ " to index " + newIndex);
+
+			} catch (UnsupportedFlavorException e) {
+				log.error("TransferFlavor for set list item not supported.", e);
+				return false;
+			} catch (IOException e) {
+				log.error("IO failure on dropping set list item.", e);
+				return false;
+			}
+
+			return true;
+		}
+	}
+
+	/**
 	 * Checks if a midi signature was learned for the given component name
 	 * 
 	 * @param componentName
@@ -935,7 +1153,7 @@ public class MainFrame extends JFrame {
 
 		// file list item
 		String selectedSignature = APPLICATION
-				.getMidiListeningSignature(fileJList.getSelectedIndex());
+				.getMidiListeningSignature(fileList.getSelectedIndex());
 		if (selectedSignature != null) {
 			if (componentName.equals(MainFrame.NAME_FILE_LIST)
 					&& (!selectedSignature.equals(""))) {
@@ -954,7 +1172,7 @@ public class MainFrame extends JFrame {
 	 */
 	private boolean isFirstItem() {
 		boolean result = false;
-		if (fileJList.getSelectedIndex() == 0) {
+		if (fileList.getSelectedIndex() == 0) {
 			result = true;
 		}
 		return result;
@@ -967,7 +1185,7 @@ public class MainFrame extends JFrame {
 	 */
 	private boolean isLastItem() {
 		boolean result = false;
-		if (fileJList.getSelectedIndex() == (fileEntries.size() - 1)) {
+		if (fileList.getSelectedIndex() == (fileEntries.size() - 1)) {
 			result = true;
 		}
 		return result;
@@ -1039,4 +1257,5 @@ public class MainFrame extends JFrame {
 	public void setPopupWasShown(boolean popupWasShown) {
 		this.popupWasShown = popupWasShown;
 	}
+
 }

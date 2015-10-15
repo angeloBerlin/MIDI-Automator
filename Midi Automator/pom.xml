@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -42,7 +42,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.filelist.file>file_list.mido</project.filelist.file>
 		<project.properties.file>midiautomator.properties</project.properties.file>
 		<project.lib.dir>lib</project.lib.dir>
-		<project.sikulix.version>1.1.0-SNAPSHOT</project.sikulix.version>
+		<project.sikulix.version>1.1.0</project.sikulix.version>
 		<project.jar.descriptor.ref>jar-with-dependencies</project.jar.descriptor.ref>
 		<project.jar>${project.build.finalName}-${project.jar.descriptor.ref}.jar</project.jar>
 		<project.splashscreen.file>splash.png</project.splashscreen.file>

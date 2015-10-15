@@ -2,6 +2,7 @@ package com.midi_automator.presenter;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
@@ -51,7 +54,7 @@ public class MidiAutomator {
 	private static MidiAutomator instance;
 
 	private final boolean TEST;
-	private final String VERSION = "1.2.0";
+	private final String VERSION = "1.3.0";
 	private final Resources RESOURCES;
 	private final MidiAutomatorProperties PROPERTIES;
 	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
@@ -60,6 +63,7 @@ public class MidiAutomator {
 	private IModel model;
 	private int currentItem = -1;
 	private List<String> infoMessages;
+	private String loadedMidautoFilePath;
 
 	// midi
 	private boolean midiLearn;
@@ -73,7 +77,10 @@ public class MidiAutomator {
 	private List<GUIAutomator> guiAutomators;
 
 	// configurations
-	public static final String FILE_EXTENSION = ".mido";
+	public static final String SET_LIST_FILE_EXTENSION = ".mido";
+	public static final String[] MIDI_AUTOMATOR_FILE_EXTENSIONS = { "midauto",
+			"MIDAUTO" };
+	public static final String MIDI_AUTOMATOR_FILE_TYPE = "Midi Automator (midauto)";
 	public static final String SWITCH_DIRECTION_PREV = "previous";
 	public static final String SWITCH_DIRECTION_NEXT = "next";
 	public static final int OPEN_FILE_MIDI_COMMAND = ShortMessage.CONTROL_CHANGE;
@@ -137,11 +144,11 @@ public class MidiAutomator {
 		midiLearn = false;
 		doNotExecuteMidiMessage = false;
 
-		PROGRAM_FRAME = new MainFrame(this, VERSION);
+		PROGRAM_FRAME = new MainFrame(this);
 
 		guiAutomators = new ArrayList<GUIAutomator>();
 
-		load();
+		reloadSetList();
 		reloadProperties();
 	}
 
@@ -210,7 +217,7 @@ public class MidiAutomator {
 	/**
 	 * Loads the model file.
 	 */
-	private void load() {
+	private void reloadSetList() {
 		try {
 			model.load();
 			removeInfoMessage(Messages.builtMessages
@@ -253,7 +260,7 @@ public class MidiAutomator {
 	/**
 	 * Saves the model to a file.
 	 */
-	private void save() {
+	private void saveSetList() {
 
 		removeInfoMessage(Messages.builtMessages
 				.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
@@ -773,7 +780,7 @@ public class MidiAutomator {
 
 			model.getSetList().getItems().get(list.getSelectedIndex())
 					.setMidiListeningSignature(midiSignature);
-			save();
+			saveSetList();
 		}
 
 		// learning for switch buttons
@@ -1426,8 +1433,8 @@ public class MidiAutomator {
 	public void moveUpItem(int index) {
 
 		model.getSetList().exchangeIndexes(index, index - 1);
-		save();
-		load();
+		saveSetList();
+		reloadSetList();
 	}
 
 	/**
@@ -1439,8 +1446,8 @@ public class MidiAutomator {
 	public void moveDownItem(int index) {
 
 		model.getSetList().exchangeIndexes(index, index + 1);
-		save();
-		load();
+		saveSetList();
+		reloadSetList();
 	}
 
 	/**
@@ -1452,8 +1459,8 @@ public class MidiAutomator {
 	public void deleteItem(int index) {
 
 		model.getSetList().getItems().remove(index);
-		save();
-		load();
+		saveSetList();
+		reloadSetList();
 	}
 
 	/**
@@ -1489,6 +1496,32 @@ public class MidiAutomator {
 	public void setItem(Integer index, String entryName, String filePath,
 			String midiListeningSignature, String midiSendingSignature) {
 
+		insertItem(index, entryName, filePath, midiListeningSignature,
+				midiSendingSignature, true);
+	}
+
+	/**
+	 * Inserts an item
+	 * 
+	 * @param index
+	 *            the index of the entry
+	 * @param entryName
+	 *            the name of the entry
+	 * @param filePath
+	 *            the path to the file
+	 * @param midiListeningSignature
+	 *            the midi signature the item is listening to
+	 * @param midiSendingSignature
+	 *            the midi signature the item will send on opening
+	 * @param overwrite
+	 *            <TRUE> the item will be overwritten, <FALSE> the item will be
+	 *            inserted
+	 * 
+	 */
+	public void insertItem(Integer index, String entryName, String filePath,
+			String midiListeningSignature, String midiSendingSignature,
+			boolean overwrite) {
+
 		removeInfoMessage(Messages.builtMessages
 				.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
 
@@ -1505,15 +1538,30 @@ public class MidiAutomator {
 		if (entryName != null && !entryName.equals("")) {
 			SetListItem item = new SetListItem(entryName, filePath,
 					midiListeningSignature, midiSendingSignature);
-			model.getSetList().setItem(item, index);
-			log.debug("Set item on index: " + index + ", entry: " + entryName
-					+ ", file: " + filePath + ", listening: \""
-					+ midiListeningSignature + "\", sending: \""
-					+ midiSendingSignature + "\"");
-			save();
+
+			if (overwrite) {
+				model.getSetList().setItem(item, index);
+				log.debug("Set item on index: " + index + ", entry: "
+						+ entryName + ", file: " + filePath + ", listening: \""
+						+ midiListeningSignature + "\", sending: \""
+						+ midiSendingSignature + "\"");
+			} else {
+				model.getSetList().addItem(item, index);
+				log.debug("Add item on index: " + index + ", entry: "
+						+ entryName + ", file: " + filePath + ", listening: \""
+						+ midiListeningSignature + "\", sending: \""
+						+ midiSendingSignature + "\"");
+			}
+
+			for (SetListItem setListItem : model.getSetList().getItems()) {
+				System.out.println(setListItem.getName());
+			}
+			System.out.println();
+
+			saveSetList();
 		}
 
-		load();
+		reloadSetList();
 	}
 
 	/**
@@ -1755,6 +1803,53 @@ public class MidiAutomator {
 	}
 
 	/**
+	 * Saves the set list and the properties to a zip file.
+	 * 
+	 * @param filePath
+	 *            The path to store the zip file
+	 */
+	public void exportMidautoFile(String filePath) {
+		File[] files = new File[] { new File(model.getPersistenceFileName()),
+				new File(RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME) };
+		try {
+			FileUtils.zipFiles(files, filePath);
+			loadedMidautoFilePath = filePath;
+		} catch (ZipException e) {
+			log.error("Zipping file " + filePath + " failed.", e);
+		} catch (IOException e) {
+			log.error("Writing to file " + filePath + " failed.", e);
+		}
+	}
+
+	/**
+	 * Loads the set list and the properties from a zip file.
+	 * 
+	 * @param file
+	 *            The zip file
+	 */
+	public void importMidautoFile(File file) {
+
+		loadedMidautoFilePath = file.getAbsolutePath();
+		String unzipPath = RESOURCES.getPropertiesPath();
+
+		if (unzipPath.equals("")) {
+			unzipPath = ".";
+		}
+
+		try {
+			FileUtils.unzipFile(new ZipFile(file), unzipPath);
+			reloadProperties();
+			reloadSetList();
+		} catch (ZipException e) {
+			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",
+					e);
+		} catch (IOException e) {
+			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",
+					e);
+		}
+	}
+
+	/**
 	 * Sends the changed item to remote slaves with a delay
 	 * 
 	 * @author aguelle
@@ -1782,5 +1877,21 @@ public class MidiAutomator {
 					+ " MIDI message to slaves...");
 			sendItemChangeToSlaves(index);
 		}
+	}
+
+	public String getLoadedMidautoFilePath() {
+		return loadedMidautoFilePath;
+	}
+
+	public String getLoadedMidautoFileName() {
+		if (loadedMidautoFilePath != null) {
+			String[] splitted = loadedMidautoFilePath.split(File.separator);
+			return splitted[splitted.length - 1];
+		}
+		return null;
+	}
+
+	public String getVersion() {
+		return VERSION;
 	}
 }

@@ -7,7 +7,7 @@ import javax.swing.JList;
 import javax.swing.ListModel;
 
 /**
- * A cahcable JList.
+ * A cachable JList.
  * 
  * @author aguelle
  * 

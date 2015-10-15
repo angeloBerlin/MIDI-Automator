@@ -122,4 +122,16 @@ public class SetList {
 	public void addItem(SetListItem item) {
 		setItem(item, null);
 	}
+
+	/**
+	 * Adds a set list item at an index
+	 * 
+	 * @param item
+	 *            The item
+	 * @param index
+	 *            The index
+	 */
+	public void addItem(SetListItem item, int index) {
+		items.add(index, item);
+	}
 }

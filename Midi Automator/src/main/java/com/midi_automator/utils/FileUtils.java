@@ -1,10 +1,19 @@
 package com.midi_automator.utils;
 
 import java.awt.Desktop;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
@@ -101,6 +110,84 @@ public class FileUtils {
 		log.debug("Built CSV line: \"" + result + "\"");
 
 		return result;
+	}
+
+	/**
+	 * Unzips a file to a given path
+	 * 
+	 * @param zipFile
+	 *            The zip file
+	 * @param unzipPath
+	 *            The path to unzip the files to
+	 * @throws IOException
+	 */
+	public static void unzipFile(ZipFile zipFile, String unzipPath)
+			throws IOException {
+
+		log.debug("Load file  to unzip: " + zipFile);
+		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
+		while (enumeration.hasMoreElements()) {
+
+			ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
+			BufferedInputStream bis = new BufferedInputStream(
+					zipFile.getInputStream(zipEntry));
+			int size;
+			byte[] buffer = new byte[2048];
+			String unzippedFile = unzipPath + "/" + zipEntry.getName();
+			BufferedOutputStream bos = new BufferedOutputStream(
+					new FileOutputStream(unzippedFile), buffer.length);
+
+			while ((size = bis.read(buffer, 0, buffer.length)) != -1) {
+				bos.write(buffer, 0, size);
+			}
+
+			bos.flush();
+			bos.close();
+			bis.close();
+
+			log.debug("Unizpped file: " + unzippedFile);
+		}
+	}
+
+	/**
+	 * Zips an array of files to a single archive.
+	 * 
+	 * @param inputFiles
+	 *            An array of files
+	 * @param zipFilePath
+	 *            The path to the archive
+	 * @throws IOException
+	 * @throws ZipException
+	 */
+	public static void zipFiles(File[] inputFiles, String zipFilePath)
+			throws IOException, ZipException {
+
+		FileOutputStream fileOutputStream = new FileOutputStream(zipFilePath);
+		ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+
+		for (File file : inputFiles) {
+			ZipEntry zipEntry = new ZipEntry(file.getName());
+			zipOutputStream.putNextEntry(zipEntry);
+
+			FileInputStream fileInputStream = new FileInputStream(file);
+			byte[] buf = new byte[1024];
+			int bytesRead;
+
+			while ((bytesRead = fileInputStream.read(buf)) > 0) {
+				zipOutputStream.write(buf, 0, bytesRead);
+			}
+
+			fileInputStream.close();
+			zipOutputStream.closeEntry();
+			log.debug("Added file " + file.getAbsolutePath() + " to archive "
+					+ zipFilePath);
+		}
+
+		zipOutputStream.close();
+		fileOutputStream.close();
+
+		log.debug("Crated zip file: " + zipFilePath);
 	}
 
 }

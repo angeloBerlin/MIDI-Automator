@@ -1,7 +1,7 @@
 package com.midi_automator.view;
 
 /**
- * Implementation for a JList item with tooltip
+ * Implementation for a transferable JList item with a tool tip
  * 
  * @author aguelle
  * 

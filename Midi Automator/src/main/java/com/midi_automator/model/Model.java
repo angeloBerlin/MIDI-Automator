@@ -79,9 +79,8 @@ public class Model implements IModel {
 			TooManyEntriesException {
 
 		setList.clear();
-
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(
-				persistenceFileName));
+		FileReader fileReader = new FileReader(persistenceFileName);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 		String line = null;
 
@@ -110,6 +109,7 @@ public class Model implements IModel {
 			setList.addItem(item);
 		}
 		bufferedReader.close();
+		fileReader.close();
 
 		if (setList.getItems().size() > 128) {
 			throw new TooManyEntriesException();
@@ -119,8 +119,8 @@ public class Model implements IModel {
 	@Override
 	public void save() throws FileNotFoundException, IOException {
 
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-				persistenceFileName));
+		FileWriter fileWriter = new FileWriter(persistenceFileName);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
 		for (SetListItem item : setList.getItems()) {
 			log.debug("Save item: " + item.getName() + " " + item.getFilePath());
@@ -135,6 +135,7 @@ public class Model implements IModel {
 
 		log.debug("Save model to file");
 		bufferedWriter.close();
+		fileWriter.close();
 	}
 
 	@Override

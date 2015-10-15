@@ -43,7 +43,7 @@ public class Main {
 					log.info("Operating System (-os) set to: " + os);
 				}
 
-				if (arg.contains(MidiAutomator.FILE_EXTENSION)) {
+				if (arg.contains(MidiAutomator.SET_LIST_FILE_EXTENSION)) {
 					fileName = arg;
 					log.info("File in argument: " + fileName);
 				}

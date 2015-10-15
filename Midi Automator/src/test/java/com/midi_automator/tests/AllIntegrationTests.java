@@ -11,13 +11,13 @@ import com.midi_automator.tests.utils.SikuliAutomation;
 
 @RunWith(Suite.class)
 @SuiteClasses({ OpenMidiAutomatorITCase.class, AddFileITCase.class,
-		OpenFileITCase.class, EditFileITCase.class, DeleteFileITCase.class,
+		OpenItemFileITCase.class, EditFileITCase.class, DeleteFileITCase.class,
 		MoveUpDownFileITCase.class, SwitchButtonsITCase.class,
 		MidiLearnSwitchButtonsITCase.class, MidiLearnListITCase.class,
 		MidiRemoteOpenITCase.class, MidiRemoteOutITCase.class,
 		MidiMetronomITCase.class, MidiNotifierOutITCase.class,
 		MidiListEntrySendITCase.class, GUIAutomationITCase.class,
-		CloseMidiAutomatorITCase.class })
+		ImportExportITCase.class, CloseMidiAutomatorITCase.class })
 public class AllIntegrationTests extends SikuliAutomation {
 
 	private static Region programRegion;
