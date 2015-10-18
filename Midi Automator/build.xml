@@ -5,11 +5,12 @@
 	<!-- MacOS -->
 	<property name="macos.bundle.dir" value="${target.dir}/${name}.app/Contents" />
 	<property name="working.dir.macos.resources" value="$APP_ROOT/Contents/Resources" />
-	<property name="java.runtime" value="jre/Mac/Contents/Home" />
+	<property name="java.runtime" value="jre/Contents/Home/" />
 	<property name="mountdir" value="/tmp" />
 
 	<!-- Generates a MacOS Bundle from the jar -->
 	<target name="macbundle">
+        <!-- change to ant/appBundler-1.0ea.jar for using appbundler branch from https://bitbucket.org/infinitekind/appbundler -->
 		<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
 			classpath="ant/appBundler-1.0.jar" />
 		<bundleapp outputdirectory="${target.dir}" name="${name}"
@@ -21,6 +22,9 @@
 				value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
 			<argument value="-os=MacOS" />
 			<argument value="-wd=${working.dir.macos.resources}/" />
+			
+			<!-- <arch name="x86_64"/> -->
+			<!-- <plistentry key="NSHighResolutionCapable" value="true"/> -->
 		</bundleapp>
 
 		<copy file="${target.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
