@@ -12,11 +12,20 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.midi_automator.Resources;
+
+@Repository
 public class MidiAutomatorProperties extends Properties {
 
 	private static final long serialVersionUID = 1L;
 
-	private String propertiesFilePath;
+	@Autowired
+	private Resources resources;
+
+	private final String FILENAME = "midiautomator.properties";
 
 	public static final String KEY_MIDI_IN_REMOTE_DEVICE = "MIDI_IN_REMOTE_DEVICE";
 	public static final String KEY_MIDI_IN_METRONOM_DEVICE = "MIDI_IN_METRONOM_DEVICE";
@@ -39,25 +48,13 @@ public class MidiAutomatorProperties extends Properties {
 	public static final String VALUE_NULL = "-none-";
 
 	/**
-	 * Standard constructor
-	 * 
-	 * @param path
-	 *            The path to the properties file
-	 * 
-	 */
-	public MidiAutomatorProperties(String path) {
-		super();
-		propertiesFilePath = path;
-	}
-
-	/**
 	 * Stores properties to the file.
 	 * 
 	 * @throws IOException
 	 */
 	public void store() throws IOException {
 
-		Writer writer = new FileWriter(propertiesFilePath);
+		Writer writer = new FileWriter(getPropertiesFilePath());
 		store(writer, null);
 		writer.close();
 	}
@@ -70,7 +67,7 @@ public class MidiAutomatorProperties extends Properties {
 	 */
 	public void load() throws FileNotFoundException, IOException {
 
-		Reader reader = new FileReader(propertiesFilePath);
+		Reader reader = new FileReader(getPropertiesFilePath());
 		load(reader);
 		reader.close();
 	}
@@ -138,5 +135,9 @@ public class MidiAutomatorProperties extends Properties {
 				.split(MidiAutomatorProperties.INDEX_SEPARATOR);
 		String index = splittedKey[splittedKey.length - 1];
 		return Integer.parseInt(index);
+	}
+
+	public String getPropertiesFilePath() {
+		return resources.getPropertiesPath() + FILENAME;
 	}
 }

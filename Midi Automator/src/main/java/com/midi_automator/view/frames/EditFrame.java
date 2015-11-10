@@ -2,17 +2,14 @@ package com.midi_automator.view.frames;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
 
-import com.midi_automator.presenter.MidiAutomator;
-
+@org.springframework.stereotype.Component
 public class EditFrame extends AddFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -26,22 +23,15 @@ public class EditFrame extends AddFrame {
 	private int index;
 
 	/**
-	 * Constructor
+	 * Initializes the edit frame
 	 * 
-	 * @param application
-	 *            The main application
-	 * @param programFrame
-	 *            The main programFrame
 	 * @param index
 	 *            The current chosen index
-	 * @throws HeadlessException
-	 *             If no GUI available
 	 */
-	public EditFrame(MidiAutomator application, JFrame programFrame, int index)
-			throws HeadlessException {
-		super(application, programFrame);
-		this.index = index;
+	public void init(int index) {
+		super.init();
 
+		this.index = index;
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
@@ -53,9 +43,9 @@ public class EditFrame extends AddFrame {
 		createMidiListeningSignature();
 		setMidiSendingSignatureValueLabelText();
 
-		nameTextField.setText(application.getEntryNameByIndex(index));
-		fileTextField.setText(application.getEntryFilePathByIndex(index));
-		midiListeningSignatureValueLabel.setText(application
+		nameTextField.setText(presenter.getEntryNameByIndex(index));
+		fileTextField.setText(presenter.getEntryFilePathByIndex(index));
+		midiListeningSignatureValueLabel.setText(presenter
 				.getMidiListeningSignature(index));
 	}
 
@@ -85,7 +75,7 @@ public class EditFrame extends AddFrame {
 
 	@Override
 	protected void setMidiSendingSignatureValueLabelText() {
-		midiSendingSignatureValueLabel.setText(APPLICATION
+		midiSendingSignatureValueLabel.setText(presenter
 				.getMidiSendingSignature(index));
 	}
 
@@ -102,7 +92,7 @@ public class EditFrame extends AddFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			log.debug("Save edited item on index: " + (index + 1));
-			APPLICATION.setItem(index, nameTextField.getText(),
+			presenter.setItem(index, nameTextField.getText(),
 					fileTextField.getText(),
 					midiListeningSignatureValueLabel.getText(),
 					midiSendingSignatureValueLabel.getText());

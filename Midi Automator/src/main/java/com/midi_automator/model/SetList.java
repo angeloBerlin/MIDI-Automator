@@ -3,12 +3,15 @@ package com.midi_automator.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Represents a set list
  * 
  * @author aguelle
  *
  */
+@Component
 public class SetList {
 
 	public SetList() {

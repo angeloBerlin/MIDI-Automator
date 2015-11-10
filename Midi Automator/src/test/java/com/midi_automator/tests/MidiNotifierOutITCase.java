@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
@@ -53,10 +53,10 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_switch_midi_notifier_out.png", deviceScreenshot);
-			GUIAutomations.openEntryByDoubleClick("Hello_World_1_entry.png",
+			SikuliXAutomations.openEntryByDoubleClick("Hello_World_1_entry.png",
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png");
 
@@ -72,7 +72,7 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -84,8 +84,8 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 
 		try {
 			// mockup
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.setPreferencesComboBox(
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.setPreferencesComboBox(
 					"combo_box_switch_midi_notifier_out.png", deviceScreenshot);
 			// hit send button
 			Region match = SikuliAutomation.getSearchRegion().wait(
@@ -103,8 +103,8 @@ public class MidiNotifierOutITCase extends IntegrationTestCase {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

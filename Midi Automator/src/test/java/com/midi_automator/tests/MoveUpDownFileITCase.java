@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class MoveUpDownFileITCase extends IntegrationTestCase {
@@ -17,22 +17,22 @@ public class MoveUpDownFileITCase extends IntegrationTestCase {
 	public void moveUpDownMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// check for disabled menu entry
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+			SikuliXAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
-			GUIAutomations.checkResult("move_up_inactive.png");
+			SikuliXAutomations.checkResult("move_up_inactive.png");
 
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+			SikuliXAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
-			GUIAutomations.checkResult("move_down_inactive.png");
+			SikuliXAutomations.checkResult("move_down_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -45,37 +45,37 @@ public class MoveUpDownFileITCase extends IntegrationTestCase {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_world_312.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// move down entry
-			GUIAutomations.moveDownEntry("Hello_World_3_entry.png",
+			SikuliXAutomations.moveDownEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
-			GUIAutomations.moveDownEntry("Hello_World_3_entry.png",
+			SikuliXAutomations.moveDownEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
 
 			// check for correct order
-			GUIAutomations.checkResult("Hello_World_order_123.png");
+			SikuliXAutomations.checkResult("Hello_World_order_123.png");
 
 			// check for inactive menu
-			Region match = GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+			Region match = SikuliXAutomations.findMultipleStateRegion(MAX_TIMEOUT,
 					"Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
 			match.rightClick();
-			GUIAutomations.checkResult("move_down_inactive.png");
+			SikuliXAutomations.checkResult("move_down_inactive.png");
 
 			// check if moving was saved
-			GUIAutomations.closeMidiAutomator();
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.checkResult("Hello_World_order_123.png");
+			SikuliXAutomations.closeMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.checkResult("Hello_World_order_123.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -87,38 +87,38 @@ public class MoveUpDownFileITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// move entries
-			GUIAutomations.moveUpEntry("Hello_World_3_entry.png",
+			SikuliXAutomations.moveUpEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
-			GUIAutomations.moveUpEntry("Hello_World_3_entry.png",
+			SikuliXAutomations.moveUpEntry("Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
 
 			// check for correct order
-			GUIAutomations.checkResult("Hello_World_order_312.png");
+			SikuliXAutomations.checkResult("Hello_World_order_312.png");
 
 			// check for inactive menu
-			Region match = GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+			Region match = SikuliXAutomations.findMultipleStateRegion(MAX_TIMEOUT,
 					"Hello_World_3_entry.png",
 					"Hello_World_3_entry_active.png",
 					"Hello_World_3_entry_inactive.png");
 
 			match.rightClick();
-			GUIAutomations.checkResult("move_up_inactive.png");
+			SikuliXAutomations.checkResult("move_up_inactive.png");
 
 			// check if moving was saved
-			GUIAutomations.closeMidiAutomator();
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.checkResult("Hello_World_order_312.png");
+			SikuliXAutomations.closeMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.checkResult("Hello_World_order_312.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

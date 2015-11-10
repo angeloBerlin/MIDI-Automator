@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class EditFileITCase extends IntegrationTestCase {
@@ -16,18 +16,18 @@ public class EditFileITCase extends IntegrationTestCase {
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.openPopupMenu("midi_automator.png", null, null,
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.openPopupMenu("midi_automator.png", null, null,
 					LOW_SIMILARITY);
 
 			// check for disabled edit entry
-			GUIAutomations.checkResult("edit_inactive.png");
+			SikuliXAutomations.checkResult("edit_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -40,24 +40,24 @@ public class EditFileITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// edit entry
-			GUIAutomations.openEditDialog("Hello_World_entry.png",
+			SikuliXAutomations.openEditDialog("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
-			GUIAutomations.fillTextField("name_text_field.png", "x");
-			GUIAutomations.fillTextField("file_text_field.png", "y");
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.fillTextField("name_text_field.png", "x");
+			SikuliXAutomations.fillTextField("file_text_field.png", "y");
+			SikuliXAutomations.cancelDialog();
 
 			// search unmodified midi automator
-			GUIAutomations.checkResult("file_list_Hello_World.png");
+			SikuliXAutomations.checkResult("file_list_Hello_World.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -70,35 +70,35 @@ public class EditFileITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// edit entry
-			GUIAutomations.openEditDialog("Hello_World_entry.png",
+			SikuliXAutomations.openEditDialog("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
-			GUIAutomations.fillTextField("name_text_field.png",
+			SikuliXAutomations.fillTextField("name_text_field.png",
 					"Hello World Edit");
-			GUIAutomations.fillTextField("file_text_field.png", currentPath
+			SikuliXAutomations.fillTextField("file_text_field.png", currentPath
 					+ "/testfiles/Hello World edit.rtf");
-			GUIAutomations.saveDialog();
+			SikuliXAutomations.saveDialog();
 
 			// check for open edited file
-			GUIAutomations.openEntryByDoubleClick("Hello_World_Edit_entry.png",
+			SikuliXAutomations.openEntryByDoubleClick("Hello_World_Edit_entry.png",
 					"Hello_World_Edit_entry_inactive.png",
 					"Hello_World_Edit_entry_active.png");
-			GUIAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_Edit_RTF.png",
 					"Hello_World_Edit_RTF_inactive.png");
 
 			// check if edited entry was saved
-			GUIAutomations.closeMidiAutomator();
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.checkResult("Hello_World_Edit_entry.png");
+			SikuliXAutomations.closeMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.checkResult("Hello_World_Edit_entry.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -111,24 +111,24 @@ public class EditFileITCase extends IntegrationTestCase {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// edit entry with search dialog
-			GUIAutomations.openEditDialog("Hello_World_entry.png",
+			SikuliXAutomations.openEditDialog("Hello_World_entry.png",
 					"Hello_World_entry_active.png",
 					"Hello_World_entry_inactive.png");
-			GUIAutomations.openSearchDialog();
+			SikuliXAutomations.openSearchDialog();
 
 			// check search dialog
-			GUIAutomations.checkResult("file_chooser.png");
+			SikuliXAutomations.checkResult("file_chooser.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -141,34 +141,34 @@ public class EditFileITCase extends IntegrationTestCase {
 
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// edit entry 1
-			GUIAutomations.openEditDialog("Hello_World_1_entry.png",
+			SikuliXAutomations.openEditDialog("Hello_World_1_entry.png",
 					"Hello_World_entry_1_active.png",
 					"Hello_World_entry_1_inactive.png");
 
 			// check midi signature
-			GUIAutomations.checkResult("midi_signature_sending_1.png",
-					GUIAutomations.DEFAULT_SIMILARITY);
+			SikuliXAutomations.checkResult("midi_signature_sending_1.png",
+					SikuliXAutomations.DEFAULT_SIMILARITY);
 
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.cancelDialog();
 
 			// edit entry 2
-			GUIAutomations.openEditDialog("Hello_World_2_entry.png",
+			SikuliXAutomations.openEditDialog("Hello_World_2_entry.png",
 					"Hello_World_entry_2_active.png",
 					"Hello_World_entry_2_inactive.png");
 
 			// check midi signature
-			GUIAutomations.checkResult("midi_signature_sending_2.png",
-					GUIAutomations.DEFAULT_SIMILARITY);
+			SikuliXAutomations.checkResult("midi_signature_sending_2.png",
+					SikuliXAutomations.DEFAULT_SIMILARITY);
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

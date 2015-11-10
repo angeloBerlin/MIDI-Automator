@@ -3,6 +3,7 @@ package com.midi_automator;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * This class handles the OS specific resource locations
@@ -10,11 +11,10 @@ import org.apache.log4j.Logger;
  * @author aguelle
  * 
  */
+@Configuration
 public class Resources {
 
 	static Logger log = Logger.getLogger(Resources.class.getName());
-
-	private static Resources instance;
 
 	private final String OPERATING_SYSTEM;
 	private final String WORKING_DIRECTORY;
@@ -22,18 +22,10 @@ public class Resources {
 	private final String PROPERTIES_PATH;
 	private final String DEFAULT_FILE_LIST_PATH;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param operatingSystem
-	 *            The operating system
-	 * @param workingDirectory
-	 *            The working directory
-	 */
-	private Resources(String operatingSystem, String workingDirectory) {
+	public Resources() {
 
-		OPERATING_SYSTEM = operatingSystem;
-		WORKING_DIRECTORY = workingDirectory;
+		OPERATING_SYSTEM = Main.os;
+		WORKING_DIRECTORY = Main.wd;
 
 		switch (OPERATING_SYSTEM) {
 		case "MacOS":
@@ -51,23 +43,6 @@ public class Resources {
 			PROPERTIES_PATH = WORKING_DIRECTORY;
 			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 		}
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param operatingSystem
-	 *            The operating system
-	 * @param workingDirectory
-	 *            The working directory
-	 */
-	public static Resources getInstance(String operatingSystem,
-			String workingDirectory) {
-
-		if (instance == null) {
-			instance = new Resources(operatingSystem, workingDirectory);
-		}
-		return instance;
 	}
 
 	public String getImagePath() {

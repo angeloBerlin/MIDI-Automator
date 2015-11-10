@@ -11,7 +11,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
@@ -53,7 +52,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
@@ -66,6 +67,7 @@ import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.ToolTipItemImpl;
 import com.midi_automator.view.TransferableJListToolTipItem;
 
+@org.springframework.stereotype.Component
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -81,8 +83,8 @@ public class MainFrame extends JFrame {
 	private final int MAIN_LAYOUT_VERTICAL_GAP = 10;
 	private final int FONT_SIZE_FILE_LIST = 26;
 	private final String FONT_FAMILY = "Arial";
-	private final String ICON_PATH_PREV;
-	private final String ICON_PATH_NEXT;
+	private String iconPathPrev;
+	private String iconPathNext;
 	private final String MENU_FILE = "File";
 	private final String MENU_ITEM_IMPORT = "Import...";
 	private final String MENU_ITEM_EXPORT = "Export...";
@@ -102,7 +104,6 @@ public class MainFrame extends JFrame {
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
-	private final MainFramePopupMenu POPUP_MENU;
 	private JMenuItem importMenuItem;
 	private JMenuItem exportMenuItem;
 	private JMenuItem exitMenuItem;
@@ -127,43 +128,35 @@ public class MainFrame extends JFrame {
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
 
+	@Autowired
 	private PreferencesFrame preferencesFrame;
-
-	private final MidiAutomator APPLICATION;
+	@Autowired
+	private MidiAutomator presenter;
+	@Autowired
+	private Resources resources;
+	@Autowired
+	private MainFramePopupMenu popupMenu;
 
 	/**
-	 * The main window.
-	 * 
-	 * @param application
-	 *            The main application
-	 * @throws HeadlessException
-	 *             Thrown if run on an OS without GUI representation
+	 * Initializes the frame
 	 */
-	public MainFrame(MidiAutomator application) throws HeadlessException {
+	public void init() {
 
-		// initialize frame
-		super();
-		APPLICATION = application;
-
-		setTitle("");
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setResizable(true);
 
-		if (application.isInTestMode()) {
+		if (presenter.isInTestMode()) {
 			this.setLocation(new Point(MainFrame.TEST_POSITION_X,
 					MainFrame.TEST_POSITION_Y));
 		}
 
-		String icon16 = application.getResources().getImagePath()
-				+ "MidiAutomatorIcon16.png";
-		String icon32 = application.getResources().getImagePath()
-				+ "MidiAutomatorIcon32.png";
-		String icon64 = application.getResources().getImagePath()
-				+ "MidiAutomatorIcon64.png";
-		String icon128 = application.getResources().getImagePath()
-				+ "MidiAutomatorIcon128.png";
-		String icon256 = application.getResources().getImagePath()
-				+ "MidiAutomatorIcon256.png";
+		setTitle("");
+
+		String icon16 = resources.getImagePath() + "MidiAutomatorIcon16.png";
+		String icon32 = resources.getImagePath() + "MidiAutomatorIcon32.png";
+		String icon64 = resources.getImagePath() + "MidiAutomatorIcon64.png";
+		String icon128 = resources.getImagePath() + "MidiAutomatorIcon128.png";
+		String icon256 = resources.getImagePath() + "MidiAutomatorIcon256.png";
 		ArrayList<Image> icons = new ArrayList<Image>();
 		icons.add(new ImageIcon(icon16).getImage());
 		icons.add(new ImageIcon(icon32).getImage());
@@ -172,15 +165,15 @@ public class MainFrame extends JFrame {
 		icons.add(new ImageIcon(icon256).getImage());
 		setIconImages(icons);
 
-		ICON_PATH_PREV = application.getResources().getImagePath()
-				+ "arrow_prev.png";
-		ICON_PATH_NEXT = application.getResources().getImagePath()
-				+ "arrow_next.png";
+		iconPathPrev = resources.getImagePath() + "arrow_prev.png";
+		iconPathNext = resources.getImagePath() + "arrow_next.png";
 
 		// Menu
 		createMenuItems();
 		createMenu();
-		POPUP_MENU = new MainFramePopupMenu(this, application);
+
+		// PopUp Menu
+		popupMenu.init();
 		popupWasShown = false;
 
 		// Layout
@@ -213,12 +206,13 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setAlwaysOnTop(true);
+
 		setVisible(true);
 	}
 
 	@Override
 	public void setTitle(String title) {
-		super.setTitle(TITLE + " " + APPLICATION.getVersion() + title);
+		super.setTitle(TITLE + " " + presenter.getVersion() + title);
 	}
 
 	public HTMLLabel getInfoLabel() {
@@ -289,7 +283,7 @@ public class MainFrame extends JFrame {
 		}
 
 		// reload preferences frame
-		if (preferencesFrame != null) {
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
 			preferencesFrame.reload();
 		}
 	}
@@ -347,7 +341,7 @@ public class MainFrame extends JFrame {
 	public void midiLearnOff() {
 
 		// set all frames to midi learn off
-		if (preferencesFrame != null) {
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
 			preferencesFrame.midiLearnOff();
 		}
 
@@ -355,7 +349,7 @@ public class MainFrame extends JFrame {
 		GUIUtils.disEnableAllInputs(this, true);
 
 		// change menu item
-		POPUP_MENU.midiLearnOff();
+		popupMenu.midiLearnOff();
 
 		GUIUtils.deHighlightComponent(prevButton, false);
 		GUIUtils.deHighlightComponent(nextButton, false);
@@ -376,7 +370,7 @@ public class MainFrame extends JFrame {
 	public void midiLearnOn(JComponent learningComponent) {
 
 		// set all frames to midi learn on
-		if (preferencesFrame != null) {
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
 			preferencesFrame.midiLearnOn(learningComponent);
 		}
 
@@ -393,7 +387,7 @@ public class MainFrame extends JFrame {
 		}
 
 		// change menu item text
-		POPUP_MENU.midiLearnOn();
+		popupMenu.midiLearnOn();
 
 		// highlight component
 		if (learningComponent.getName() != null) {
@@ -487,7 +481,7 @@ public class MainFrame extends JFrame {
 		preferencesMenuItem = new JMenuItem(MENU_ITEM_PREFERENCES);
 		preferencesMenuItem.setName(NAME_MENU_ITEM_PREFERENCES);
 		preferencesMenuItem.setEnabled(true);
-		preferencesMenuItem.addActionListener(new PreferencesAction(this));
+		preferencesMenuItem.addActionListener(new PreferencesAction());
 
 		exitMenuItem = new JMenuItem(MENU_ITEM_EXIT);
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
@@ -598,7 +592,7 @@ public class MainFrame extends JFrame {
 		prevButton.setName(NAME_PREV_BUTTON);
 		prevButton.setPreferredSize(dimension);
 		prevButton.setAction(new PrevAction());
-		prevButton.setIcon(new ImageIcon(ICON_PATH_PREV));
+		prevButton.setIcon(new ImageIcon(iconPathPrev));
 		prevButton.addMouseListener(new PopupListener());
 		prevButton.setFocusable(false);
 
@@ -610,7 +604,7 @@ public class MainFrame extends JFrame {
 		nextButton.setName(NAME_NEXT_BUTTON);
 		nextButton.setPreferredSize(dimension);
 		nextButton.setAction(new NextAction());
-		nextButton.setIcon(new ImageIcon(ICON_PATH_NEXT));
+		nextButton.setIcon(new ImageIcon(iconPathNext));
 		nextButton.addMouseListener(new PopupListener());
 		nextButton.setFocusable(false);
 
@@ -652,8 +646,9 @@ public class MainFrame extends JFrame {
 		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 
 			return "\""
-					+ APPLICATION.getEntryNameByIndex(fileList
-							.getSelectedIndex()) + "\"";
+					+ presenter
+							.getEntryNameByIndex(fileList.getSelectedIndex())
+					+ "\"";
 		}
 
 		if (component instanceof JButton) {
@@ -702,7 +697,7 @@ public class MainFrame extends JFrame {
 	 */
 	public void setMidiSignature(String signature, Component component) {
 
-		if (preferencesFrame != null) {
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
 			preferencesFrame.setMidiSignature(signature, component);
 		}
 	}
@@ -720,7 +715,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			APPLICATION.openPreviousFile();
+			presenter.openPreviousFile();
 			setEnabled(true);
 		}
 	}
@@ -738,7 +733,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			APPLICATION.openNextFile();
+			presenter.openNextFile();
 			setEnabled(true);
 		}
 	}
@@ -765,8 +760,7 @@ public class MainFrame extends JFrame {
 					if (me.getButton() == MouseEvent.BUTTON1
 							&& me.getClickCount() == 2) {
 						if (!popupWasShown) {
-							APPLICATION
-									.openFileByIndex(lastSelectedIndex, true);
+							presenter.openFileByIndex(lastSelectedIndex, true);
 						}
 						popupWasShown = false;
 					}
@@ -828,7 +822,7 @@ public class MainFrame extends JFrame {
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
-				APPLICATION.importMidautoFile(file);
+				presenter.importMidautoFile(file);
 
 			}
 		}
@@ -869,7 +863,7 @@ public class MainFrame extends JFrame {
 					filePath += fileExtension;
 				}
 
-				APPLICATION.exportMidautoFile(filePath);
+				presenter.exportMidautoFile(filePath);
 			}
 		}
 	}
@@ -883,16 +877,11 @@ public class MainFrame extends JFrame {
 	class PreferencesAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private JFrame programFrame;
-
-		public PreferencesAction(JFrame programFrame) {
-			super();
-			this.programFrame = programFrame;
-		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			preferencesFrame = new PreferencesFrame(APPLICATION, programFrame);
+			preferencesFrame.setLocation(getLocationOnScreen());
+			preferencesFrame.init();
 		}
 	}
 
@@ -931,17 +920,17 @@ public class MainFrame extends JFrame {
 				String componentName = component.getName();
 
 				// getting midi device names
-				String midiInRemoteDeviceName = APPLICATION
+				String midiInRemoteDeviceName = presenter
 						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-				String switchItemDeviceName = APPLICATION
+				String switchItemDeviceName = presenter
 						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
 				if (componentName != null) {
 
 					// en/disable midi unlearn
-					POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(false);
+					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
 					if (isMidiLearned(componentName)) {
-						POPUP_MENU.getMidiUnlearnMenuItem().setEnabled(true);
+						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
 					}
 
 					// show pop-up of file list
@@ -951,49 +940,49 @@ public class MainFrame extends JFrame {
 						fileList.setSelectedIndex(fileList.locationToIndex(e
 								.getPoint()));
 
-						POPUP_MENU.configureFileListPopupMenu();
-						POPUP_MENU.show(e.getComponent(), e.getX(), e.getY());
+						popupMenu.configureFileListPopupMenu();
+						popupMenu.show(e.getComponent(), e.getX(), e.getY());
 
 						// en/disable edit
-						POPUP_MENU.getEditMenuItem().setEnabled(false);
+						popupMenu.getEditMenuItem().setEnabled(false);
 						if (fileList.getSelectedIndex() > -1) {
-							POPUP_MENU.getEditMenuItem().setEnabled(true);
+							popupMenu.getEditMenuItem().setEnabled(true);
 						}
 
 						// en/disable delete
-						POPUP_MENU.getDeleteMenuItem().setEnabled(false);
+						popupMenu.getDeleteMenuItem().setEnabled(false);
 						if (fileList.getSelectedIndex() > -1) {
-							POPUP_MENU.getDeleteMenuItem().setEnabled(true);
+							popupMenu.getDeleteMenuItem().setEnabled(true);
 						}
 
 						// en/disable move up
-						POPUP_MENU.getMoveUpMenuItem().setEnabled(false);
+						popupMenu.getMoveUpMenuItem().setEnabled(false);
 						if (!isFirstItem() && fileList.getSelectedIndex() > -1) {
-							POPUP_MENU.getMoveUpMenuItem().setEnabled(true);
+							popupMenu.getMoveUpMenuItem().setEnabled(true);
 						}
 
 						// en/disable move down
-						POPUP_MENU.getMoveDownMenuItem().setEnabled(false);
+						popupMenu.getMoveDownMenuItem().setEnabled(false);
 						if (!isLastItem() && fileList.getSelectedIndex() > -1) {
-							POPUP_MENU.getMoveDownMenuItem().setEnabled(true);
+							popupMenu.getMoveDownMenuItem().setEnabled(true);
 						}
 
 						// en/disable midi learn
-						POPUP_MENU.getMidiLearnMenuItem().setEnabled(false);
+						popupMenu.getMidiLearnMenuItem().setEnabled(false);
 						if (fileList.getSelectedIndex() > -1
 								&& midiInRemoteDeviceName != null
 								&& !midiInRemoteDeviceName
 										.equals(MidiAutomatorProperties.VALUE_NULL)) {
-							POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+							popupMenu.getMidiLearnMenuItem().setEnabled(true);
 						}
 
 						// en/disable send midi
-						POPUP_MENU.getSendMidiMenuItem().setEnabled(false);
+						popupMenu.getSendMidiMenuItem().setEnabled(false);
 						if (switchItemDeviceName != null) {
 							if (!switchItemDeviceName
 									.equals(MidiAutomatorProperties.VALUE_NULL)) {
-								POPUP_MENU.getSendMidiMenuItem().setEnabled(
-										true);
+								popupMenu.getSendMidiMenuItem()
+										.setEnabled(true);
 							}
 						}
 
@@ -1008,11 +997,11 @@ public class MainFrame extends JFrame {
 						if (midiInRemoteDeviceName != null
 								&& !midiInRemoteDeviceName
 										.equals(MidiAutomatorProperties.VALUE_NULL)) {
-							POPUP_MENU.getMidiLearnMenuItem().setEnabled(true);
+							popupMenu.getMidiLearnMenuItem().setEnabled(true);
 						}
 
-						POPUP_MENU.configureSwitchButtonPopupMenu();
-						POPUP_MENU.show(e.getComponent(), e.getX(), e.getY());
+						popupMenu.configureSwitchButtonPopupMenu();
+						popupMenu.show(e.getComponent(), e.getX(), e.getY());
 						popupWasShown = true;
 					}
 				}
@@ -1083,15 +1072,15 @@ public class MainFrame extends JFrame {
 				int oldIndex = transferItem.getIndex();
 
 				// temporarily save item data before deleting the item
-				String entryName = APPLICATION.getEntryNameByIndex(oldIndex);
-				String filePath = APPLICATION.getEntryFilePathByIndex(oldIndex);
-				String midiListeningSignature = APPLICATION
+				String entryName = presenter.getEntryNameByIndex(oldIndex);
+				String filePath = presenter.getEntryFilePathByIndex(oldIndex);
+				String midiListeningSignature = presenter
 						.getMidiListeningSignature(oldIndex);
-				String midiSendingSignature = APPLICATION
+				String midiSendingSignature = presenter
 						.getMidiSendingSignature(oldIndex);
 
 				// delete the item from the list
-				APPLICATION.deleteItem(transferItem.getIndex());
+				presenter.deleteItem(transferItem.getIndex());
 
 				// set item to the new index
 				int newIndex = dl.getIndex();
@@ -1101,7 +1090,7 @@ public class MainFrame extends JFrame {
 					newIndex = model.getSize();
 				}
 
-				APPLICATION.insertItem(newIndex, entryName, filePath,
+				presenter.insertItem(newIndex, entryName, filePath,
 						midiListeningSignature, midiSendingSignature, false);
 
 				reload();
@@ -1132,7 +1121,7 @@ public class MainFrame extends JFrame {
 		boolean isLearned = false;
 
 		// previous switch button
-		String prevSignature = APPLICATION
+		String prevSignature = presenter
 				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
 		if (prevSignature != null) {
 			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
@@ -1142,7 +1131,7 @@ public class MainFrame extends JFrame {
 		}
 
 		// next switch button
-		String nextSignature = APPLICATION
+		String nextSignature = presenter
 				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
 		if (nextSignature != null) {
 			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
@@ -1152,8 +1141,8 @@ public class MainFrame extends JFrame {
 		}
 
 		// file list item
-		String selectedSignature = APPLICATION
-				.getMidiListeningSignature(fileList.getSelectedIndex());
+		String selectedSignature = presenter.getMidiListeningSignature(fileList
+				.getSelectedIndex());
 		if (selectedSignature != null) {
 			if (componentName.equals(MainFrame.NAME_FILE_LIST)
 					&& (!selectedSignature.equals(""))) {

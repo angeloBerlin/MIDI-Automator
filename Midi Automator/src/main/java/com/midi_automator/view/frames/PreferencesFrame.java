@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -27,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -40,6 +40,7 @@ import com.midi_automator.view.automationconfiguration.AutomationIndexDoesNotExi
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
+@org.springframework.stereotype.Component
 public class PreferencesFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -86,7 +87,9 @@ public class PreferencesFrame extends JFrame {
 	private JComboBox<String> midiOUTSwitchNotifierDeviceComboBox;
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
-	private final GUIAutomationConfigurationPanel GUI_AUTOMATION_PANEL;
+
+	@Autowired
+	private GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
 
 	private JButton buttonSendNotify;
 	private JButton buttonSave;
@@ -98,29 +101,16 @@ public class PreferencesFrame extends JFrame {
 	private final int CONSTRAINT_FILL_COMBO_BOX = GridBagConstraints.NONE;
 	private final int CONSTRAINT_ANCHOR_COMBO_BOX = GridBagConstraints.WEST;
 
-	private final MidiAutomator APPLICATION;
-	private final JFrame PARENT_FRAME;
+	@Autowired
+	private MidiAutomator presenter;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param application
-	 *            The main application
-	 * @param programFrame
-	 *            The main programFrame
-	 * @throws HeadlessException
-	 *             If no GUI available
+	 * Initializes the frame
 	 */
-	public PreferencesFrame(MidiAutomator application, JFrame programFrame)
-			throws HeadlessException {
-		super();
+	public void init() {
 
-		this.setResizable(false);
-		this.APPLICATION = application;
-		this.PARENT_FRAME = programFrame;
-
+		setResizable(false);
 		setTitle(TITLE);
-		setLocation(this.PARENT_FRAME.getLocationOnScreen());
 
 		// set layout
 		JPanel contentPanel = new JPanel();
@@ -148,9 +138,8 @@ public class PreferencesFrame extends JFrame {
 		createSwitchNotifierMidiOutDevices();
 
 		// GUI Automation
-		GUI_AUTOMATION_PANEL = new GUIAutomationConfigurationPanel(APPLICATION);
 		createGUIAutomation();
-		application.setGUIAutomationsToActive(false);
+		presenter.setGUIAutomationsToActive(false);
 
 		// Save
 		buttonSave = new JButton(BUTTON_SAVE);
@@ -394,12 +383,14 @@ public class PreferencesFrame extends JFrame {
 		c.gridy = 7;
 		middlePanel.add(guiAutomationLabel, c);
 
-		GUI_AUTOMATION_PANEL.setOpaque(true);
+		guiAutomationConfigurationPanel.init();
+		guiAutomationConfigurationPanel.setOpaque(true);
 
 		c.gridx = 0;
 		c.gridy = 8;
 		c.gridwidth = 4;
-		middlePanel.add(GUI_AUTOMATION_PANEL, c);
+		middlePanel.add(guiAutomationConfigurationPanel, c);
+
 	}
 
 	/**
@@ -413,7 +404,7 @@ public class PreferencesFrame extends JFrame {
 	public void setMidiSignature(String signature, Component component) {
 
 		// learning for automation list
-		GUIAutomationConfigurationTable table = GUI_AUTOMATION_PANEL
+		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
 				.getConfigurationTable();
 		try {
 			table.setMidiSignature(signature, table.getSelectedRow());
@@ -428,7 +419,7 @@ public class PreferencesFrame extends JFrame {
 	public void reload() {
 
 		// midi in remote opener
-		String midiInRemoteDeviceName = APPLICATION
+		String midiInRemoteDeviceName = presenter
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 
 		if (midiInRemoteDeviceName != null) {
@@ -436,7 +427,7 @@ public class PreferencesFrame extends JFrame {
 		}
 
 		// midi out remote opener
-		String midiOUTRemoteDevice = APPLICATION
+		String midiOUTRemoteDevice = presenter
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 
 		if (midiOUTRemoteDevice != null) {
@@ -444,7 +435,7 @@ public class PreferencesFrame extends JFrame {
 		}
 
 		// midi in metronom
-		String midiINMetronomDevice = APPLICATION
+		String midiINMetronomDevice = presenter
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 
 		if (midiINMetronomDevice != null) {
@@ -452,7 +443,7 @@ public class PreferencesFrame extends JFrame {
 		}
 
 		// midi out switch notifier
-		String midiOUTSwitchNotifierDevice = APPLICATION
+		String midiOUTSwitchNotifierDevice = presenter
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 
 		if (midiOUTSwitchNotifierDevice != null) {
@@ -461,7 +452,7 @@ public class PreferencesFrame extends JFrame {
 		}
 
 		// midi out item switch
-		String midiOUTSwitchItemDevice = APPLICATION
+		String midiOUTSwitchItemDevice = presenter
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
 		if (midiOUTSwitchItemDevice != null) {
@@ -470,18 +461,20 @@ public class PreferencesFrame extends JFrame {
 		}
 
 		// gui automations
-		GUIAutomation[] guiAutomations = APPLICATION.getGUIAutomations();
-		GUIAutomationConfigurationTable table = GUI_AUTOMATION_PANEL
+		GUIAutomation[] guiAutomations = presenter.getGUIAutomations();
+		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
 				.getConfigurationTable();
 
-		for (int i = 0; i < guiAutomations.length; i++) {
-			table.setAutomation(guiAutomations[i].getImagePath(),
-					guiAutomations[i].getType(),
-					guiAutomations[i].getTrigger(),
-					guiAutomations[i].getMinDelay(),
-					guiAutomations[i].getMidiSignature(),
-					guiAutomations[i].getMinSimilarity(),
-					guiAutomations[i].isMovable(), i);
+		if (guiAutomations != null) {
+			for (int i = 0; i < guiAutomations.length; i++) {
+				table.setAutomation(guiAutomations[i].getImagePath(),
+						guiAutomations[i].getType(),
+						guiAutomations[i].getTrigger(),
+						guiAutomations[i].getMinDelay(),
+						guiAutomations[i].getMidiSignature(),
+						guiAutomations[i].getMinSimilarity(),
+						guiAutomations[i].isMovable(), i);
+			}
 		}
 	}
 
@@ -496,8 +489,9 @@ public class PreferencesFrame extends JFrame {
 		// disable inputs
 		GUIUtils.disEnableAllInputs(this, false);
 
-		GUI_AUTOMATION_PANEL.getPopupMenu().midiLearnOn();
-		CacheableJTable table = GUI_AUTOMATION_PANEL.getConfigurationTable();
+		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOn();
+		CacheableJTable table = guiAutomationConfigurationPanel
+				.getConfigurationTable();
 
 		if (learningComponent.getName() != null) {
 			if (learningComponent.getName().equals(
@@ -521,14 +515,14 @@ public class PreferencesFrame extends JFrame {
 		GUIUtils.disEnableAllInputs(this, true);
 
 		// change menu item
-		GUI_AUTOMATION_PANEL.getPopupMenu().midiLearnOff();
+		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOff();
 
 		GUIUtils.deHighlightTableRow(
-				GUI_AUTOMATION_PANEL.getConfigurationTable(), false);
+				guiAutomationConfigurationPanel.getConfigurationTable(), false);
 	}
 
 	public GUIAutomationConfigurationPanel getGuiAutomationPanel() {
-		return GUI_AUTOMATION_PANEL;
+		return guiAutomationConfigurationPanel;
 	}
 
 	/**
@@ -554,25 +548,25 @@ public class PreferencesFrame extends JFrame {
 					.getSelectedItem();
 			String midiOUTSwitchItemDeviceName = (String) midiOUTSwitchItemDeviceComboBox
 					.getSelectedItem();
-			GUIAutomation[] guiAutomations = GUI_AUTOMATION_PANEL
+			GUIAutomation[] guiAutomations = guiAutomationConfigurationPanel
 					.getGUIAutomations();
 
-			APPLICATION.setMidiDeviceName(midiINRemoteDeviceName,
+			presenter.setMidiDeviceName(midiINRemoteDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-			APPLICATION.setMidiDeviceName(midiINMetronomDeviceName,
+			presenter.setMidiDeviceName(midiINMetronomDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-			APPLICATION.setMidiDeviceName(midiOUTRemoteDeviceName,
+			presenter.setMidiDeviceName(midiOUTRemoteDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-			APPLICATION
+			presenter
 					.setMidiDeviceName(
 							midiOUTSwitchNotifierDeviceName,
 							MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-			APPLICATION.setMidiDeviceName(midiOUTSwitchItemDeviceName,
+			presenter.setMidiDeviceName(midiOUTSwitchItemDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-			APPLICATION.setGUIAutomations(guiAutomations);
+			presenter.setGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
-			new PropertiesReloadThread(APPLICATION).start();
+			new PropertiesReloadThread(presenter).start();
 		}
 	}
 
@@ -613,7 +607,7 @@ public class PreferencesFrame extends JFrame {
 					.getSelectedItem();
 			try {
 				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
-				APPLICATION.sendItemChangeNotifier(device);
+				presenter.sendItemChangeNotifier(device);
 			} catch (MidiUnavailableException ex) {
 				log.error(
 						"The MIDI device for the switch notification is unavailable",
@@ -633,7 +627,7 @@ public class PreferencesFrame extends JFrame {
 		@Override
 		public void windowClosing(WindowEvent e) {
 			e.getWindow().dispose();
-			APPLICATION.setGUIAutomationsToActive(true);
+			presenter.setGUIAutomationsToActive(true);
 		}
 	}
 }

@@ -9,7 +9,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Region;
 
 import com.midi_automator.tests.IntegrationTestCase;
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.SikuliAutomation;
 
 /**
@@ -23,7 +23,7 @@ public class Installer extends IntegrationTestCase {
 	@Test
 	public void midiOpenerShouldBeInstalled() {
 		try {
-			GUIAutomations.openMidiAutomatorInstaller();
+			SikuliXAutomations.openMidiAutomatorInstaller();
 			Region match = SikuliAutomation.getSearchRegion();
 
 			// MacOS
@@ -32,7 +32,7 @@ public class Installer extends IntegrationTestCase {
 				match.dragDrop(screenshotpath + "Midi_automator_app_icon.png",
 						screenshotpath + "Applications_icon.png");
 				SikuliAutomation.setSearchRegion(screen);
-				match = GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+				match = SikuliXAutomations.findMultipleStateRegion(MAX_TIMEOUT,
 						"ersetzen_button.png");
 				match.click();
 				Thread.sleep(6000);
@@ -40,7 +40,7 @@ public class Installer extends IntegrationTestCase {
 
 			// Windows
 			if (System.getProperty("os.name").equals("Windows 7")) {
-				match = GUIAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
+				match = SikuliXAutomations.findMultipleStateRegion(DEFAULT_TIMEOUT,
 						"NSIS_install_button_active.png",
 						"NSIS_install_button.png");
 				match.click();
@@ -49,7 +49,7 @@ public class Installer extends IntegrationTestCase {
 				boolean foundCloseButtonActive = false;
 				while (!foundCloseButtonActive) {
 					try {
-						GUIAutomations.findMultipleStateRegion(MAX_TIMEOUT,
+						SikuliXAutomations.findMultipleStateRegion(MAX_TIMEOUT,
 								"NSIS_close_button_active.png");
 						foundCloseButtonActive = true;
 					} catch (FindFailed e) {
@@ -57,7 +57,7 @@ public class Installer extends IntegrationTestCase {
 				}
 			}
 
-			GUIAutomations.closeMidiAutomatorInstaller();
+			SikuliXAutomations.closeMidiAutomatorInstaller();
 		} catch (IOException | FindFailed | InterruptedException e) {
 			fail(e.toString());
 		}

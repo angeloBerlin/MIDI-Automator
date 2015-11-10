@@ -8,70 +8,29 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
+@Repository
 public class Model implements IModel {
 
 	static Logger log = Logger.getLogger(Model.class.getName());
 
-	private static Model instance;
-	private String persistenceFileName;
 	private final String DEFAULT_FILE_NAME = "file_list.mido";
 	private final String VALUE_SEPARATOR = ";";
+
+	@Autowired
 	private SetList setList;
-	private ApplicationContext ctx;
 
-	/**
-	 * Private constructor for singleton pattern
-	 * 
-	 */
-	private Model() {
-		ctx = new ClassPathXmlApplicationContext("Beans.xml");
-	}
-
-	/**
-	 * Private constructor for singleton pattern
-	 * 
-	 * @param resources
-	 *            The resources file
-	 */
-	private Model(Resources resources) {
-		this();
-		persistenceFileName = resources.getDefaultFileListPath()
-				+ DEFAULT_FILE_NAME;
-	}
-
-	/**
-	 * Gets the unique instance of the model
-	 * 
-	 * @param resources
-	 *            The resources file
-	 * @return Singleton instance
-	 */
-	public static Model getInstance(Resources resources) {
-
-		if (instance == null) {
-			instance = new Model(resources);
-		}
-
-		return instance;
-	}
-
-	@Override
-	public void setPersistenceFileName(String fileName) {
-
-		if (fileName != null) {
-			persistenceFileName = fileName;
-		}
-	}
+	@Autowired
+	private Resources resources;
 
 	@Override
 	public String getPersistenceFileName() {
-		return persistenceFileName;
+		return resources.getDefaultFileListPath() + DEFAULT_FILE_NAME;
 	}
 
 	@Override
@@ -79,7 +38,7 @@ public class Model implements IModel {
 			TooManyEntriesException {
 
 		setList.clear();
-		FileReader fileReader = new FileReader(persistenceFileName);
+		FileReader fileReader = new FileReader(getPersistenceFileName());
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 		String line = null;
@@ -100,11 +59,8 @@ public class Model implements IModel {
 				// catch empty csv values
 			}
 
-			SetListItem item = (SetListItem) ctx.getBean("SetListItem");
-			item.setName(name);
-			item.setFilePath(filePath);
-			item.setMidiListeningSignature(midiListeningSignature);
-			item.setMidiSendingSignature(midiSendingSignature);
+			SetListItem item = new SetListItem(name, filePath,
+					midiListeningSignature, midiSendingSignature);
 
 			setList.addItem(item);
 		}
@@ -119,7 +75,7 @@ public class Model implements IModel {
 	@Override
 	public void save() throws FileNotFoundException, IOException {
 
-		FileWriter fileWriter = new FileWriter(persistenceFileName);
+		FileWriter fileWriter = new FileWriter(getPersistenceFileName());
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
 		for (SetListItem item : setList.getItems()) {
@@ -141,11 +97,6 @@ public class Model implements IModel {
 	@Override
 	public SetList getSetList() {
 		return setList;
-	}
-
-	@Override
-	public void setSetList(SetList setList) {
-		this.setList = setList;
 	}
 
 }

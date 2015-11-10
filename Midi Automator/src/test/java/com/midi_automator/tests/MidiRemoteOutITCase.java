@@ -12,7 +12,7 @@ import javax.sound.midi.Receiver;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -53,10 +53,10 @@ public class MidiRemoteOutITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_master_out.png", deviceScreenshot);
-			GUIAutomations.openEntryByDoubleClick(
+			SikuliXAutomations.openEntryByDoubleClick(
 					"Hello_World_1_entry_active.png",
 					"Hello_World_1_entry_inactive.png",
 					"Hello_World_1_entry.png");
@@ -69,7 +69,7 @@ public class MidiRemoteOutITCase extends IntegrationTestCase {
 						+ " is wrong master signature for index 0.");
 			}
 
-			GUIAutomations.openEntryByDoubleClick(
+			SikuliXAutomations.openEntryByDoubleClick(
 					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry_inactive.png",
 					"Hello_World_2_entry.png");
@@ -86,7 +86,7 @@ public class MidiRemoteOutITCase extends IntegrationTestCase {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

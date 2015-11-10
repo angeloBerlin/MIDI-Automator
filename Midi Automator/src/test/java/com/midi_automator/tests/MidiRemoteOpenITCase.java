@@ -11,7 +11,7 @@ import javax.sound.midi.ShortMessage;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -42,18 +42,18 @@ public class MidiRemoteOpenITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// open files by learned midi master message
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
-			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
-			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
 					"Hello_World_2_RTF_inactive.png");
 
 		} catch (FindFailed | IOException | InterruptedException
@@ -61,7 +61,7 @@ public class MidiRemoteOpenITCase extends IntegrationTestCase {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

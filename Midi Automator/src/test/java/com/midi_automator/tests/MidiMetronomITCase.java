@@ -11,7 +11,7 @@ import javax.sound.midi.ShortMessage;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
 
@@ -47,8 +47,8 @@ public class MidiMetronomITCase extends IntegrationTestCase {
 		failMessage = null;
 
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
 			Thread.sleep(500);
 
@@ -79,7 +79,7 @@ public class MidiMetronomITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -92,8 +92,8 @@ public class MidiMetronomITCase extends IntegrationTestCase {
 		failMessage = null;
 
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_metronom_in.png", deviceScreenshot);
 			Thread.sleep(500);
 
@@ -124,7 +124,7 @@ public class MidiMetronomITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -141,7 +141,7 @@ public class MidiMetronomITCase extends IntegrationTestCase {
 
 		public void run() {
 			try {
-				GUIAutomations.checkResult(screenshot);
+				SikuliXAutomations.checkResult(screenshot);
 			} catch (FindFailed e) {
 				failMessage = e.toString();
 			} finally {

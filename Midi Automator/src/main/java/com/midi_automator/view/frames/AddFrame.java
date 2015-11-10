@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +24,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.presenter.MidiAutomator;
 
+@org.springframework.stereotype.Component
 public class AddFrame extends JFrame {
 
 	static Logger log = Logger.getLogger(AddFrame.class.getName());
@@ -36,8 +37,6 @@ public class AddFrame extends JFrame {
 	private final String TITLE = "Add";
 	protected final int WIDTH = 530;
 	protected final int HEIGHT = 140;
-	private final int LOCATION_X_OFFSET = 50;
-	private final int LOCATION_Y_OFFSET = 50;
 	protected final int LABEL_WIDTH = 70;
 	protected final int TEXT_PANE_WIDTH = 340;
 	private final String LABEL_NAME = "Name:";
@@ -46,6 +45,10 @@ public class AddFrame extends JFrame {
 	private final String BUTTON_SEARCH = "Search...";
 	private final String BUTTON_SAVE = "Save";
 	private final String BUTTON_CANCEL = "Cancel";
+
+	public static String NAME = "Add Frame";
+	public static String NAME_NAME_TEXT_FIELD = "name text field";
+	public static String NAME_FILE_TEXT_FIELD = "file text field";
 
 	protected JPanel middlePanel;
 	private JPanel footerPanel;
@@ -59,34 +62,21 @@ public class AddFrame extends JFrame {
 	protected JButton buttonSave;
 	private JButton buttonCancel;
 
-	protected final MidiAutomator APPLICATION;
-	protected final JFrame PARENT_FRAME;
+	@Autowired
+	protected MidiAutomator presenter;
 
 	protected ActionListener saveListener;
 	protected ActionListener cancelListener;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param application
-	 *            The main application
-	 * @param programFrame
-	 *            The main programFrame
-	 * @throws HeadlessException
-	 *             If no GUI available
+	 * Initializes the frame
 	 */
-	public AddFrame(MidiAutomator application, JFrame programFrame)
-			throws HeadlessException {
-		super();
+	public void init() {
 
-		this.APPLICATION = application;
-		this.PARENT_FRAME = programFrame;
+		setName(NAME);
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
-		setLocation(this.PARENT_FRAME.getLocationOnScreen().x
-				+ LOCATION_X_OFFSET, this.PARENT_FRAME.getLocationOnScreen().y
-				+ LOCATION_Y_OFFSET);
 
 		// set layout
 		getContentPane().setLayout(new BorderLayout());
@@ -137,6 +127,7 @@ public class AddFrame extends JFrame {
 		nameTextField = new JTextField();
 		nameTextField.setPreferredSize(new Dimension(TEXT_PANE_WIDTH,
 				nameTextField.getPreferredSize().height));
+		nameTextField.setName(NAME_NAME_TEXT_FIELD);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 0;
@@ -162,6 +153,7 @@ public class AddFrame extends JFrame {
 		fileTextField = new JTextField();
 		fileTextField.setPreferredSize(new Dimension(TEXT_PANE_WIDTH,
 				fileTextField.getPreferredSize().height));
+		fileTextField.setName(NAME_FILE_TEXT_FIELD);
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
@@ -207,7 +199,7 @@ public class AddFrame extends JFrame {
 	 * Sets the text of the midi sending signature lbel
 	 */
 	protected void setMidiSendingSignatureValueLabelText() {
-		midiSendingSignatureValueLabel.setText(APPLICATION
+		midiSendingSignatureValueLabel.setText(presenter
 				.getUniqueSendingMidiSignature());
 	}
 
@@ -269,8 +261,7 @@ public class AddFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			APPLICATION.addItem(nameTextField.getText(),
-					fileTextField.getText(),
+			presenter.addItem(nameTextField.getText(), fileTextField.getText(),
 					midiSendingSignatureValueLabel.getText());
 			new CancelAction().actionPerformed(e);
 		}

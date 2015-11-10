@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class ImportExportITCase extends IntegrationTestCase {
@@ -18,15 +18,15 @@ public class ImportExportITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openImport();
+			SikuliXAutomations.openImport();
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

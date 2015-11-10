@@ -11,7 +11,7 @@ import javax.sound.midi.ShortMessage;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -46,17 +46,17 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+			SikuliXAutomations.midiLearnMainScreen("next.png", null, null,
 					LOW_SIMILARITY);
-			GUIAutomations.cancelMidiLearnMainScreen("next_inactive.png", null,
+			SikuliXAutomations.cancelMidiLearnMainScreen("next_inactive.png", null,
 					null);
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -69,28 +69,28 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+			SikuliXAutomations.midiLearnMainScreen("next.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearnMainScreen("next.png", null, null);
+			SikuliXAutomations.midiUnlearnMainScreen("next.png", null, null);
 
 			// check for inactive menu item
-			GUIAutomations
+			SikuliXAutomations
 					.openPopupMenu("next.png", null, null, LOW_SIMILARITY);
-			GUIAutomations.checkResult("midi_unlearn_inactive.png");
+			SikuliXAutomations.checkResult("midi_unlearn_inactive.png");
 
 			// open first files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 106, 127);
 			try {
-				GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+				SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 						"Hello_World_1_RTF_inactive.png");
 				fail("Hello World 1.rtf opened though midi was unlearned.");
 			} catch (FindFailed e) {
@@ -104,7 +104,7 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -117,12 +117,12 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-			GUIAutomations.focusMidiAutomator();
-			GUIAutomations.midiLearnMainScreen("next.png", null, null,
+			SikuliXAutomations.focusMidiAutomator();
+			SikuliXAutomations.midiLearnMainScreen("next.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -132,14 +132,14 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
 
 			// open second files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
 					"Hello_World_2_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
@@ -149,7 +149,7 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -163,16 +163,16 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
-			GUIAutomations.cancelMidiLearnMainScreen("prev_inactive.png", null,
+			SikuliXAutomations.cancelMidiLearnMainScreen("prev_inactive.png", null,
 					null);
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -185,15 +185,15 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations
 					.openPopupMenu("prev.png", null, null, LOW_SIMILARITY);
-			GUIAutomations.checkResult("midi_learn_inactive.png");
+			SikuliXAutomations.checkResult("midi_learn_inactive.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -206,15 +206,15 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations
 					.openPopupMenu("next.png", null, null, LOW_SIMILARITY);
-			GUIAutomations.checkResult("midi_learn_inactive.png");
+			SikuliXAutomations.checkResult("midi_learn_inactive.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -227,28 +227,28 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// midi learn
-			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
+			SikuliXAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// midi unlearn
-			GUIAutomations.midiUnlearnMainScreen("prev.png", null, null);
+			SikuliXAutomations.midiUnlearnMainScreen("prev.png", null, null);
 
 			// check for inactive menu item
-			GUIAutomations.openPopupMenu("prev.png", "prev_inactive.png", null,
+			SikuliXAutomations.openPopupMenu("prev.png", "prev_inactive.png", null,
 					LOW_SIMILARITY);
-			GUIAutomations.checkResult("midi_unlearn_inactive.png");
+			SikuliXAutomations.checkResult("midi_unlearn_inactive.png");
 
 			// open first files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 106, 127);
 			try {
-				GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+				SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 						"Hello_World_1_RTF_inactive.png");
 				fail("Hello World 1.rtf opened though midi was unlearned.");
 			} catch (FindFailed e) {
@@ -262,7 +262,7 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -275,12 +275,12 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-			GUIAutomations.focusMidiAutomator();
-			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
+			SikuliXAutomations.focusMidiAutomator();
+			SikuliXAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -290,14 +290,14 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
 					"Hello_World_2_RTF_inactive.png");
 
 			// open second files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
@@ -307,7 +307,7 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			e.printStackTrace();
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -320,13 +320,13 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.focusMidiAutomator();
 			// GUIAutomations.openMidiAutomator();
 
-			GUIAutomations.setAndSavePreferencesComboBox(
+			SikuliXAutomations.setAndSavePreferencesComboBox(
 					"combo_box_midi_remote_in.png", deviceScreenshot);
-			GUIAutomations.focusMidiAutomator();
-			GUIAutomations.midiLearnMainScreen("prev.png", null, null,
+			SikuliXAutomations.focusMidiAutomator();
+			SikuliXAutomations.midiLearnMainScreen("prev.png", null, null,
 					LOW_SIMILARITY);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -336,14 +336,14 @@ public class MidiLearnSwitchButtonsITCase extends IntegrationTestCase {
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_2_RTF.png",
 					"Hello_World_2_RTF_inactive.png");
 
 			// open second files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed /* | IOException */e) {

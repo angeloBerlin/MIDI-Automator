@@ -13,7 +13,7 @@ import org.sikuli.script.FindFailed;
 import org.sikuli.script.Location;
 import org.sikuli.script.Region;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliAutomation;
 import com.midi_automator.utils.MidiUtils;
@@ -66,49 +66,49 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiFullMainFrameAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/full_list.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// search clicked Midi Automator
-			GUIAutomations
+			SikuliXAutomations
 					.checkResult("midi_automator_Hello_World_3_active.png");
 
 			// change view of Midi Automator
-			GUIAutomations.moveUpEntry("Hello_World_3_entry_active.png",
+			SikuliXAutomations.moveUpEntry("Hello_World_3_entry_active.png",
 					"Hello_World_3_entry.png",
 					"Hello_World_3_entry_inactive.png");
 
 			// search clicked Midi Automator
 			try {
-				GUIAutomations
+				SikuliXAutomations
 						.checkResult("midi_automator_Neon_Farben_active.png");
 				fail("Automation found unsimilar image.");
 			} catch (FindFailed e) {
 			}
 
 			// decrease similarity
-			GUIAutomations.openPreferences();
-			GUIAutomations.setAutomationsTextField("automation_similarity.png",
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.setAutomationsTextField("automation_similarity.png",
 					"0,5", 1);
-			GUIAutomations.saveDialog();
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.saveDialog();
+			SikuliXAutomations.focusMidiAutomator();
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// search clicked Midi Automator
-			GUIAutomations.checkResult("midi_automator_Neon_Farben_active.png");
+			SikuliXAutomations.checkResult("midi_automator_Neon_Farben_active.png");
 
 		} catch (FindFailed | InvalidMidiDataException
 				| MidiUnavailableException | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -121,21 +121,21 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openPreferences();
-			GUIAutomations.addAutomation();
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.addAutomation();
 
 			// search new automation
-			GUIAutomations.checkResult("automation_empty.png");
+			SikuliXAutomations.checkResult("automation_empty.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
 				// cancel preferences
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -149,21 +149,21 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openPreferences();
-			GUIAutomations.deleteAutomation(1);
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.deleteAutomation(1);
 
 			// search empty automations
-			GUIAutomations.checkResult("automations_list_empty.png");
+			SikuliXAutomations.checkResult("automations_list_empty.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
 				// cancel preferences
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -178,21 +178,21 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// check if add dialog was canceled
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 			// check if add dialog was canceled
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -208,38 +208,38 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// set trigger to once
-			GUIAutomations.setAndSaveAutomationsComboBox(
+			SikuliXAutomations.setAndSaveAutomationsComboBox(
 					"automation_trigger.png", "once.png", 1);
 
 			// check if add dialog was canceled
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if add dialog was not canceled again
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult(
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult(
 					"midi_automator_Hello_World_12i.png", error);
 
 			// cancel open dialog
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.cancelDialog();
 
 			// check if add dialog was not canceled after opening
-			GUIAutomations.nextFile();
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult(
+			SikuliXAutomations.nextFile();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult(
 					"midi_automator_Hello_World_12i.png", error);
 
 			// cancel open dialog
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.cancelDialog();
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -255,34 +255,34 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// set trigger to once per opening
-			GUIAutomations.setAndSaveAutomationsComboBox(
+			SikuliXAutomations.setAndSaveAutomationsComboBox(
 					"automation_trigger.png", "once_per_opening.png", 1);
 
 			// check if add dialog was canceled before opening
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult(
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult(
 					"midi_automator_Hello_World_12i.png", error);
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.cancelDialog();
 
 			// check if add dialog was canceled after opening
-			GUIAutomations.nextFile();
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
+			SikuliXAutomations.nextFile();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if add dialog was canceled twice after opening
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult(
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult(
 					"midi_automator_Hello_World_12i.png", error);
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.cancelDialog();
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -296,28 +296,28 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiCancelAutomation);
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// cancel midi learn
-			GUIAutomations.openPreferences();
-			GUIAutomations.midiLearnAutomation(1);
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.midiLearnAutomation(1);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			GUIAutomations.cancelMidiLearnAutomation(1);
+			SikuliXAutomations.cancelMidiLearnAutomation(1);
 
 			// check for empty midi message
-			GUIAutomations
+			SikuliXAutomations
 					.checkResult("automation_midi_message_empty_active_row1.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.saveDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.saveDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -333,41 +333,41 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// open preferences
-			GUIAutomations.openPreferences();
+			SikuliXAutomations.openPreferences();
 
 			// midi learn automation
-			GUIAutomations.midiLearnAutomation(1);
+			SikuliXAutomations.midiLearnAutomation(1);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// check for learned midi message
-			GUIAutomations.checkResult(
+			SikuliXAutomations.checkResult(
 					"channel_1_CONTROL_CHANGE_109_value.png", 0.9f);
 
-			GUIAutomations.saveDialog();
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.saveDialog();
+			SikuliXAutomations.focusMidiAutomator();
 
 			// check if add dialog was canceled by some other trigger
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult("midi_automator.png", error);
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult("midi_automator.png", error);
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
 			// check if add dialog was canceled
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException | InvalidMidiDataException
 				| MidiUnavailableException | InterruptedException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -384,29 +384,29 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// open preferences
-			GUIAutomations.openPreferences();
+			SikuliXAutomations.openPreferences();
 
 			// set delay
-			GUIAutomations.setAutomationsTextField("automation_delay.png",
+			SikuliXAutomations.setAutomationsTextField("automation_delay.png",
 					new Integer(delay).toString(), 1);
-			GUIAutomations.saveDialog();
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.saveDialog();
+			SikuliXAutomations.focusMidiAutomator();
 
 			// check if add dialog was canceled before delay
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkIfNoResult("midi_automator.png", error);
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkIfNoResult("midi_automator.png", error);
 
 			// check if add dialog was canceled
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -421,27 +421,27 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiMainFrameAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			Region mainFrame = GUIAutomations.findMidiAutomatorRegion();
+			Region mainFrame = SikuliXAutomations.findMidiAutomatorRegion();
 
 			// set trigger to once right click
-			GUIAutomations.openPreferences();
-			GUIAutomations.setAutomationsComboBox("automation_type.png",
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.setAutomationsComboBox("automation_type.png",
 					"right_click.png", 1);
-			GUIAutomations.setAutomationsComboBox("automation_trigger.png",
+			SikuliXAutomations.setAutomationsComboBox("automation_trigger.png",
 					"once.png", 1);
-			GUIAutomations.saveDialog();
+			SikuliXAutomations.saveDialog();
 
 			// check if popup menu appears
 			SikuliAutomation.setSearchRegion(mainFrame);
-			GUIAutomations.checkResult("popup_menu_empty_file_list.png");
+			SikuliXAutomations.checkResult("popup_menu_empty_file_list.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -456,25 +456,25 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiHelloWorldAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// set trigger to double click once
-			GUIAutomations.openPreferences();
-			GUIAutomations.setAutomationsComboBox("automation_type.png",
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.setAutomationsComboBox("automation_type.png",
 					"double_click.png", 1);
-			GUIAutomations.setAutomationsComboBox("automation_trigger.png",
+			SikuliXAutomations.setAutomationsComboBox("automation_trigger.png",
 					"once.png", 1);
-			GUIAutomations.saveDialog();
+			SikuliXAutomations.saveDialog();
 
 			// check if popup menu appears
-			GUIAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
+			SikuliXAutomations.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -488,33 +488,33 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openPreferences();
-			GUIAutomations.activateAutomationsTextField("automation_delay.png",
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.activateAutomationsTextField("automation_delay.png",
 					1);
 
 			// spin up two times
-			GUIAutomations.spinUp();
-			GUIAutomations.spinUp();
+			SikuliXAutomations.spinUp();
+			SikuliXAutomations.spinUp();
 
 			// check for delay = 2
-			GUIAutomations.checkResult("automation_delay_2_active.png");
+			SikuliXAutomations.checkResult("automation_delay_2_active.png");
 
 			// spin down three times
-			GUIAutomations.spinDown();
-			GUIAutomations.spinDown();
-			GUIAutomations.spinDown();
+			SikuliXAutomations.spinDown();
+			SikuliXAutomations.spinDown();
+			SikuliXAutomations.spinDown();
 
 			// check for delay = 0
-			GUIAutomations.checkResult("automation_delay_0_active.png");
+			SikuliXAutomations.checkResult("automation_delay_0_active.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -528,32 +528,32 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 			// mockup
 			MockUpUtils
 					.setMockupPropertiesFile("mockups/automation1_empty.properties");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openPreferences();
-			GUIAutomations.activateAutomationsTextField("automation_delay.png",
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.activateAutomationsTextField("automation_delay.png",
 					1);
 
 			// set delay negative
-			GUIAutomations.setAutomationsTextField("automation_delay.png",
+			SikuliXAutomations.setAutomationsTextField("automation_delay.png",
 					"-1000", 1);
-			GUIAutomations.saveDialog();
-			GUIAutomations.openPreferences();
-			GUIAutomations.checkResult("automation_delay_0.png");
+			SikuliXAutomations.saveDialog();
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.checkResult("automation_delay_0.png");
 
 			// set delay nonsense
-			GUIAutomations.setAutomationsTextField("automation_delay.png",
+			SikuliXAutomations.setAutomationsTextField("automation_delay.png",
 					"/*$%%%Ghg12", 1);
-			GUIAutomations.saveDialog();
-			GUIAutomations.openPreferences();
-			GUIAutomations.checkResult("automation_delay_0.png");
+			SikuliXAutomations.saveDialog();
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.checkResult("automation_delay_0.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -569,28 +569,28 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 					.setMockupPropertiesFile("mockups/"
 							+ propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// check if dialogs are always canceled
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 			// check if popup menu is opened after file opening
-			GUIAutomations.openEntryByDoubleClick("Hello_World_2_entry.png",
+			SikuliXAutomations.openEntryByDoubleClick("Hello_World_2_entry.png",
 					"Hello_World_2_entry_active.png",
 					"Hello_World_2_entry_inactive.png");
-			GUIAutomations.checkResult("popup_menu_file_list.png");
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.checkResult("popup_menu_file_list.png");
+			SikuliXAutomations.focusMidiAutomator();
 
 			// check if dialogs are always canceled
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator_Hello_World_12i.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator_Hello_World_12i.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -606,52 +606,52 @@ public class GUIAutomationITCase extends IntegrationTestCase {
 					+ propertiesAlwaysCancelAutomation);
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// check if add dialog was canceled unmoved
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 			// move cancel button
-			GUIAutomations.dragElement(new Location(500, 200),
+			SikuliXAutomations.dragElement(new Location(500, 200),
 					"Midi_Automator_title.png",
 					"Midi_Automator_title_inactive.png");
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.focusMidiAutomator();
 
 			// check if dialog was not canceled
-			GUIAutomations.openAddDialog();
+			SikuliXAutomations.openAddDialog();
 			try {
-				GUIAutomations.checkResult("midi_automator.png");
+				SikuliXAutomations.checkResult("midi_automator.png");
 				fail("Automation was done, though image was moved");
 			} catch (FindFailed e) {
-				GUIAutomations.cancelDialog();
+				SikuliXAutomations.cancelDialog();
 			}
 
 			// activate movable
-			GUIAutomations.openPreferences();
-			GUIAutomations.clickAutomationCheckBox("Movable.png");
-			GUIAutomations.saveDialog();
+			SikuliXAutomations.openPreferences();
+			SikuliXAutomations.clickAutomationCheckBox("Movable.png");
+			SikuliXAutomations.saveDialog();
 
 			// check if add dialog was canceled unmoved
-			GUIAutomations.focusMidiAutomator();
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.focusMidiAutomator();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 			// move cancel button
-			GUIAutomations.dragElement(new Location(300, 100),
+			SikuliXAutomations.dragElement(new Location(300, 100),
 					"Midi_Automator_title.png",
 					"Midi_Automator_title_inactive.png");
-			GUIAutomations.focusMidiAutomator();
+			SikuliXAutomations.focusMidiAutomator();
 
 			// check if add dialog was canceled unmoved
-			GUIAutomations.openAddDialog();
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

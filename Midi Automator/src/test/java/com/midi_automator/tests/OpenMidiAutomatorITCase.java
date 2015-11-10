@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 
 public class OpenMidiAutomatorITCase extends IntegrationTestCase {
 
@@ -15,15 +15,15 @@ public class OpenMidiAutomatorITCase extends IntegrationTestCase {
 	public void programShallBeOpened() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// check if opened
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.checkResult("midi_automator.png");
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

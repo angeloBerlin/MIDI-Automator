@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.utils.SystemUtils;
 
 public class CloseMidiAutomatorITCase extends IntegrationTestCase {
@@ -16,8 +16,8 @@ public class CloseMidiAutomatorITCase extends IntegrationTestCase {
 	public void programShallBeClosed() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.openExitMenu();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.openExitMenu();
 			Thread.sleep(3000);
 
 			// check if process was killed

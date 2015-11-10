@@ -1,11 +1,5 @@
 package com.midi_automator.view.automationconfiguration;
 
-/**
- * A configuration panel for adding, deleting and editing GUI automation.
- *  
- * @author aguelle
- * @date 10-12-2014
- */
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -18,11 +12,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.midi_automator.guiautomator.GUIAutomation;
-import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
 
+/**
+ * A configuration panel for adding, deleting and editing GUI automation.
+ * 
+ * @author aguelle
+ * @date 10-12-2014
+ */
+@org.springframework.stereotype.Component
 public class GUIAutomationConfigurationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -31,36 +33,45 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	private final String DELETE_LABEL = "-";
 	private final int EDITOR_BUTTON_SIZE = 41; // min size for Windows
 
-	private final GUIAutomationConfigurationTable CONFIGURATION_TABLE;
 	private JPanel editorPanel;
 	private JButton addButton;
 	private JButton deleteButton;
+	private boolean initialized = false;
+
+	@Autowired
+	private GUIAutomationConfigurationTable configurationTable;
 
 	public static final String NAME_CONFIGURATION_TABLE = "configuration table";
 
 	/**
-	 * Constructor
-	 * 
-	 * @param application
-	 *            The application.
+	 * Initializes the panel
 	 */
-	public GUIAutomationConfigurationPanel(MidiAutomator application) {
-		super(new GridBagLayout());
+	public void init() {
 
-		// configuration table
-		CONFIGURATION_TABLE = new GUIAutomationConfigurationTable(application);
-		CONFIGURATION_TABLE.setName(NAME_CONFIGURATION_TABLE);
-		CONFIGURATION_TABLE.setCache(CONFIGURATION_TABLE
-				.getSelectionBackground());
-		JScrollPane scrollPane = new JScrollPane(CONFIGURATION_TABLE);
+		if (!initialized) {
+			setLayout(new GridBagLayout());
 
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		add(scrollPane, c);
+			// configuration table
+			configurationTable.init();
+			configurationTable.setName(NAME_CONFIGURATION_TABLE);
+			configurationTable.setCache(configurationTable
+					.getSelectionBackground());
+			JScrollPane scrollPane = new JScrollPane(configurationTable);
 
-		// editor panel
-		createEditorPanel();
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridx = 0;
+			c.gridy = 0;
+			add(scrollPane, c);
+
+			// editor panel
+			createEditorPanel();
+			c.gridx = 0;
+			c.gridy = 1;
+			c.anchor = GridBagConstraints.WEST;
+			add(editorPanel, c);
+
+			initialized = true;
+		}
 	}
 
 	/**
@@ -69,7 +80,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 * @return The popup menu
 	 */
 	public MidiLearnPopupMenu getPopupMenu() {
-		return CONFIGURATION_TABLE.getPopupMenu();
+		return configurationTable.getPopupMenu();
 	}
 
 	/**
@@ -78,7 +89,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 * @return The configuration JTable
 	 */
 	public GUIAutomationConfigurationTable getConfigurationTable() {
-		return CONFIGURATION_TABLE;
+		return configurationTable;
 	}
 
 	/**
@@ -88,13 +99,13 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 */
 	public GUIAutomation[] getGUIAutomations() {
 
-		TableModel model = CONFIGURATION_TABLE.getModel();
+		TableModel model = configurationTable.getModel();
 		int numberOfConfigurations = model.getRowCount();
 		GUIAutomation[] guiAutomations = new GUIAutomation[numberOfConfigurations];
 
 		// stop open edits
-		if (CONFIGURATION_TABLE.isEditing()) {
-			CONFIGURATION_TABLE.getCellEditor().stopCellEditing();
+		if (configurationTable.isEditing()) {
+			configurationTable.getCellEditor().stopCellEditing();
 		}
 
 		// build GUI automation objects
@@ -148,12 +159,6 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		deleteButton.setPreferredSize(new Dimension(EDITOR_BUTTON_SIZE,
 				EDITOR_BUTTON_SIZE));
 		editorPanel.add(deleteButton);
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 1;
-		c.anchor = GridBagConstraints.WEST;
-		add(editorPanel, c);
 	}
 
 	/**
@@ -163,7 +168,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CONFIGURATION_TABLE.setAutomation(null, null, null,
+			configurationTable.setAutomation(null, null, null,
 					GUIAutomation.DEFAULT_MIN_DELAY, null,
 					GUIAutomation.DEFAULT_MIN_SIMILARITY,
 					GUIAutomation.DEFAULT_IS_MOVABLE, -1);
@@ -177,7 +182,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CONFIGURATION_TABLE.deleteAutomation(CONFIGURATION_TABLE
+			configurationTable.deleteAutomation(configurationTable
 					.getSelectedRow());
 		}
 	}

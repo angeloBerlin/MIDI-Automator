@@ -5,13 +5,16 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.view.frames.MainFrame;
 
+@Controller
 public class MidiLearnPopupMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = 1L;
@@ -29,40 +32,31 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	private Action midiLearnAction;
 	private Action midiCancelAction;
 
-	protected final MidiAutomator APPLICATION;
-	protected MainFrame program_frame;
+	@Autowired
+	protected MidiAutomator presenter;
+	@Autowired
+	protected MainFrame mainFrame;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param parentFrame
-	 *            The parent main frame
-	 * @param application
-	 *            The main application
+	 * Initialize the popup menu
 	 */
-	public MidiLearnPopupMenu(JFrame parentFrame, MidiAutomator application) {
-		super();
+	public void init() {
 
-		this.APPLICATION = application;
-		if (parentFrame instanceof MainFrame) {
-			program_frame = (MainFrame) parentFrame;
-		}
 		midiLearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setName(NAME_MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setEnabled(false);
-		midiLearnAction = new MidiLearnAction(program_frame);
+		midiLearnAction = new MidiLearnAction(mainFrame);
 		midiLearnMenuItem.addActionListener(midiLearnAction);
 
 		midiUnlearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_UNLEARN);
 		midiUnlearnMenuItem.setName(NAME_MENU_ITEM_MIDI_UNLEARN);
 		midiUnlearnMenuItem.setEnabled(false);
-		midiUnlearnMenuItem.addActionListener(new MidiUnlearnAction(
-				program_frame));
+		midiUnlearnMenuItem.addActionListener(new MidiUnlearnAction(mainFrame));
 
 		add(midiLearnMenuItem);
 		add(midiUnlearnMenuItem);
 
-		midiCancelAction = new MidiLearnCancelAction(program_frame);
+		midiCancelAction = new MidiLearnCancelAction(mainFrame);
 	}
 
 	/**
@@ -99,10 +93,10 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @author aguelle
 	 * 
 	 */
-	class MidiLearnAction extends PopUpMenuAction {
+	class MidiLearnAction extends AbstractPopUpMenuAction {
 
-		public MidiLearnAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public MidiLearnAction(MainFrame mainFrame) {
+			super(mainFrame);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -113,7 +107,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 			JMenuItem menuItem = (JMenuItem) e.getSource();
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			JComponent component = (JComponent) popupMenu.getInvoker();
-			APPLICATION.setMidiLearnMode(true, component);
+			presenter.setMidiLearnMode(true, component);
 		}
 	}
 
@@ -123,10 +117,10 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @author aguelle
 	 * 
 	 */
-	class MidiUnlearnAction extends PopUpMenuAction {
+	class MidiUnlearnAction extends AbstractPopUpMenuAction {
 
-		public MidiUnlearnAction(MainFrame PROGRAM_FRAME) {
-			super(PROGRAM_FRAME);
+		public MidiUnlearnAction(MainFrame mainFrame) {
+			super(mainFrame);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -138,10 +132,10 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			Component component = popupMenu.getInvoker();
-			APPLICATION.unsetMidiSignature(component);
+			presenter.unsetMidiSignature(component);
 
 			if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
-				PROGRAM_FRAME.getFileList().setLastSelectedIndex();
+				mainFrame.getFileList().setLastSelectedIndex();
 			}
 		}
 	}
@@ -152,10 +146,10 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 * @author aguelle
 	 * 
 	 */
-	class MidiLearnCancelAction extends PopUpMenuAction {
+	class MidiLearnCancelAction extends AbstractPopUpMenuAction {
 
-		public MidiLearnCancelAction(MainFrame parentFrame) {
-			super(parentFrame);
+		public MidiLearnCancelAction(MainFrame mainFrame) {
+			super(mainFrame);
 		}
 
 		private static final long serialVersionUID = 1L;
@@ -163,7 +157,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			APPLICATION.setMidiLearnMode(false, null);
+			presenter.setMidiLearnMode(false, null);
 		}
 	}
 }

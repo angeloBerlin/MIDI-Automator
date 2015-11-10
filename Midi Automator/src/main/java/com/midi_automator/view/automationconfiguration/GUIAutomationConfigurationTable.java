@@ -24,6 +24,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -40,6 +42,7 @@ import com.midi_automator.view.ScaleableImageIcon;
  * @author aguelle
  * 
  */
+@org.springframework.stereotype.Component
 public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
@@ -80,18 +83,18 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	private Vector<Vector<Object>> data;
 
+	@Autowired
+	@Qualifier("midiLearnPopupMenu")
 	private MidiLearnPopupMenu popupMenu;
-	private final MidiAutomator APPLICATION;
+
+	@Autowired
+	private MidiAutomator presenter;
 
 	/**
-	 * Constructor
-	 * 
-	 * @param application
-	 *            The application
+	 * Initializes the table
 	 */
-	public GUIAutomationConfigurationTable(MidiAutomator application) {
+	public void init() {
 
-		APPLICATION = application;
 		data = new Vector<Vector<Object>>();
 
 		columnNames = new Vector<String>();
@@ -203,7 +206,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		// popup Menu
 		addMouseListener(new PopupListener());
-		popupMenu = new MidiLearnPopupMenu(null, application);
+		popupMenu.init();
 		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
 	}
 
@@ -592,10 +595,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			String trigger = (String) comboBox.getSelectedItem();
 
 			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-				APPLICATION.loadMidiDeviceByFunctionKey(functionKey,
+				presenter.loadMidiDeviceByFunctionKey(functionKey,
 						trigger.replace(GUIAutomation.CLICKTRIGGER_MIDI, ""));
 			} else {
-				APPLICATION.loadMidiDeviceByFunctionKey(functionKey,
+				presenter.loadMidiDeviceByFunctionKey(functionKey,
 						MidiAutomatorProperties.VALUE_NULL);
 			}
 		}

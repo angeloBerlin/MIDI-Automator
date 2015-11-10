@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.sikuli.script.FindFailed;
 
-import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.SikuliXAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class AddFileITCase extends IntegrationTestCase {
@@ -15,23 +15,23 @@ public class AddFileITCase extends IntegrationTestCase {
 	@Test
 	public void newFileShouldBeAdded() {
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.addFile("Hello World", currentPath
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.addFile("Hello World", currentPath
 					+ "/testfiles/Hello World.rtf");
 
 			// search new entry
-			GUIAutomations.checkResult("Hello_World_entry.png");
+			SikuliXAutomations.checkResult("Hello_World_entry.png");
 
 			// check if new entry was saved
-			GUIAutomations.closeMidiAutomator();
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.checkResult("Hello_World_entry.png");
+			SikuliXAutomations.closeMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.checkResult("Hello_World_entry.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -41,20 +41,20 @@ public class AddFileITCase extends IntegrationTestCase {
 	@Test
 	public void fileChooserOfAddDialogShouldBeOpened() {
 		try {
-			GUIAutomations.openMidiAutomator();
-			GUIAutomations.openAddDialog();
-			GUIAutomations.openSearchDialog();
+			SikuliXAutomations.openMidiAutomator();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.openSearchDialog();
 
 			// check search dialog
-			GUIAutomations.checkResult("file_chooser.png");
+			SikuliXAutomations.checkResult("file_chooser.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.cancelDialog();
-				GUIAutomations.cancelDialog();
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.cancelDialog();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -65,21 +65,21 @@ public class AddFileITCase extends IntegrationTestCase {
 	public void addingFileShouldBeCanceled() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
-			GUIAutomations.openAddDialog();
-			GUIAutomations.fillTextField("name_text_field.png", "x");
-			GUIAutomations.fillTextField("file_text_field.png", "y");
-			GUIAutomations.cancelDialog();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.fillTextField("name_text_field.png", "x");
+			SikuliXAutomations.fillTextField("file_text_field.png", "y");
+			SikuliXAutomations.cancelDialog();
 
 			// search unmodified midi automator
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -90,20 +90,20 @@ public class AddFileITCase extends IntegrationTestCase {
 	public void addingEmptyFileNameShouldNotBePossible() {
 
 		try {
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// adde empty file
-			GUIAutomations.openAddDialog();
-			GUIAutomations.saveDialog();
+			SikuliXAutomations.openAddDialog();
+			SikuliXAutomations.saveDialog();
 
 			// search unmodified midi automator
-			GUIAutomations.checkResult("midi_automator.png");
+			SikuliXAutomations.checkResult("midi_automator.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}
@@ -116,20 +116,20 @@ public class AddFileITCase extends IntegrationTestCase {
 		try {
 			// mockup
 			MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
-			GUIAutomations.openMidiAutomator();
+			SikuliXAutomations.openMidiAutomator();
 
 			// add file 129
-			GUIAutomations.addFile("Hello World 129", currentPath
+			SikuliXAutomations.addFile("Hello World 129", currentPath
 					+ "/testfiles/Hello World.rtf");
 
 			// check for failure
-			GUIAutomations.checkResult("error_129th_file_added.png");
+			SikuliXAutomations.checkResult("error_129th_file_added.png");
 
 		} catch (FindFailed | IOException e) {
 			fail(e.toString());
 		} finally {
 			try {
-				GUIAutomations.closeMidiAutomator();
+				SikuliXAutomations.closeMidiAutomator();
 			} catch (FindFailed e) {
 				e.printStackTrace();
 			}

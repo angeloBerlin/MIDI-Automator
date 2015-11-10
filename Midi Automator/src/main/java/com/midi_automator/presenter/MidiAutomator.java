@@ -28,7 +28,12 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Controller;
 
+import com.midi_automator.AppConfig;
+import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.guiautomator.GUIAutomator;
@@ -47,20 +52,25 @@ import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.frames.MainFrame;
 
+@Controller
 public class MidiAutomator {
 
 	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
 
-	private static MidiAutomator instance;
+	private final String VERSION = "1.3.1";
 
-	private final boolean TEST;
-	private final String VERSION = "1.3.0";
-	private final Resources RESOURCES;
-	private final MidiAutomatorProperties PROPERTIES;
-	private final String PROPERTIES_FILE_NAME = "midiautomator.properties";
-	private final MainFrame PROGRAM_FRAME;
+	@Autowired
+	private Resources resources;
 
+	@Autowired
+	private MidiAutomatorProperties properties;
+
+	@Autowired
 	private IModel model;
+
+	@Autowired
+	private MainFrame mainFrame;
+
 	private int currentItem = -1;
 	private List<String> infoMessages;
 	private String loadedMidautoFilePath;
@@ -100,32 +110,20 @@ public class MidiAutomator {
 	public static final String METRONOM_FIRST_CLICK_MIDI_SIGNATURE = "channel 16: NOTE ON A4";
 	public static final String METRONOM_CLICK_MIDI_SIGNATURE = "channel 16: NOTE ON E4";
 
-	/**
-	 * Constructor
-	 * 
-	 * @param model
-	 *            The model of the application
-	 * @param resources
-	 *            The resources with working directory and operating system
-	 * @param fileName
-	 *            The name of the file list
-	 * @param test
-	 *            <TRUE> Program GUI will be opened on left monitor side with
-	 *            top margin, <FALSE> normal mode
-	 */
-	private MidiAutomator(IModel model, Resources resources, String fileName,
-			boolean test) {
-
-		this.model = model;
-		RESOURCES = resources;
-		this.TEST = test;
-
-		PROPERTIES = new MidiAutomatorProperties(RESOURCES.getPropertiesPath()
-				+ PROPERTIES_FILE_NAME);
+	public MidiAutomator() {
 
 		infoMessages = new ArrayList<String>();
+		midiLearn = false;
+		doNotExecuteMidiMessage = false;
+		guiAutomators = new ArrayList<GUIAutomator>();
+	}
 
-		model.setPersistenceFileName(fileName);
+	/**
+	 * Opens the main program frame.
+	 */
+	public void openMainFrame() {
+
+		String fileName = model.getPersistenceFileName();
 
 		String errMidoFileNotFound = String.format(
 				Messages.MSG_FILE_LIST_NOT_FOUND, fileName);
@@ -141,35 +139,16 @@ public class MidiAutomator {
 		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG,
 				errMidoFileIsTooBig);
 
-		midiLearn = false;
-		doNotExecuteMidiMessage = false;
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+				AppConfig.class);
 
-		PROGRAM_FRAME = new MainFrame(this);
+		mainFrame = (MainFrame) ctx.getBean(MainFrame.class);
 
-		guiAutomators = new ArrayList<GUIAutomator>();
-
+		mainFrame.init();
 		reloadSetList();
 		reloadProperties();
-	}
 
-	/**
-	 * @param model
-	 *            The model of the application
-	 * @param resources
-	 *            The resources with working directory and operating system
-	 * @param fileName
-	 *            The name of the file list
-	 * @param test
-	 *            <TRUE> Program GUI will be opened on left monitor side with
-	 *            top margin, <FALSE> normal mode
-	 */
-	public static MidiAutomator getInstance(IModel model, Resources resources,
-			String fileName, boolean test) {
-
-		if (instance == null) {
-			instance = new MidiAutomator(model, resources, fileName, test);
-		}
-		return instance;
+		ctx.close();
 	}
 
 	/**
@@ -211,7 +190,7 @@ public class MidiAutomator {
 					+ "_" + i);
 		}
 
-		PROGRAM_FRAME.reload();
+		mainFrame.reload();
 	}
 
 	/**
@@ -238,9 +217,9 @@ public class MidiAutomator {
 				midiSedningSignatures.add(item.getMidiSendingSignature());
 			}
 
-			PROGRAM_FRAME.setFileEntries(entryNames);
-			PROGRAM_FRAME.setMidiListeningSignatures(midiListeningSignatures);
-			PROGRAM_FRAME.setMidiSendingSignatures(midiSedningSignatures);
+			mainFrame.setFileEntries(entryNames);
+			mainFrame.setMidiListeningSignatures(midiListeningSignatures);
+			mainFrame.setMidiSendingSignatures(midiSedningSignatures);
 
 		} catch (FileNotFoundException e1) {
 			setInfoMessage(Messages.builtMessages
@@ -253,8 +232,8 @@ public class MidiAutomator {
 					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 		}
 
-		PROGRAM_FRAME.setSelectedIndex(PROGRAM_FRAME.getLastSelectedIndex());
-		PROGRAM_FRAME.reload();
+		mainFrame.setSelectedIndex(mainFrame.getLastSelectedIndex());
+		mainFrame.reload();
 	}
 
 	/**
@@ -282,19 +261,19 @@ public class MidiAutomator {
 	 */
 	private void loadGUIAutomationsProperties() {
 
-		Set<Entry<Object, Object>> guiAutomationProperties_Images = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_Images = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES);
-		Set<Entry<Object, Object>> guiAutomationProperties_Types = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_Types = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES);
-		Set<Entry<Object, Object>> guiAutomationProperties_Triggers = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_Triggers = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS);
-		Set<Entry<Object, Object>> guiAutomationProperties_MidiSignatures = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_MidiSignatures = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
-		Set<Entry<Object, Object>> guiAutomationProperties_MinDelays = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_MinDelays = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
-		Set<Entry<Object, Object>> guiAutomationProperties_MinSimilarities = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_MinSimilarities = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
-		Set<Entry<Object, Object>> guiAutomationProperties_AreMovable = PROPERTIES
+		Set<Entry<Object, Object>> guiAutomationProperties_AreMovable = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
 
 		// initiate array with GUI automations
@@ -397,7 +376,7 @@ public class MidiAutomator {
 	 */
 	private void loadSwitchCommandProperty(String propertyKey) {
 
-		String propertyValue = (String) PROPERTIES.get(propertyKey);
+		String propertyValue = (String) properties.get(propertyKey);
 
 		if (propertyValue != null) {
 			String buttonName = "";
@@ -413,7 +392,7 @@ public class MidiAutomator {
 			}
 
 			if (buttonName != "") {
-				PROGRAM_FRAME.setButtonTooltip(propertyValue,
+				mainFrame.setButtonTooltip(propertyValue,
 						MainFrame.NAME_NEXT_BUTTON);
 			}
 		}
@@ -535,7 +514,7 @@ public class MidiAutomator {
 	 */
 	private void loadMidiDeviceProperty(String propertyKey) {
 
-		String propertyValue = PROPERTIES.getProperty(propertyKey);
+		String propertyValue = properties.getProperty(propertyKey);
 		loadMidiDeviceByFunctionKey(propertyKey, propertyValue);
 	}
 
@@ -741,10 +720,10 @@ public class MidiAutomator {
 
 		if (midiLearn) {
 			setDoNotExecuteMidiMessage(true);
-			PROGRAM_FRAME.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
-			PROGRAM_FRAME.midiLearnOn(learningComponent);
+			mainFrame.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
+			mainFrame.midiLearnOn(learningComponent);
 		} else {
-			PROGRAM_FRAME.midiLearnOff();
+			mainFrame.midiLearnOff();
 		}
 	}
 
@@ -793,13 +772,13 @@ public class MidiAutomator {
 			}
 
 			if (button.getName().equals(MainFrame.NAME_PREV_BUTTON)) {
-				PROPERTIES.setProperty(
+				properties.setProperty(
 						MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE,
 						midiSignature);
 			}
 
 			if (button.getName().equals(MainFrame.NAME_NEXT_BUTTON)) {
-				PROPERTIES.setProperty(
+				properties.setProperty(
 						MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE,
 						midiSignature);
 			}
@@ -811,7 +790,7 @@ public class MidiAutomator {
 		// learning for automation list
 		if (component.getName().equals(
 				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
-			PROGRAM_FRAME.setMidiSignature(midiSignature, component);
+			mainFrame.setMidiSignature(midiSignature, component);
 		}
 	}
 
@@ -823,8 +802,8 @@ public class MidiAutomator {
 	 */
 	public void unsetMidiSignature(Component component) {
 		setMidiSignature(null, component);
-		PROGRAM_FRAME.setInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
-				PROGRAM_FRAME.getMidiComponentName(component)));
+		mainFrame.setInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
+				mainFrame.getMidiComponentName(component)));
 	}
 
 	/**
@@ -947,7 +926,7 @@ public class MidiAutomator {
 				Messages.builtMessages.put(Messages.KEY_INFO_ENTRY_OPENED,
 						infoEntryOpened);
 
-				PROGRAM_FRAME.setSelectedIndex(index);
+				mainFrame.setSelectedIndex(index);
 				currentItem = index;
 
 				// Send MIDI change notifier
@@ -979,7 +958,7 @@ public class MidiAutomator {
 
 				String filePath = item.getFilePath();
 
-				String path = RESOURCES.generateRelativeLoadingPath(filePath);
+				String path = resources.generateRelativeLoadingPath(filePath);
 
 				removeInfoMessage(Messages.builtMessages
 						.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
@@ -1190,12 +1169,12 @@ public class MidiAutomator {
 	public String getMidiListeningSignature(String switchDirection) {
 
 		if (switchDirection.equals(SWITCH_DIRECTION_PREV)) {
-			return PROPERTIES
+			return properties
 					.getProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
 		}
 
 		if (switchDirection.equals(SWITCH_DIRECTION_NEXT)) {
-			return PROPERTIES
+			return properties
 					.getProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
 		}
 
@@ -1276,7 +1255,7 @@ public class MidiAutomator {
 	 */
 	public void setMidiDeviceName(String deviceName, String deviceKey) {
 
-		PROPERTIES.setProperty(deviceKey, deviceName);
+		properties.setProperty(deviceKey, deviceName);
 		storePropertiesFile();
 	}
 
@@ -1289,7 +1268,7 @@ public class MidiAutomator {
 	 */
 	public String getMidiDeviceName(String key) {
 		loadPropertiesFile();
-		return (String) PROPERTIES.get(key);
+		return (String) properties.get(key);
 	}
 
 	/**
@@ -1313,14 +1292,14 @@ public class MidiAutomator {
 
 		boolean found = false;
 
-		if (PROPERTIES != null) {
+		if (properties != null) {
 			@SuppressWarnings("unchecked")
-			Enumeration<String> propertyNames = (Enumeration<String>) PROPERTIES
+			Enumeration<String> propertyNames = (Enumeration<String>) properties
 					.propertyNames();
 
 			while (propertyNames.hasMoreElements()) {
 				String key = propertyNames.nextElement();
-				String value = (String) PROPERTIES.get(key);
+				String value = (String) properties.get(key);
 
 				if (value.equals(signature)
 						&& !key.contains(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES)) {
@@ -1357,7 +1336,7 @@ public class MidiAutomator {
 	 *         application is not in development mode
 	 */
 	public boolean isInTestMode() {
-		return TEST;
+		return Main.test;
 	}
 
 	/**
@@ -1370,7 +1349,7 @@ public class MidiAutomator {
 		if (!infoMessages.contains(message)) {
 			infoMessages.add(message);
 		}
-		PROGRAM_FRAME.setInfoText(messagesToString(infoMessages));
+		mainFrame.setInfoText(messagesToString(infoMessages));
 	}
 
 	/**
@@ -1381,7 +1360,7 @@ public class MidiAutomator {
 	 */
 	public void removeInfoMessage(String message) {
 		infoMessages.remove(message);
-		PROGRAM_FRAME.setInfoText(messagesToString(infoMessages));
+		mainFrame.setInfoText(messagesToString(infoMessages));
 	}
 
 	/**
@@ -1405,14 +1384,14 @@ public class MidiAutomator {
 	 * Indicates a midi IN signal
 	 */
 	public void showMidiINSignal() {
-		PROGRAM_FRAME.flashMidiINDetect();
+		mainFrame.flashMidiINDetect();
 	}
 
 	/**
 	 * Indicates a midi OUT signal
 	 */
 	public void showMidiOUTSignal() {
-		PROGRAM_FRAME.flashMidiOUTDetect();
+		mainFrame.flashMidiOUTDetect();
 	}
 
 	/**
@@ -1421,7 +1400,16 @@ public class MidiAutomator {
 	 * @return The resources handler
 	 */
 	public Resources getResources() {
-		return RESOURCES;
+		return resources;
+	}
+
+	/**
+	 * Returns the main program frame
+	 * 
+	 * @return The main frame
+	 */
+	public MainFrame getProgramFrame() {
+		return mainFrame;
 	}
 
 	/**
@@ -1604,9 +1592,9 @@ public class MidiAutomator {
 	 */
 	public void metronomClick(int beat) {
 		if (beat == 1) {
-			PROGRAM_FRAME.flashFileList(Color.RED);
+			mainFrame.flashFileList(Color.RED);
 		} else {
-			PROGRAM_FRAME.flashFileList(Color.GREEN);
+			mainFrame.flashFileList(Color.GREEN);
 		}
 	}
 
@@ -1628,27 +1616,27 @@ public class MidiAutomator {
 			if (imagePath == null) {
 				imagePath = MidiAutomatorProperties.VALUE_NULL;
 			}
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					imagePath);
 
 			// click type
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					guiAutomations[i].getType());
 
 			// click trigger
 			String trigger = guiAutomations[i].getTrigger();
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					trigger);
 
 			// min delay
 			String minDelay = String.valueOf(guiAutomations[i].getMinDelay());
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					minDelay);
@@ -1659,7 +1647,7 @@ public class MidiAutomator {
 			if (midiSignature == null || midiSignature.equals("")) {
 				midiSignature = MidiAutomatorProperties.VALUE_NULL;
 			}
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					midiSignature);
@@ -1667,14 +1655,14 @@ public class MidiAutomator {
 			// min similarity
 			String minSimilarity = String.valueOf(guiAutomations[i]
 					.getMinSimilarity());
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					minSimilarity);
 
 			// movable
 			String isMovable = Boolean.toString(guiAutomations[i].isMovable());
-			PROPERTIES.setProperty(
+			properties.setProperty(
 					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES
 							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
 					isMovable);
@@ -1697,18 +1685,18 @@ public class MidiAutomator {
 	public void removeGUIAutomations() {
 		guiAutomations = null;
 
-		PROPERTIES
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES);
-		PROPERTIES.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES);
-		PROPERTIES
+		properties.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES);
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS);
-		PROPERTIES
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
-		PROPERTIES
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
-		PROPERTIES
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
-		PROPERTIES
+		properties
 				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
 	}
 
@@ -1737,12 +1725,12 @@ public class MidiAutomator {
 			removeInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
-			PROPERTIES.load();
+			properties.load();
 
 		} catch (FileNotFoundException e) {
 
 			String error = String.format(Messages.MSG_FILE_NOT_FOUND,
-					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
+					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND, error);
 			setInfoMessage(Messages.builtMessages
@@ -1751,7 +1739,7 @@ public class MidiAutomator {
 		} catch (IOException e) {
 
 			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
+					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
 			setInfoMessage(Messages.builtMessages
@@ -1768,12 +1756,12 @@ public class MidiAutomator {
 			removeInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
-			PROPERTIES.store();
+			properties.store();
 
 		} catch (IOException e) {
 
 			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
-					RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME);
+					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
 			setInfoMessage(Messages.builtMessages
@@ -1810,7 +1798,7 @@ public class MidiAutomator {
 	 */
 	public void exportMidautoFile(String filePath) {
 		File[] files = new File[] { new File(model.getPersistenceFileName()),
-				new File(RESOURCES.getPropertiesPath() + PROPERTIES_FILE_NAME) };
+				new File(properties.getPropertiesFilePath()) };
 		try {
 			FileUtils.zipFiles(files, filePath);
 			loadedMidautoFilePath = filePath;
@@ -1830,7 +1818,7 @@ public class MidiAutomator {
 	public void importMidautoFile(File file) {
 
 		loadedMidautoFilePath = file.getAbsolutePath();
-		String unzipPath = RESOURCES.getPropertiesPath();
+		String unzipPath = resources.getPropertiesPath();
 
 		if (unzipPath.equals("")) {
 			unzipPath = ".";
