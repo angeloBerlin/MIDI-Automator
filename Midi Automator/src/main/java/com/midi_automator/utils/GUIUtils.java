@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JRootPane;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 
@@ -107,18 +108,33 @@ public class GUIUtils {
 	 *            The the root component
 	 * @param enable
 	 *            <TRUE> for enable, <FALSE> for disable
+	 * @param exceptionNames
+	 *            An array of component names that shall not be en/disabled
 	 */
 	public static void disEnableAllInputs(final Component rootComponent,
-			final boolean enable) {
+			final boolean enable, String... exceptionNames) {
 
 		List<Component> compList = GUIUtils
 				.getAllComponents((Container) rootComponent);
 
 		for (Component component : compList) {
-
 			if (component instanceof JComponent) {
-				component.setEnabled(enable);
-				deActivateAllMouseListeners(component, enable);
+
+				// check is component is excepted
+				boolean exception = false;
+				for (String exceptionName : exceptionNames) {
+
+					if (component.getName() != null) {
+						if (component.getName().equals(exceptionName)) {
+							exception = true;
+						}
+					}
+				}
+
+				if (!exception && !(component instanceof JRootPane)) {
+					component.setEnabled(enable);
+					deActivateAllMouseListeners(component, enable);
+				}
 			}
 		}
 	}

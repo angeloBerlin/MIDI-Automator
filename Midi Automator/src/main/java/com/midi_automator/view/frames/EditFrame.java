@@ -8,8 +8,10 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.annotation.Scope;
 
 @org.springframework.stereotype.Component
+@Scope("prototype")
 public class EditFrame extends AddFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -22,6 +24,8 @@ public class EditFrame extends AddFrame {
 	private JLabel midiListeningSignatureValueLabel;
 	private int index;
 
+	public static String NAME = "Edit Frame";
+
 	/**
 	 * Initializes the edit frame
 	 * 
@@ -32,13 +36,14 @@ public class EditFrame extends AddFrame {
 		super.init();
 
 		this.index = index;
+		setName(NAME);
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
 		// change save action
-		buttonSave.removeActionListener(super.saveListener);
-		saveListener = new SaveAction();
-		buttonSave.addActionListener(saveListener);
+		buttonSave.removeActionListener(super.saveAction);
+		saveAction = new SaveAction();
+		buttonSave.addActionListener(saveAction);
 
 		createMidiListeningSignature();
 		setMidiSendingSignatureValueLabelText();

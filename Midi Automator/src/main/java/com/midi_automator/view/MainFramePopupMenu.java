@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.view.frames.AddFrame;
@@ -32,6 +32,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	private final int FRAME_LOCATION_X_OFFSET = 50;
 	private final int FRAME_LOCATION_Y_OFFSET = 50;
 
+	public static final String NAME = "main frame popup menu";
 	public static final String NAME_MENU_ITEM_MOVE_UP = "move up";
 	public static final String NAME_MENU_ITEM_MOVE_DOWN = "move down";
 	public static final String NAME_MENU_ITEM_DELETE = "delete";
@@ -47,18 +48,18 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	private JMenuItem sendMidiMenuItem;
 
 	@Autowired
-	@Qualifier("addFrame")
-	private AddFrame addFrame;
-	@Autowired
-	private EditFrame editFrame;
-	@Autowired
 	private MainFrame mainFrame;
+
+	@Autowired
+	private ApplicationContext ctx;
 
 	/**
 	 * Initializes the popup menu
 	 */
 	public void init() {
 		super.init();
+
+		setName(NAME);
 
 		moveUpMenuItem = new JMenuItem(MENU_ITEM_MOVE_UP);
 		moveUpMenuItem.setName(NAME_MENU_ITEM_MOVE_UP);
@@ -136,10 +137,12 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			addFrame.init();
+
+			AddFrame addFrame = ctx.getBean("addFrame", AddFrame.class);
 			addFrame.setLocation(mainFrame.getLocationOnScreen().x
 					+ FRAME_LOCATION_X_OFFSET,
 					mainFrame.getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
+			addFrame.init();
 		}
 	}
 
@@ -181,6 +184,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
+
+			EditFrame editFrame = ctx.getBean(EditFrame.class);
 			editFrame.init(mainFrame.getFileList().getSelectedIndex());
 			editFrame
 					.setLocation(mainFrame.getLocationOnScreen().x

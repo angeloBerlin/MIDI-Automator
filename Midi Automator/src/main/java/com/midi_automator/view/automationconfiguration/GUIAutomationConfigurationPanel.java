@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.view.MidiLearnPopupMenu;
@@ -25,6 +27,7 @@ import com.midi_automator.view.ScaleableImageIcon;
  * @date 10-12-2014
  */
 @org.springframework.stereotype.Component
+@Scope("prototype")
 public class GUIAutomationConfigurationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -38,10 +41,15 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	private JButton deleteButton;
 	private boolean initialized = false;
 
-	@Autowired
+	public static final String NAME_ADD_BUTTON = "automation add button";
+	public static final String NAME_DELETE_BUTTON = "automation delete button";
+
 	private GUIAutomationConfigurationTable configurationTable;
 
-	public static final String NAME_CONFIGURATION_TABLE = "configuration table";
+	@Autowired
+	private ApplicationContext ctx;
+
+	public static final String NAME = "GUI automation panel";
 
 	/**
 	 * Initializes the panel
@@ -49,11 +57,15 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	public void init() {
 
 		if (!initialized) {
+
+			setName(NAME);
 			setLayout(new GridBagLayout());
 
 			// configuration table
+			configurationTable = ctx.getBean("GUIAutomationConfigurationTable",
+					GUIAutomationConfigurationTable.class);
+
 			configurationTable.init();
-			configurationTable.setName(NAME_CONFIGURATION_TABLE);
 			configurationTable.setCache(configurationTable
 					.getSelectionBackground());
 			JScrollPane scrollPane = new JScrollPane(configurationTable);
@@ -149,12 +161,14 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		editorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		addButton = new JButton(ADD_LABEL);
+		addButton.setName(NAME_ADD_BUTTON);
 		addButton.addActionListener(new AddAutomationListener());
 		addButton.setPreferredSize(new Dimension(EDITOR_BUTTON_SIZE,
 				EDITOR_BUTTON_SIZE));
 		editorPanel.add(addButton);
 
 		deleteButton = new JButton(DELETE_LABEL);
+		deleteButton.setName(NAME_DELETE_BUTTON);
 		deleteButton.addActionListener(new DeleteAutomationListener());
 		deleteButton.setPreferredSize(new Dimension(EDITOR_BUTTON_SIZE,
 				EDITOR_BUTTON_SIZE));

@@ -30,7 +30,7 @@ public class HTMLLabel extends JTextPane {
 		setEditable(false);
 		setContentType("text/html");
 		setOpaque(false);
-		this.setText(text);
+		setText(text);
 	}
 
 	@Override

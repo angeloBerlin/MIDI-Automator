@@ -1,5 +1,9 @@
 package com.midi_automator.tests;
 
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -10,64 +14,25 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.sikuli.script.Screen;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.midi_automator.Resources;
-import com.midi_automator.model.IModel;
-import com.midi_automator.model.Model;
+import com.midi_automator.AppConfig;
+import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.MidiAutomator;
-import com.midi_automator.tests.utils.AssertJGUIAutomations;
+import com.midi_automator.tests.utils.GUIAutomations;
+import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.frames.MainFrame;
 
 public class GUITestCase extends AssertJSwingJUnitTestCase {
 
-	protected FrameFixture window;
-	protected String currentPath;
-
-	private static String fileName = null;
-	private static String wd = "";
-	private static String os = "";
-	private static boolean test = false;
-
 	@Rule
 	public TestName name = new TestName();
 
-	@Override
-	public void onSetUp() {
-
-		MainFrame mainFrame = GuiActionRunner
-				.execute(new GuiQuery<MainFrame>() {
-					protected MainFrame executeInEDT() {
-
-						ApplicationContext ctx = new ClassPathXmlApplicationContext(
-								"Beans.xml");
-						Resources resources = (Resources) ctx.getBean(
-								"Resources", new Object[] { os, wd });
-						IModel model = (Model) ctx.getBean("Model");
-
-						if (fileName == null) {
-							fileName = model.getPersistenceFileName();
-						}
-
-						MidiAutomator midiAutomator = (MidiAutomator) ctx
-								.getBean("Presenter", new Object[] { model,
-										resources, fileName, test });
-						return midiAutomator.getProgramFrame();
-					}
-				});
-		window = new FrameFixture(mainFrame);
-		System.out.println("hallo");
-		window.show(); // shows the frame to test
-		AssertJGUIAutomations.window = window;
-		AssertJGUIAutomations.robot = robot();
-
-		try {
-			currentPath = new File(".").getCanonicalPath();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
+	protected FrameFixture window;
+	protected String currentPath;
+	protected Screen screen;
+	protected AnnotationConfigApplicationContext ctx;
 
 	@Before
 	public void log() {
@@ -76,5 +41,94 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 				+ " - " + name.getMethodName());
 		System.out
 				.println("====================================================");
+	}
+
+	/**
+	 * Starts the application
+	 */
+	protected void startApplication() {
+
+		// TODO: New Screen() has to be called once outside the EDT. Maybe we
+		// can get rid of that as soon as the application is "EDT" proof.
+		// https://weblogs.java.net/blog/alexfromsun/archive/2006/02/debugging_swing.html
+		screen = new Screen(0);
+
+		MainFrame mainFrame = GuiActionRunner
+				.execute(new GuiQuery<MainFrame>() {
+					protected MainFrame executeInEDT() {
+
+						ctx = new AnnotationConfigApplicationContext(
+								AppConfig.class);
+
+						MidiAutomator presenter = (MidiAutomator) ctx
+								.getBean(MidiAutomator.class);
+
+						return presenter.openMainFrame();
+					}
+				});
+
+		window = new FrameFixture(robot(), mainFrame);
+
+		GUIAutomations.window = window;
+		GUIAutomations.robot = robot();
+
+		try {
+			currentPath = new File(".").getCanonicalPath();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	/**
+	 * Checks if the entry was opened
+	 * 
+	 * @param entryName
+	 *            The name of the entry
+	 */
+	protected void checkIfEntryWasOpened(String entryName) {
+		checkInfoText(String.format(Messages.MSG_OPENING_ENTRY, entryName));
+	}
+
+	/**
+	 * Checks for a specific text in the info
+	 * 
+	 * @param text
+	 *            The text to check for
+	 */
+	protected void checkInfoText(String text) {
+		String infoMsg = text.replace("\"", "&quot;").replace("Ä", "&#196;")
+				.replace("Ö", "&#214;").replace("Ü", "&#220;");
+		assertThat(getInfoLabelText(), containsString(infoMsg));
+	}
+
+	/**
+	 * For debugging
+	 */
+	// @After
+	public void sleep() {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void onSetUp() {
+
+	}
+
+	@Override
+	protected void onTearDown() {
+		MockUpUtils.recoverMidoBackup();
+		MockUpUtils.recoverPropertiesBackup();
+	}
+
+	/**
+	 * Checks that the info text is empty
+	 */
+	protected void checkEmptyInfoText() {
+		assertEquals("<html> <head> </head> <body> </body> </html> ",
+				getInfoLabelText());
 	}
 }

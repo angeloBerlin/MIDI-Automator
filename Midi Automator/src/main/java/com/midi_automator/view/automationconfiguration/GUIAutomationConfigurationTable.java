@@ -26,6 +26,7 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -43,6 +44,7 @@ import com.midi_automator.view.ScaleableImageIcon;
  * 
  */
 @org.springframework.stereotype.Component
+@Scope("prototype")
 public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
@@ -81,6 +83,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
 	private final String NAME_COMBOBOX_TRIGGER_EDITOR = "COMBOBOX_TRIGGER_EDITOR";
 
+	public static final String NAME = "GUI automation table";
+
 	private Vector<Vector<Object>> data;
 
 	@Autowired
@@ -94,6 +98,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * Initializes the table
 	 */
 	public void init() {
+
+		setName(NAME);
+		getTableHeader().setReorderingAllowed(false);
 
 		data = new Vector<Vector<Object>>();
 
@@ -208,6 +215,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		addMouseListener(new PopupListener());
 		popupMenu.init();
 		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
+
+		grabFocus();
 	}
 
 	@Override

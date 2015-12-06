@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Locale;
@@ -25,11 +24,13 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.presenter.MidiAutomator;
 
 @org.springframework.stereotype.Component
-public class AddFrame extends JFrame {
+@Scope("prototype")
+public class AddFrame extends AbstractBasicDialog {
 
 	static Logger log = Logger.getLogger(AddFrame.class.getName());
 	private static final long serialVersionUID = 1L;
@@ -43,12 +44,12 @@ public class AddFrame extends JFrame {
 	private final String LABEL_FILE = "File:";
 	private final String LABEL_SENDING_MIDI = "Sending:";
 	private final String BUTTON_SEARCH = "Search...";
-	private final String BUTTON_SAVE = "Save";
-	private final String BUTTON_CANCEL = "Cancel";
 
 	public static String NAME = "Add Frame";
 	public static String NAME_NAME_TEXT_FIELD = "name text field";
 	public static String NAME_FILE_TEXT_FIELD = "file text field";
+	public static String NAME_SEARCH_BUTTON = "search button";
+	public static String NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL = "MIDI sending label";
 
 	protected JPanel middlePanel;
 	private JPanel footerPanel;
@@ -57,26 +58,22 @@ public class AddFrame extends JFrame {
 	protected JTextField nameTextField;
 	protected JTextField fileTextField;
 	protected JLabel midiSendingSignatureLabel;
-	protected JLabel midiSendingSignatureValueLabel;
+	public JLabel midiSendingSignatureValueLabel;
 	private JButton searchButton;
-	protected JButton buttonSave;
-	private JButton buttonCancel;
 
 	@Autowired
 	protected MidiAutomator presenter;
-
-	protected ActionListener saveListener;
-	protected ActionListener cancelListener;
 
 	/**
 	 * Initializes the frame
 	 */
 	public void init() {
+		super.init();
 
-		setName(NAME);
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setResizable(false);
+		setName(NAME);
 
 		// set layout
 		getContentPane().setLayout(new BorderLayout());
@@ -95,15 +92,13 @@ public class AddFrame extends JFrame {
 		createMidiSendingSignature();
 
 		// Save
-		buttonSave = new JButton(BUTTON_SAVE);
-		saveListener = new SaveAction();
-		buttonSave.addActionListener(saveListener);
+		saveAction = new SaveAction();
+		buttonSave.addActionListener(saveAction);
 		footerPanel.add(buttonSave);
 
 		// Cancel
-		buttonCancel = new JButton(BUTTON_CANCEL);
-		cancelListener = new CancelAction();
-		buttonCancel.addActionListener(cancelListener);
+		cancelAction = new CancelAction();
+		buttonCancel.addActionListener(cancelAction);
 		footerPanel.add(buttonCancel);
 
 		setAlwaysOnTop(true);
@@ -162,6 +157,7 @@ public class AddFrame extends JFrame {
 
 		searchButton = new JButton(BUTTON_SEARCH);
 		searchButton.addActionListener(new SearchAction(this));
+		searchButton.setName(NAME_SEARCH_BUTTON);
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
@@ -184,11 +180,15 @@ public class AddFrame extends JFrame {
 		c.gridy = 3;
 		middlePanel.add(midiSendingSignatureLabel, c);
 
-		midiSendingSignatureValueLabel = new JLabel();
-		setMidiSendingSignatureValueLabelText();
+		midiSendingSignatureValueLabel = new JLabel("x");
+		midiSendingSignatureValueLabel
+				.setName(NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL);
 		midiSendingSignatureValueLabel.setPreferredSize(new Dimension(
 				TEXT_PANE_WIDTH, midiSendingSignatureValueLabel
 						.getPreferredSize().height));
+
+		setMidiSendingSignatureValueLabelText();
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 3;
@@ -196,7 +196,7 @@ public class AddFrame extends JFrame {
 	}
 
 	/**
-	 * Sets the text of the midi sending signature lbel
+	 * Sets the text of the midi sending signature label
 	 */
 	protected void setMidiSendingSignatureValueLabelText() {
 		midiSendingSignatureValueLabel.setText(presenter
@@ -221,7 +221,7 @@ public class AddFrame extends JFrame {
 	class SearchAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private final JFileChooser fc;
+		private final JFileChooser fileChooser;
 		private AddFrame parent;
 
 		/**
@@ -234,16 +234,16 @@ public class AddFrame extends JFrame {
 			this.parent = parent;
 			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
 			JFileChooser.setDefaultLocale(Locale.ENGLISH);
-			fc = new JFileChooser();
-			fc.setLocale(Locale.ENGLISH);
+			fileChooser = new JFileChooser();
+			fileChooser.setLocale(Locale.ENGLISH);
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int returnVal = fc.showOpenDialog(parent);
+			int returnVal = fileChooser.showOpenDialog(parent);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
+				File file = fileChooser.getSelectedFile();
 				parent.getFileTextPane().setText(file.getAbsolutePath());
 			}
 		}

@@ -19,12 +19,12 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String MENU_ITEM_MIDI_UNLEARN = "Midi unlearn";
-	private final String MENU_ITEM_MIDI_LEARN = "Midi learn";
-	private final String MENU_ITEM_MIDI_LEARN_CANCEL = "Cancel midi learn";
+	public static final String MENU_ITEM_MIDI_UNLEARN = "Midi unlearn";
+	public static final String MENU_ITEM_MIDI_LEARN = "Midi learn";
+	public static final String MENU_ITEM_MIDI_LEARN_CANCEL = "Cancel midi learn";
 
-	private final String NAME_MENU_ITEM_MIDI_LEARN = "midi learn";
-	private final String NAME_MENU_ITEM_MIDI_UNLEARN = "midi unlearn";
+	public static final String NAME_MENU_ITEM_MIDI_LEARN = "midi learn";
+	public static final String NAME_MENU_ITEM_MIDI_UNLEARN = "midi unlearn";
 
 	protected JMenuItem midiLearnMenuItem;
 	protected JMenuItem midiUnlearnMenuItem;

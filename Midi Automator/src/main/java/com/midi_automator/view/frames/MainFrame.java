@@ -46,6 +46,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import javax.swing.filechooser.FileFilter;
@@ -53,6 +54,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -85,22 +87,22 @@ public class MainFrame extends JFrame {
 	private final String FONT_FAMILY = "Arial";
 	private String iconPathPrev;
 	private String iconPathNext;
-	private final String MENU_FILE = "File";
-	private final String MENU_ITEM_IMPORT = "Import...";
-	private final String MENU_ITEM_EXPORT = "Export...";
-	private final String MENU_ITEM_EXIT = "Exit";
-	private final String MENU_ITEM_PREFERENCES = "Preferences";
 	private final String LABEL_MIDI_IN_DETECT = "IN";
 	private final String LABEL_MIDI_OUT_DETECT = "OUT";
 
+	public static final String MENU_FILE = "File";
+	public static final String MENU_ITEM_IMPORT = "Import...";
+	public static final String MENU_ITEM_EXPORT = "Export...";
+	public static final String MENU_ITEM_EXIT = "Exit";
+	public static final String MENU_ITEM_PREFERENCES = "Preferences";
+	public static final String NAME_MENU_ITEM_IMPORT = "import";
+	public static final String NAME_MENU_ITEM_EXPORT = "export";
+	public static final String NAME_MENU_ITEM_PREFERENCES = "preferences";
+	public static final String NAME_MENU_ITEM_EXIT = "exit";
 	public static final String NAME_PREV_BUTTON = "previous button";
 	public static final String NAME_NEXT_BUTTON = "next button";
 	public static final String NAME_FILE_LIST = "file list";
-
-	private final String NAME_MENU_ITEM_IMPORT = "import";
-	private final String NAME_MENU_ITEM_EXPORT = "export";
-	private final String NAME_MENU_ITEM_PREFERENCES = "preferences";
-	private final String NAME_MENU_ITEM_EXIT = "exit";
+	public static final String NAME_INFO_LABEL = "info label";
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
@@ -129,11 +131,16 @@ public class MainFrame extends JFrame {
 	private boolean popupWasShown;
 
 	@Autowired
+	private ApplicationContext ctx;
+
 	private PreferencesFrame preferencesFrame;
+
 	@Autowired
 	private MidiAutomator presenter;
+
 	@Autowired
 	private Resources resources;
+
 	@Autowired
 	private MainFramePopupMenu popupMenu;
 
@@ -264,6 +271,8 @@ public class MainFrame extends JFrame {
 
 		// set list entries
 		fileList.setListData(createViewableFileList(fileEntries));
+		fileList.setSelectedIndex(-1);
+
 		if (fileEntries.isEmpty()) {
 			prevButton.setEnabled(false);
 			nextButton.setEnabled(false);
@@ -500,6 +509,7 @@ public class MainFrame extends JFrame {
 		final Dimension dimension = new Dimension(426, 50);
 
 		infoLabel = new HTMLLabel();
+		infoLabel.setName(NAME_INFO_LABEL);
 		infoLabel.setPreferredSize(dimension);
 
 		JScrollPane scrollingInfoLabel = new JScrollPane(infoLabel);
@@ -563,6 +573,7 @@ public class MainFrame extends JFrame {
 		fileList.setFocusable(false);
 		fileList.setDropMode(DropMode.INSERT);
 		fileList.setTransferHandler(new FileListTransferHandler());
+		fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		DragSource fileListDragSource = new DragSource();
 		fileListDragSource.createDefaultDragGestureRecognizer(fileList,
@@ -645,10 +656,7 @@ public class MainFrame extends JFrame {
 
 		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 
-			return "\""
-					+ presenter
-							.getEntryNameByIndex(fileList.getSelectedIndex())
-					+ "\"";
+			return presenter.getEntryNameByIndex(fileList.getSelectedIndex());
 		}
 
 		if (component instanceof JButton) {
@@ -880,6 +888,9 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+
+			preferencesFrame = ctx.getBean("preferencesFrame",
+					PreferencesFrame.class);
 			preferencesFrame.setLocation(getLocationOnScreen());
 			preferencesFrame.init();
 		}
@@ -926,12 +937,6 @@ public class MainFrame extends JFrame {
 						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
 				if (componentName != null) {
-
-					// en/disable midi unlearn
-					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
-					if (isMidiLearned(componentName)) {
-						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
-					}
 
 					// show pop-up of file list
 					if (componentName.equals(MainFrame.NAME_FILE_LIST)) {
@@ -987,6 +992,12 @@ public class MainFrame extends JFrame {
 						}
 
 						popupWasShown = true;
+					}
+
+					// en/disable midi unlearn
+					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+					if (isMidiLearned(componentName)) {
+						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
 					}
 
 					// show pop-up of switch buttons

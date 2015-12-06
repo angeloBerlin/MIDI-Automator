@@ -29,10 +29,8 @@ import javax.swing.JList;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import com.midi_automator.AppConfig;
 import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.guiautomator.GUIAutomation;
@@ -49,7 +47,7 @@ import com.midi_automator.model.SetListItem;
 import com.midi_automator.model.TooManyEntriesException;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
+import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.MainFrame;
 
 @Controller
@@ -121,7 +119,7 @@ public class MidiAutomator {
 	/**
 	 * Opens the main program frame.
 	 */
-	public void openMainFrame() {
+	public MainFrame openMainFrame() {
 
 		String fileName = model.getPersistenceFileName();
 
@@ -139,16 +137,11 @@ public class MidiAutomator {
 		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG,
 				errMidoFileIsTooBig);
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				AppConfig.class);
-
-		mainFrame = (MainFrame) ctx.getBean(MainFrame.class);
-
 		mainFrame.init();
 		reloadSetList();
 		reloadProperties();
 
-		ctx.close();
+		return mainFrame;
 	}
 
 	/**
@@ -788,8 +781,7 @@ public class MidiAutomator {
 		}
 
 		// learning for automation list
-		if (component.getName().equals(
-				GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
+		if (component.getName().equals(GUIAutomationConfigurationTable.NAME)) {
 			mainFrame.setMidiSignature(midiSignature, component);
 		}
 	}
@@ -822,8 +814,8 @@ public class MidiAutomator {
 			int index = -1;
 			index = model.getSetList().getMidiListeningSignatures()
 					.indexOf(signature);
-			log.debug("Open file with index: " + index);
 			if (index > -1) {
+				log.debug("Open file with index: " + index);
 				openFileByIndex(index, true);
 				return;
 			}
@@ -976,12 +968,7 @@ public class MidiAutomator {
 				Messages.builtMessages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
 						errFileNotReadable);
 
-				if (path.equals("")) {
-					setInfoMessage(Messages.builtMessages
-							.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-					log.info(Messages.builtMessages
-							.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-				} else {
+				if (!path.equals("")) {
 					log.info("Opening file: " + path);
 					FileUtils.openFileFromPath(path);
 					setInfoMessage(infoEntryOpened);
@@ -1541,11 +1528,6 @@ public class MidiAutomator {
 						+ midiSendingSignature + "\"");
 			}
 
-			for (SetListItem setListItem : model.getSetList().getItems()) {
-				System.out.println(setListItem.getName());
-			}
-			System.out.println();
-
 			saveSetList();
 		}
 
@@ -1592,8 +1574,10 @@ public class MidiAutomator {
 	 */
 	public void metronomClick(int beat) {
 		if (beat == 1) {
+			log.debug("Metronom first click");
 			mainFrame.flashFileList(Color.RED);
 		} else {
+			log.debug("Metronom other click");
 			mainFrame.flashFileList(Color.GREEN);
 		}
 	}

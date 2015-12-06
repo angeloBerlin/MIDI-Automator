@@ -27,11 +27,12 @@ import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
-import com.midi_automator.presenter.PropertiesReloadThread;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
@@ -41,7 +42,8 @@ import com.midi_automator.view.automationconfiguration.GUIAutomationConfiguratio
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
 @org.springframework.stereotype.Component
-public class PreferencesFrame extends JFrame {
+@Scope("prototype")
+public class PreferencesFrame extends AbstractBasicDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,7 +55,7 @@ public class PreferencesFrame extends JFrame {
 	private final String TITLE = "Preferences";
 	private final String LABEL_MIDI_IN_REMOTE_DEVICES = "Midi Remote IN:";
 	private final String LABEL_MIDI_OUT_REMOTE_DEVICES = "Midi Master OUT:";
-	private final String LABEL_MIDI_OUT_REMOTE_OPEN = "Master open: ch 1 CC 102 &lt;list entry - 1&gt;";
+	private final String LABEL_MIDI_OUT_REMOTE_INFO = "Master open: ch 1 CC 102 &lt;list entry - 1&gt;";
 	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_DEVICES = "Midi Switch Notifier OUT:";
 	private final String LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO = "Notifier: ch 1 CC 103 value 127";
 	private final String LABEL_MIDI_OUT_SWITCH_ITEM_DEVICES = "Midi Switch List Entry OUT:";
@@ -63,13 +65,14 @@ public class PreferencesFrame extends JFrame {
 			+ "Other clicks: ch 16 NOTE ON E4";
 	private final String LABEL_GUI_AUTOMATION = "Mouse Automation:";
 	private final String BUTTON_SEND_NOTIFIER = "Send...";
-	private final String BUTTON_SAVE = "Save";
-	private final String BUTTON_CANCEL = "Cancel";
-	private final String MIDI_IN_REMOTE_DEVICE_COMBO_BOX_NAME = "midiINRemoteDeviceComboBox";
-	private final String MIDI_OUT_REMOTE_DEVICE_COMBO_BOX_NAME = " midiOUTRemoteDeviceComboBox";
-	private final String MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX_NAME = "midiOUTSwitchNotifierDeviceComboBox";
-	private final String MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX_NAME = "midiOUTSwitchItemDeviceComboBox";
-	private final String MIDI_IN_METRONROM_DEVICE_COMBO_BOX_NAME = "midiINMetronomDeviceComboBox";
+
+	public static final String NAME = "preferences frame";
+	public static final String NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX = "midiINRemoteDeviceComboBox";
+	public static final String NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX = " midiOUTRemoteDeviceComboBox";
+	public static final String NAME_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX = "midiOUTSwitchNotifierDeviceComboBox";
+	public static final String NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX = "midiOUTSwitchItemDeviceComboBox";
+	public static final String NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX = "midiINMetronomDeviceComboBox";
+	public static final String NAME_BUTTON_SEND_NOTIFIER = "buttonSendNotifier";
 
 	private JPanel middlePanel;
 	private JPanel footerPanel;
@@ -88,12 +91,9 @@ public class PreferencesFrame extends JFrame {
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
 
-	@Autowired
 	private GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
 
 	private JButton buttonSendNotify;
-	private JButton buttonSave;
-	private JButton buttonCancel;
 
 	private final Insets INSETS_LABEL_HEADER = new Insets(0, 5, 0, 10);
 	private final Insets INSETS_COMBO_BOX = new Insets(0, 0, 0, 10);
@@ -102,15 +102,19 @@ public class PreferencesFrame extends JFrame {
 	private final int CONSTRAINT_ANCHOR_COMBO_BOX = GridBagConstraints.WEST;
 
 	@Autowired
+	private ApplicationContext ctx;
+
+	@Autowired
 	private MidiAutomator presenter;
 
 	/**
 	 * Initializes the frame
 	 */
 	public void init() {
-
+		super.init();
 		setResizable(false);
 		setTitle(TITLE);
+		setName(NAME);
 
 		// set layout
 		JPanel contentPanel = new JPanel();
@@ -142,13 +146,13 @@ public class PreferencesFrame extends JFrame {
 		presenter.setGUIAutomationsToActive(false);
 
 		// Save
-		buttonSave = new JButton(BUTTON_SAVE);
-		buttonSave.addActionListener(new SaveAction());
+		saveAction = new SaveAction();
+		buttonSave.addActionListener(saveAction);
 		footerPanel.add(buttonSave);
 
 		// Cancel
-		buttonCancel = new JButton(BUTTON_CANCEL);
-		buttonCancel.addActionListener(new CancelAction());
+		cancelAction = new CancelAction();
+		buttonCancel.addActionListener(cancelAction);
 		footerPanel.add(buttonCancel);
 
 		add(middlePanel, BorderLayout.CENTER);
@@ -183,7 +187,7 @@ public class PreferencesFrame extends JFrame {
 		midiINRemoteDeviceComboBox = new JComboBox<String>(
 				(String[]) midiINDevices.toArray(new String[0]));
 		midiINRemoteDeviceComboBox
-				.setName(MIDI_IN_METRONROM_DEVICE_COMBO_BOX_NAME);
+				.setName(NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX);
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
@@ -213,7 +217,7 @@ public class PreferencesFrame extends JFrame {
 		midiOUTRemoteDeviceComboBox = new JComboBox<String>(
 				(String[]) midiOutDevices.toArray(new String[0]));
 		midiOUTRemoteDeviceComboBox
-				.setName(MIDI_OUT_REMOTE_DEVICE_COMBO_BOX_NAME);
+				.setName(NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX);
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
@@ -231,7 +235,7 @@ public class PreferencesFrame extends JFrame {
 		c.gridy = 2;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
-						+ LABEL_MIDI_OUT_REMOTE_OPEN + "</span>");
+						+ LABEL_MIDI_OUT_REMOTE_INFO + "</span>");
 		middlePanel.add(midiOUTSwitchNotifierInfoLabel, c);
 	}
 
@@ -255,7 +259,7 @@ public class PreferencesFrame extends JFrame {
 		midiOUTSwitchNotifierDeviceComboBox = new JComboBox<String>(
 				(String[]) midiOutDevices.toArray(new String[0]));
 		midiOUTSwitchNotifierDeviceComboBox
-				.setName(MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX_NAME);
+				.setName(NAME_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX);
 
 		c = new GridBagConstraints();
 		c.insets = new Insets(0, 0, 0, 0);
@@ -272,6 +276,7 @@ public class PreferencesFrame extends JFrame {
 		c.gridx = 3;
 		c.gridy = 1;
 		buttonSendNotify = new JButton(BUTTON_SEND_NOTIFIER);
+		buttonSendNotify.setName(NAME_BUTTON_SEND_NOTIFIER);
 		buttonSendNotify.addActionListener(new SendNotificationAction());
 		buttonSendNotify.setMaximumSize(new Dimension(7, 10));
 		middlePanel.add(buttonSendNotify, c);
@@ -307,7 +312,7 @@ public class PreferencesFrame extends JFrame {
 		midiOUTSwitchItemDeviceComboBox = new JComboBox<String>(
 				(String[]) devices.toArray(new String[0]));
 		midiOUTSwitchItemDeviceComboBox
-				.setName(MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX_NAME);
+				.setName(NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX);
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
@@ -347,7 +352,7 @@ public class PreferencesFrame extends JFrame {
 		midiINMetronomDeviceComboBox = new JComboBox<String>(
 				(String[]) midiInDevices.toArray(new String[0]));
 		midiINMetronomDeviceComboBox
-				.setName(MIDI_IN_REMOTE_DEVICE_COMBO_BOX_NAME);
+				.setName(NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX);
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
@@ -382,6 +387,10 @@ public class PreferencesFrame extends JFrame {
 		c.gridx = 0;
 		c.gridy = 7;
 		middlePanel.add(guiAutomationLabel, c);
+
+		guiAutomationConfigurationPanel = ctx.getBean(
+				"GUIAutomationConfigurationPanel",
+				GUIAutomationConfigurationPanel.class);
 
 		guiAutomationConfigurationPanel.init();
 		guiAutomationConfigurationPanel.setOpaque(true);
@@ -495,7 +504,7 @@ public class PreferencesFrame extends JFrame {
 
 		if (learningComponent.getName() != null) {
 			if (learningComponent.getName().equals(
-					GUIAutomationConfigurationPanel.NAME_CONFIGURATION_TABLE)) {
+					GUIAutomationConfigurationTable.NAME)) {
 
 				GUIUtils.deHighlightTableRow(table, true);
 
@@ -566,7 +575,7 @@ public class PreferencesFrame extends JFrame {
 			presenter.setGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
-			new PropertiesReloadThread(presenter).start();
+			presenter.reloadProperties();
 		}
 	}
 
@@ -605,13 +614,17 @@ public class PreferencesFrame extends JFrame {
 
 			String deviceName = (String) midiOUTSwitchNotifierDeviceComboBox
 					.getSelectedItem();
-			try {
-				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
-				presenter.sendItemChangeNotifier(device);
-			} catch (MidiUnavailableException ex) {
-				log.error(
-						"The MIDI device for the switch notification is unavailable",
-						ex);
+
+			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				try {
+					MidiDevice device = MidiUtils.getMidiDevice(deviceName,
+							"OUT");
+					presenter.sendItemChangeNotifier(device);
+				} catch (MidiUnavailableException ex) {
+					log.error(
+							"The MIDI device for the switch notification is unavailable",
+							ex);
+				}
 			}
 		}
 	}

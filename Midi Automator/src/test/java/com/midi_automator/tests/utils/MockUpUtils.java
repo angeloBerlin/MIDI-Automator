@@ -10,6 +10,12 @@ import com.midi_automator.utils.SystemUtils;
 
 public class MockUpUtils {
 
+	/*
+	 * <TRUE> returns the an empty string for the actual path, <FALSE> returns
+	 * the default installation path depending on the operating system
+	 */
+	private static boolean installation_mockup = false;
+
 	/**
 	 * Gets the path to the mido and properties files
 	 * 
@@ -17,14 +23,17 @@ public class MockUpUtils {
 	 */
 	private static String getMidiAutomatorSettingsPath() {
 
-		String settingsPath = null;
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			settingsPath = "/Applications/Midi Automator.app/Contents/Resources/";
-		}
+		String settingsPath = "";
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
-			settingsPath = SystemUtils
-					.replaceSystemVariables("%APPDATA%\\Midi Automator\\");
+		if (installation_mockup) {
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				settingsPath = "/Applications/Midi Automator.app/Contents/Resources/";
+			}
+
+			if (System.getProperty("os.name").equals("Windows 7")) {
+				settingsPath = SystemUtils
+						.replaceSystemVariables("%APPDATA%\\Midi Automator\\");
+			}
 		}
 
 		return settingsPath;
