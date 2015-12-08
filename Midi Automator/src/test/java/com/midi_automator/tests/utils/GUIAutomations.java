@@ -53,7 +53,7 @@ public class GUIAutomations {
 					"/Applications/Midi Automator.app" };
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			command = new String[] {
 					SystemUtils
 							.replaceSystemVariables("%PROGRAMFILES%\\Midi Automator\\Midi Automator.exe"),

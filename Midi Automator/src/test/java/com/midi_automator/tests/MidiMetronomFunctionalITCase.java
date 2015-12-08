@@ -1,6 +1,9 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setMidiInMetronomDevice;
 
 import java.awt.Color;
 
@@ -32,7 +35,7 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 			deviceName = "Bus 1";
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			deviceName = "LoopBe Internal MIDI";
 		}
 	}

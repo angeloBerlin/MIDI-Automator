@@ -1,7 +1,12 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openEditDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -21,6 +26,7 @@ public class EditFileFunctionalITCase extends GUITestCase {
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		JPopupMenuFixture popupMenu = openFileListPopupMenu();
@@ -35,6 +41,7 @@ public class EditFileFunctionalITCase extends GUITestCase {
 	public void editingFileShouldBeCanceled() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		FrameFixture editFrame = openEditDialog(0);
@@ -49,6 +56,7 @@ public class EditFileFunctionalITCase extends GUITestCase {
 	public void helloWorldShouldBeEdited() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		FrameFixture editFrame = openEditDialog(0);
@@ -65,6 +73,7 @@ public class EditFileFunctionalITCase extends GUITestCase {
 	public void fileChooserOfEditDialogShouldBeOpened() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		FrameFixture editFrame = openEditDialog(0);
@@ -84,6 +93,7 @@ public class EditFileFunctionalITCase extends GUITestCase {
 	public void sendingMidiSignatureShouldBeShown() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		FrameFixture editFrame = openEditDialog(0);

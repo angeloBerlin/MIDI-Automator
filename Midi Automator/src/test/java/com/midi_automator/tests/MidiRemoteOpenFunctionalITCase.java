@@ -23,7 +23,7 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 			propertiesFile = "RemoteINBus_1.properties";
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			deviceName = "LoopBe Internal MIDI";
 			propertiesFile = "RemoteINLoopBe_Internal_MIDI.properties";
 		}

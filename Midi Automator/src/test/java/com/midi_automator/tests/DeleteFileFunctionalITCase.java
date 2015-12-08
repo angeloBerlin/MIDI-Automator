@@ -1,7 +1,8 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
+import static org.junit.Assert.assertEquals;
 
 import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
@@ -17,6 +18,7 @@ public class DeleteFileFunctionalITCase extends GUITestCase {
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		JPopupMenuFixture popupMenu = openFileListPopupMenu();
@@ -31,6 +33,7 @@ public class DeleteFileFunctionalITCase extends GUITestCase {
 	public void helloWorldEntryShouldBeDeleted() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		deleteEntry(0);

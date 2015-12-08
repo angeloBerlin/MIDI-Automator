@@ -1,6 +1,11 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addFile;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.getNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.getPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.nextFile;
+import static com.midi_automator.tests.utils.GUIAutomations.prevFile;
 
 import org.junit.Test;
 
@@ -9,7 +14,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 	@Test
-	public void nextAndPrevBttonsNotActiveOnEmptyList() {
+	public void nextAndPrevButtonsNotActiveOnEmptyList() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");

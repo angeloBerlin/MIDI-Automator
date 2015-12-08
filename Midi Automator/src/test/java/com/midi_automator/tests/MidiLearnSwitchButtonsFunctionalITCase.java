@@ -1,6 +1,17 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.openNextButtonPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.openPrevButtonPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -29,7 +40,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 			propertiesFile = "RemoteINBus_1.properties";
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			deviceName = "LoopBe Internal MIDI";
 			propertiesFile = "RemoteINLoopBe_Internal_MIDI.properties";
 		}

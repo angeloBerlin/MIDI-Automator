@@ -30,7 +30,7 @@ public class MockUpUtils {
 				settingsPath = "/Applications/Midi Automator.app/Contents/Resources/";
 			}
 
-			if (System.getProperty("os.name").equals("Windows 7")) {
+			if (System.getProperty("os.name").contains("Windows")) {
 				settingsPath = SystemUtils
 						.replaceSystemVariables("%APPDATA%\\Midi Automator\\");
 			}

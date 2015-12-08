@@ -1,7 +1,11 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.clickNotifierSendButton;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setMidiOutNotifierDevice;
+import static org.junit.Assert.fail;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
@@ -26,7 +30,7 @@ public class MidiNotifierOutFunctionalITCase extends GUITestCase {
 			deviceName = "Bus 1";
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			deviceName = "LoopBe Internal MIDI";
 		}
 
