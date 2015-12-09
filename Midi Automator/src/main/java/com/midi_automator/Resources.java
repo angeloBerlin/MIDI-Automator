@@ -1,6 +1,9 @@
 package com.midi_automator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +24,8 @@ public class Resources {
 	private final String IMAGE_PATH;
 	private final String PROPERTIES_PATH;
 	private final String DEFAULT_FILE_LIST_PATH;
+	private final String PROJECT_PROPERTIES = "project.properties";
+	private final String KEY_VERSION = "midiautomator.version";
 
 	public Resources() {
 
@@ -88,4 +93,21 @@ public class Resources {
 		return result;
 	}
 
+	/**
+	 * Gets the version from the properties file
+	 * 
+	 * @return application version
+	 */
+	public String getVersion() {
+		Properties properties = new Properties();
+		InputStream inputStream = getClass().getClassLoader()
+				.getResourceAsStream(PROJECT_PROPERTIES);
+
+		try {
+			properties.load(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return properties.getProperty(KEY_VERSION);
+	}
 }

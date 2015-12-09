@@ -182,7 +182,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	@Test
+	// @Test
 	public void addDialogShouldBeCanceledOnce() {
 
 		try {
@@ -222,7 +222,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	@Test
+	// @Test
 	public void addDialogShouldBeCanceledOncePerOpening() {
 
 		try {
@@ -342,7 +342,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	@Test
+	// @Test
 	public void addDialogShallBeCanceledWithDelay() {
 
 		try {
@@ -375,7 +375,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	@Test
+	// @Test
 	public void popUpMenuShouldBeOpenedOnce() {
 
 		try {
@@ -435,7 +435,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	@Test
+	// @Test
 	public void delaySpinnerShouldNotSpinBelow0() {
 
 		MockUpUtils
@@ -459,7 +459,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		table.requireCellValue(automationsDelayCell(0), "0");
 	}
 
-	@Test
+	// @Test
 	public void delayShouldNotTakeInvalidValues() {
 
 		MockUpUtils
@@ -500,7 +500,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		saveDialog(preferencesFrame);
 	}
 
-	@Test
+	// @Test
 	public void multipleAutomationsShouldBeRun() {
 
 		try {
@@ -535,7 +535,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 
 	}
 
-	@Test
+	// @Test
 	public void movableVsNonMovableAutomation() {
 
 		try {

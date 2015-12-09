@@ -12,6 +12,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.edt.GuiQuery;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -105,10 +106,10 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 	/**
 	 * For debugging
 	 */
-	// @After
+	@After
 	public void sleep() {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

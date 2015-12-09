@@ -219,7 +219,7 @@ public class MainFrame extends JFrame {
 
 	@Override
 	public void setTitle(String title) {
-		super.setTitle(TITLE + " " + presenter.getVersion() + title);
+		super.setTitle(TITLE + " " + resources.getVersion() + title);
 	}
 
 	public HTMLLabel getInfoLabel() {

@@ -55,8 +55,6 @@ public class MidiAutomator {
 
 	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
 
-	private final String VERSION = "1.3.1";
-
 	@Autowired
 	private Resources resources;
 
@@ -1861,9 +1859,5 @@ public class MidiAutomator {
 			return splitted[splitted.length - 1];
 		}
 		return null;
-	}
-
-	public String getVersion() {
-		return VERSION;
 	}
 }
