@@ -52,9 +52,13 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	@Override
 	public void run() {
 		while (running) {
-
-			if (isActive()) {
-				triggerAutomation(guiAutomation);
+			try {
+				Thread.sleep(10);
+				if (isActive()) {
+					triggerAutomation(guiAutomation);
+				}
+			} catch (InterruptedException e) {
+				log.error("Failure in GUIAutomator Thread sleep", e);
 			}
 		}
 	}
@@ -140,7 +144,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * Activates all automations that shall be run only once per change.
 	 * 
 	 * @param midiSignature
-	 *            The midi signture that shall invoke the automation
+	 *            The midi signature that shall invoke the automation
 	 */
 	public void activateMidiAutomations(String midiSignature) {
 
