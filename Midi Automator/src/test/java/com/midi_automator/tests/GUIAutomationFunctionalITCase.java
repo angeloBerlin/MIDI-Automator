@@ -287,7 +287,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// check for learned midi message
 			JTableFixture table = getGUIAutomationTable(preferencesFrame);

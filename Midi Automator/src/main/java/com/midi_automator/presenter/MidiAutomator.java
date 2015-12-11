@@ -27,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -351,13 +352,22 @@ public class MidiAutomator {
 		guiAutomators.clear();
 
 		// generate GUI automators
-		for (int i = 0; i < guiAutomations.length; i++) {
-			GUIAutomator guiAutomator = new GUIAutomator();
-			guiAutomator.setName("GUIAutomator " + i);
-			guiAutomator.setGUIAutomation(guiAutomations[i]);
-			guiAutomators.add(guiAutomator);
-			guiAutomator.start();
-		}
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				for (int i = 0; i < guiAutomations.length; i++) {
+
+					GUIAutomator guiAutomator = new GUIAutomator();
+					guiAutomator.setName("GUIAutomator " + i);
+					guiAutomator.setGUIAutomation(guiAutomations[i]);
+					guiAutomators.add(guiAutomator);
+					guiAutomator.start();
+				}
+				return null;
+			}
+		};
+		worker.execute();
 	}
 
 	/**
