@@ -118,17 +118,15 @@ public class MainFrame extends JFrame {
 	private CacheableJButton prevButton;
 	private CacheableJButton nextButton;
 
-	private Runnable midiINflasher;
-	private Runnable midiOUTflasher;
-	private boolean midiINflasherFlag;
-	private boolean midiOUTflasherFlag;
-
 	private List<String> fileEntries;
 	private List<String> midiListeningSignatures;
 	private List<String> midiSendingSignatures;
 
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
+
+	private final int midiDetectFlashDuration = 100;
+	private final Color midiDetectColor = Color.YELLOW;
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -435,22 +433,15 @@ public class MainFrame extends JFrame {
 	 * Flashes the MIDI IN detector
 	 */
 	public void flashMidiINDetect() {
-
-		if (!midiINflasherFlag) {
-			midiINflasherFlag = true;
-			new Thread(midiINflasher).start();
-		}
+		flashLabel(midiINdetect, midiDetectFlashDuration, midiDetectColor);
+		System.out.println("HHHHH");
 	}
 
 	/**
 	 * Flashes the MIDI OUT detector
 	 */
 	public void flashMidiOUTDetect() {
-
-		if (!midiOUTflasherFlag) {
-			midiOUTflasherFlag = true;
-			new Thread(midiOUTflasher).start();
-		}
+		flashLabel(midiOUTdetect, midiDetectFlashDuration, midiDetectColor);
 	}
 
 	/**
@@ -541,11 +532,6 @@ public class MainFrame extends JFrame {
 		midiOUTdetect.setPreferredSize(dimension);
 		midiINdetect.setOpaque(true);
 		midiOUTdetect.setOpaque(true);
-
-		midiINflasher = new MidiDetectFlasher(LABEL_MIDI_IN_DETECT);
-		midiOUTflasher = new MidiDetectFlasher(LABEL_MIDI_OUT_DETECT);
-		midiINflasherFlag = false;
-		midiOUTflasherFlag = false;
 
 		JPanel detectorPanel = new JPanel();
 		GridLayout grid = new GridLayout(2, 1);
@@ -1192,61 +1178,24 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Flashes the desired midi detector.
+	 * Flashes the background color of a JLabel
 	 * 
-	 * @author aguelle
-	 * 
+	 * @param label
+	 *            The JLabel
+	 * @param duration
+	 *            The time to flash
+	 * @param color
+	 *            The color to flash
 	 */
-	class MidiDetectFlasher implements Runnable {
+	private void flashLabel(JLabel label, int duration, Color color) {
 
-		private final int duration = 100;
-		private final Color color = Color.YELLOW;
-		private String midiDetect;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param midiDetect
-		 *            The midi detector to flash, "MIDI IN" or "MIDI OUT"
-		 */
-		public MidiDetectFlasher(String midiDetect) {
-			this.midiDetect = midiDetect;
-		}
-
-		@Override
-		public void run() {
-
-			if (midiDetect.equals(LABEL_MIDI_IN_DETECT)) {
-				flashLabel(midiINdetect, duration, color);
-				midiINflasherFlag = false;
-			}
-
-			if (midiDetect.equals(LABEL_MIDI_OUT_DETECT)) {
-				flashLabel(midiOUTdetect, duration, color);
-				midiOUTflasherFlag = false;
-			}
-		}
-
-		/**
-		 * Flashes the background color of a JLabel
-		 * 
-		 * @param label
-		 *            The JLabel
-		 * @param duration
-		 *            The time to flash
-		 * @param color
-		 *            The color to flash
-		 */
-		private void flashLabel(JLabel label, int duration, Color color) {
-
-			try {
-				label.setBackground(color);
-				Thread.sleep(duration);
-				label.setBackground(null);
-				Thread.sleep(duration);
-			} catch (InterruptedException e) {
-				log.error("The delay of the label flasher failed", e);
-			}
+		try {
+			label.setBackground(color);
+			Thread.sleep(duration);
+			label.setBackground(null);
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			log.error("The delay of the label flasher failed", e);
 		}
 	}
 

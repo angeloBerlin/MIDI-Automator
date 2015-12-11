@@ -26,7 +26,6 @@ public class MinSimColoredScreen extends Screen {
 
 	public MinSimColoredScreen() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

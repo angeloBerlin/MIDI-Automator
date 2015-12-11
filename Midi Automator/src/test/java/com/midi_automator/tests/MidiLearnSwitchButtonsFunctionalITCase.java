@@ -1,17 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.openNextButtonPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.openPrevButtonPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -92,7 +81,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiShouldBeLearnedOnNextButton() {
 
 		try {
@@ -107,7 +96,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			midiLearnNextButton();
 			Thread.sleep(1000);
-			// TODO: EDT problem ?
+
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
@@ -204,7 +193,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void MidiShouldBeLearnedOnPrevButton() {
 
 		try {
@@ -219,7 +208,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			midiLearnPrevButton();
 			Thread.sleep(1000);
-			// TODO: EDT problem ?
+
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 

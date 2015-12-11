@@ -1,11 +1,7 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.clickNotifierSendButton;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiOutNotifierDevice;
-import static org.junit.Assert.fail;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
@@ -113,7 +109,6 @@ public class MidiNotifierOutFunctionalITCase extends GUITestCase {
 
 		@Override
 		public void close() {
-			// TODO Auto-generated method stub
 		}
 	}
 }

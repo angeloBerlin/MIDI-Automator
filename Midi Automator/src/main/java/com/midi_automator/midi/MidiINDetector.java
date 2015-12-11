@@ -1,6 +1,7 @@
 package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
+import javax.swing.SwingWorker;
 
 import com.midi_automator.presenter.MidiAutomator;
 
@@ -14,11 +15,20 @@ public class MidiINDetector extends MidiAutomatorReceiver {
 
 	public MidiINDetector(MidiAutomator appl) {
 		super(appl);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
-		application.showMidiINSignal();
+
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				application.showMidiINSignal();
+				return null;
+			}
+		};
+		worker.execute();
+
 	}
 }

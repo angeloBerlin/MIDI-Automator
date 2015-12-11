@@ -30,11 +30,6 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 	}
 
 	@Test
-	public void nothing() {
-		// TODO: Remove as soon as at least one test is active
-	}
-
-	// @Test
 	public void filesShouldBeOpened() {
 
 		try {
@@ -44,7 +39,7 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 
 			// open files by learned midi master message
 			Thread.sleep(2000);
-			// TODO: EDT problem?
+
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
 

@@ -656,7 +656,6 @@ public class MidiUtils {
 			break;
 
 		case 0x7F:
-			// TODO: decode vendor code, dump data in rows
 			String strDataDump = getHexString(abData);
 			strMessage = "Sequencer-Specific Meta event: " + strDataDump;
 			break;

@@ -26,6 +26,7 @@ import javax.sound.midi.Transmitter;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1845,7 +1846,12 @@ public class MidiAutomator {
 
 			log.info("Sending open index " + index
 					+ " MIDI message to slaves...");
-			sendItemChangeToSlaves(index);
+
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					sendItemChangeToSlaves(index);
+				}
+			});
 		}
 	}
 

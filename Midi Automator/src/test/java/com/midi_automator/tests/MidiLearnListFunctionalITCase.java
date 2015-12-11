@@ -1,13 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -107,7 +100,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiShouldBeLearned() {
 
 		try {
@@ -120,7 +113,6 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 			setMidiInRemoteDevice(deviceName, preferencesFrame);
 			saveDialog(preferencesFrame);
 
-			// TODO: EDT problem
 			midiLearnListEntry(0);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
@@ -154,7 +146,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiMasterLearnShouldBeRejected() {
 
 		try {
@@ -165,7 +157,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 			// midi learn master signature
 			midiLearnListEntry(1);
 			Thread.sleep(1000);
-			// TODO: EDT problem?
+
 			MidiUtils.sendMidiMessage(deviceName,
 					MidiAutomator.OPEN_FILE_MIDI_COMMAND,
 					MidiAutomator.OPEN_FILE_MIDI_CHANNEL,
@@ -196,7 +188,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiDuplicateLearnShouldBeRejected() {
 
 		try {
@@ -207,7 +199,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 			// midi learn same signature twice
 			midiLearnListEntry(1);
 			Thread.sleep(1000);
-			// TODO: EDT problem?
+
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
 			Thread.sleep(1000);
@@ -218,10 +210,8 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 
 			// check failure
 			checkInfoText(String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
-					"channel " + MidiAutomator.OPEN_FILE_MIDI_CHANNEL
-							+ ": CONTROL CHANGE "
-							+ MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO
-							+ " value: " + 1));
+					"channel " + channel2 + ": CONTROL CHANGE " + controlNo
+							+ " value: " + value));
 
 			// open second file by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,

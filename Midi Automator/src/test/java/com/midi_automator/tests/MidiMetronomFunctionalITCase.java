@@ -1,9 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInMetronomDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import java.awt.Color;
 
@@ -26,9 +23,6 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 	private String valueClick = "E";
 	private int octave = 4;
 	private int velocity = 127;
-	private int clicks = 20;
-	private int clickPause = 110; // in ms, do not decrease as LoopBe fill
-									// recognize it as false loop
 
 	public MidiMetronomFunctionalITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
@@ -42,9 +36,10 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 
 	@Test
 	public void nothing() {
-		// TODO: Remove as soon as at least one test is active
+
 	}
 
+	// TODO: EDT problem?
 	// @Test
 	public void metronomFirstClickShouldBeShown() {
 
@@ -60,21 +55,18 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 
 			Thread.sleep(1000);
 
-			for (int i = 0; i < clicks; i++) {
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					value1stClick, octave, velocity);
 
-				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-						value1stClick, octave, velocity);
+			getFileList().background().requireEqualTo(Color.RED);
 
-				// TODO: EDT problem?
-				getFileList().background().requireEqualTo(Color.RED);
-				Thread.sleep(clickPause);
-			}
 		} catch (InvalidMidiDataException | MidiUnavailableException
 				| InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
+	// TODO: EDT problem?
 	// @Test
 	public void metronomOtherClickShouldBeShown() {
 
@@ -90,15 +82,11 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 
 			Thread.sleep(1000);
 
-			for (int i = 0; i < clicks; i++) {
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					valueClick, octave, velocity);
 
-				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-						valueClick, octave, velocity);
+			getFileList().background().requireEqualTo(Color.RED);
 
-				// TODO: EDT problem?
-				getFileList().background().requireEqualTo(Color.RED);
-				Thread.sleep(clickPause);
-			}
 		} catch (InvalidMidiDataException | MidiUnavailableException
 				| InterruptedException e) {
 			e.printStackTrace();

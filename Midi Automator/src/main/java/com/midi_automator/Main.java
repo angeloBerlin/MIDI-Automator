@@ -1,5 +1,7 @@
 package com.midi_automator;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -46,11 +48,15 @@ public class Main {
 			}
 		}
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				AppConfig.class);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+						AppConfig.class);
+				MidiAutomator presenter = (MidiAutomator) ctx
+						.getBean(MidiAutomator.class);
 
-		MidiAutomator presenter = (MidiAutomator) ctx
-				.getBean(MidiAutomator.class);
-		presenter.openMainFrame();
+				presenter.openMainFrame();
+			}
+		});
 	}
 }

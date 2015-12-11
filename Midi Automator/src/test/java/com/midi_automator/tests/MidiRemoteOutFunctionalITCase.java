@@ -1,10 +1,7 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiOutRemoteDevice;
-import static org.junit.Assert.fail;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
@@ -45,11 +42,6 @@ public class MidiRemoteOutFunctionalITCase extends GUITestCase {
 	}
 
 	@Test
-	public void nothing() {
-		// TODO: Remove as soon as at least one test is active
-	}
-
-	// @Test
 	public void masterOutMessageShouldBeSent() {
 
 		try {
@@ -62,7 +54,6 @@ public class MidiRemoteOutFunctionalITCase extends GUITestCase {
 			setMidiOutRemoteDevice(deviceName, preferencesFrame);
 			saveDialog(preferencesFrame);
 
-			// TODO: EDT problem?
 			openEntryByDoubleClick(0);
 
 			// check if midi master message was sent
