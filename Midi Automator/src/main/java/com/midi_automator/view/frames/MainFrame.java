@@ -434,7 +434,6 @@ public class MainFrame extends JFrame {
 	 */
 	public void flashMidiINDetect() {
 		flashLabel(midiINdetect, midiDetectFlashDuration, midiDetectColor);
-		System.out.println("HHHHH");
 	}
 
 	/**
