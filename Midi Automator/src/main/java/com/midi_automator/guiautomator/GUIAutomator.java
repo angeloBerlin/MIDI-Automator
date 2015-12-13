@@ -150,9 +150,12 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		String trigger = guiAutomation.getTrigger();
 		String signature = guiAutomation.getMidiSignature();
-		if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
-				.equals(midiSignature)))) {
-			guiAutomation.setActive(true);
+
+		if (signature != null && midiSignature != null) {
+			if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
+					.equals(midiSignature)))) {
+				guiAutomation.setActive(true);
+			}
 		}
 	}
 

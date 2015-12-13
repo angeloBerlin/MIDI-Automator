@@ -46,7 +46,7 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 			// check if file opened
 			checkIfEntryWasOpened("Hello World 1");
 
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
 			// check if file opened

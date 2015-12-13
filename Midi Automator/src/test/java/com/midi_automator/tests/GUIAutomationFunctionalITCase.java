@@ -1,6 +1,29 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteAllAutomations;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.nextFile;
+import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.resetAutomations;
+import static com.midi_automator.tests.utils.GUIAutomations.robot;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
+import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
 
 import java.awt.Point;
 
@@ -26,7 +49,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 	private String deviceName;
 	private String propertiesAlwaysCancelAutomation;
 	private String propertiesMidiCancelAutomation;
-	private String propertiesMidiMainFrameAutomation;
 	private String propertiesMidiFullMainFrameAutomation;
 	private String propertiesMidiHelloWorldAutomation;
 	private String propertiesOnceMainFrame;
@@ -42,7 +64,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 			propertiesAlwaysCancelAutomation = "automation_cancel_always_left_Mac.properties";
-			propertiesMidiMainFrameAutomation = "automation_main_frame_midi_left_Mac.properties";
 			propertiesMidiHelloWorldAutomation = "automation_hello_world_1_midi_left_Mac.properties";
 			propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation = "automation_popup_and_cancel_Mac.properties";
 			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Mac.properties";
@@ -54,7 +75,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			deviceName = "LoopBe Internal MIDI";
 			propertiesAlwaysCancelAutomation = "automation_cancel_always_left_Windows"
 					+ ".properties";
-			propertiesMidiMainFrameAutomation = "automation_main_frame_midi_left_Windows.properties";
 			propertiesMidiHelloWorldAutomation = "automation_hello_world_1_midi_left_Windows.properties";
 			propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation = "automation_popup_and_cancel_Windows.properties";
 			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Windows.properties";

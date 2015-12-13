@@ -103,13 +103,10 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 		assertThat(getInfoLabelText(), containsString(infoMsg));
 	}
 
-	/**
-	 * For debugging
-	 */
 	@After
 	public void sleep() {
 		try {
-			Thread.sleep(500);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

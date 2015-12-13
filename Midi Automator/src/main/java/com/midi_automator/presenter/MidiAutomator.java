@@ -874,6 +874,7 @@ public class MidiAutomator {
 		for (GUIAutomator guiAutomator : guiAutomators) {
 			guiAutomator.activateMidiAutomations(signature);
 		}
+
 	}
 
 	/**

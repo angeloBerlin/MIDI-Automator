@@ -1,7 +1,6 @@
 package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
-import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -18,7 +17,6 @@ public class MidiINAutomationReceiver extends MidiAutomatorReceiver {
 
 	private static Logger log = Logger.getLogger(MidiINAutomationReceiver.class
 			.getName());
-	private static MidiMessage interpretedMessage;
 
 	public MidiINAutomationReceiver(MidiAutomator appl) {
 		super(appl);
@@ -29,7 +27,7 @@ public class MidiINAutomationReceiver extends MidiAutomatorReceiver {
 
 		super.send(message, timeStamp);
 
-		interpretedMessage = interpreteMessage(message, timeStamp);
+		MidiMessage interpretedMessage = interpreteMessage(message, timeStamp);
 		String signature = MidiUtils.messageToString(interpretedMessage);
 
 		log.debug("Property doNotExecute="
@@ -41,12 +39,7 @@ public class MidiINAutomationReceiver extends MidiAutomatorReceiver {
 
 			log.debug(name + " interpreted MIDI message: " + signature);
 
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					application
-							.activateAutomationsByMidiMessage(interpretedMessage);
-				}
-			});
+			application.activateAutomationsByMidiMessage(interpretedMessage);
 		}
 
 		application.setDoNotExecuteMidiMessage(false);
