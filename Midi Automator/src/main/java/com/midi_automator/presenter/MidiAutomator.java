@@ -349,11 +349,7 @@ public class MidiAutomator {
 			guiAutomations[index].setMovable(isMovable);
 		}
 
-		// remove all existing GUI automators
-		for (int i = 0; i < guiAutomators.size(); i++) {
-			guiAutomators.get(i).terminate();
-		}
-		guiAutomators.clear();
+		terminateAllGUIAutomators();
 
 		// generate GUI automators
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
@@ -372,6 +368,21 @@ public class MidiAutomator {
 			}
 		};
 		worker.execute();
+	}
+
+	/**
+	 * Terminates all GUI automators
+	 */
+	private void terminateAllGUIAutomators() {
+
+		for (int i = 0; i < guiAutomators.size(); i++) {
+			GUIAutomator guiAutomator = guiAutomators.get(i);
+			guiAutomator.terminate();
+
+			log.debug("Terminate GUI automation: "
+					+ guiAutomator.getGuiAutomation());
+		}
+		guiAutomators.clear();
 	}
 
 	/**
@@ -479,6 +490,7 @@ public class MidiAutomator {
 	 */
 	public void close() {
 		unloadAllMidiDevices();
+		terminateAllGUIAutomators();
 		ctx.close();
 	}
 

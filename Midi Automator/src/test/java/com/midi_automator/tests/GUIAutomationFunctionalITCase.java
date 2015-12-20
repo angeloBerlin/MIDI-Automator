@@ -96,8 +96,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// search clicked Midi Automator
 			getFileList().requireSelectedItems(5);
 
-			resetAutomations();
-
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
 			e.printStackTrace();
@@ -152,8 +150,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -192,7 +188,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			addFrame.requireVisible();
 
 			cancelDialog(addFrame);
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -232,7 +227,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			addFrame.requireVisible();
 
 			cancelDialog(addFrame);
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -263,8 +257,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 							.row(0)
 							.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE),
 					"");
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -311,8 +303,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// check if add dialog was canceled
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
 			e.printStackTrace();
@@ -345,8 +335,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -373,8 +361,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			JPopupMenuFixture popupMenu = new JPopupMenuFixture(robot,
 					ctx.getBean(MainFramePopupMenu.class));
 			popupMenu.requireVisible();
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -405,8 +391,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
 					"Hello_World_1_RTF_inactive.png");
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -505,8 +489,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(2000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -553,8 +535,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
