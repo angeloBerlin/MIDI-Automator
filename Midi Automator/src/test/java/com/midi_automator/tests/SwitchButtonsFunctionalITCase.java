@@ -1,11 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addFile;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.getPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.nextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.prevFile;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import org.junit.Test;
 
@@ -34,15 +29,21 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// open first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 
 		// open second file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 2");
+		checkIfOpenEntryIsDisplayed("Hello World 2");
+		sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+				"Hello_World_2_RTF_inactive.png");
 
 		// cycle first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 	}
 
 	@Test
@@ -54,18 +55,24 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// open first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 
 		// delete second file
 		deleteEntry(1);
 
 		// open third file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 3");
+		checkIfOpenEntryIsDisplayed("Hello World 3");
+		sikulix.checkIfFileOpened("Hello_World_3_RTF.png",
+				"Hello_World_3_RTF_inactive.png");
 
 		// cycle first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 	}
 
 	@Test
@@ -77,22 +84,30 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// open first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 
 		// open second file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 2");
+		checkIfOpenEntryIsDisplayed("Hello World 2");
+		sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+				"Hello_World_2_RTF_inactive.png");
 
 		// add third file
 		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf");
 
 		// open third file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 3");
+		checkIfOpenEntryIsDisplayed("Hello World 3");
+		sikulix.checkIfFileOpened("Hello_World_3_RTF.png",
+				"Hello_World_3_RTF_inactive.png");
 
 		// cycle first file
 		nextFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 	}
 
 	@Test
@@ -104,11 +119,15 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// cycle second file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 2");
+		checkIfOpenEntryIsDisplayed("Hello World 2");
+		sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+				"Hello_World_2_RTF_inactive.png");
 
 		// open first file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 	}
 
 	@Test
@@ -120,14 +139,18 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// cycle third file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 3");
+		checkIfOpenEntryIsDisplayed("Hello World 3");
+		sikulix.checkIfFileOpened("Hello_World_3_RTF.png",
+				"Hello_World_3_RTF_inactive.png");
 
 		// delete second file
 		deleteEntry(1);
 
 		// open third file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 3");
+		checkIfOpenEntryIsDisplayed("Hello World 3");
+		sikulix.checkIfFileOpened("Hello_World_3_RTF.png",
+				"Hello_World_3_RTF_inactive.png");
 	}
 
 	@Test
@@ -139,17 +162,23 @@ public class SwitchButtonsFunctionalITCase extends GUITestCase {
 
 		// cycle second file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 2");
+		checkIfOpenEntryIsDisplayed("Hello World 2");
+		sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+				"Hello_World_2_RTF_inactive.png");
 
 		// open first file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 1");
+		checkIfOpenEntryIsDisplayed("Hello World 1");
+		sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+				"Hello_World_1_RTF_inactive.png");
 
 		// add third file
 		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf");
 
 		// cycle third file
 		prevFile();
-		checkIfEntryWasOpened("Hello World 3");
+		checkIfOpenEntryIsDisplayed("Hello World 3");
+		sikulix.checkIfFileOpened("Hello_World_3_RTF.png",
+				"Hello_World_3_RTF_inactive.png");
 	}
 }

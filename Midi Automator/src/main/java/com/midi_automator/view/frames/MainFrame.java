@@ -784,6 +784,7 @@ public class MainFrame extends JFrame {
 					frame.dispatchEvent(windowClosing);
 				}
 			}
+			presenter.close();
 		}
 	}
 

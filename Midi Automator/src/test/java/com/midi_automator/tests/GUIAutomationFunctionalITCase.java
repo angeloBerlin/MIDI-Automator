@@ -1,29 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAllAutomations;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.nextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.resetAutomations;
-import static com.midi_automator.tests.utils.GUIAutomations.robot;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
-import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
-import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import java.awt.Point;
 
@@ -425,7 +402,10 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// check if file was opened
 			Thread.sleep(5000);
 
-			checkIfEntryWasOpened("Hello World 1");
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
+
 			resetAutomations();
 
 		} catch (InterruptedException e) {

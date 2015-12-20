@@ -31,6 +31,7 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.Main;
@@ -56,6 +57,9 @@ import com.midi_automator.view.frames.MainFrame;
 public class MidiAutomator {
 
 	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
+
+	@Autowired
+	private AnnotationConfigApplicationContext ctx;
 
 	@Autowired
 	private Resources resources;
@@ -471,6 +475,28 @@ public class MidiAutomator {
 	}
 
 	/**
+	 * Closes the application
+	 */
+	public void close() {
+		unloadAllMidiDevices();
+		ctx.close();
+	}
+
+	/**
+	 * Unloads all midi devices
+	 */
+	private void unloadAllMidiDevices() {
+
+		for (Map.Entry<String, MidiDevice> entry : midiDevices.entrySet()) {
+
+			String functionKey = entry.getKey();
+			MidiDevice device = entry.getValue();
+			unloadMidiDevice(device, functionKey);
+		}
+
+	}
+
+	/**
 	 * Unloads a midi device
 	 * 
 	 * @param deviceName
@@ -489,6 +515,27 @@ public class MidiAutomator {
 				MidiDevice device = MidiUtils.getMidiDevice(deviceName,
 						midiDirection);
 
+				unloadMidiDevice(device, functionKey);
+
+			} catch (MidiUnavailableException e) {
+				log.error("Retrieving MIDI device failed.", e);
+			}
+		}
+	}
+
+	/**
+	 * Unloads a midi device
+	 * 
+	 * @param device
+	 *            The device
+	 * @param functionKey
+	 *            The name of the function key
+	 */
+	private void unloadMidiDevice(MidiDevice device, String functionKey) {
+
+		try {
+
+			if (device != null) {
 				removeReceiversFromDevice(device,
 						midiFunctionReceiverMapping.get(functionKey));
 
@@ -499,11 +546,12 @@ public class MidiAutomator {
 							+ MidiUtils.getDirectionOfMidiDevice(device)
 							+ " device: " + device.getDeviceInfo().getName());
 				}
-
-			} catch (MidiUnavailableException e) {
-				log.error("Unloading MIDI device failed.", e);
 			}
+
+		} catch (MidiUnavailableException e) {
+			log.error("Unloading MIDI device failed.", e);
 		}
+
 	}
 
 	/**
@@ -727,6 +775,8 @@ public class MidiAutomator {
 		} else {
 			mainFrame.midiLearnOff();
 		}
+
+		log.debug("Property midiLearn=" + isInMidiLearnMode());
 	}
 
 	/**

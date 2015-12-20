@@ -1,9 +1,8 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.getInfoLabelText;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +23,7 @@ import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
+import com.midi_automator.tests.utils.SikuliXGUIAutomations;
 import com.midi_automator.view.frames.MainFrame;
 
 public class GUITestCase extends AssertJSwingJUnitTestCase {
@@ -33,8 +33,9 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 
 	protected FrameFixture window;
 	protected String currentPath;
-	protected Screen screen;
+	protected SikuliXGUIAutomations sikulix;
 	protected AnnotationConfigApplicationContext ctx;
+	private MidiAutomator presenter;
 
 	@Before
 	public void log() {
@@ -50,11 +51,6 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 	 */
 	protected void startApplication() {
 
-		// TODO: New Screen() has to be called once outside the EDT. Maybe we
-		// can get rid of that as soon as the application is "EDT" proof.
-		// https://weblogs.java.net/blog/alexfromsun/archive/2006/02/debugging_swing.html
-		screen = new Screen(0);
-
 		MainFrame mainFrame = GuiActionRunner
 				.execute(new GuiQuery<MainFrame>() {
 					protected MainFrame executeInEDT() {
@@ -62,7 +58,7 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 						ctx = new AnnotationConfigApplicationContext(
 								AppConfig.class);
 
-						MidiAutomator presenter = (MidiAutomator) ctx
+						presenter = (MidiAutomator) ctx
 								.getBean(MidiAutomator.class);
 
 						return presenter.openMainFrame();
@@ -82,12 +78,12 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 	}
 
 	/**
-	 * Checks if the entry was opened
+	 * Checks for the open entry text
 	 * 
 	 * @param entryName
 	 *            The name of the entry
 	 */
-	protected void checkIfEntryWasOpened(String entryName) {
+	protected void checkIfOpenEntryIsDisplayed(String entryName) {
 		checkInfoText(String.format(Messages.MSG_OPENING_ENTRY, entryName));
 	}
 
@@ -114,13 +110,17 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 
 	@Override
 	protected void onSetUp() {
-
+		sikulix = new SikuliXGUIAutomations(new Screen(0));
 	}
 
 	@Override
 	protected void onTearDown() {
 		MockUpUtils.recoverMidoBackup();
 		MockUpUtils.recoverPropertiesBackup();
+
+		if (presenter != null) {
+			presenter.close();
+		}
 	}
 
 	/**
