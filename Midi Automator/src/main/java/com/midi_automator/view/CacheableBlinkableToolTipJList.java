@@ -7,37 +7,36 @@ import javax.swing.JList;
 import javax.swing.ListModel;
 
 /**
- * A cachable JList.
+ * A cachable, blinkable JList.
  * 
  * @author aguelle
  * 
  */
-public class CacheableToolTipJList<T> extends JList<T> implements ICacheable {
+public class CacheableBlinkableToolTipJList<T> extends JList<T> implements
+		ICacheable, IBlinkable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private ICacheable cacheableImpl;
+	private IBlinkingStrategy blinkingStrategy;
 	private int selectedIndex;
 
-	public CacheableToolTipJList() {
+	public CacheableBlinkableToolTipJList() {
 		super();
 		initialize();
 	}
 
-	public CacheableToolTipJList(ListModel<T> dataModel) {
+	public CacheableBlinkableToolTipJList(ListModel<T> dataModel) {
 		super(dataModel);
 		initialize();
 	}
 
-	public CacheableToolTipJList(T[] listData) {
+	public CacheableBlinkableToolTipJList(T[] listData) {
 		super(listData);
 		initialize();
 	}
 
-	public CacheableToolTipJList(Vector<? extends T> listData) {
+	public CacheableBlinkableToolTipJList(Vector<? extends T> listData) {
 		super(listData);
 		initialize();
 	}
@@ -113,6 +112,16 @@ public class CacheableToolTipJList<T> extends JList<T> implements ICacheable {
 	private void initialize() {
 		cacheableImpl = new CacheableImpl();
 		setToolTipText("");
+	}
+
+	@Override
+	public void startBlinking() {
+		blinkingStrategy.startBlinking();
+	}
+
+	@Override
+	public void setBlinkingStrategy(IBlinkingStrategy blinkingStrategy) {
+		this.blinkingStrategy = blinkingStrategy;
 	}
 
 }

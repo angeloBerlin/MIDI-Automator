@@ -2,8 +2,6 @@ package com.midi_automator.tests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 
-import java.awt.Color;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
@@ -13,6 +11,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
+import com.midi_automator.view.frames.MainFrame;
 
 public class MidiMetronomFunctionalITCase extends GUITestCase {
 
@@ -35,13 +34,7 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 	}
 
 	@Test
-	public void nothing() {
-
-	}
-
-	// TODO: EDT problem?
-	// @Test
-	public void metronomFirstClickShouldBeShown() {
+	public void metronomBeatShouldBeShown() {
 
 		try {
 
@@ -54,38 +47,25 @@ public class MidiMetronomFunctionalITCase extends GUITestCase {
 			saveDialog(preferencesFrame);
 
 			Thread.sleep(1000);
-
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					value1stClick, octave, velocity);
 
-			getFileList().background().requireEqualTo(Color.RED);
+			getFileList().background().requireEqualTo(
+					MainFrame.METRONOM_COLOR_FIRST_CLICK);
 
-		} catch (InvalidMidiDataException | MidiUnavailableException
-				| InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// TODO: EDT problem?
-	// @Test
-	public void metronomOtherClickShouldBeShown() {
-
-		try {
-
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-			startApplication();
-
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiInMetronomDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
-
-			Thread.sleep(1000);
-
+			Thread.sleep(500);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					valueClick, octave, velocity);
 
-			getFileList().background().requireEqualTo(Color.RED);
+			getFileList().background().requireEqualTo(
+					MainFrame.METRONOM_COLOR_OTHER_CLICK);
+
+			Thread.sleep(500);
+			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+					value1stClick, octave, velocity);
+
+			getFileList().background().requireEqualTo(
+					MainFrame.METRONOM_COLOR_FIRST_CLICK);
 
 		} catch (InvalidMidiDataException | MidiUnavailableException
 				| InterruptedException e) {

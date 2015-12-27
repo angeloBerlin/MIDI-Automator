@@ -22,8 +22,8 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 				"Hello_World_RTF_inactive.png");
 	}
 
-	// @Test
-	public void helloWorldÄÖÜFileShouldBeOpened() {
+	@Test
+	public void helloWorldUTF8FileShouldBeOpened() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_ÄÖÜ.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");

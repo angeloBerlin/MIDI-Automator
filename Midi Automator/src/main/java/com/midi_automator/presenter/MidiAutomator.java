@@ -1,6 +1,5 @@
 package com.midi_automator.presenter;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1443,14 +1442,14 @@ public class MidiAutomator {
 	 * Indicates a midi IN signal
 	 */
 	public void showMidiINSignal() {
-		mainFrame.flashMidiINDetect();
+		mainFrame.blinkMidiINDetect();
 	}
 
 	/**
 	 * Indicates a midi OUT signal
 	 */
 	public void showMidiOUTSignal() {
-		mainFrame.flashMidiOUTDetect();
+		mainFrame.blinkMidiOUTDetect();
 	}
 
 	/**
@@ -1645,13 +1644,7 @@ public class MidiAutomator {
 	 * @beat the current clicked beat
 	 */
 	public void metronomClick(int beat) {
-		if (beat == 1) {
-			log.debug("Metronom first click");
-			mainFrame.flashFileList(Color.RED);
-		} else {
-			log.debug("Metronom other click");
-			mainFrame.flashFileList(Color.GREEN);
-		}
+		mainFrame.blinkMetronom(beat);
 	}
 
 	/**

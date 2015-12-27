@@ -182,7 +182,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			cancelDialog(addFrame);
 
 			// check if add dialog was not canceled after opening
-			nextFile();
+			clickNextFile();
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireVisible();
@@ -216,7 +216,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			cancelDialog(addFrame);
 
 			// check if add dialog was canceled after opening
-			nextFile();
+			clickNextFile();
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();

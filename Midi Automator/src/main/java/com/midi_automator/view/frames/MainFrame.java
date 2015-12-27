@@ -38,7 +38,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -60,10 +59,13 @@ import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
+import com.midi_automator.view.BlinkingJLabel;
+import com.midi_automator.view.BlinkingStrategy;
+import com.midi_automator.view.CacheableBlinkableToolTipJList;
 import com.midi_automator.view.CacheableJButton;
-import com.midi_automator.view.CacheableToolTipJList;
 import com.midi_automator.view.DeActivateableMouseAdapter;
 import com.midi_automator.view.HTMLLabel;
+import com.midi_automator.view.IBlinkingStrategy;
 import com.midi_automator.view.IToolTipItem;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.ToolTipItemImpl;
@@ -103,6 +105,8 @@ public class MainFrame extends JFrame {
 	public static final String NAME_NEXT_BUTTON = "next button";
 	public static final String NAME_FILE_LIST = "file list";
 	public static final String NAME_INFO_LABEL = "info label";
+	public static final String NAME_MIDI_IN_DETECT_LABEL = "midi IN label";
+	public static final String NAME_MIDI_OUT_DETECT_LABEL = "midi OUT label";
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
@@ -110,11 +114,11 @@ public class MainFrame extends JFrame {
 	private JMenuItem exportMenuItem;
 	private JMenuItem exitMenuItem;
 	private JMenuItem preferencesMenuItem;
-	private JLabel midiINdetect;
-	private JLabel midiOUTdetect;
+	private BlinkingJLabel midiINdetect;
+	private BlinkingJLabel midiOUTdetect;
 	private HTMLLabel infoLabel;
 	private JScrollPane fileListScrollPane;
-	private CacheableToolTipJList<IToolTipItem> fileList;
+	private CacheableBlinkableToolTipJList<IToolTipItem> fileList;
 	private CacheableJButton prevButton;
 	private CacheableJButton nextButton;
 
@@ -125,8 +129,14 @@ public class MainFrame extends JFrame {
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
 
-	private final int midiDetectFlashDuration = 100;
-	private final Color midiDetectColor = Color.YELLOW;
+	public static final int MIDI_DETECT_BLINK_RATE = 100;
+	public static final Color MIDI_DETECT_COLOR = Color.YELLOW;
+
+	public static final int METRONOM_BLINK_RATE = 200;
+	public static final Color METRONOM_COLOR_FIRST_CLICK = Color.RED;
+	public static final Color METRONOM_COLOR_OTHER_CLICK = Color.GREEN;
+	private IBlinkingStrategy firstClickStrategy;
+	private IBlinkingStrategy otherClickStrategy;
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -224,7 +234,7 @@ public class MainFrame extends JFrame {
 		return infoLabel;
 	}
 
-	public CacheableToolTipJList<IToolTipItem> getFileList() {
+	public CacheableBlinkableToolTipJList<IToolTipItem> getFileList() {
 		return fileList;
 	}
 
@@ -337,8 +347,9 @@ public class MainFrame extends JFrame {
 
 		Component component = GUIUtils.getComponentByName(this, listName);
 
-		if (component instanceof CacheableToolTipJList) {
-			((CacheableToolTipJList<?>) component).setToolTipText(text, index);
+		if (component instanceof CacheableBlinkableToolTipJList) {
+			((CacheableBlinkableToolTipJList<?>) component).setToolTipText(
+					text, index);
 		}
 	}
 
@@ -430,17 +441,35 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Flashes the MIDI IN detector
+	 * Blinks the MIDI IN detector
 	 */
-	public void flashMidiINDetect() {
-		flashLabel(midiINdetect, midiDetectFlashDuration, midiDetectColor);
+	public void blinkMidiINDetect() {
+		midiINdetect.startBlinking();
 	}
 
 	/**
-	 * Flashes the MIDI OUT detector
+	 * Blinks the MIDI OUT detector
 	 */
-	public void flashMidiOUTDetect() {
-		flashLabel(midiOUTdetect, midiDetectFlashDuration, midiDetectColor);
+	public void blinkMidiOUTDetect() {
+		midiOUTdetect.startBlinking();
+	}
+
+	/**
+	 * Flashes the background color of the content pane.
+	 * 
+	 * @beat the current clicked beat
+	 */
+	public void blinkMetronom(int beat) {
+
+		if (beat == 1) {
+			log.debug("Metronom first click");
+			fileList.setBlinkingStrategy(firstClickStrategy);
+			fileList.startBlinking();
+		} else {
+			log.debug("Metronom other click");
+			fileList.setBlinkingStrategy(otherClickStrategy);
+			fileList.startBlinking();
+		}
 	}
 
 	/**
@@ -519,8 +548,16 @@ public class MainFrame extends JFrame {
 		final Dimension dimension = new Dimension(25, 25);
 		final Font font = new Font(FONT_FAMILY, Font.PLAIN, 10);
 
-		midiINdetect = new JLabel(LABEL_MIDI_IN_DETECT);
-		midiOUTdetect = new JLabel(LABEL_MIDI_OUT_DETECT);
+		midiINdetect = new BlinkingJLabel(LABEL_MIDI_IN_DETECT);
+		midiINdetect.setBlinkingStrategy(new BlinkingStrategy(midiINdetect,
+				MainFrame.MIDI_DETECT_COLOR, MainFrame.MIDI_DETECT_BLINK_RATE,
+				1));
+		midiOUTdetect = new BlinkingJLabel(LABEL_MIDI_OUT_DETECT);
+		midiOUTdetect.setBlinkingStrategy(new BlinkingStrategy(midiOUTdetect,
+				MainFrame.MIDI_DETECT_COLOR, MainFrame.MIDI_DETECT_BLINK_RATE,
+				1));
+		midiINdetect.setName(NAME_MIDI_IN_DETECT_LABEL);
+		midiOUTdetect.setName(NAME_MIDI_OUT_DETECT_LABEL);
 		midiINdetect.setFont(font);
 		midiOUTdetect.setFont(font);
 		midiINdetect.setHorizontalAlignment(SwingConstants.CENTER);
@@ -549,7 +586,16 @@ public class MainFrame extends JFrame {
 	 */
 	private void createFileList(Container parent) {
 
-		fileList = new CacheableToolTipJList<IToolTipItem>();
+		fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
+
+		firstClickStrategy = new BlinkingStrategy(fileList,
+				MainFrame.METRONOM_COLOR_FIRST_CLICK,
+				MainFrame.METRONOM_BLINK_RATE, 1);
+		otherClickStrategy = new BlinkingStrategy(fileList,
+				MainFrame.METRONOM_COLOR_OTHER_CLICK,
+				MainFrame.METRONOM_BLINK_RATE, 1);
+
+		fileList.setBlinkingStrategy(otherClickStrategy);
 		fileList.addMouseListener(new OpenFileOnDoubleClick());
 		fileList.addMouseListener(new PopupListener());
 		fileList.setFont(new Font(FONT_FAMILY, Font.BOLD, FONT_SIZE_FILE_LIST));
@@ -648,27 +694,6 @@ public class MainFrame extends JFrame {
 			return component.getName();
 		}
 		return null;
-	}
-
-	/**
-	 * Flashes the background color of the content pane.
-	 * 
-	 * @color The color for flashing
-	 */
-	public void flashFileList(Color color) {
-
-		final int duration = 100;
-		Color originalColor = null;
-
-		try {
-			originalColor = fileList.getBackground();
-			fileList.setBackground(color);
-			Thread.sleep(duration);
-		} catch (InterruptedException e) {
-			log.error("The delay of the file list flasher failed", e);
-		} finally {
-			fileList.setBackground(originalColor);
-		}
 	}
 
 	/**
@@ -1177,28 +1202,6 @@ public class MainFrame extends JFrame {
 		return result;
 	}
 
-	/**
-	 * Flashes the background color of a JLabel
-	 * 
-	 * @param label
-	 *            The JLabel
-	 * @param duration
-	 *            The time to flash
-	 * @param color
-	 *            The color to flash
-	 */
-	private void flashLabel(JLabel label, int duration, Color color) {
-
-		try {
-			label.setBackground(color);
-			Thread.sleep(duration);
-			label.setBackground(null);
-			Thread.sleep(duration);
-		} catch (InterruptedException e) {
-			log.error("The delay of the label flasher failed", e);
-		}
-	}
-
 	public boolean isPopupWasShown() {
 		return popupWasShown;
 	}
@@ -1206,5 +1209,4 @@ public class MainFrame extends JFrame {
 	public void setPopupWasShown(boolean popupWasShown) {
 		this.popupWasShown = popupWasShown;
 	}
-
 }
