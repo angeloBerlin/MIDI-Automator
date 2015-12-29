@@ -338,7 +338,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 										<runtimeBits>64</runtimeBits>
 										<opts>
 											<opt>-splash:images/${project.splashscreen.file}</opt>
-											<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt>
+											<!--<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt>-->
 										</opts>
 									</jre>
 								</configuration>

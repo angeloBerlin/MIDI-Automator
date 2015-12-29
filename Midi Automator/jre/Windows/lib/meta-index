@@ -61,6 +61,7 @@ META-INF/services/javax.sound.sampled.spi.FormatConversionProvider
 com/sun/java/util/jar/pack/
 java/
 org/ietf/
+jdk/net/
 com/sun/beans/
 com/sun/tracing/
 com/sun/java/browser/
