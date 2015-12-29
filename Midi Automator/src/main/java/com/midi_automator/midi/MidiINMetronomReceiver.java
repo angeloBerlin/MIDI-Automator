@@ -1,7 +1,7 @@
 package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.MidiUtils;
@@ -28,28 +28,20 @@ public class MidiINMetronomReceiver extends MidiAutomatorReceiver {
 			if (signature
 					.contains(MidiAutomator.METRONOM_FIRST_CLICK_MIDI_SIGNATURE)) {
 
-				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-					@Override
-					protected Void doInBackground() throws Exception {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
 						application.metronomClick(1);
-						return null;
 					}
-				};
-				worker.execute();
+				});
 
 			} else if (signature
 					.contains(MidiAutomator.METRONOM_CLICK_MIDI_SIGNATURE)) {
 
-				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-					@Override
-					protected Void doInBackground() throws Exception {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
 						application.metronomClick(-1);
-						return null;
 					}
-				};
-				worker.execute();
+				});
 			}
 
 		}

@@ -1,13 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -96,7 +89,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 
 			// open first files by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 1, 127);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// check that file was not opened
 			checkEmptyInfoText();
@@ -130,22 +123,27 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// open files by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// check that file was opened
-			checkIfEntryWasOpened("Hello World 1");
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
+			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// check that file was opened
-			checkIfEntryWasOpened("Hello World 2");
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -169,7 +167,7 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 					MidiAutomator.OPEN_FILE_MIDI_COMMAND,
 					MidiAutomator.OPEN_FILE_MIDI_CHANNEL,
 					MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO, 1);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			// check failure
 			checkInfoText(String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
@@ -183,11 +181,12 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 					MidiAutomator.OPEN_FILE_MIDI_COMMAND,
 					MidiAutomator.OPEN_FILE_MIDI_CHANNEL,
 					MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO, 1);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
-			// check if file opened
 			checkInfoText(String.format(Messages.MSG_OPENING_ENTRY,
 					"Hello World 2"));
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -209,11 +208,13 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
+
 			midiLearnListEntry(0);
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
+			Thread.sleep(2000);
 
 			// check failure
 			checkInfoText(String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
@@ -223,10 +224,12 @@ public class MidiLearnListFunctionalITCase extends GUITestCase {
 			// open second file by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel2,
 					controlNo, value);
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 
 			checkInfoText(String.format(Messages.MSG_OPENING_ENTRY,
 					"Hello World 2"));
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {

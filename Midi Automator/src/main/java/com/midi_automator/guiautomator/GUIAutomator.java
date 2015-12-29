@@ -257,4 +257,8 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public GUIAutomation getGuiAutomation() {
+		return guiAutomation;
+	}
 }

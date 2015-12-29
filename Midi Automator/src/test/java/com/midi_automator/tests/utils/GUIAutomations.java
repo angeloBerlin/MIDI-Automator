@@ -13,6 +13,7 @@ import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
+import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
@@ -686,14 +687,14 @@ public class GUIAutomations {
 	/**
 	 * Opens the next file
 	 */
-	public static void nextFile() {
+	public static void clickNextFile() {
 		getNextButton().click();
 	}
 
 	/**
 	 * Opens the previous file
 	 */
-	public static void prevFile() {
+	public static void clickPrevFile() {
 		getPrevButton().click();
 	}
 
@@ -844,6 +845,24 @@ public class GUIAutomations {
 	 */
 	public static JListFixture getFileList() {
 		return window.list(MainFrame.NAME_FILE_LIST);
+	}
+
+	/**
+	 * Gets the midi IN detect label
+	 * 
+	 * @return The label
+	 */
+	public static JLabelFixture getMidiINDetect() {
+		return window.label(MainFrame.NAME_MIDI_IN_DETECT_LABEL);
+	}
+
+	/**
+	 * Gets the midi IN detect label
+	 * 
+	 * @return The label
+	 */
+	public static JLabelFixture getMidiOUTDetect() {
+		return window.label(MainFrame.NAME_MIDI_OUT_DETECT_LABEL);
 	}
 
 	/**

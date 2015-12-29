@@ -44,13 +44,17 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 					controlNo, 0);
 
 			// check if file opened
-			checkIfEntryWasOpened("Hello World 1");
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
 			// check if file opened
-			checkIfEntryWasOpened("Hello World 2");
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
+					"Hello_World_2_RTF_inactive.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {

@@ -1,29 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAllAutomations;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.nextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.resetAutomations;
-import static com.midi_automator.tests.utils.GUIAutomations.robot;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
-import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
-import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import java.awt.Point;
 
@@ -119,8 +96,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// search clicked Midi Automator
 			getFileList().requireSelectedItems(5);
 
-			resetAutomations();
-
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
 			e.printStackTrace();
@@ -175,8 +150,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -209,13 +182,12 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			cancelDialog(addFrame);
 
 			// check if add dialog was not canceled after opening
-			nextFile();
+			clickNextFile();
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireVisible();
 
 			cancelDialog(addFrame);
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -244,7 +216,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			cancelDialog(addFrame);
 
 			// check if add dialog was canceled after opening
-			nextFile();
+			clickNextFile();
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
@@ -255,7 +227,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			addFrame.requireVisible();
 
 			cancelDialog(addFrame);
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -286,8 +257,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 							.row(0)
 							.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE),
 					"");
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -334,8 +303,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// check if add dialog was canceled
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
 			e.printStackTrace();
@@ -368,8 +335,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -397,8 +362,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 					ctx.getBean(MainFramePopupMenu.class));
 			popupMenu.requireVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -425,8 +388,9 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			// check if file was opened
 			Thread.sleep(5000);
 
-			checkIfEntryWasOpened("Hello World 1");
-			resetAutomations();
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
+					"Hello_World_1_RTF_inactive.png");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -525,8 +489,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(2000);
 			addFrame.requireNotVisible();
 
-			resetAutomations();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -573,8 +535,6 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			addFrame = openAddDialog();
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
-
-			resetAutomations();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();

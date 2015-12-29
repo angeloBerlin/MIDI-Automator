@@ -17,12 +17,13 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 
 		openEntryByDoubleClick(0);
 
-		// check if file opened
-		checkIfEntryWasOpened("Hello World");
+		checkIfOpenEntryIsDisplayed("Hello World");
+		sikulix.checkIfFileOpened("Hello_World_RTF.png",
+				"Hello_World_RTF_inactive.png");
 	}
 
 	@Test
-	public void helloWorldÄÖÜFileShouldBeOpened() {
+	public void helloWorldUTF8FileShouldBeOpened() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_ÄÖÜ.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -30,8 +31,9 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 
 		openEntryByDoubleClick(0);
 
-		// check if file opened
-		checkIfEntryWasOpened("Hello World ÄÖÜ");
+		checkIfOpenEntryIsDisplayed("Hello World ÄÖÜ");
+		sikulix.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png",
+				"Hello_World_ÄÖÜ_RTF_inactive.png");
 	}
 
 	@Test
@@ -43,7 +45,6 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 
 		openEntryByDoubleClick(1);
 
-		// check for empty info text
 		checkEmptyInfoText();
 	}
 }
