@@ -17,7 +17,7 @@
 			displayname="${name}" identifier="${base.package}" icon="${images.dir}/${icon.file.macos}"
 			mainclassname="${main.class}">
 			<runtime dir="${java.runtime}" />
-			<option value="-Dfile.encoding=${encoding}" />
+			<!-- <option value="-Dfile.encoding=${encoding}" /> -->
 			<option
 				value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
 			<argument value="-os=MacOS" />
