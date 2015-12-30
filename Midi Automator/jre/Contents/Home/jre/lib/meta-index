@@ -8,7 +8,6 @@ java/text
 java/util
 sun/misc
 # charsets.jar
-META-INF/services/java.nio.charset.spi.CharsetProvider
 sun/nio
 sun/awt
 sun/io
@@ -61,6 +60,7 @@ META-INF/services/javax.sound.sampled.spi.FormatConversionProvider
 com/sun/java/util/jar/pack/
 java/
 org/ietf/
+jdk/net/
 com/sun/beans/
 com/sun/tracing/
 apple/launcher/
