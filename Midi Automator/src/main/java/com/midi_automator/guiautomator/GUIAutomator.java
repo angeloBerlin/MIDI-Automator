@@ -154,6 +154,8 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (signature != null && midiSignature != null) {
 			if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
 					.equals(midiSignature)))) {
+				log.info("Activated automation " + guiAutomation
+						+ " by MIDI message: " + midiSignature);
 				guiAutomation.setActive(true);
 			}
 		}

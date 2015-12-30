@@ -1,6 +1,17 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnNextButton;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.openNextButtonPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.openPrevButtonPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -107,8 +118,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			// check if first file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");
-			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 			// open second files by learned midi message
 			Thread.sleep(2000);
@@ -117,8 +127,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			// check if second file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");
-			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_2_RTF_inactive.png");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -223,8 +232,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			// check if second file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");
-			sikulix.checkIfFileOpened("Hello_World_2_RTF.png",
-					"Hello_World_RTF_2_inactive.png");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
 			// open first files by learned midi message
 			Thread.sleep(2000);
@@ -233,8 +241,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
 
 			// check if first file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");
-			sikulix.checkIfFileOpened("Hello_World_1_RTF.png",
-					"Hello_World_1_RTF_inactive.png");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {

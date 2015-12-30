@@ -3,6 +3,7 @@ package com.midi_automator.tests;
 import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
 import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
 import static com.midi_automator.tests.utils.GUIAutomations.openEditDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
 import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
 import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
 import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
@@ -67,6 +68,11 @@ public class EditFileFunctionalITCase extends GUITestCase {
 		saveDialog(editFrame);
 
 		assertEquals(getFileList().contents()[0], "1 Hello World Edit");
+
+		openEntryByDoubleClick(0);
+
+		checkIfOpenEntryIsDisplayed("Hello World Edit");
+		sikulix.checkIfFileOpened("Hello_World_Edit_RTF.png");
 	}
 
 	// @Test

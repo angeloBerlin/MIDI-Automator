@@ -1,7 +1,14 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addFile;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -31,8 +38,7 @@ public class AddFileFunctionalITCase extends GUITestCase {
 		openEntryByDoubleClick(0);
 
 		checkIfOpenEntryIsDisplayed("Hello World");
-		sikulix.checkIfFileOpened("Hello_World_RTF.png",
-				"Hello_World_RTF_inactive.png");
+		sikulix.checkIfFileOpened("Hello_World_RTF.png");
 	}
 
 	@Test

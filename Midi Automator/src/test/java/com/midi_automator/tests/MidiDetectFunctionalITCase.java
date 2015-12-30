@@ -1,6 +1,8 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
+import static com.midi_automator.tests.utils.GUIAutomations.getMidiINDetect;
+import static com.midi_automator.tests.utils.GUIAutomations.getMidiOUTDetect;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -58,6 +60,8 @@ public class MidiDetectFunctionalITCase extends GUITestCase {
 				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 						value, octave, velocity);
 
+				Thread.sleep(50);
+
 				if (i % 2 == 0) {
 					getMidiINDetect().background().requireEqualTo(
 							MainFrame.MIDI_DETECT_COLOR);
@@ -85,8 +89,15 @@ public class MidiDetectFunctionalITCase extends GUITestCase {
 				+ remoteOUTpropertiesFile);
 		startApplication();
 
-		clickNextFile();
-		getMidiOUTDetect().background().requireEqualTo(
-				MainFrame.MIDI_DETECT_COLOR);
+		try {
+			clickNextFile();
+			Thread.sleep(50);
+			getMidiOUTDetect().background().requireEqualTo(
+					MainFrame.MIDI_DETECT_COLOR);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -129,7 +129,7 @@ public class MainFrame extends JFrame {
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
 
-	public static final int MIDI_DETECT_BLINK_RATE = 100;
+	public static final int MIDI_DETECT_BLINK_RATE = 200;
 	public static final Color MIDI_DETECT_COLOR = Color.YELLOW;
 
 	public static final int METRONOM_BLINK_RATE = 200;

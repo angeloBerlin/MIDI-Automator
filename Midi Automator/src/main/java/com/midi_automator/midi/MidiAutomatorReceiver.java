@@ -17,12 +17,16 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiAutomatorReceiver implements Receiver {
 
-	static Logger log = Logger.getLogger(MidiAutomatorReceiver.class.getName());
+	protected Logger log = Logger.getLogger(this.getClass().getName());
+
+	protected static boolean isExecuting;
 
 	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
 	protected final long timeTolerance = 0; // in microseconds
 	protected String name;
+	protected MidiMessage interpretedMessage;
+	protected String interpretedSignature;
 
 	/**
 	 * Constructor
@@ -39,6 +43,17 @@ public class MidiAutomatorReceiver implements Receiver {
 
 		log.debug("MIDI message received: "
 				+ MidiUtils.messageToString(message));
+
+		if (!isExecuting) {
+			interpretedMessage = interpreteMessage(message, timeStamp);
+			interpretedSignature = MidiUtils
+					.messageToString(interpretedMessage);
+
+			log.debug("MIDI message interpreted: " + interpretedSignature);
+			log.debug("Property isExecuting=" + isExecuting);
+			log.debug("Property isInMidiLearnMode="
+					+ application.isInMidiLearnMode());
+		}
 	}
 
 	@Override

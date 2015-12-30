@@ -37,7 +37,7 @@ public class SikuliXAutomation {
 			screenshotpath = "screenshots/mac/";
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			screenshotpath = "screenshots/windows/";
 		}
 
@@ -72,32 +72,6 @@ public class SikuliXAutomation {
 		Settings.MinSimilarity = minSimilarity;
 		Settings.CheckLastSeenSimilar = minSimilarity;
 		System.out.println("Set MinSimilarity to: " + minSimilarity);
-	}
-
-	/**
-	 * Checks if the file opened correctly
-	 * 
-	 * @param active
-	 *            screenshot of active window
-	 * @param inactive
-	 *            screenshot of inactive window
-	 * @return <TRUE> if file was opened, <FALSE> if not
-	 * @throws FindFailed
-	 */
-	public void checkIfFileOpened(String active, String inactive)
-			throws FindFailed {
-
-		Region match = null;
-
-		// check if file opened
-		setSearchRegion(SCREEN);
-		match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
-		match.highlight(HIGHLIGHT_DURATION);
-
-		// close editor
-		match.click();
-		closeFocusedProgram();
-
 	}
 
 	/**
@@ -140,7 +114,7 @@ public class SikuliXAutomation {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type("q", Key.CMD);
 		}
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
 		}
 	}

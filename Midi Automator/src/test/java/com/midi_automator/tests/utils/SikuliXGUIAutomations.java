@@ -32,7 +32,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 			command = new String[] { "open", "-n", "target/MIDI Automator.dmg" };
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			command = new String[] { SystemUtils
 					.replaceSystemVariables("\"%MIDIAUTOMATORGIT%\\Midi Automator\\target\\midiautomator_setup.exe\"") };
 		}
@@ -58,7 +58,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 			SystemUtils.runShellCommand(command);
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			try {
 				closeNSISInstaller();
 			} catch (FindFailed e) {
@@ -146,7 +146,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 					"/Applications/Midi Automator.app" };
 		}
 
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			command = new String[] {
 					SystemUtils
 							.replaceSystemVariables("%PROGRAMFILES%\\Midi Automator\\Midi Automator.exe"),
@@ -207,12 +207,10 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 	/**
 	 * Checks if the file opened correctly
 	 * 
-	 * @param active
-	 *            screenshot of active window
-	 * @param inactive
-	 *            screenshot of inactive window
+	 * @param states
+	 *            the different states of the region
 	 */
-	public void checkIfFileOpened(String active, String inactive) {
+	public void checkIfFileOpened(String... states) {
 
 		Region match = null;
 
@@ -220,7 +218,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 
 			// check if file opened
 			SikuliXAutomation.setSearchRegion(SCREEN);
-			match = findMultipleStateRegion(DEFAULT_TIMEOUT, active, inactive);
+			match = findMultipleStateRegion(DEFAULT_TIMEOUT, states);
 
 			// close editor
 			match.click();
@@ -238,7 +236,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type("h", KeyModifier.CMD);
 		}
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			SCREEN.type(Key.DOWN, KeyModifier.WIN);
 		}
 	}
@@ -252,13 +250,8 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 		// show Midi Automator
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			SCREEN.type(Key.TAB, Key.CMD);
-
-			// MAc Dock not recognized by Sikuli
-			// Region match = SCREEN.wait(screenshotpath
-			// + "midi_automator_icon.png", TIMEOUT);
-			// match.click();
 		}
-		if (System.getProperty("os.name").equals("Windows 7")) {
+		if (System.getProperty("os.name").contains("Windows")) {
 			SCREEN.type(Key.TAB, Key.ALT);
 			SCREEN.type(Key.TAB, Key.ALT);
 		}

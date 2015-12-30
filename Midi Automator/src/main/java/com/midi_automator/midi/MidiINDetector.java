@@ -3,8 +3,6 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
-
 import com.midi_automator.presenter.MidiAutomator;
 
 /**
@@ -15,19 +13,21 @@ import com.midi_automator.presenter.MidiAutomator;
  */
 public class MidiINDetector extends MidiAutomatorReceiver {
 
-	static Logger log = Logger.getLogger(MidiINDetector.class.getName());
-
 	public MidiINDetector(MidiAutomator appl) {
 		super(appl);
 	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
+		super.send(message, timeStamp);
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				application.showMidiINSignal();
-			}
-		});
+		if (!isExecuting) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					application.showMidiINSignal();
+					isExecuting = false;
+				}
+			});
+		}
 	}
 }

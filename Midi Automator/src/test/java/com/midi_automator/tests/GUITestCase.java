@@ -1,8 +1,9 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.getInfoLabelText;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import org.sikuli.script.Screen;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.midi_automator.AppConfig;
+import com.midi_automator.Main;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.tests.utils.GUIAutomations;
@@ -51,6 +53,7 @@ public class GUITestCase extends AssertJSwingJUnitTestCase {
 	 */
 	protected void startApplication() {
 
+		Main.test = true;
 		MainFrame mainFrame = GuiActionRunner
 				.execute(new GuiQuery<MainFrame>() {
 					protected MainFrame executeInEDT() {

@@ -78,7 +78,6 @@ public class MidiAutomator {
 
 	// midi
 	private boolean midiLearn;
-	private boolean doNotExecuteMidiMessage;
 	private JComponent learningComponent;
 	private Map<String, MidiDevice> midiDevices = new HashMap<String, MidiDevice>();
 	private Map<String, Set<Receiver>> midiFunctionReceiverMapping = new HashMap<String, Set<Receiver>>();
@@ -114,8 +113,6 @@ public class MidiAutomator {
 	public MidiAutomator() {
 
 		infoMessages = new ArrayList<String>();
-		midiLearn = false;
-		doNotExecuteMidiMessage = false;
 		guiAutomators = new ArrayList<GUIAutomator>();
 	}
 
@@ -780,7 +777,6 @@ public class MidiAutomator {
 		this.learningComponent = learningComponent;
 
 		if (midiLearn) {
-			setDoNotExecuteMidiMessage(true);
 			mainFrame.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
 			mainFrame.midiLearnOn(learningComponent);
 		} else {
@@ -810,6 +806,10 @@ public class MidiAutomator {
 	 *            The component to set the midi signature for
 	 */
 	public void setMidiSignature(String midiSignature, Component component) {
+
+		if (component == null) {
+			return;
+		}
 
 		// learning for file list
 		if (component instanceof JList) {
@@ -879,6 +879,7 @@ public class MidiAutomator {
 		// do not execute while midi learning
 		if (!isInMidiLearnMode()) {
 			String signature = MidiUtils.messageToString(message);
+			log.debug("Executed MIDI message: " + signature);
 
 			// open file from list
 			int index = -1;
@@ -1816,27 +1817,6 @@ public class MidiAutomator {
 			setInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
-	}
-
-	/**
-	 * Gets the state if midi messages shall be executed.
-	 * 
-	 * @return <TRUE> if messages shall not be executed, <FALSE> if they shall
-	 *         be executed
-	 */
-	public boolean isDoNotExecuteMidiMessage() {
-		return doNotExecuteMidiMessage;
-	}
-
-	/**
-	 * Sets the state if midi messages shall be executed.
-	 * 
-	 * @param doNotExecuteMidiMessage
-	 *            <TRUE> if messages shall not be executed, <FALSE> if they
-	 *            shall be executed
-	 */
-	public void setDoNotExecuteMidiMessage(boolean doNotExecuteMidiMessage) {
-		this.doNotExecuteMidiMessage = doNotExecuteMidiMessage;
 	}
 
 	/**

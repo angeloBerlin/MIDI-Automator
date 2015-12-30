@@ -1,6 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
 
 import org.junit.Test;
 
@@ -18,8 +18,7 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 		openEntryByDoubleClick(0);
 
 		checkIfOpenEntryIsDisplayed("Hello World");
-		sikulix.checkIfFileOpened("Hello_World_RTF.png",
-				"Hello_World_RTF_inactive.png");
+		sikulix.checkIfFileOpened("Hello_World_RTF.png");
 	}
 
 	@Test
@@ -32,8 +31,7 @@ public class OpenItemFileFunctionalITCase extends GUITestCase {
 		openEntryByDoubleClick(0);
 
 		checkIfOpenEntryIsDisplayed("Hello World ÄÖÜ");
-		sikulix.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png",
-				"Hello_World_ÄÖÜ_RTF_inactive.png");
+		sikulix.checkIfFileOpened("Hello_World_ÄÖÜ_RTF.png");
 	}
 
 	@Test
