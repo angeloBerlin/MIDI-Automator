@@ -106,8 +106,10 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 
 			// decrease similarity
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationMinSimilarity("0,5", 0, preferencesFrame);
+			setAutomationMinSimilarity("0.5", 0, preferencesFrame);
 			saveDialog(preferencesFrame);
+
+			Thread.sleep(1000);
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
