@@ -10,7 +10,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -233,9 +232,7 @@ public class AddFrame extends AbstractBasicDialog {
 		public SearchAction(AddFrame parent) {
 			this.parent = parent;
 			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
-			JFileChooser.setDefaultLocale(Locale.ENGLISH);
 			fileChooser = new JFileChooser();
-			fileChooser.setLocale(Locale.ENGLISH);
 		}
 
 		@Override

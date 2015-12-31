@@ -55,6 +55,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
@@ -156,6 +157,8 @@ public class MainFrame extends JFrame {
 	 * Initializes the frame
 	 */
 	public void init() {
+
+		JFileChooser.setDefaultLocale(Main.locale);
 
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setResizable(true);
@@ -823,7 +826,7 @@ public class MainFrame extends JFrame {
 
 		private static final long serialVersionUID = 1L;
 		private JFrame programFrame;
-		private final JFileChooser fc = new JFileChooser();
+		private final JFileChooser fileChooser = new JFileChooser();
 
 		public ImportAction(JFrame programFrame) {
 			super();
@@ -835,12 +838,12 @@ public class MainFrame extends JFrame {
 			FileFilter filter = new FileNameExtensionFilter(
 					MidiAutomator.MIDI_AUTOMATOR_FILE_TYPE,
 					MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS);
-			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(filter);
-			int returnVal = fc.showOpenDialog(programFrame);
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.setFileFilter(filter);
+			int returnVal = fileChooser.showOpenDialog(programFrame);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
+				File file = fileChooser.getSelectedFile();
 				presenter.importMidautoFile(file);
 
 			}

@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -114,6 +115,7 @@ public class MidiAutomator {
 
 		infoMessages = new ArrayList<String>();
 		guiAutomators = new ArrayList<GUIAutomator>();
+		Locale.setDefault(Main.locale);
 	}
 
 	/**

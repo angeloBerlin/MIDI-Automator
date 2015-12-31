@@ -1,5 +1,7 @@
 package com.midi_automator;
 
+import java.util.Locale;
+
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -15,6 +17,7 @@ public class Main {
 	public static String wd = "";
 	public static String os = "";
 	public static boolean test = false;
+	public static Locale locale = Locale.ENGLISH;
 
 	/**
 	 * The main program
