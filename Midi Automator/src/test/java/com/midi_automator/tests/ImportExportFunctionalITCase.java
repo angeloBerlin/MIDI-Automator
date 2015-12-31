@@ -1,14 +1,15 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
+import org.assertj.core.util.Files;
 import org.assertj.swing.fixture.JFileChooserFixture;
-import org.fest.util.Files;
 import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
@@ -35,20 +36,24 @@ public class ImportExportFunctionalITCase extends GUITestCase {
 		try {
 
 			// unzip exported file
-			File midautoFile = new File(testFilePath + "/" + testFileName);
-			FileUtils.unzipFile(new ZipFile(midautoFile), testFilePath);
+			File midautoFile = new File(testFilePath + File.separator
+					+ testFileName);
+			ZipFile midautoZipFile = new ZipFile(midautoFile);
+			FileUtils.unzipFile(midautoZipFile, testFilePath);
+			midautoZipFile.close();
 
 			// compare file contents
-			File midoFile = new File(testFilePath + "/file_list.mido");
+			File midoFile = new File(testFilePath + File.separator
+					+ "file_list.mido");
 			boolean midoCorrect = org.apache.commons.io.FileUtils
-					.contentEquals(midoFile, new File(
-							"mockups/Hello_World_12_empty.mido"));
+					.contentEquals(midoFile, new File("mockups"
+							+ File.separator + "Hello_World_12_empty.mido"));
 
 			File propertiesFile = new File(testFilePath
 					+ "/midiautomator.properties");
 			boolean propertiesCorrect = org.apache.commons.io.FileUtils
-					.contentEquals(propertiesFile, new File(
-							"mockups/RemoteINBus_1.properties"));
+					.contentEquals(propertiesFile, new File("mockups"
+							+ File.separator + "RemoteINBus_1.properties"));
 
 			// delete exported files
 			Files.delete(midoFile);
