@@ -129,7 +129,10 @@ package.access=sun.,\
                com.sun.imageio.,\
                com.sun.istack.internal.,\
                com.sun.jmx.,\
+               com.sun.naming.internal.,\
                com.sun.proxy.,\
+               com.sun.corba.se.,\
+               com.sun.script.,\
                com.sun.org.apache.bcel.internal.,\
                com.sun.org.apache.regexp.internal.,\
                com.sun.org.apache.xerces.internal.,\
@@ -168,7 +171,10 @@ package.definition=sun.,\
                    com.sun.imageio.,\
                    com.sun.istack.internal.,\
                    com.sun.jmx.,\
+                   com.sun.naming.internal.,\
                    com.sun.proxy.,\
+                   com.sun.corba.se.,\
+                   com.sun.script.,\
                    com.sun.org.apache.bcel.internal.,\
                    com.sun.org.apache.regexp.internal.,\
                    com.sun.org.apache.xerces.internal.,\
@@ -411,8 +417,12 @@ jdk.certpath.disabledAlgorithms=MD2, RSA keySize < 1024
 #
 # In some environments, certain algorithms or key lengths may be undesirable
 # when using SSL/TLS.  This section describes the mechanism for disabling
-# algorithms during SSL/TLS security parameters negotiation, including cipher
-# suites selection, peer authentication and key exchange mechanisms.
+# algorithms during SSL/TLS security parameters negotiation, including
+# protocol version negotiation, cipher suites selection, peer authentication
+# and key exchange mechanisms.
+#
+# Disabled algorithms will not be negotiated for SSL/TLS connections, even
+# if they are enabled explicitly in an application.
 #
 # For PKI-based peer authentication and key exchange mechanisms, this list
 # of disabled algorithms will also be checked during certification path
@@ -427,5 +437,5 @@ jdk.certpath.disabledAlgorithms=MD2, RSA keySize < 1024
 # It is not guaranteed to be examined and used by other implementations.
 #
 # Example:
-#   jdk.tls.disabledAlgorithms=MD5, SHA1, DSA, RSA keySize < 2048
-
+#   jdk.tls.disabledAlgorithms=MD5, SSLv3, DSA, RSA keySize < 2048
+jdk.tls.disabledAlgorithms=SSLv3

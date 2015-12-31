@@ -7,9 +7,9 @@
         <key>CFBundleExecutable</key>
         <string>libjli.dylib</string>
         <key>CFBundleGetInfoString</key>
-        <string>Java SE 1.7.0_40</string>
+        <string>Java SE 1.7.0_80</string>
         <key>CFBundleIdentifier</key>
-        <string>com.oracle.java.7u40.jdk</string>
+        <string>com.oracle.java.7u80.jdk</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>7.0</string>
         <key>CFBundleName</key>
@@ -21,7 +21,7 @@
         <key>CFBundleSignature</key>
         <string>????</string>
         <key>CFBundleVersion</key>
-        <string>1.7.0_40</string>
+        <string>1.7.0_80</string>
         <key>JavaVM</key>
         <dict>
                 <key>JVMCapabilities</key>
@@ -37,7 +37,7 @@
                 <key>JVMVendor</key>
                 <string>Oracle Corporation</string>
                 <key>JVMVersion</key>
-                <string>1.7.0_40</string>
+                <string>1.7.0_80</string>
         </dict>
 </dict>
 </plist>
