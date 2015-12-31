@@ -39,9 +39,9 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 
 			// open files by learned midi master message
 			Thread.sleep(2000);
-
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
+			Thread.sleep(1000);
 
 			// check if file opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");
@@ -50,6 +50,8 @@ public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
+			Thread.sleep(1000);
+
 			// check if file opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");
 			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");

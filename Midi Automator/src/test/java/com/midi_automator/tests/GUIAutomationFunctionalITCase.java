@@ -174,6 +174,16 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
+			// check if add dialog was canceled again
+			addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+			// check if add dialog was canceled again
+			addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -420,7 +430,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void delaySpinnerShouldNotSpinBelow0() {
 
 		MockUpUtils
@@ -509,7 +519,7 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 
 			// check if dialogs are always canceled
 			addFrame = openAddDialog();
-			Thread.sleep(2000);
+			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
 		} catch (InterruptedException e) {

@@ -52,15 +52,17 @@ public class MidiDetectFunctionalITCase extends GUITestCase {
 				.setMockupPropertiesFile("mockups/" + remoteINpropertiesFile);
 		startApplication();
 
-		for (int i = 0; i < amountOfSends; i++) {
-			try {
+		try {
+			Thread.sleep(1000);
+
+			for (int i = 0; i < amountOfSends; i++) {
 
 				Thread.sleep(sendInterval);
 
 				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 						value, octave, velocity);
 
-				Thread.sleep(50);
+				Thread.sleep(MainFrame.MIDI_DETECT_BLINK_RATE / 2);
 
 				if (i % 2 == 0) {
 					getMidiINDetect().background().requireEqualTo(
@@ -74,10 +76,10 @@ public class MidiDetectFunctionalITCase extends GUITestCase {
 							UIManager.getColor("Panel.background"));
 				}
 
-			} catch (InvalidMidiDataException | MidiUnavailableException
-					| InterruptedException e) {
-				e.printStackTrace();
 			}
+		} catch (InvalidMidiDataException | MidiUnavailableException
+				| InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
