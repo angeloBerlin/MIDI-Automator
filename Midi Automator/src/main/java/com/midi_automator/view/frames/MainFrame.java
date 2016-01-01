@@ -447,6 +447,7 @@ public class MainFrame extends JFrame {
 	 * Blinks the MIDI IN detector
 	 */
 	public void blinkMidiINDetect() {
+		log.debug("Blink MIDI IN");
 		midiINdetect.startBlinking();
 	}
 
@@ -454,6 +455,7 @@ public class MainFrame extends JFrame {
 	 * Blinks the MIDI OUT detector
 	 */
 	public void blinkMidiOUTDetect() {
+		log.debug("Blink MIDI OUT");
 		midiOUTdetect.startBlinking();
 	}
 

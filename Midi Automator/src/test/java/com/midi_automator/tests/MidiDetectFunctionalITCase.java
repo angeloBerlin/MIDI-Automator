@@ -1,8 +1,6 @@
 package com.midi_automator.tests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.getMidiINDetect;
-import static com.midi_automator.tests.utils.GUIAutomations.getMidiOUTDetect;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
