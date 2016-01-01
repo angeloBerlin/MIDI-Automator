@@ -24,6 +24,7 @@ public class MidiINDetector extends MidiAutomatorReceiver {
 		if (!isExecuting) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
+					log.debug("Blink MIDI IN");
 					application.showMidiINSignal();
 					isExecuting = false;
 				}

@@ -1,4 +1,5 @@
 package com.midi_automator.view;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,7 +7,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.Timer;
 
+import org.apache.log4j.Logger;
+
 public class BlinkingStrategy implements IBlinkingStrategy {
+
+	protected Logger log = Logger.getLogger(this.getClass().getName());
 
 	private Timer blinkTimer;
 	private JComponent blinkingComponent;
@@ -102,8 +107,10 @@ public class BlinkingStrategy implements IBlinkingStrategy {
 
 			timerCount++;
 			if (isBlinking) {
+				log.debug(blinkingComponent.getName() + " blinking on.");
 				blinkingComponent.setBackground(blinkingColor);
 			} else {
+				log.debug(blinkingComponent.getName() + " blinking off.");
 				blinkingComponent.setBackground(defaultBackgroundColor);
 			}
 			isBlinking = !isBlinking;

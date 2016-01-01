@@ -19,7 +19,7 @@ public class MidiAutomatorReceiver implements Receiver {
 
 	protected Logger log = Logger.getLogger(this.getClass().getName());
 
-	protected static boolean isExecuting;
+	protected boolean isExecuting;
 
 	protected MidiAutomator application;
 	protected long lastTimeStamp = 0;
