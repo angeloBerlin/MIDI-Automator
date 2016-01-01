@@ -133,11 +133,18 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
-		addAutomation(preferencesFrame);
+		try {
+			FrameFixture preferencesFrame = openPreferences();
+			addAutomation(preferencesFrame);
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
-		table.requireRowCount(1);
+			Thread.sleep(200);
+
+			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			table.requireRowCount(1);
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -148,11 +155,19 @@ public class GUIAutomationFunctionalITCase extends GUITestCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
-		deleteAutomation(0, preferencesFrame);
+		try {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
-		table.requireRowCount(0);
+			FrameFixture preferencesFrame = openPreferences();
+			deleteAutomation(0, preferencesFrame);
+
+			Thread.sleep(200);
+			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			table.requireRowCount(0);
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
