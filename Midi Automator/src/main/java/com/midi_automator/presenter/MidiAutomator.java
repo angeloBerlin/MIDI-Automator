@@ -1,7 +1,6 @@
 package com.midi_automator.presenter;
 
 import java.awt.Component;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
@@ -31,7 +28,6 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.Main;
@@ -56,10 +52,7 @@ import com.midi_automator.view.frames.MainFrame;
 @Controller
 public class MidiAutomator {
 
-	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
-
-	@Autowired
-	private AnnotationConfigApplicationContext ctx;
+	private Logger log = Logger.getLogger(this.getClass().getName());
 
 	@Autowired
 	private Resources resources;
@@ -75,7 +68,6 @@ public class MidiAutomator {
 
 	private int currentItem = -1;
 	private List<String> infoMessages;
-	private String loadedMidautoFilePath;
 
 	// midi
 	private boolean midiLearn;
@@ -191,7 +183,7 @@ public class MidiAutomator {
 	/**
 	 * Loads the model file.
 	 */
-	private void reloadSetList() {
+	void reloadSetList() {
 		try {
 			model.load();
 			removeInfoMessage(Messages.builtMessages
@@ -489,7 +481,6 @@ public class MidiAutomator {
 	public void close() {
 		unloadAllMidiDevices();
 		terminateAllGUIAutomators();
-		ctx.close();
 	}
 
 	/**
@@ -1825,53 +1816,6 @@ public class MidiAutomator {
 	}
 
 	/**
-	 * Saves the set list and the properties to a zip file.
-	 * 
-	 * @param filePath
-	 *            The path to store the zip file
-	 */
-	public void exportMidautoFile(String filePath) {
-		File[] files = new File[] { new File(model.getPersistenceFileName()),
-				new File(properties.getPropertiesFilePath()) };
-		try {
-			FileUtils.zipFiles(files, filePath);
-			loadedMidautoFilePath = filePath;
-		} catch (ZipException e) {
-			log.error("Zipping file " + filePath + " failed.", e);
-		} catch (IOException e) {
-			log.error("Writing to file " + filePath + " failed.", e);
-		}
-	}
-
-	/**
-	 * Loads the set list and the properties from a zip file.
-	 * 
-	 * @param file
-	 *            The zip file
-	 */
-	public void importMidautoFile(File file) {
-
-		loadedMidautoFilePath = file.getAbsolutePath();
-		String unzipPath = resources.getPropertiesPath();
-
-		if (unzipPath.equals("")) {
-			unzipPath = ".";
-		}
-
-		try {
-			FileUtils.unzipFile(new ZipFile(file), unzipPath);
-			reloadProperties();
-			reloadSetList();
-		} catch (ZipException e) {
-			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",
-					e);
-		} catch (IOException e) {
-			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",
-					e);
-		}
-	}
-
-	/**
 	 * Sends the changed item to remote slaves with a delay
 	 * 
 	 * @author aguelle
@@ -1904,17 +1848,5 @@ public class MidiAutomator {
 				}
 			});
 		}
-	}
-
-	public String getLoadedMidautoFilePath() {
-		return loadedMidautoFilePath;
-	}
-
-	public String getLoadedMidautoFileName() {
-		if (loadedMidautoFilePath != null) {
-			String[] splitted = loadedMidautoFilePath.split(File.separator);
-			return splitted[splitted.length - 1];
-		}
-		return null;
 	}
 }

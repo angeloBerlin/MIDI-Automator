@@ -115,6 +115,12 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<version>${project.spring.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${project.spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
@@ -200,7 +206,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Run integration tests -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -338,7 +344,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 										<runtimeBits>64</runtimeBits>
 										<opts>
 											<opt>-splash:images/${project.splashscreen.file}</opt>
-											<!--<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt>-->
+											<!--<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt> -->
 										</opts>
 									</jre>
 								</configuration>

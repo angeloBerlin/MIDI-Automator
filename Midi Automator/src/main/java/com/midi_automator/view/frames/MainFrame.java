@@ -58,6 +58,7 @@ import org.springframework.context.ApplicationContext;
 import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.presenter.ImportExportService;
 import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.BlinkingJLabel;
@@ -146,6 +147,9 @@ public class MainFrame extends JFrame {
 
 	@Autowired
 	private MidiAutomator presenter;
+
+	@Autowired
+	private ImportExportService importExportService;
 
 	@Autowired
 	private Resources resources;
@@ -844,7 +848,7 @@ public class MainFrame extends JFrame {
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
-				presenter.importMidautoFile(file);
+				importExportService.importMidautoFile(file);
 
 			}
 		}
@@ -885,7 +889,7 @@ public class MainFrame extends JFrame {
 					filePath += fileExtension;
 				}
 
-				presenter.exportMidautoFile(filePath);
+				importExportService.exportMidautoFile(filePath);
 			}
 		}
 	}

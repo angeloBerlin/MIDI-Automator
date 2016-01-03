@@ -5,11 +5,19 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.presenter.ImportExportService;
 import com.midi_automator.presenter.MidiAutomator;
 
 public class ImportFileIntegrationTest extends IntegrationTest {
+
+	@Autowired
+	private ImportExportService importExportService;
+
+	@Autowired
+	private MidiAutomator presenter;
 
 	@Test
 	public void midoFileShouldBeImported() {
@@ -17,10 +25,8 @@ public class ImportFileIntegrationTest extends IntegrationTest {
 		String testFilePath = "testfiles";
 		String testFileName = "ImportTest.midauto";
 
-		MidiAutomator presenter = (MidiAutomator) ctx
-				.getBean(MidiAutomator.class);
-		presenter
-				.importMidautoFile(new File(testFilePath + "/" + testFileName));
+		importExportService.importMidautoFile(new File(testFilePath + "/"
+				+ testFileName));
 
 		// test file_list.mido
 		assertEquals(presenter.getEntryNameByIndex(0), "Hello World 1");

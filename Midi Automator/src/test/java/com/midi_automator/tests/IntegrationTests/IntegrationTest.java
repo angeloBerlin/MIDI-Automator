@@ -1,19 +1,20 @@
 package com.midi_automator.tests.IntegrationTests;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.midi_automator.AppConfig;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { AppConfig.class })
 public class IntegrationTest {
 
 	@Rule
 	public TestName name = new TestName();
-
-	protected AnnotationConfigApplicationContext ctx;
 
 	@Before
 	public void log() {
@@ -22,15 +23,5 @@ public class IntegrationTest {
 				+ " - " + name.getMethodName());
 		System.out
 				.println("====================================================");
-	}
-
-	@Before
-	public void startSpringContext() {
-		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-	}
-
-	@After
-	public void closeSpringContext() {
-		ctx.close();
 	}
 }

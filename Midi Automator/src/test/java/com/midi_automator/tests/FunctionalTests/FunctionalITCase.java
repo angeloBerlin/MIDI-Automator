@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.sikuli.script.Screen;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.midi_automator.AppConfig;
@@ -36,6 +37,8 @@ public class FunctionalITCase extends AssertJSwingJUnitTestCase {
 	protected String currentPath;
 	protected SikuliXGUIAutomations sikulix;
 	protected AnnotationConfigApplicationContext ctx;
+
+	@Autowired
 	private MidiAutomator presenter;
 
 	@Before
