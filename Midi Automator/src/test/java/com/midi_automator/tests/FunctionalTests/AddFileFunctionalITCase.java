@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.addFile;
 import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
@@ -21,7 +21,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.frames.AddFrame;
 
-public class AddFileFunctionalITCase extends GUITestCase {
+public class AddFileFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void newFileShouldBeAdded() {

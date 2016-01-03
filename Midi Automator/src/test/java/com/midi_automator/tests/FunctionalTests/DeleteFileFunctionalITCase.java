@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
 import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
@@ -12,7 +12,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 
-public class DeleteFileFunctionalITCase extends GUITestCase {
+public class DeleteFileFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {

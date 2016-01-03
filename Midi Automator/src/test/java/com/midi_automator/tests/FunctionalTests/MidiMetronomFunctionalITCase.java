@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 
@@ -13,7 +13,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
-public class MidiMetronomFunctionalITCase extends GUITestCase {
+public class MidiMetronomFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private int messageType = ShortMessage.NOTE_ON;

@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiNextButton;
 import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiPrevButton;
@@ -25,7 +25,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MidiLearnPopupMenu;
 
-public class MidiLearnSwitchButtonsFunctionalITCase extends GUITestCase {
+public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private String propertiesFile;

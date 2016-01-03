@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
 import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
@@ -23,7 +23,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MidiLearnPopupMenu;
 
-public class MidiLearnListFunctionalITCase extends GUITestCase {
+public class MidiLearnListFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private String propertiesFile;

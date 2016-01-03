@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
 import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
@@ -43,7 +43,7 @@ import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.automationconfiguration.ConfigurationTableModel;
 
-public class GUIAutomationFunctionalITCase extends GUITestCase {
+public class GUIAutomationFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private String propertiesAlwaysCancelAutomation;

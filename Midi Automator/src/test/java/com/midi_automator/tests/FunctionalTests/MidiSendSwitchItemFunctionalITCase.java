@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 import static org.junit.Assert.*;
@@ -14,14 +14,14 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class MidiNotifierOutFunctionalITCase extends GUITestCase {
+public class MidiSendSwitchItemFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private MidiDevice device;
 	private Receiver receiver;
 	private String receivedSignature;
 
-	public MidiNotifierOutFunctionalITCase() {
+	public MidiSendSwitchItemFunctionalITCase() {
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			deviceName = "Bus 1";
 		}
@@ -41,57 +41,39 @@ public class MidiNotifierOutFunctionalITCase extends GUITestCase {
 	}
 
 	@Test
-	public void notifierMessageShouldBeSentAtOpen() {
+	public void midiMessageShouldBeSentAtOpen() {
 
 		try {
-
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			startApplication();
 
-			// set notifier out
+			// set midi switch list entry out device
 			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutNotifierDevice(deviceName, preferencesFrame);
+			setMidiOutSwitchItemDevice(deviceName, preferencesFrame);
 			saveDialog(preferencesFrame);
 
-			// open entry
+			// open entry 1
 			openEntryByDoubleClick(0);
 
 			// check if midi master message was sent
 			Thread.sleep(1000);
 
-			if (!"channel 1: CONTROL CHANGE 103 value: 127"
+			if (!"channel 16: CONTROL CHANGE 1 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
-						+ " is wrong master signature for index 0.");
+						+ " is wrong master signature for entry 1.");
 			}
 
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void notifierMessageShouldBeSentByButton() {
-
-		try {
-
-			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
-			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-			startApplication();
-
-			// set notifier out
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutNotifierDevice(deviceName, preferencesFrame);
-
-			// hit send button
-			clickNotifierSendButton(preferencesFrame);
+			// open entry 2
+			openEntryByDoubleClick(1);
 
 			// check if midi master message was sent
 			Thread.sleep(1000);
-			if (!"channel 1: CONTROL CHANGE 103 value: 127"
+			if (!"channel 16: CONTROL CHANGE 2 value: 127"
 					.equals(receivedSignature)) {
-				fail(receivedSignature + " is wrong signature for notifier.");
+				fail(receivedSignature
+						+ " is wrong master signature for entry 1.");
 			}
 
 		} catch (InterruptedException e) {

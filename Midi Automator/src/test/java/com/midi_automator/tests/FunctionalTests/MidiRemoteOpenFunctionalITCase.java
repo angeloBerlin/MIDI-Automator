@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class MidiRemoteOpenFunctionalITCase extends GUITestCase {
+public class MidiRemoteOpenFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private String propertiesFile;

@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -27,7 +27,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliXGUIAutomations;
 import com.midi_automator.view.frames.MainFrame;
 
-public class GUITestCase extends AssertJSwingJUnitTestCase {
+public class FunctionalITCase extends AssertJSwingJUnitTestCase {
 
 	@Rule
 	public TestName name = new TestName();

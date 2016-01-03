@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
 import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.FileUtils;
 
-public class ImportExportFunctionalITCase extends GUITestCase {
+public class ImportExportFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void midautoFileShouldBeExported() {

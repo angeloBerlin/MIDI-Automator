@@ -1421,7 +1421,10 @@ public class MidiAutomator {
 	 */
 	public void removeInfoMessage(String message) {
 		infoMessages.remove(message);
-		mainFrame.setInfoText(messagesToString(infoMessages));
+
+		if (mainFrame != null) {
+			mainFrame.setInfoText(messagesToString(infoMessages));
+		}
 	}
 
 	/**

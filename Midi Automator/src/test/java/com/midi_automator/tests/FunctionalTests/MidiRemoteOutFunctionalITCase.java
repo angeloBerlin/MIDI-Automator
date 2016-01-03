@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 import static org.junit.Assert.*;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class MidiRemoteOutFunctionalITCase extends GUITestCase {
+public class MidiRemoteOutFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private MidiDevice device;

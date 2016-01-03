@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 import static org.junit.Assert.*;
@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 
-public class MoveEntriesFunctionalITCase extends GUITestCase {
+public class MoveEntriesFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void moveUpDownMenuShouldBeDisabledIfListIsEmpty() {

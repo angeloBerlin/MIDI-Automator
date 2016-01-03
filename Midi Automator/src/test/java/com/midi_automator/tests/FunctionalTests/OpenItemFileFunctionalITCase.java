@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
 
@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class OpenItemFileFunctionalITCase extends GUITestCase {
+public class OpenItemFileFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void helloWorldFileShouldBeOpened() {

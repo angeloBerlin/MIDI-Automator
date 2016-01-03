@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 
@@ -13,7 +13,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
-public class MidiDetectFunctionalITCase extends GUITestCase {
+public class MidiDetectFunctionalITCase extends FunctionalITCase {
 
 	private String deviceName;
 	private String remoteINpropertiesFile;

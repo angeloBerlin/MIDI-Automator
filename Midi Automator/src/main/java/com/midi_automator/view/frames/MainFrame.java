@@ -119,13 +119,13 @@ public class MainFrame extends JFrame {
 	private BlinkingJLabel midiOUTdetect;
 	private HTMLLabel infoLabel;
 	private JScrollPane fileListScrollPane;
-	private CacheableBlinkableToolTipJList<IToolTipItem> fileList;
-	private CacheableJButton prevButton;
-	private CacheableJButton nextButton;
+	private CacheableBlinkableToolTipJList<IToolTipItem> fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
+	private CacheableJButton prevButton = new CacheableJButton();
+	private CacheableJButton nextButton = new CacheableJButton();
 
-	private List<String> fileEntries;
-	private List<String> midiListeningSignatures;
-	private List<String> midiSendingSignatures;
+	private List<String> fileEntries = new ArrayList<String>();
+	private List<String> midiListeningSignatures = new ArrayList<String>();
+	private List<String> midiSendingSignatures = new ArrayList<String>();
 
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
@@ -314,8 +314,10 @@ public class MainFrame extends JFrame {
 	 * @param text
 	 */
 	public void setInfoText(String text) {
-		infoLabel
-				.setText("<span style='font-family:Arial'>" + text + "</span>");
+		if (infoLabel != null) {
+			infoLabel.setText("<span style='font-family:Arial'>" + text
+					+ "</span>");
+		}
 		this.repaint();
 	}
 
@@ -591,8 +593,6 @@ public class MainFrame extends JFrame {
 	 */
 	private void createFileList(Container parent) {
 
-		fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
-
 		firstClickStrategy = new BlinkingStrategy(fileList,
 				MainFrame.METRONOM_COLOR_FIRST_CLICK,
 				MainFrame.METRONOM_BLINK_RATE, 1);
@@ -635,7 +635,6 @@ public class MainFrame extends JFrame {
 		c.insets = new Insets(0, 0, 10, 0);
 		c.gridy = 0;
 
-		prevButton = new CacheableJButton();
 		prevButton.setName(NAME_PREV_BUTTON);
 		prevButton.setPreferredSize(dimension);
 		prevButton.setAction(new PrevAction());
@@ -647,7 +646,6 @@ public class MainFrame extends JFrame {
 		parent.add(prevButton, c);
 		prevButton.setCache(prevButton.getBorder());
 
-		nextButton = new CacheableJButton();
 		nextButton.setName(NAME_NEXT_BUTTON);
 		nextButton.setPreferredSize(dimension);
 		nextButton.setAction(new NextAction());

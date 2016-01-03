@@ -1,4 +1,4 @@
-package com.midi_automator.tests;
+package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
 import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
@@ -21,7 +21,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.frames.EditFrame;
 
-public class EditFileFunctionalITCase extends GUITestCase {
+public class EditFileFunctionalITCase extends FunctionalITCase {
 
 	@Test
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
