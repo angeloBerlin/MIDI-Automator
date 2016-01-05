@@ -10,9 +10,11 @@ import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
+import com.midi_automator.presenter.Messages;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MidiLearnPopupMenu;
+import com.midi_automator.view.frames.MainFrame;
 
 public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
@@ -72,8 +74,11 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 2, 127);
 			Thread.sleep(1000);
 
+			// check info text
+			checkInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
+					MainFrame.NAME_NEXT_BUTTON));
 			// check that file was not opened
-			checkEmptyInfoText();
+			sikulix.checkIfFileNotOpened("Hello_World_1_RTF.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -186,8 +191,11 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 2, 127);
 			Thread.sleep(1000);
 
+			// check info text
+			checkInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
+					MainFrame.NAME_PREV_BUTTON));
 			// check that file was not opened
-			checkEmptyInfoText();
+			sikulix.checkIfFileNotOpened("Hello_World_2_RTF.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {

@@ -230,6 +230,32 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 	}
 
 	/**
+	 * Checks if the file did not open.
+	 * 
+	 * @param states
+	 *            the different states of the region
+	 */
+	public void checkIfFileNotOpened(String... states) {
+
+		Region match = null;
+
+		try {
+
+			// check if file opened
+			SikuliXAutomation.setSearchRegion(SCREEN);
+			match = findMultipleStateRegion(DEFAULT_TIMEOUT, states);
+
+			// close editor
+			match.click();
+			closeFocusedProgram();
+			Fail.fail("File did open.");
+
+		} catch (FindFailed e) {
+
+		}
+	}
+
+	/**
 	 * Minimizes the current focused program
 	 */
 	public static void hideFocusedProgram() {
