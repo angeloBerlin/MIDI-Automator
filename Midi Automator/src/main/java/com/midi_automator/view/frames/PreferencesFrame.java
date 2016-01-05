@@ -33,6 +33,9 @@ import org.springframework.context.annotation.Scope;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.GUIAutomationsService;
+import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
@@ -107,6 +110,13 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	@Autowired
 	private MidiAutomator presenter;
 
+	@Autowired
+	private GUIAutomationsService guiAutomationsService;
+	@Autowired
+	private MidiService midiService;
+	@Autowired
+	private MidiItemChangeNotificationService midiNotificationService;
+
 	/**
 	 * Initializes the frame
 	 */
@@ -143,7 +153,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		// GUI Automation
 		createGUIAutomation();
-		presenter.setGUIAutomationsToActive(false);
+		guiAutomationsService.setGUIAutomationsToActive(false);
 
 		// Save
 		saveAction = new SaveAction();
@@ -403,14 +413,12 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	}
 
 	/**
-	 * Sets a learned midi signature.
+	 * Sets the learned midi signature for the selected GUI automation
 	 * 
 	 * @param signature
 	 *            The signature
-	 * @param component
-	 *            The learned component
 	 */
-	public void setMidiSignature(String signature, Component component) {
+	public void setAutomationMidiSignature(String signature) {
 
 		// learning for automation list
 		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
@@ -428,7 +436,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	public void reload() {
 
 		// midi in remote opener
-		String midiInRemoteDeviceName = presenter
+		String midiInRemoteDeviceName = midiService
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
 
 		if (midiInRemoteDeviceName != null) {
@@ -436,7 +444,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		}
 
 		// midi out remote opener
-		String midiOUTRemoteDevice = presenter
+		String midiOUTRemoteDevice = midiService
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 
 		if (midiOUTRemoteDevice != null) {
@@ -444,7 +452,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		}
 
 		// midi in metronom
-		String midiINMetronomDevice = presenter
+		String midiINMetronomDevice = midiService
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 
 		if (midiINMetronomDevice != null) {
@@ -452,7 +460,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		}
 
 		// midi out switch notifier
-		String midiOUTSwitchNotifierDevice = presenter
+		String midiOUTSwitchNotifierDevice = midiService
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 
 		if (midiOUTSwitchNotifierDevice != null) {
@@ -461,7 +469,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		}
 
 		// midi out item switch
-		String midiOUTSwitchItemDevice = presenter
+		String midiOUTSwitchItemDevice = midiService
 				.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
 		if (midiOUTSwitchItemDevice != null) {
@@ -470,7 +478,8 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		}
 
 		// gui automations
-		GUIAutomation[] guiAutomations = presenter.getGUIAutomations();
+		GUIAutomation[] guiAutomations = guiAutomationsService
+				.getGuiAutomations();
 		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
 				.getConfigurationTable();
 
@@ -560,19 +569,19 @@ public class PreferencesFrame extends AbstractBasicDialog {
 			GUIAutomation[] guiAutomations = guiAutomationConfigurationPanel
 					.getGUIAutomations();
 
-			presenter.setMidiDeviceName(midiINRemoteDeviceName,
+			midiService.setMidiDeviceName(midiINRemoteDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-			presenter.setMidiDeviceName(midiINMetronomDeviceName,
+			midiService.setMidiDeviceName(midiINMetronomDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-			presenter.setMidiDeviceName(midiOUTRemoteDeviceName,
+			midiService.setMidiDeviceName(midiOUTRemoteDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-			presenter
+			midiService
 					.setMidiDeviceName(
 							midiOUTSwitchNotifierDeviceName,
 							MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-			presenter.setMidiDeviceName(midiOUTSwitchItemDeviceName,
+			midiService.setMidiDeviceName(midiOUTSwitchItemDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-			presenter.setGUIAutomations(guiAutomations);
+			guiAutomationsService.setGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
 			presenter.reloadProperties();
@@ -619,7 +628,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 				try {
 					MidiDevice device = MidiUtils.getMidiDevice(deviceName,
 							"OUT");
-					presenter.sendItemChangeNotifier(device);
+					midiNotificationService.sendItemChangeNotifier(device);
 				} catch (MidiUnavailableException ex) {
 					log.error(
 							"The MIDI device for the switch notification is unavailable",
@@ -640,7 +649,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		@Override
 		public void windowClosing(WindowEvent e) {
 			e.getWindow().dispose();
-			presenter.setGUIAutomationsToActive(true);
+			guiAutomationsService.setGUIAutomationsToActive(true);
 		}
 	}
 }

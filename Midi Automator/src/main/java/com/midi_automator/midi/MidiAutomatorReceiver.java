@@ -6,6 +6,7 @@ import javax.sound.midi.Receiver;
 import org.apache.log4j.Logger;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -21,7 +22,9 @@ public class MidiAutomatorReceiver implements Receiver {
 
 	protected boolean isExecuting;
 
-	protected MidiAutomator application;
+	protected MidiAutomator presenter;
+	protected MidiService midiService;
+
 	protected long lastTimeStamp = 0;
 	protected final long timeTolerance = 0; // in microseconds
 	protected String name;
@@ -33,9 +36,13 @@ public class MidiAutomatorReceiver implements Receiver {
 	 * 
 	 * @param application
 	 *            The main application
+	 * @param midiService
+	 *            The midi service
 	 */
-	public MidiAutomatorReceiver(MidiAutomator appl) {
-		application = appl;
+	public MidiAutomatorReceiver(MidiAutomator presenter,
+			MidiService midiService) {
+		this.presenter = presenter;
+		this.midiService = midiService;
 	}
 
 	@Override
@@ -52,7 +59,7 @@ public class MidiAutomatorReceiver implements Receiver {
 			log.debug("MIDI message interpreted: " + interpretedSignature);
 			log.debug("Property isExecuting=" + isExecuting);
 			log.debug("Property isInMidiLearnMode="
-					+ application.isInMidiLearnMode());
+					+ midiService.isMidiLearning());
 		}
 	}
 

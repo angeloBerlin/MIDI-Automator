@@ -58,8 +58,11 @@ import org.springframework.context.ApplicationContext;
 import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.ImportExportService;
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ImportExportService;
+import com.midi_automator.presenter.services.MidiRemoteOpenService;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.BlinkingJLabel;
 import com.midi_automator.view.BlinkingStrategy;
@@ -150,6 +153,12 @@ public class MainFrame extends JFrame {
 
 	@Autowired
 	private ImportExportService importExportService;
+	@Autowired
+	private FileListService fileListService;
+	@Autowired
+	private MidiService midiService;
+	@Autowired
+	private MidiRemoteOpenService midiRemoteOpenService;
 
 	@Autowired
 	private Resources resources;
@@ -694,7 +703,8 @@ public class MainFrame extends JFrame {
 
 		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 
-			return presenter.getEntryNameByIndex(fileList.getSelectedIndex());
+			return fileListService.getEntryNameByIndex(fileList
+					.getSelectedIndex());
 		}
 
 		if (component instanceof JButton) {
@@ -713,17 +723,15 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Sets a learned midi signature.
+	 * Sets a learned midi signature for the selected GUI automation.
 	 * 
 	 * @param signature
 	 *            The signature
-	 * @param component
-	 *            The learned component
 	 */
-	public void setMidiSignature(String signature, Component component) {
+	public void setMidiSignature(String signature) {
 
 		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.setMidiSignature(signature, component);
+			preferencesFrame.setAutomationMidiSignature(signature);
 		}
 	}
 
@@ -740,7 +748,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			presenter.openPreviousFile();
+			fileListService.openPreviousFile();
 			setEnabled(true);
 		}
 	}
@@ -758,7 +766,7 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			setEnabled(false);
-			presenter.openNextFile();
+			fileListService.openNextFile();
 			setEnabled(true);
 		}
 	}
@@ -785,7 +793,8 @@ public class MainFrame extends JFrame {
 					if (me.getButton() == MouseEvent.BUTTON1
 							&& me.getClickCount() == 2) {
 						if (!popupWasShown) {
-							presenter.openFileByIndex(lastSelectedIndex, true);
+							fileListService.openFileByIndex(lastSelectedIndex,
+									true);
 						}
 						popupWasShown = false;
 					}
@@ -840,8 +849,8 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			FileFilter filter = new FileNameExtensionFilter(
-					MidiAutomator.MIDI_AUTOMATOR_FILE_TYPE,
-					MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS);
+					ImportExportService.MIDI_AUTOMATOR_FILE_TYPE,
+					ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS);
 			fileChooser.setAcceptAllFileFilterUsed(false);
 			fileChooser.setFileFilter(filter);
 			int returnVal = fileChooser.showOpenDialog(programFrame);
@@ -874,8 +883,8 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			FileFilter filter = new FileNameExtensionFilter(
-					MidiAutomator.MIDI_AUTOMATOR_FILE_TYPE,
-					MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS);
+					ImportExportService.MIDI_AUTOMATOR_FILE_TYPE,
+					ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS);
 			fc.setAcceptAllFileFilterUsed(false);
 			fc.setFileFilter(filter);
 			int returnVal = fc.showSaveDialog(programFrame);
@@ -883,7 +892,7 @@ public class MainFrame extends JFrame {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				String filePath = fc.getSelectedFile().getAbsolutePath();
 				String fileExtension = "."
-						+ MidiAutomator.MIDI_AUTOMATOR_FILE_EXTENSIONS[0];
+						+ ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS[0];
 
 				if (!filePath.endsWith(fileExtension)) {
 					filePath += fileExtension;
@@ -949,9 +958,9 @@ public class MainFrame extends JFrame {
 				String componentName = component.getName();
 
 				// getting midi device names
-				String midiInRemoteDeviceName = presenter
+				String midiInRemoteDeviceName = midiService
 						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-				String switchItemDeviceName = presenter
+				String switchItemDeviceName = midiService
 						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
 				if (componentName != null) {
@@ -1014,7 +1023,7 @@ public class MainFrame extends JFrame {
 
 					// en/disable midi unlearn
 					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
-					if (isMidiLearned(componentName)) {
+					if (midiRemoteOpenService.isMidiLearned(component)) {
 						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
 					}
 
@@ -1101,15 +1110,17 @@ public class MainFrame extends JFrame {
 				int oldIndex = transferItem.getIndex();
 
 				// temporarily save item data before deleting the item
-				String entryName = presenter.getEntryNameByIndex(oldIndex);
-				String filePath = presenter.getEntryFilePathByIndex(oldIndex);
-				String midiListeningSignature = presenter
-						.getMidiListeningSignature(oldIndex);
-				String midiSendingSignature = presenter
-						.getMidiSendingSignature(oldIndex);
+				String entryName = fileListService
+						.getEntryNameByIndex(oldIndex);
+				String filePath = fileListService
+						.getEntryFilePathByIndex(oldIndex);
+				String midiListeningSignature = fileListService
+						.getMidiFileListListeningSignature(oldIndex);
+				String midiSendingSignature = fileListService
+						.getMidiFileListSendingSignature(oldIndex);
 
 				// delete the item from the list
-				presenter.deleteItem(transferItem.getIndex());
+				fileListService.deleteItem(transferItem.getIndex());
 
 				// set item to the new index
 				int newIndex = dl.getIndex();
@@ -1119,7 +1130,7 @@ public class MainFrame extends JFrame {
 					newIndex = model.getSize();
 				}
 
-				presenter.insertItem(newIndex, entryName, filePath,
+				fileListService.insertItem(newIndex, entryName, filePath,
 						midiListeningSignature, midiSendingSignature, false);
 
 				reload();
@@ -1136,50 +1147,6 @@ public class MainFrame extends JFrame {
 
 			return true;
 		}
-	}
-
-	/**
-	 * Checks if a midi signature was learned for the given component name
-	 * 
-	 * @param componentName
-	 *            The name of the component
-	 * @return <TRUE> if it was learned, <FALSE> if it was not learned or
-	 *         unlearned
-	 */
-	private boolean isMidiLearned(String componentName) {
-		boolean isLearned = false;
-
-		// previous switch button
-		String prevSignature = presenter
-				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_PREV);
-		if (prevSignature != null) {
-			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
-					&& (!prevSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
-
-		// next switch button
-		String nextSignature = presenter
-				.getMidiListeningSignature(MidiAutomator.SWITCH_DIRECTION_NEXT);
-		if (nextSignature != null) {
-			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
-					&& (!nextSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
-
-		// file list item
-		String selectedSignature = presenter.getMidiListeningSignature(fileList
-				.getSelectedIndex());
-		if (selectedSignature != null) {
-			if (componentName.equals(MainFrame.NAME_FILE_LIST)
-					&& (!selectedSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
-
-		return isLearned;
 	}
 
 	/**

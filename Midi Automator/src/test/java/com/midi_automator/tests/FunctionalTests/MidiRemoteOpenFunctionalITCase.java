@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class MidiRemoteOpenFunctionalITCase extends FunctionalITCase {
+public class MidiRemoteOpenFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private String propertiesFile;

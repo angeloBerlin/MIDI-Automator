@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class SwitchButtonsFunctionalITCase extends FunctionalITCase {
+public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void nextAndPrevButtonsNotActiveOnEmptyList() {

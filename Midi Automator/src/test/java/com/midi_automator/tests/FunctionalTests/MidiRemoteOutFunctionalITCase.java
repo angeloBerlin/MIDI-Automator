@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
-public class MidiRemoteOutFunctionalITCase extends FunctionalITCase {
+public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private MidiDevice device;

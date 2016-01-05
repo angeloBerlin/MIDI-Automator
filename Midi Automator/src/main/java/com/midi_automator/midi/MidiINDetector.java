@@ -4,6 +4,7 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiService;
 
 /**
  * Shows midi in signals
@@ -13,8 +14,8 @@ import com.midi_automator.presenter.MidiAutomator;
  */
 public class MidiINDetector extends MidiAutomatorReceiver {
 
-	public MidiINDetector(MidiAutomator appl) {
-		super(appl);
+	public MidiINDetector(MidiAutomator presenter, MidiService midiService) {
+		super(presenter, midiService);
 	}
 
 	@Override
@@ -25,7 +26,7 @@ public class MidiINDetector extends MidiAutomatorReceiver {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					log.debug("Blink MIDI IN");
-					application.showMidiINSignal();
+					midiService.showMidiINSignal();
 					isExecuting = false;
 				}
 			});

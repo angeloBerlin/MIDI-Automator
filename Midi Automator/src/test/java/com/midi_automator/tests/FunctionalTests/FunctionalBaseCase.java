@@ -28,7 +28,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliXGUIAutomations;
 import com.midi_automator.view.frames.MainFrame;
 
-public class FunctionalITCase extends AssertJSwingJUnitTestCase {
+public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 
 	@Rule
 	public TestName name = new TestName();

@@ -12,7 +12,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 
-public class DeleteFileFunctionalITCase extends FunctionalITCase {
+public class DeleteFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {

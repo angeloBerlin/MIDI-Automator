@@ -43,7 +43,7 @@ import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.automationconfiguration.ConfigurationTableModel;
 
-public class GUIAutomationFunctionalITCase extends FunctionalITCase {
+public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private String propertiesAlwaysCancelAutomation;

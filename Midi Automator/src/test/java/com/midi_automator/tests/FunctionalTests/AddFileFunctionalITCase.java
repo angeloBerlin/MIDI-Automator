@@ -21,7 +21,7 @@ import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.frames.AddFrame;
 
-public class AddFileFunctionalITCase extends FunctionalITCase {
+public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void newFileShouldBeAdded() {

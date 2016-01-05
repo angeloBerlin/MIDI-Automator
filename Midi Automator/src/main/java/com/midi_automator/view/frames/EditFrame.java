@@ -48,10 +48,10 @@ public class EditFrame extends AddFrame {
 		createMidiListeningSignature();
 		setMidiSendingSignatureValueLabelText();
 
-		nameTextField.setText(presenter.getEntryNameByIndex(index));
-		fileTextField.setText(presenter.getEntryFilePathByIndex(index));
-		midiListeningSignatureValueLabel.setText(presenter
-				.getMidiListeningSignature(index));
+		nameTextField.setText(fileListService.getEntryNameByIndex(index));
+		fileTextField.setText(fileListService.getEntryFilePathByIndex(index));
+		midiListeningSignatureValueLabel.setText(fileListService
+				.getMidiFileListListeningSignature(index));
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class EditFrame extends AddFrame {
 
 	@Override
 	protected void setMidiSendingSignatureValueLabelText() {
-		midiSendingSignatureValueLabel.setText(presenter
-				.getMidiSendingSignature(index));
+		midiSendingSignatureValueLabel.setText(fileListService
+				.getMidiFileListSendingSignature(index));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class EditFrame extends AddFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			log.debug("Save edited item on index: " + (index + 1));
-			presenter.setItem(index, nameTextField.getText(),
+			fileListService.setItem(index, nameTextField.getText(),
 					fileTextField.getText(),
 					midiListeningSignatureValueLabel.getText(),
 					midiSendingSignatureValueLabel.getText());

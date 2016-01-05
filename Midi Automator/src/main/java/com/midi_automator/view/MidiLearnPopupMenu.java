@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.view.frames.MainFrame;
 
 @Controller
@@ -36,6 +37,9 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	protected MidiAutomator presenter;
 	@Autowired
 	protected MainFrame mainFrame;
+
+	@Autowired
+	protected MidiService midiService;
 
 	/**
 	 * Initialize the popup menu
@@ -107,7 +111,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 			JMenuItem menuItem = (JMenuItem) e.getSource();
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			JComponent component = (JComponent) popupMenu.getInvoker();
-			presenter.setMidiLearnMode(true, component);
+			midiService.setMidiLearnMode(true, component);
 		}
 	}
 
@@ -132,7 +136,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			Component component = popupMenu.getInvoker();
-			presenter.unsetMidiSignature(component);
+			midiService.unsetMidiSignature(component);
 
 			if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 				mainFrame.getFileList().setLastSelectedIndex();
@@ -157,7 +161,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			presenter.setMidiLearnMode(false, null);
+			midiService.setMidiLearnMode(false, null);
 		}
 	}
 }

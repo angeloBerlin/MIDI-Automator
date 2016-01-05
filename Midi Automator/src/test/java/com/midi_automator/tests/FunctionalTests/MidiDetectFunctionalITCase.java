@@ -13,7 +13,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
-public class MidiDetectFunctionalITCase extends FunctionalITCase {
+public class MidiDetectFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private String remoteINpropertiesFile;

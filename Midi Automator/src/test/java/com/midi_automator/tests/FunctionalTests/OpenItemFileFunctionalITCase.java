@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 
-public class OpenItemFileFunctionalITCase extends FunctionalITCase {
+public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void helloWorldFileShouldBeOpened() {

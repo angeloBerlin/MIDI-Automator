@@ -21,7 +21,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.frames.EditFrame;
 
-public class EditFileFunctionalITCase extends FunctionalITCase {
+public class EditFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void editMenuShouldBeDisabledIfListIsEmpty() {

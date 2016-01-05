@@ -1,13 +1,6 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -18,12 +11,12 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MidiLearnPopupMenu;
 
-public class MidiLearnListFunctionalITCase extends FunctionalITCase {
+public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private String propertiesFile;
@@ -170,23 +163,23 @@ public class MidiLearnListFunctionalITCase extends FunctionalITCase {
 			Thread.sleep(1000);
 
 			MidiUtils.sendMidiMessage(deviceName,
-					MidiAutomator.OPEN_FILE_MIDI_COMMAND,
-					MidiAutomator.OPEN_FILE_MIDI_CHANNEL,
-					MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO, 1);
+					MidiRemoteOpenService.OPEN_FILE_MIDI_COMMAND,
+					MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL,
+					MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO, 1);
 			Thread.sleep(2000);
 
 			// check failure
 			checkInfoText(String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
-					"channel " + MidiAutomator.OPEN_FILE_MIDI_CHANNEL
+					"channel " + MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL
 							+ ": CONTROL CHANGE "
-							+ MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO
+							+ MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO
 							+ " value: " + 1));
 
 			// open second file by master midi message
 			MidiUtils.sendMidiMessage(deviceName,
-					MidiAutomator.OPEN_FILE_MIDI_COMMAND,
-					MidiAutomator.OPEN_FILE_MIDI_CHANNEL,
-					MidiAutomator.OPEN_FILE_MIDI_CONTROL_NO, 1);
+					MidiRemoteOpenService.OPEN_FILE_MIDI_COMMAND,
+					MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL,
+					MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO, 1);
 			Thread.sleep(2000);
 
 			checkInfoText(String.format(Messages.MSG_OPENING_ENTRY,

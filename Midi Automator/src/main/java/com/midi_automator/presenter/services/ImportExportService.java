@@ -1,4 +1,4 @@
-package com.midi_automator.presenter;
+package com.midi_automator.presenter.services;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.Resources;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.presenter.MidiAutomator;
 import com.midi_automator.utils.FileUtils;
 
 /**
@@ -37,7 +38,14 @@ public class ImportExportService {
 	@Autowired
 	private MidiAutomatorProperties properties;
 
+	@Autowired
+	private FileListService fileListService;
+
 	private String loadedMidautoFilePath;
+
+	public static final String[] MIDI_AUTOMATOR_FILE_EXTENSIONS = { "midauto",
+			"MIDAUTO" };
+	public static final String MIDI_AUTOMATOR_FILE_TYPE = "Midi Automator (midauto)";
 
 	/**
 	 * Loads the set list and the properties from a zip file.
@@ -57,7 +65,7 @@ public class ImportExportService {
 		try {
 			FileUtils.unzipFile(new ZipFile(file), unzipPath);
 			presenter.reloadProperties();
-			presenter.reloadSetList();
+			fileListService.reloadSetList();
 		} catch (ZipException e) {
 			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",
 					e);

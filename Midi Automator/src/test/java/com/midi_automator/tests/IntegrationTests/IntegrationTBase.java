@@ -11,7 +11,7 @@ import com.midi_automator.AppConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class })
-public class IntegrationTest {
+public class IntegrationTBase {
 
 	@Rule
 	public TestName name = new TestName();

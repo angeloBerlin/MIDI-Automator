@@ -13,7 +13,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
-public class MidiMetronomFunctionalITCase extends FunctionalITCase {
+public class MidiMetronomFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private int messageType = ShortMessage.NOTE_ON;

@@ -1,17 +1,6 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnPrevButton;
-import static com.midi_automator.tests.utils.GUIAutomations.openNextButtonPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.openPrevButtonPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -25,7 +14,7 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MidiLearnPopupMenu;
 
-public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
+public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
 	private String deviceName;
 	private String propertiesFile;
@@ -112,7 +101,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
 					controlNo, value);
 
 			// open first files by learned midi message
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
@@ -121,7 +110,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
 			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 			// open second files by learned midi message
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
@@ -226,7 +215,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
 					controlNo, value);
 
 			// open second files by learned midi message
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
@@ -235,7 +224,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalITCase {
 			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
 			// open first files by learned midi message
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 

@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 
-public class MoveEntriesFunctionalITCase extends FunctionalITCase {
+public class MoveEntriesFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void moveUpDownMenuShouldBeDisabledIfListIsEmpty() {

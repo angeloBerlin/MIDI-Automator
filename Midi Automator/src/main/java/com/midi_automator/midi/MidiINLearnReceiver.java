@@ -4,6 +4,7 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -14,15 +15,15 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 
-	public MidiINLearnReceiver(MidiAutomator appl) {
-		super(appl);
+	public MidiINLearnReceiver(MidiAutomator presenter, MidiService midiService) {
+		super(presenter, midiService);
 	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
 		super.send(message, timeStamp);
 
-		if (application.isInMidiLearnMode() && interpretedSignature != null
+		if (midiService.isMidiLearning() && interpretedSignature != null
 				&& !interpretedSignature.equals(MidiUtils.UNKNOWN_MESSAGE)
 				&& !isExecuting) {
 			isExecuting = true;
@@ -31,8 +32,8 @@ public class MidiINLearnReceiver extends MidiAutomatorReceiver {
 
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					application.setMidiSignature(interpretedSignature);
-					application.setMidiLearnMode(false, null);
+					midiService.setMidiSignature(interpretedSignature);
+					midiService.setMidiLearnMode(false, null);
 					isExecuting = false;
 				}
 			});

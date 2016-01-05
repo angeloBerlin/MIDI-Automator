@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.FileListService;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
@@ -62,6 +63,9 @@ public class AddFrame extends AbstractBasicDialog {
 
 	@Autowired
 	protected MidiAutomator presenter;
+
+	@Autowired
+	protected FileListService fileListService;
 
 	/**
 	 * Initializes the frame
@@ -198,7 +202,7 @@ public class AddFrame extends AbstractBasicDialog {
 	 * Sets the text of the midi sending signature label
 	 */
 	protected void setMidiSendingSignatureValueLabelText() {
-		midiSendingSignatureValueLabel.setText(presenter
+		midiSendingSignatureValueLabel.setText(fileListService
 				.getUniqueSendingMidiSignature());
 	}
 
@@ -258,7 +262,8 @@ public class AddFrame extends AbstractBasicDialog {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			presenter.addItem(nameTextField.getText(), fileTextField.getText(),
+			fileListService.addItem(nameTextField.getText(),
+					fileTextField.getText(),
 					midiSendingSignatureValueLabel.getText());
 			new CancelAction().actionPerformed(e);
 		}

@@ -4,6 +4,8 @@ import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiMetronomService;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -14,32 +16,46 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiINMetronomReceiver extends MidiAutomatorReceiver {
 
-	public MidiINMetronomReceiver(MidiAutomator appl) {
-		super(appl);
+	private MidiMetronomService midiMetronomService;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param presenter
+	 *            The main application presenter
+	 * @param midiService
+	 *            The midi service
+	 * @param midiMetronomService
+	 *            The metronom service
+	 */
+	public MidiINMetronomReceiver(MidiAutomator presenter,
+			MidiService midiService, MidiMetronomService midiMetronomService) {
+		super(presenter, midiService);
+		this.midiMetronomService = midiMetronomService;
 	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
 		super.send(message, timeStamp);
 
-		if (!application.isInMidiLearnMode() && message != null) {
+		if (!midiService.isMidiLearning() && message != null) {
 			String signature = MidiUtils.messageToString(message);
 
 			if (signature
-					.contains(MidiAutomator.METRONOM_FIRST_CLICK_MIDI_SIGNATURE)) {
+					.contains(MidiMetronomService.METRONOM_FIRST_CLICK_MIDI_SIGNATURE)) {
 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						application.metronomClick(1);
+						midiMetronomService.metronomClick(1);
 					}
 				});
 
 			} else if (signature
-					.contains(MidiAutomator.METRONOM_CLICK_MIDI_SIGNATURE)) {
+					.contains(MidiMetronomService.METRONOM_CLICK_MIDI_SIGNATURE)) {
 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						application.metronomClick(-1);
+						midiMetronomService.metronomClick(-1);
 					}
 				});
 			}

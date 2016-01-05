@@ -3,6 +3,8 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.GUIAutomationsService;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -13,22 +15,37 @@ import com.midi_automator.utils.MidiUtils;
  */
 public class MidiINAutomationReceiver extends MidiAutomatorReceiver {
 
-	public MidiINAutomationReceiver(MidiAutomator appl) {
-		super(appl);
+	private GUIAutomationsService guiAutomationsService;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param presenter
+	 *            The main application
+	 * @param midiService
+	 *            The midi service
+	 * @param guiAutomationsService
+	 *            The GUIAutomationsService
+	 */
+	public MidiINAutomationReceiver(MidiAutomator presenter,
+			MidiService midiService, GUIAutomationsService guiAutomationsService) {
+		super(presenter, midiService);
+		this.guiAutomationsService = guiAutomationsService;
 	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
 		super.send(message, timeStamp);
 
-		if (!application.isInMidiLearnMode() && interpretedMessage != null
+		if (!midiService.isMidiLearning() && interpretedMessage != null
 				&& !interpretedSignature.equals(MidiUtils.UNKNOWN_MESSAGE)
 				&& !isExecuting) {
 
 			log.debug(name + " checking MIDI trigger for message: "
 					+ interpretedSignature);
 
-			application.activateAutomationsByMidiMessage(interpretedMessage);
+			guiAutomationsService
+					.activateAutomationsByMidiMessage(interpretedMessage);
 			isExecuting = false;
 		}
 	}

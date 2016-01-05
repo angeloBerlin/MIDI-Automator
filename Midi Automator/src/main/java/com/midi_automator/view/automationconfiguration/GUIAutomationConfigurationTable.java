@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
@@ -93,6 +94,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	@Autowired
 	private MidiAutomator presenter;
+
+	@Autowired
+	private MidiService midiDevicesService;
 
 	/**
 	 * Initializes the table
@@ -604,10 +608,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			String trigger = (String) comboBox.getSelectedItem();
 
 			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-				presenter.loadMidiDeviceByFunctionKey(functionKey,
+				midiDevicesService.loadMidiDeviceByFunctionKey(functionKey,
 						trigger.replace(GUIAutomation.CLICKTRIGGER_MIDI, ""));
 			} else {
-				presenter.loadMidiDeviceByFunctionKey(functionKey,
+				midiDevicesService.loadMidiDeviceByFunctionKey(functionKey,
 						MidiAutomatorProperties.VALUE_NULL);
 			}
 		}

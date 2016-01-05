@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
+import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.view.frames.AddFrame;
 import com.midi_automator.view.frames.EditFrame;
 import com.midi_automator.view.frames.MainFrame;
@@ -52,6 +54,11 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 
 	@Autowired
 	private ApplicationContext ctx;
+
+	@Autowired
+	private FileListService fileListService;
+	@Autowired
+	private MidiItemChangeNotificationService midiNotificationService;
 
 	/**
 	 * Initializes the popup menu
@@ -163,7 +170,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			presenter.deleteItem(mainFrame.getFileList().getSelectedIndex());
+			fileListService.deleteItem(mainFrame.getFileList()
+					.getSelectedIndex());
 		}
 	}
 
@@ -212,7 +220,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			presenter.moveUpItem(mainFrame.getFileList().getSelectedIndex());
+			fileListService.moveUpItem(mainFrame.getFileList()
+					.getSelectedIndex());
 		}
 	}
 
@@ -233,7 +242,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			presenter.moveDownItem(mainFrame.getFileList().getSelectedIndex());
+			fileListService.moveDownItem(mainFrame.getFileList()
+					.getSelectedIndex());
 		}
 	}
 
@@ -254,7 +264,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			presenter.sendItemSignature(mainFrame.getFileList()
+			midiNotificationService.sendItemSignature(mainFrame.getFileList()
 					.getSelectedIndex());
 		}
 	}

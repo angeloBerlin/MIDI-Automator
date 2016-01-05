@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.FileUtils;
 
-public class ImportExportFunctionalITCase extends FunctionalITCase {
+public class ImportExportFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void midautoFileShouldBeExported() {
