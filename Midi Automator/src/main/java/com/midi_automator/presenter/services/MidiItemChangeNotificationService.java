@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -39,12 +38,11 @@ public class MidiItemChangeNotificationService {
 	public static final int ITEM_SEND_MIDI_VALUE = 127;
 
 	@Autowired
-	private Presenter presenter;
-
-	@Autowired
 	private MidiService midiService;
 	@Autowired
 	private FileListService fileListService;
+	@Autowired
+	private InfoMessagesService infoMessagesService;
 
 	/**
 	 * Sends a midi message as notifier that the item has changed.
@@ -68,11 +66,12 @@ public class MidiItemChangeNotificationService {
 						SWITCH_NOTIFIER_MIDI_VALUE);
 
 				midiService.sendMidiMessage(device, message);
-				presenter.removeInfoMessage(errMidiDeviceNotAvailable);
+				infoMessagesService
+						.removeInfoMessage(errMidiDeviceNotAvailable);
 
 			} catch (MidiUnavailableException e) {
 
-				presenter.setInfoMessage(errMidiDeviceNotAvailable);
+				infoMessagesService.setInfoMessage(errMidiDeviceNotAvailable);
 				Messages.builtMessages
 						.put(Messages.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE,
 								errMidiDeviceNotAvailable);
@@ -104,11 +103,12 @@ public class MidiItemChangeNotificationService {
 
 				log.info("Sending MIDI signature of item: " + signature);
 				midiService.sendMidiMessage(device, message);
-				presenter.removeInfoMessage(errMidiDeviceNotAvailable);
+				infoMessagesService
+						.removeInfoMessage(errMidiDeviceNotAvailable);
 
 			} catch (MidiUnavailableException e) {
 
-				presenter.setInfoMessage(errMidiDeviceNotAvailable);
+				infoMessagesService.setInfoMessage(errMidiDeviceNotAvailable);
 				Messages.builtMessages.put(
 						Messages.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE_UNAVAILABLE,
 						errMidiDeviceNotAvailable);

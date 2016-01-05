@@ -66,6 +66,8 @@ public class MidiService {
 	private MidiMetronomService midiMetronomService;
 	@Autowired
 	private FileListService fileListService;
+	@Autowired
+	private InfoMessagesService infoMessagesService;
 
 	private Map<String, MidiDevice> midiDevices = new HashMap<String, MidiDevice>();
 	private Map<String, Set<Receiver>> midiFunctionReceiverMapping = new HashMap<String, Set<Receiver>>();
@@ -225,10 +227,10 @@ public class MidiService {
 					// register new device for function
 					midiDevices.put(functionKey, device);
 
-					presenter.removeInfoMessage(loadingErrorMessage);
+					infoMessagesService.removeInfoMessage(loadingErrorMessage);
 
 				} catch (MidiUnavailableException e) {
-					presenter.setInfoMessage(loadingErrorMessage);
+					infoMessagesService.setInfoMessage(loadingErrorMessage);
 				}
 			} else {
 				midiDevices.remove(functionKey);
@@ -411,7 +413,7 @@ public class MidiService {
 	 */
 	public boolean isMidiSignatureAlreadyStored(String signature) {
 
-		presenter.removeInfoMessage(Messages.builtMessages
+		infoMessagesService.removeInfoMessage(Messages.builtMessages
 				.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
 
 		if (signature == null) {
@@ -451,7 +453,7 @@ public class MidiService {
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE,
 					errDuplicateMidiSignature);
-			presenter.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
 		}
 

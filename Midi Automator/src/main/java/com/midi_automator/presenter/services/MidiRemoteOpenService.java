@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
@@ -43,9 +42,6 @@ public class MidiRemoteOpenService {
 			+ OPEN_FILE_MIDI_CONTROL_NO;
 
 	@Autowired
-	private Presenter presenter;
-
-	@Autowired
 	private IModel model;
 
 	@Autowired
@@ -55,6 +51,8 @@ public class MidiRemoteOpenService {
 	private MidiService midiService;
 	@Autowired
 	private FileListService fileListService;
+	@Autowired
+	private InfoMessagesService infoMessagesService;
 
 	/**
 	 * Sends a midi message with the current index.
@@ -90,13 +88,15 @@ public class MidiRemoteOpenService {
 					log.debug("Send MIDI message: "
 							+ MidiUtils.messageToString(message));
 
-					presenter.removeInfoMessage(errMidiDeviceNotAvailable);
+					infoMessagesService
+							.removeInfoMessage(errMidiDeviceNotAvailable);
 
 				} catch (MidiUnavailableException e) {
 
 					log.error(errMidiDeviceNotAvailable, e);
 
-					presenter.setInfoMessage(errMidiDeviceNotAvailable);
+					infoMessagesService
+							.setInfoMessage(errMidiDeviceNotAvailable);
 					Messages.builtMessages.put(
 							Messages.KEY_MIDI_OUT_REMOTE_DEVICE_UNAVAILABLE,
 							errMidiDeviceNotAvailable);

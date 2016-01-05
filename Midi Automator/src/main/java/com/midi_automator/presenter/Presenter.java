@@ -2,8 +2,6 @@ package com.midi_automator.presenter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -17,6 +15,7 @@ import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.GUIAutomationsService;
+import com.midi_automator.presenter.services.InfoMessagesService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiMetronomService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
@@ -48,12 +47,10 @@ public class Presenter {
 	private MidiMetronomService midiMetronomService;
 	@Autowired
 	private MidiItemChangeNotificationService midiNotificationService;
-
-	private List<String> infoMessages;
+	@Autowired
+	private InfoMessagesService infoMessagesService;
 
 	public Presenter() {
-
-		infoMessages = new ArrayList<String>();
 		Locale.setDefault(Main.locale);
 	}
 
@@ -121,59 +118,15 @@ public class Presenter {
 	}
 
 	/**
-	 * Sets an error message
-	 * 
-	 * @param message
-	 *            The info message
-	 */
-	public void setInfoMessage(String message) {
-		if (!infoMessages.contains(message)) {
-			infoMessages.add(message);
-		}
-		mainFrame.setInfoText(messagesToString(infoMessages));
-	}
-
-	/**
-	 * Removes the info message
-	 * 
-	 * @param message
-	 *            The info message
-	 */
-	public void removeInfoMessage(String message) {
-		infoMessages.remove(message);
-
-		if (mainFrame != null) {
-			mainFrame.setInfoText(messagesToString(infoMessages));
-		}
-	}
-
-	/**
-	 * Transforms all messages to a HTML formatted String
-	 * 
-	 * @param messages
-	 *            A list of messages
-	 * @return A HTML formatted String
-	 */
-	private String messagesToString(List<String> messages) {
-		String result = "";
-
-		for (String message : messages) {
-			result = result + message + "<br/>";
-		}
-
-		return result;
-	}
-
-	/**
 	 * Loads the properties file.
 	 */
 	private void loadPropertiesFile() {
 
 		try {
 
-			removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
-			removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
 			properties.load();
@@ -184,7 +137,7 @@ public class Presenter {
 					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND, error);
-			setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
 
 		} catch (IOException e) {
@@ -193,7 +146,7 @@ public class Presenter {
 					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
-			setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
@@ -204,7 +157,7 @@ public class Presenter {
 	public void storePropertiesFile() {
 
 		try {
-			removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
 			properties.store();
@@ -215,7 +168,7 @@ public class Presenter {
 					properties.getPropertiesFilePath());
 			Messages.builtMessages.put(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
-			setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages.builtMessages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
