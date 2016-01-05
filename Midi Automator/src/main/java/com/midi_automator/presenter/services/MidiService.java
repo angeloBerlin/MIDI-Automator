@@ -31,7 +31,7 @@ import com.midi_automator.midi.MidiINMetronomReceiver;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.MainFrame;
@@ -54,7 +54,7 @@ public class MidiService {
 	private IModel model;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 	@Autowired
 	private MainFrame mainFrame;
 
@@ -501,7 +501,6 @@ public class MidiService {
 	 * @return The name of the midid device
 	 */
 	public String getMidiDeviceName(String key) {
-		presenter.loadPropertiesFile();
 		return (String) properties.get(key);
 	}
 
@@ -566,7 +565,7 @@ public class MidiService {
 			}
 
 			presenter.storePropertiesFile();
-			presenter.reloadProperties();
+			presenter.loadProperties();
 		}
 
 		// learning for automation list
@@ -636,6 +635,20 @@ public class MidiService {
 	 */
 	public void showMidiINSignal() {
 		mainFrame.blinkMidiINDetect();
+	}
+
+	/**
+	 * Loads a midi device property by opening and connecting the configured
+	 * midi devices.
+	 * 
+	 * 
+	 * @param propertyKey
+	 *            The property key for the midi device
+	 */
+	public void loadMidiDeviceProperty(String propertyKey) {
+
+		String propertyValue = properties.getProperty(propertyKey);
+		loadMidiDeviceByFunctionKey(propertyKey, propertyValue);
 	}
 
 	/**

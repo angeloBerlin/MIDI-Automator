@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.FileListService;
 
 @org.springframework.stereotype.Component
@@ -62,7 +62,7 @@ public class AddFrame extends AbstractBasicDialog {
 	private JButton searchButton;
 
 	@Autowired
-	protected MidiAutomator presenter;
+	protected Presenter presenter;
 
 	@Autowired
 	protected FileListService fileListService;

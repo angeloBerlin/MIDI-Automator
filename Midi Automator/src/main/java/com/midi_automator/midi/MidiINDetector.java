@@ -3,7 +3,7 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
 
 /**
@@ -14,7 +14,7 @@ import com.midi_automator.presenter.services.MidiService;
  */
 public class MidiINDetector extends MidiAutomatorReceiver {
 
-	public MidiINDetector(MidiAutomator presenter, MidiService midiService) {
+	public MidiINDetector(Presenter presenter, MidiService midiService) {
 		super(presenter, midiService);
 	}
 

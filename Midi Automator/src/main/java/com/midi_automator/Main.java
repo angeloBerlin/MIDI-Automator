@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.SystemUtils;
 
 public class Main {
@@ -55,8 +55,8 @@ public class Main {
 			public void run() {
 				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 						AppConfig.class);
-				MidiAutomator presenter = (MidiAutomator) ctx
-						.getBean(MidiAutomator.class);
+				Presenter presenter = (Presenter) ctx
+						.getBean(Presenter.class);
 
 				presenter.openMainFrame();
 			}

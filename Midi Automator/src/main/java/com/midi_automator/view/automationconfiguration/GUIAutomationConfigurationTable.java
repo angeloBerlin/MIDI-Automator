@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
@@ -48,7 +48,7 @@ import com.midi_automator.view.ScaleableImageIcon;
 @Scope("prototype")
 public class GUIAutomationConfigurationTable extends CacheableJTable {
 
-	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
+	static Logger log = Logger.getLogger(Presenter.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private MidiLearnPopupMenu popupMenu;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private MidiService midiDevicesService;

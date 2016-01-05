@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -33,10 +33,10 @@ public class GUIAutomationsService {
 	private MidiAutomatorProperties properties;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
-	private MidiService midiDevicesService;
+	private MidiService midiService;
 
 	private GUIAutomation[] guiAutomations;
 	private List<GUIAutomator> guiAutomators = new ArrayList<GUIAutomator>();;
@@ -44,7 +44,7 @@ public class GUIAutomationsService {
 	/**
 	 * Loads all GUI automations from the properties.
 	 */
-	public void loadGUIAutomationsProperties() {
+	public void loadProperties() {
 
 		Set<Entry<Object, Object>> guiAutomationProperties_Images = properties
 				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES);
@@ -91,12 +91,19 @@ public class GUIAutomationsService {
 			guiAutomations[index].setTrigger(trigger);
 
 			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-				midiDevicesService
+				midiService
 						.loadMidiDeviceByFunctionKey(
 								MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
 										+ "_" + index, trigger.replace(
 										GUIAutomation.CLICKTRIGGER_MIDI, ""));
 			}
+		}
+
+		// MIDI IN Automation Triggers
+		for (int i = 0; i < guiAutomations.length; i++) {
+			midiService
+					.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
+							+ "_" + i);
 		}
 
 		// initiate min delays

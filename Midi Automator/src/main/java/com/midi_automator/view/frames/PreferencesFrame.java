@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiService;
@@ -108,7 +108,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	private ApplicationContext ctx;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;
@@ -584,7 +584,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 			guiAutomationsService.setGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
-			presenter.reloadProperties();
+			presenter.loadProperties();
 		}
 	}
 

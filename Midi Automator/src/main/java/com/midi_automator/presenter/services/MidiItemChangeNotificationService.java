@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -39,7 +39,7 @@ public class MidiItemChangeNotificationService {
 	public static final int ITEM_SEND_MIDI_VALUE = 127;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private MidiService midiService;
@@ -131,5 +131,16 @@ public class MidiItemChangeNotificationService {
 				midiService
 						.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
 				fileListService.getMidiFileListSendingSignature(index));
+	}
+
+	/**
+	 * Loads the properties for the service.
+	 */
+	public void loadProperties() {
+
+		midiService
+				.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
+		midiService
+				.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 	}
 }

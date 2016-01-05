@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.Resources;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.FileUtils;
 
 /**
@@ -27,7 +27,7 @@ public class ImportExportService {
 	private Logger log = Logger.getLogger(this.getClass().getName());
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private Resources resources;
@@ -64,7 +64,7 @@ public class ImportExportService {
 
 		try {
 			FileUtils.unzipFile(new ZipFile(file), unzipPath);
-			presenter.reloadProperties();
+			presenter.loadProperties();
 			fileListService.reloadSetList();
 		} catch (ZipException e) {
 			log.error("Unzipping file " + file.getAbsolutePath() + " failed.",

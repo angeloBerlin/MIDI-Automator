@@ -11,7 +11,7 @@ import javax.swing.JPopupMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.view.frames.MainFrame;
 
@@ -34,7 +34,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	private Action midiCancelAction;
 
 	@Autowired
-	protected MidiAutomator presenter;
+	protected Presenter presenter;
 	@Autowired
 	protected MainFrame mainFrame;
 

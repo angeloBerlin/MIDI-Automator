@@ -3,6 +3,7 @@ package com.midi_automator.presenter.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.view.frames.MainFrame;
 
 /**
@@ -20,6 +21,9 @@ public class MidiMetronomService {
 	@Autowired
 	private MainFrame mainFrame;
 
+	@Autowired
+	private MidiService midiService;
+
 	/**
 	 * Executes the midi metronom's click
 	 * 
@@ -27,5 +31,13 @@ public class MidiMetronomService {
 	 */
 	public void metronomClick(int beat) {
 		mainFrame.blinkMetronom(beat);
+	}
+
+	/**
+	 * Loads the properties for the service.
+	 */
+	public void loadProperties() {
+		midiService
+				.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
 	}
 }

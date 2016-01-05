@@ -58,7 +58,7 @@ import org.springframework.context.ApplicationContext;
 import com.midi_automator.Main;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.ImportExportService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
@@ -149,7 +149,7 @@ public class MainFrame extends JFrame {
 	private PreferencesFrame preferencesFrame;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private ImportExportService importExportService;

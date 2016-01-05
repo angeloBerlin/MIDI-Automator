@@ -2,7 +2,7 @@ package com.midi_automator.midi;
 
 import javax.sound.midi.MidiMessage;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
@@ -27,7 +27,7 @@ public class MidiINAutomationReceiver extends MidiAutomatorReceiver {
 	 * @param guiAutomationsService
 	 *            The GUIAutomationsService
 	 */
-	public MidiINAutomationReceiver(MidiAutomator presenter,
+	public MidiINAutomationReceiver(Presenter presenter,
 			MidiService midiService, GUIAutomationsService guiAutomationsService) {
 		super(presenter, midiService);
 		this.guiAutomationsService = guiAutomationsService;

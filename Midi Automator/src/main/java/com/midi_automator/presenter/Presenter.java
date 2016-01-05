@@ -17,12 +17,14 @@ import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.GUIAutomationsService;
+import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
+import com.midi_automator.presenter.services.MidiMetronomService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.view.frames.MainFrame;
 
 @Controller
-public class MidiAutomator {
+public class Presenter {
 
 	@Autowired
 	private Resources resources;
@@ -42,10 +44,14 @@ public class MidiAutomator {
 	private FileListService fileListService;
 	@Autowired
 	private MidiRemoteOpenService midiRemoteOpenService;
+	@Autowired
+	private MidiMetronomService midiMetronomService;
+	@Autowired
+	private MidiItemChangeNotificationService midiNotificationService;
 
 	private List<String> infoMessages;
 
-	public MidiAutomator() {
+	public Presenter() {
 
 		infoMessages = new ArrayList<String>();
 		Locale.setDefault(Main.locale);
@@ -74,7 +80,7 @@ public class MidiAutomator {
 
 		mainFrame.init();
 		fileListService.reloadSetList();
-		reloadProperties();
+		loadProperties();
 
 		return mainFrame;
 	}
@@ -84,71 +90,15 @@ public class MidiAutomator {
 	 * 
 	 * @throws MidiUnavailableException
 	 */
-	public void reloadProperties() {
+	public void loadProperties() {
 
 		loadPropertiesFile();
-
-		// MIDI IN Remote
-		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-
-		// MIDI OUT Remote
-		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-
-		// MIDI IN Metronom
-		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-
-		// MIDI OUT Switch Notifier
-		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-
-		// MIDI OUT Switch Items
-		loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-
-		// PREV
-		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
-
-		// NEXT
-		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
-
-		// GUI automation
-		guiAutomationsService.loadGUIAutomationsProperties();
-
-		// MIDI IN Automation Triggers
-		for (int i = 0; i < guiAutomationsService.getGuiAutomations().length; i++) {
-			loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
-					+ "_" + i);
-		}
-
+		midiRemoteOpenService.loadProperties();
+		midiMetronomService.loadProperties();
+		midiNotificationService.loadProperties();
+		fileListService.loadProperties();
+		guiAutomationsService.loadProperties();
 		mainFrame.reload();
-	}
-
-	/**
-	 * Loads the switch command properties for PREVIOUS and NEXT.
-	 * 
-	 * @param propertyKey
-	 *            The property key
-	 */
-	private void loadSwitchCommandProperty(String propertyKey) {
-
-		String propertyValue = (String) properties.get(propertyKey);
-
-		if (propertyValue != null) {
-			String buttonName = "";
-
-			if (propertyKey
-					.equals(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE)) {
-				buttonName = MainFrame.NAME_PREV_BUTTON;
-			}
-
-			if (propertyKey
-					.equals(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE)) {
-				buttonName = MainFrame.NAME_NEXT_BUTTON;
-			}
-
-			if (buttonName != "") {
-				mainFrame.setButtonTooltip(propertyValue,
-						MainFrame.NAME_NEXT_BUTTON);
-			}
-		}
 	}
 
 	/**
@@ -158,20 +108,6 @@ public class MidiAutomator {
 		midiService.unloadAllMidiDevices();
 		guiAutomationsService.terminateAllGUIAutomators();
 		fileListService.resetCurrentItem();
-	}
-
-	/**
-	 * Loads a midi device property by opening and connecting the configured
-	 * midi devices.
-	 * 
-	 * 
-	 * @param propertyKey
-	 *            The property key for the midi device
-	 */
-	private void loadMidiDeviceProperty(String propertyKey) {
-
-		String propertyValue = properties.getProperty(propertyKey);
-		midiService.loadMidiDeviceByFunctionKey(propertyKey, propertyValue);
 	}
 
 	/**
@@ -231,7 +167,7 @@ public class MidiAutomator {
 	/**
 	 * Loads the properties file.
 	 */
-	public void loadPropertiesFile() {
+	private void loadPropertiesFile() {
 
 		try {
 

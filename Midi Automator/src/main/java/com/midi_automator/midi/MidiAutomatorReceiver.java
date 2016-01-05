@@ -5,7 +5,7 @@ import javax.sound.midi.Receiver;
 
 import org.apache.log4j.Logger;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
 
@@ -22,7 +22,7 @@ public class MidiAutomatorReceiver implements Receiver {
 
 	protected boolean isExecuting;
 
-	protected MidiAutomator presenter;
+	protected Presenter presenter;
 	protected MidiService midiService;
 
 	protected long lastTimeStamp = 0;
@@ -39,7 +39,7 @@ public class MidiAutomatorReceiver implements Receiver {
 	 * @param midiService
 	 *            The midi service
 	 */
-	public MidiAutomatorReceiver(MidiAutomator presenter,
+	public MidiAutomatorReceiver(Presenter presenter,
 			MidiService midiService) {
 		this.presenter = presenter;
 		this.midiService = midiService;

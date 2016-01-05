@@ -22,7 +22,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.midi_automator.AppConfig;
 import com.midi_automator.Main;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliXGUIAutomations;
@@ -39,7 +39,7 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	protected AnnotationConfigApplicationContext ctx;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Before
 	public void log() {
@@ -63,8 +63,8 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 						ctx = new AnnotationConfigApplicationContext(
 								AppConfig.class);
 
-						presenter = (MidiAutomator) ctx
-								.getBean(MidiAutomator.class);
+						presenter = (Presenter) ctx
+								.getBean(Presenter.class);
 
 						return presenter.openMainFrame();
 					}

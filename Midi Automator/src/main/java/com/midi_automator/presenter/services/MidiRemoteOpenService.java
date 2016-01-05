@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
 
@@ -43,7 +43,7 @@ public class MidiRemoteOpenService {
 			+ OPEN_FILE_MIDI_CONTROL_NO;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
 
 	@Autowired
 	private IModel model;
@@ -266,6 +266,16 @@ public class MidiRemoteOpenService {
 		}
 
 		return isLearned;
+	}
+
+	/**
+	 * Loads the properties for the service.
+	 */
+	public void loadProperties() {
+		midiService
+				.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+		midiService
+				.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
 	}
 
 	/**

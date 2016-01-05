@@ -19,7 +19,7 @@ import com.midi_automator.model.SetList;
 import com.midi_automator.model.SetListItem;
 import com.midi_automator.model.TooManyEntriesException;
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
@@ -42,13 +42,16 @@ public class FileListService {
 	private IModel model;
 
 	@Autowired
-	private MidiAutomator presenter;
+	private Presenter presenter;
+
+	@Autowired
+	private MidiAutomatorProperties properties;
 
 	@Autowired
 	private MainFrame mainFrame;
 
 	@Autowired
-	private MidiService midiDevicesService;
+	private MidiService midiService;
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;
 	@Autowired
@@ -288,7 +291,7 @@ public class FileListService {
 
 				// Send MIDI change notifier
 				midiNotificationService
-						.sendItemChangeNotifier(midiDevicesService
+						.sendItemChangeNotifier(midiService
 								.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE));
 
 				// activate per change triggered automations
@@ -309,7 +312,7 @@ public class FileListService {
 				// Send MIDI item signature
 				midiNotificationService
 						.sendItemSignature(
-								midiDevicesService
+								midiService
 										.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
 								item.getMidiSendingSignature());
 
@@ -479,6 +482,44 @@ public class FileListService {
 		}
 
 		return signature;
+	}
+
+	/**
+	 * Loads the switch command properties for PREVIOUS and NEXT.
+	 * 
+	 * @param propertyKey
+	 *            The property key
+	 */
+	private void loadSwitchCommandProperty(String propertyKey) {
+
+		String propertyValue = (String) properties.get(propertyKey);
+
+		if (propertyValue != null) {
+			String buttonName = "";
+
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE)) {
+				buttonName = MainFrame.NAME_PREV_BUTTON;
+			}
+
+			if (propertyKey
+					.equals(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE)) {
+				buttonName = MainFrame.NAME_NEXT_BUTTON;
+			}
+
+			if (buttonName != "") {
+				mainFrame.setButtonTooltip(propertyValue,
+						MainFrame.NAME_NEXT_BUTTON);
+			}
+		}
+	}
+
+	/**
+	 * Loads the properties for the service.
+	 */
+	public void loadProperties() {
+		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
+		loadSwitchCommandProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
 	}
 
 	/**

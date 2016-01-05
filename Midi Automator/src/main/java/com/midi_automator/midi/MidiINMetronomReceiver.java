@@ -3,7 +3,7 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
-import com.midi_automator.presenter.MidiAutomator;
+import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiMetronomService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.MidiUtils;
@@ -28,7 +28,7 @@ public class MidiINMetronomReceiver extends MidiAutomatorReceiver {
 	 * @param midiMetronomService
 	 *            The metronom service
 	 */
-	public MidiINMetronomReceiver(MidiAutomator presenter,
+	public MidiINMetronomReceiver(Presenter presenter,
 			MidiService midiService, MidiMetronomService midiMetronomService) {
 		super(presenter, midiService);
 		this.midiMetronomService = midiMetronomService;
