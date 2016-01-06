@@ -100,8 +100,7 @@ public class MidiService {
 		String errMidiDeviceNotAvailable = String.format(
 				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, midiDeviceName);
 
-		Messages.builtMessages.put(functionKey + "_UNVAILABLE",
-				errMidiDeviceNotAvailable);
+		Messages.put(functionKey + "_UNVAILABLE", errMidiDeviceNotAvailable);
 
 		if (midiDeviceName != null && !midiDeviceName.equals("")) {
 
@@ -413,7 +412,7 @@ public class MidiService {
 	 */
 	public boolean isMidiSignatureAlreadyStored(String signature) {
 
-		infoMessagesService.removeInfoMessage(Messages.builtMessages
+		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
 
 		if (signature == null) {
@@ -448,13 +447,10 @@ public class MidiService {
 		}
 
 		if (found == true) {
-			String errDuplicateMidiSignature = String.format(
-					Messages.MSG_DUPLICATE_MIDI_SIGNATURE, signature);
-			Messages.builtMessages.put(
-					Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE,
-					errDuplicateMidiSignature);
-			infoMessagesService.setInfoMessage(Messages.builtMessages
-					.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
+			String error = String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
+					signature);
+			infoMessagesService.setInfoMessage(
+					Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE, error);
 		}
 
 		return found;

@@ -72,9 +72,9 @@ public class MidiItemChangeNotificationService {
 			} catch (MidiUnavailableException e) {
 
 				infoMessagesService.setInfoMessage(errMidiDeviceNotAvailable);
-				Messages.builtMessages
-						.put(Messages.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE,
-								errMidiDeviceNotAvailable);
+				Messages.put(
+						Messages.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE,
+						errMidiDeviceNotAvailable);
 				log.error(errMidiDeviceNotAvailable, e);
 
 			} catch (InvalidMidiDataException e) {
@@ -109,7 +109,7 @@ public class MidiItemChangeNotificationService {
 			} catch (MidiUnavailableException e) {
 
 				infoMessagesService.setInfoMessage(errMidiDeviceNotAvailable);
-				Messages.builtMessages.put(
+				Messages.put(
 						Messages.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE_UNAVAILABLE,
 						errMidiDeviceNotAvailable);
 				log.error(errMidiDeviceNotAvailable, e);

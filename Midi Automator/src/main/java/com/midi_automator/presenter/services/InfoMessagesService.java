@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.presenter.Messages;
 import com.midi_automator.view.frames.MainFrame;
 
 /**
@@ -23,7 +24,20 @@ public class InfoMessagesService {
 	private MainFrame mainFrame;
 
 	/**
-	 * Sets an error message
+	 * Sets an info message and stores it under the given key
+	 * 
+	 * @param key
+	 *            The key
+	 * @param message
+	 *            The message
+	 */
+	public void setInfoMessage(String key, String message) {
+		Messages.put(key, message);
+		setInfoMessage(message);
+	}
+
+	/**
+	 * Sets an info message
 	 * 
 	 * @param message
 	 *            The info message

@@ -68,12 +68,10 @@ public class Presenter {
 		String errMidoFileIsTooBig = String.format(
 				Messages.MSG_FILE_LIST_TOO_BIG, fileName);
 
-		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_NOT_FOUND,
+		Messages.put(Messages.KEY_ERROR_MIDO_FILE_NOT_FOUND,
 				errMidoFileNotFound);
-		Messages.builtMessages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
-				errMidoFileNotReadable);
-		Messages.builtMessages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG,
-				errMidoFileIsTooBig);
+		Messages.put(Messages.KEY_ERROR_ITEM_FILE_IO, errMidoFileNotReadable);
+		Messages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG, errMidoFileIsTooBig);
 
 		mainFrame.init();
 		fileListService.reloadSetList();
@@ -110,7 +108,7 @@ public class Presenter {
 	/**
 	 * Returns if the application is in test mode
 	 * 
-	 * @return <TRUE> if the appplication is in development mode, <FALSE> if the
+	 * @return <TRUE> if the application is in development mode, <FALSE> if the
 	 *         application is not in development mode
 	 */
 	public boolean isInTestMode() {
@@ -124,9 +122,9 @@ public class Presenter {
 
 		try {
 
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
 			properties.load();
@@ -135,19 +133,15 @@ public class Presenter {
 
 			String error = String.format(Messages.MSG_FILE_NOT_FOUND,
 					properties.getPropertiesFilePath());
-			Messages.builtMessages.put(
+			infoMessagesService.setInfoMessage(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND, error);
-			infoMessagesService.setInfoMessage(Messages.builtMessages
-					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_FOUND));
 
 		} catch (IOException e) {
 
 			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
 					properties.getPropertiesFilePath());
-			Messages.builtMessages.put(
+			infoMessagesService.setInfoMessage(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
-			infoMessagesService.setInfoMessage(Messages.builtMessages
-					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
 
@@ -157,7 +151,7 @@ public class Presenter {
 	public void storePropertiesFile() {
 
 		try {
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
 			properties.store();
@@ -166,10 +160,8 @@ public class Presenter {
 
 			String error = String.format(Messages.MSG_FILE_COULD_NOT_BE_OPENED,
 					properties.getPropertiesFilePath());
-			Messages.builtMessages.put(
+			infoMessagesService.setInfoMessage(
 					Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE, error);
-			infoMessagesService.setInfoMessage(Messages.builtMessages
-					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 		}
 	}
 }

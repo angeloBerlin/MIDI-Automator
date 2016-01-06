@@ -97,7 +97,7 @@ public class MidiRemoteOpenService {
 
 					infoMessagesService
 							.setInfoMessage(errMidiDeviceNotAvailable);
-					Messages.builtMessages.put(
+					Messages.put(
 							Messages.KEY_MIDI_OUT_REMOTE_DEVICE_UNAVAILABLE,
 							errMidiDeviceNotAvailable);
 

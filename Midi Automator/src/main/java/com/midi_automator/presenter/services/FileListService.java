@@ -124,16 +124,16 @@ public class FileListService {
 			String midiListeningSignature, String midiSendingSignature,
 			boolean overwrite) {
 
-		infoMessagesService.removeInfoMessage(Messages.builtMessages
+		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
 
 		if (index == null && model.getSetList().getItems().size() >= 128) {
+
 			String error = String.format(Messages.MSG_FILE_LIST_IS_FULL,
 					entryName);
-			Messages.builtMessages.put(Messages.KEY_ERROR_TOO_MUCH_ENTRIES,
-					error);
-			infoMessagesService.setInfoMessage(Messages.builtMessages
-					.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
+			infoMessagesService.setInfoMessage(
+					Messages.KEY_ERROR_TOO_MUCH_ENTRIES, error);
+
 			return;
 		}
 
@@ -179,17 +179,17 @@ public class FileListService {
 	 */
 	public void saveSetList() {
 
-		infoMessagesService.removeInfoMessage(Messages.builtMessages
+		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-		infoMessagesService.removeInfoMessage(Messages.builtMessages
+		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		try {
 			model.save();
 		} catch (FileNotFoundException e) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
 		} catch (IOException e) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		}
 	}
@@ -200,11 +200,11 @@ public class FileListService {
 	public void reloadSetList() {
 		try {
 			model.load();
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_IO));
-			infoMessagesService.removeInfoMessage(Messages.builtMessages
+			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 
 			List<SetListItem> items = model.getSetList().getItems();
@@ -223,13 +223,13 @@ public class FileListService {
 			mainFrame.setMidiSendingSignatures(midiSedningSignatures);
 
 		} catch (FileNotFoundException e1) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
 		} catch (IOException e1) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_MIDO_FILE_IO));
 		} catch (TooManyEntriesException e) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 		}
 
@@ -281,12 +281,11 @@ public class FileListService {
 			if (!model.getSetList().getItems().isEmpty()) {
 				SetListItem item = model.getSetList().getItems().get(index);
 
-				infoMessagesService.removeInfoMessage(Messages.builtMessages
+				infoMessagesService.removeInfoMessage(Messages
 						.get(Messages.KEY_INFO_ENTRY_OPENED));
 				String infoEntryOpened = String.format(
 						Messages.MSG_OPENING_ENTRY, item.getName());
-				Messages.builtMessages.put(Messages.KEY_INFO_ENTRY_OPENED,
-						infoEntryOpened);
+				Messages.put(Messages.KEY_INFO_ENTRY_OPENED, infoEntryOpened);
 
 				mainFrame.setSelectedIndex(index);
 				currentItem = index;
@@ -322,9 +321,9 @@ public class FileListService {
 
 				String path = resources.generateRelativeLoadingPath(filePath);
 
-				infoMessagesService.removeInfoMessage(Messages.builtMessages
+				infoMessagesService.removeInfoMessage(Messages
 						.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-				infoMessagesService.removeInfoMessage(Messages.builtMessages
+				infoMessagesService.removeInfoMessage(Messages
 						.get(Messages.KEY_ERROR_ITEM_FILE_IO));
 
 				String errFileNotFound = String.format(
@@ -332,10 +331,9 @@ public class FileListService {
 				String errFileNotReadable = String.format(
 						Messages.MSG_FILE_LIST_NOT_READABLE, filePath);
 
-				Messages.builtMessages
-						.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND,
-								errFileNotFound);
-				Messages.builtMessages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
+				Messages.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND,
+						errFileNotFound);
+				Messages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
 						errFileNotReadable);
 
 				if (!path.equals("")) {
@@ -345,16 +343,13 @@ public class FileListService {
 				}
 			}
 		} catch (IllegalArgumentException ex) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-			log.error(Messages.builtMessages
-					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND), ex);
+			log.error(Messages.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND), ex);
 		} catch (IOException ex) {
-			infoMessagesService.setInfoMessage(Messages.builtMessages
+			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_IO));
-			log.error(
-					Messages.builtMessages.get(Messages.KEY_ERROR_ITEM_FILE_IO),
-					ex);
+			log.error(Messages.get(Messages.KEY_ERROR_ITEM_FILE_IO), ex);
 		}
 	}
 

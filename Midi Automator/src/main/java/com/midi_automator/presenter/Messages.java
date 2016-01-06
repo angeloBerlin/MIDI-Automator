@@ -20,7 +20,6 @@ public class Messages {
 	public static final String MSG_DUPLICATE_MIDI_SIGNATURE = "The midi message <b>%s</b> is already set for a function. Please use another one.";
 	public static final String MSG_FILE_LIST_IS_FULL = "The entry <b>%s</b> could not be added because the list contains already the maximum of 128 entries.";
 
-	public static Map<String, String> builtMessages = new HashMap<String, String>();
 	public static final String KEY_ERROR_DUPLICATE_MIDI_SIGNATURE = "KEY_ERROR_DUPLICATE_MIDI_SIGNATURE";
 	public static final String KEY_INFO_ENTRY_OPENED = "KEY_INFO_ENTRY_OPENED";
 	public static final String KEY_ERROR_MIDO_FILE_TOO_BIG = "KEY_ERROR_MIDO_FILE_TOO_BIG";
@@ -36,4 +35,29 @@ public class Messages {
 	public static final String KEY_MIDI_OUT_REMOTE_DEVICE_UNAVAILABLE = "KEY_MIDI_OUT_REMOTE_DEVICE_UNAVAILABLE";
 	public static final String KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE = "KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_UNAVAILABLE";
 	public static final String KEY_MIDI_OUT_SWITCH_ITEM_DEVICE_UNAVAILABLE = "KEY_MIDI_OUT_SWITCH_ITEM_DEVICE_UNAVAILABLE";
+
+	private static Map<String, String> builtMessages = new HashMap<String, String>();
+
+	/**
+	 * Stores the message to the key
+	 * 
+	 * @param key
+	 *            The key
+	 * @param message
+	 *            The message
+	 */
+	public static void put(String key, String message) {
+		builtMessages.put(key, message);
+	}
+
+	/**
+	 * Gets the message of the key
+	 * 
+	 * @param key
+	 *            The key
+	 * @return The message
+	 */
+	public static String get(String key) {
+		return builtMessages.get(key);
+	}
 }
