@@ -100,7 +100,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 * 
 	 * @return The configuration JTable
 	 */
-	public GUIAutomationConfigurationTable getConfigurationTable() {
+	public GUIAutomationConfigurationTable getGUIAutomationsTable() {
 		return configurationTable;
 	}
 

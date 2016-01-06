@@ -5,14 +5,17 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.presenter.Presenter;
-import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.MidiLearnService;
+import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.MainFrame;
 
 @Controller
@@ -39,7 +42,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	protected MainFrame mainFrame;
 
 	@Autowired
-	protected MidiService midiService;
+	private MidiLearnService midiLearnService;
 
 	/**
 	 * Initialize the popup menu
@@ -111,7 +114,47 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 			JMenuItem menuItem = (JMenuItem) e.getSource();
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			JComponent component = (JComponent) popupMenu.getInvoker();
-			midiService.setMidiLearnMode(true, component);
+
+			mainFrame.midiLearnOn(component);
+
+			// Previous button
+			if (component.getName().equals(MainFrame.NAME_PREV_BUTTON)) {
+				midiLearnService
+						.activateMidiLearn(MidiLearnService.KEY_MIDI_LEARN_PREVIOUS_BUTTON);
+				return;
+			}
+
+			// Next button
+			if (component.getName().equals(MainFrame.NAME_NEXT_BUTTON)) {
+				midiLearnService
+						.activateMidiLearn(MidiLearnService.KEY_MIDI_LEARN_NEXT_BUTTON);
+				return;
+			}
+
+			// File list
+			if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
+				if (component instanceof JList) {
+					JList<?> list = (JList<?>) component;
+					midiLearnService.activateMidiLearn(
+							MidiLearnService.KEY_MIDI_LEARN_FILE_LIST_ENTRY,
+							list.getSelectedIndex());
+				}
+				return;
+			}
+
+			// GUI automation trigger
+			if (component.getName()
+					.equals(GUIAutomationConfigurationTable.NAME)) {
+
+				if (component instanceof JTable) {
+					JTable automationsTable = (JTable) component;
+					midiLearnService.activateMidiLearn(
+							MidiLearnService.KEY_MIDI_LEARN_AUTOMATION_TRIGGER,
+							automationsTable.getSelectedRow());
+
+				}
+				return;
+			}
 		}
 	}
 
@@ -136,10 +179,31 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
 			Component component = popupMenu.getInvoker();
-			midiService.unsetMidiSignature(component);
 
+			// Previous button
+			if (component.getName().equals(MainFrame.NAME_PREV_BUTTON)) {
+				midiLearnService
+						.unsetMidiSignature(MidiLearnService.KEY_MIDI_LEARN_PREVIOUS_BUTTON);
+				return;
+			}
+
+			// Next button
+			if (component.getName().equals(MainFrame.NAME_NEXT_BUTTON)) {
+				midiLearnService
+						.unsetMidiSignature(MidiLearnService.KEY_MIDI_LEARN_NEXT_BUTTON);
+				return;
+			}
+
+			// File list
 			if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 				mainFrame.getFileList().setLastSelectedIndex();
+				if (component instanceof JList) {
+					JList<?> list = (JList<?>) component;
+					midiLearnService.unsetMidiSignature(
+							MidiLearnService.KEY_MIDI_LEARN_FILE_LIST_ENTRY,
+							list.getSelectedIndex());
+				}
+				return;
 			}
 		}
 	}
@@ -161,7 +225,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			midiService.setMidiLearnMode(false, null);
+			midiLearnService.setMidiLearnMode(false);
 		}
 	}
 }

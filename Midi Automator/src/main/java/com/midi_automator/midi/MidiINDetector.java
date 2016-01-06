@@ -3,7 +3,10 @@ package com.midi_automator.midi;
 import javax.sound.midi.MidiMessage;
 import javax.swing.SwingUtilities;
 
-import com.midi_automator.presenter.Presenter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.midi_automator.presenter.services.MidiService;
 
 /**
@@ -12,11 +15,12 @@ import com.midi_automator.presenter.services.MidiService;
  * @author aguelle
  * 
  */
+@Component
+@Scope("prototype")
 public class MidiINDetector extends MidiAutomatorReceiver {
 
-	public MidiINDetector(Presenter presenter, MidiService midiService) {
-		super(presenter, midiService);
-	}
+	@Autowired
+	private MidiService midiService;
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {

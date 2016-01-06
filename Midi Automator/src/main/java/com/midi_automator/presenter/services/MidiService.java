@@ -1,9 +1,5 @@
 package com.midi_automator.presenter.services;
 
-import java.awt.Component;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,12 +11,10 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Transmitter;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JList;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.midi.MidiINAutomationReceiver;
@@ -28,12 +22,10 @@ import com.midi_automator.midi.MidiINDetector;
 import com.midi_automator.midi.MidiINExecuteReceiver;
 import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
-import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.MainFrame;
 
 /**
@@ -48,11 +40,10 @@ public class MidiService {
 	private Logger log = Logger.getLogger(this.getClass().getName());
 
 	@Autowired
-	private MidiAutomatorProperties properties;
+	private ApplicationContext ctx;
 
 	@Autowired
-	private IModel model;
-
+	private MidiAutomatorProperties properties;
 	@Autowired
 	private Presenter presenter;
 	@Autowired
@@ -65,14 +56,12 @@ public class MidiService {
 	@Autowired
 	private MidiMetronomService midiMetronomService;
 	@Autowired
-	private FileListService fileListService;
-	@Autowired
 	private InfoMessagesService infoMessagesService;
+	@Autowired
+	private MidiLearnService midiLearnService;
 
 	private Map<String, MidiDevice> midiDevices = new HashMap<String, MidiDevice>();
 	private Map<String, Set<Receiver>> midiFunctionReceiverMapping = new HashMap<String, Set<Receiver>>();
-	private boolean midiLearning;
-	private JComponent learningComponent;
 
 	/**
 	 * Gets a stored midi device by key
@@ -97,83 +86,92 @@ public class MidiService {
 	public void loadMidiDeviceByFunctionKey(String functionKey,
 			String midiDeviceName) {
 
-		String errMidiDeviceNotAvailable = String.format(
-				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, midiDeviceName);
-
-		Messages.put(functionKey + "_UNVAILABLE", errMidiDeviceNotAvailable);
-
 		if (midiDeviceName != null && !midiDeviceName.equals("")) {
 
 			// MIDI IN Remote
 			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE)) {
-
-				Set<Receiver> receivers = new HashSet<Receiver>();
-				receivers.add(new MidiINLearnReceiver(presenter, this));
-				receivers.add(new MidiINExecuteReceiver(presenter, this));
-
-				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
-						errMidiDeviceNotAvailable);
+				loadMidiInRemoteDevice(midiDeviceName);
+				return;
 			}
 
 			// MIDI IN Automation Trigger
 			if (functionKey
 					.contains(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE)) {
-
-				Set<Receiver> receivers = new HashSet<Receiver>();
-				receivers.add(new MidiINLearnReceiver(presenter, this));
-				MidiINAutomationReceiver automationReceiver = new MidiINAutomationReceiver(
-						presenter, this, guiAutomationsService);
-				automationReceiver.setName(functionKey);
-				receivers.add(automationReceiver);
-
-				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
-						errMidiDeviceNotAvailable);
+				loadMidiInAutomationTriggerDevice(midiDeviceName, functionKey);
+				return;
 			}
 
 			// MIDI IN Metronom
 			if (functionKey
 					.equals(MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE)) {
-
-				Set<Receiver> receivers = new HashSet<Receiver>();
-				receivers.add(new MidiINMetronomReceiver(presenter, this,
-						midiMetronomService));
-
-				loadMidiDevice(midiDeviceName, functionKey, receivers, "IN",
-						errMidiDeviceNotAvailable);
+				loadMidiInMetronomDevice(midiDeviceName);
+				return;
 			}
 
-			// MIDI OUT Remote
-			if (functionKey
-					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE)) {
-
-				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
-						errMidiDeviceNotAvailable);
-			}
-
-			// MIDI OUT Switch Notifier
-			if (functionKey
-					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE)) {
-
-				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
-						errMidiDeviceNotAvailable);
-			}
-
-			// MIDI OUT Switch Items
-			if (functionKey
-					.equals(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE)) {
-
-				loadMidiDevice(midiDeviceName, functionKey, null, "OUT",
-						errMidiDeviceNotAvailable);
-			}
-
+			// MIDI OUT
+			reloadMidiDevice(midiDeviceName, functionKey, null, "OUT");
 		}
 	}
 
 	/**
-	 * Loads a MIDI device
+	 * Loads the midi in remote device
 	 * 
-	 * @param deviceName
+	 * @param midiDeviceName
+	 *            The midi device name
+	 */
+	private void loadMidiInRemoteDevice(String midiDeviceName) {
+
+		Set<Receiver> receivers = new HashSet<Receiver>();
+		receivers.add(ctx.getBean(MidiINLearnReceiver.class));
+		receivers.add(ctx.getBean(MidiINExecuteReceiver.class));
+
+		reloadMidiDevice(midiDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE, receivers,
+				"IN");
+	}
+
+	/**
+	 * Loads the midi in automation trigger device device
+	 * 
+	 * @param midiDeviceName
+	 *            The midi device name
+	 * @param functionKey
+	 *            The function key of the trigger
+	 */
+	private void loadMidiInAutomationTriggerDevice(String midiDeviceName,
+			String functionKey) {
+
+		Set<Receiver> receivers = new HashSet<Receiver>();
+		receivers.add(ctx.getBean(MidiINLearnReceiver.class));
+		MidiINAutomationReceiver automationReceiver = ctx
+				.getBean(MidiINAutomationReceiver.class);
+		automationReceiver.setName(functionKey);
+		receivers.add(automationReceiver);
+
+		reloadMidiDevice(midiDeviceName, functionKey, receivers, "IN");
+	}
+
+	/**
+	 * Loads the midi in metronom device
+	 * 
+	 * @param midiDeviceName
+	 *            The midi device name
+	 */
+	private void loadMidiInMetronomDevice(String midiDeviceName) {
+
+		Set<Receiver> receivers = new HashSet<Receiver>();
+		receivers.add(ctx.getBean(MidiINMetronomReceiver.class));
+
+		reloadMidiDevice(midiDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE, receivers,
+				"IN");
+	}
+
+	/**
+	 * Loads/Reloads a MIDI device
+	 * 
+	 * @param midiDeviceName
 	 *            The name of the midi device
 	 * @param functionKey
 	 *            The key name of the midi function
@@ -181,62 +179,81 @@ public class MidiService {
 	 *            A set of midi receivers for the device
 	 * @param direction
 	 *            The direction "IN"/"OUT" of the midi device
-	 * @param loadingErrorMessage
-	 *            An error String for loading failures
 	 */
-	private void loadMidiDevice(String deviceName, String functionKey,
-			Set<Receiver> receivers, String direction,
-			String loadingErrorMessage) {
+	private void reloadMidiDevice(String midiDeviceName, String functionKey,
+			Set<Receiver> receivers, String direction) {
 
 		// get old MidiDevice
 		MidiDevice oldMidiDevice = midiDevices.get(functionKey);
 		String oldDeviceName = null;
 
 		if (oldMidiDevice != null) {
-			oldDeviceName = midiDevices.get(functionKey).getDeviceInfo()
-					.getName();
+			oldDeviceName = oldMidiDevice.getDeviceInfo().getName();
 		}
 
-		if (!deviceName.equals(oldDeviceName)) {
+		if (!midiDeviceName.equals(oldDeviceName)) {
 
 			// unregister old function
 			midiDevices.put(functionKey, null);
 
 			// load new device
-			if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
-				try {
-					MidiDevice device = MidiUtils.getMidiDevice(deviceName,
-							direction);
+			if (!midiDeviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
 
-					if (!device.isOpen()) {
-						device.open();
-						log.info("Opened MIDI " + direction + " device "
-								+ device.getDeviceInfo().getName());
-					}
-
-					if (receivers != null) {
-						for (Receiver receiver : receivers) {
-							connectMidiDeviceWithReceiver(device, receiver,
-									direction);
-							midiFunctionReceiverMapping.put(functionKey,
-									receivers);
-						}
-					}
-
-					// register new device for function
-					midiDevices.put(functionKey, device);
-
-					infoMessagesService.removeInfoMessage(loadingErrorMessage);
-
-				} catch (MidiUnavailableException e) {
-					infoMessagesService.setInfoMessage(loadingErrorMessage);
-				}
+				loadMidiDevice(midiDeviceName, functionKey, receivers,
+						direction);
 			} else {
 				midiDevices.remove(functionKey);
 			}
 
 			// unload old device
 			unloadMidiDevice(oldDeviceName, functionKey, direction);
+		}
+	}
+
+	/**
+	 * Loads a MIDI device
+	 * 
+	 * @param midiDeviceName
+	 *            The name of the midi device
+	 * @param functionKey
+	 *            The key name of the midi function
+	 * @param receivers
+	 *            A set of midi receivers for the device
+	 * @param direction
+	 *            The direction "IN"/"OUT" of the midi device
+	 */
+	private void loadMidiDevice(String midiDeviceName, String functionKey,
+			Set<Receiver> receivers, String direction) {
+
+		String loadingErrorMessage = String.format(
+				Messages.MSG_MIDI_DEVICE_NOT_AVAILABLE, midiDeviceName);
+
+		Messages.put(functionKey + "_UNVAILABLE", loadingErrorMessage);
+
+		try {
+			MidiDevice device = MidiUtils.getMidiDevice(midiDeviceName,
+					direction);
+
+			if (!device.isOpen()) {
+				device.open();
+				log.info("Opened MIDI " + direction + " device "
+						+ device.getDeviceInfo().getName());
+			}
+
+			if (receivers != null) {
+				for (Receiver receiver : receivers) {
+					connectMidiDeviceWithReceiver(device, receiver, direction);
+					midiFunctionReceiverMapping.put(functionKey, receivers);
+				}
+			}
+
+			// register new device for function
+			midiDevices.put(functionKey, device);
+
+			infoMessagesService.removeInfoMessage(loadingErrorMessage);
+
+		} catch (MidiUnavailableException e) {
+			infoMessagesService.setInfoMessage(loadingErrorMessage);
 		}
 	}
 
@@ -265,7 +282,7 @@ public class MidiService {
 
 			// connect MIDI IN detector
 			if (direction.equals("IN")) {
-				Receiver midiINDetector = new MidiINDetector(presenter, this);
+				Receiver midiINDetector = ctx.getBean(MidiINDetector.class);
 
 				if (!MidiUtils.isReceiverUsedByDevice(device, midiINDetector)) {
 
@@ -402,61 +419,6 @@ public class MidiService {
 	}
 
 	/**
-	 * Checks if the midi signature is already stored and displays a failure.
-	 * 
-	 * @param signature
-	 *            The midi signature
-	 * @return <TRUE> if it is already stored, <FALSE> if not
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	public boolean isMidiSignatureAlreadyStored(String signature) {
-
-		infoMessagesService.removeInfoMessage(Messages
-				.get(Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE));
-
-		if (signature == null) {
-			signature = "";
-			return false;
-		}
-
-		boolean found = false;
-
-		if (properties != null) {
-			@SuppressWarnings("unchecked")
-			Enumeration<String> propertyNames = (Enumeration<String>) properties
-					.propertyNames();
-
-			while (propertyNames.hasMoreElements()) {
-				String key = propertyNames.nextElement();
-				String value = (String) properties.get(key);
-
-				if (value.equals(signature)
-						&& !key.contains(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES)) {
-					found = true;
-				}
-			}
-		}
-
-		if (model.getSetList().getMidiListeningSignatures().contains(signature)) {
-			found = true;
-		}
-
-		if (signature.contains(MidiRemoteOpenService.OPEN_FILE_MIDI_SIGNATURE)) {
-			found = true;
-		}
-
-		if (found == true) {
-			String error = String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
-					signature);
-			infoMessagesService.setInfoMessage(
-					Messages.KEY_ERROR_DUPLICATE_MIDI_SIGNATURE, error);
-		}
-
-		return found;
-	}
-
-	/**
 	 * Runs the function for the midi message
 	 * 
 	 * @param message
@@ -464,7 +426,7 @@ public class MidiService {
 	 */
 	public void executeMidiMessage(MidiMessage message) {
 
-		if (!midiLearning) {
+		if (!midiLearnService.isMidiLearning()) {
 
 			String signature = MidiUtils.messageToString(message);
 			log.debug("Executed MIDI message: " + signature);
@@ -500,113 +462,6 @@ public class MidiService {
 	 */
 	public String getMidiDeviceName(String key) {
 		return (String) properties.get(key);
-	}
-
-	/**
-	 * Sets the midi signature. The component will be implicitly taken from the
-	 * learningComponent field
-	 * 
-	 * @param signature
-	 *            The midi signature
-	 */
-	public void setMidiSignature(String signature) {
-		setMidiSignature(signature, learningComponent);
-	}
-
-	/**
-	 * Sets the midi signature for a given Component
-	 * 
-	 * @param midiSignature
-	 *            The midi signature
-	 * @param component
-	 *            The component to set the midi signature for
-	 */
-	public void setMidiSignature(String midiSignature, Component component) {
-
-		if (component == null) {
-			return;
-		}
-
-		// learning for file list
-		if (component instanceof JList) {
-			JList<?> list = (JList<?>) component;
-
-			// check for unique signature
-			if (isMidiSignatureAlreadyStored(midiSignature)) {
-				return;
-			}
-
-			model.getSetList().getItems().get(list.getSelectedIndex())
-					.setMidiListeningSignature(midiSignature);
-			fileListService.saveSetList();
-		}
-
-		// learning for switch buttons
-		if (component instanceof JButton) {
-			JButton button = (JButton) component;
-
-			// check for unique signature
-			if (isMidiSignatureAlreadyStored(midiSignature)) {
-				return;
-			}
-
-			if (button.getName().equals(MainFrame.NAME_PREV_BUTTON)) {
-				properties.setProperty(
-						MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE,
-						midiSignature);
-			}
-
-			if (button.getName().equals(MainFrame.NAME_NEXT_BUTTON)) {
-				properties.setProperty(
-						MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE,
-						midiSignature);
-			}
-
-			presenter.storePropertiesFile();
-			presenter.loadProperties();
-		}
-
-		// learning for automation list
-		if (component.getName().equals(GUIAutomationConfigurationTable.NAME)) {
-			mainFrame.setMidiSignature(midiSignature);
-		}
-	}
-
-	/**
-	 * Unsets the midi signature for a given Component
-	 * 
-	 * @param component
-	 *            The component to unset the midi signature for
-	 */
-	public void unsetMidiSignature(Component component) {
-		setMidiSignature(null, component);
-		mainFrame.setInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
-				mainFrame.getMidiComponentName(component)));
-	}
-
-	/**
-	 * Sets the application to midi learn mode
-	 * 
-	 * @param midiLearning
-	 *            <TRUE> application is in midi learn mode, <FALSE> application
-	 *            is not in midi learn mode
-	 * @param learningComponent
-	 *            The component for which shall be learned, may be <NULL> if
-	 *            midi learn is <FALSE>
-	 */
-	public void setMidiLearnMode(boolean midiLearning,
-			JComponent learningComponent) {
-		this.midiLearning = midiLearning;
-		setLearningComponent(learningComponent);
-
-		if (midiLearning) {
-			mainFrame.setInfoText(Messages.MSG_MIDI_LEARN_MODE);
-			mainFrame.midiLearnOn(learningComponent);
-		} else {
-			mainFrame.midiLearnOff();
-		}
-
-		log.debug("Property midiLearn=" + midiLearning);
 	}
 
 	/**
@@ -654,17 +509,5 @@ public class MidiService {
 	 */
 	public void showMidiOUTSignal() {
 		mainFrame.blinkMidiOUTDetect();
-	}
-
-	public boolean isMidiLearning() {
-		return midiLearning;
-	}
-
-	public JComponent getLearningComponent() {
-		return learningComponent;
-	}
-
-	public void setLearningComponent(JComponent learningComponent) {
-		this.learningComponent = learningComponent;
 	}
 }

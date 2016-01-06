@@ -422,7 +422,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		// learning for automation list
 		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
-				.getConfigurationTable();
+				.getGUIAutomationsTable();
 		try {
 			table.setMidiSignature(signature, table.getSelectedRow());
 		} catch (AutomationIndexDoesNotExistException e) {
@@ -481,7 +481,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		GUIAutomation[] guiAutomations = guiAutomationsService
 				.getGuiAutomations();
 		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
-				.getConfigurationTable();
+				.getGUIAutomationsTable();
 
 		if (guiAutomations != null) {
 			for (int i = 0; i < guiAutomations.length; i++) {
@@ -509,7 +509,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOn();
 		CacheableJTable table = guiAutomationConfigurationPanel
-				.getConfigurationTable();
+				.getGUIAutomationsTable();
 
 		if (learningComponent.getName() != null) {
 			if (learningComponent.getName().equals(
@@ -536,7 +536,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOff();
 
 		GUIUtils.deHighlightTableRow(
-				guiAutomationConfigurationPanel.getConfigurationTable(), false);
+				guiAutomationConfigurationPanel.getGUIAutomationsTable(), false);
 	}
 
 	public GUIAutomationConfigurationPanel getGuiAutomationPanel() {

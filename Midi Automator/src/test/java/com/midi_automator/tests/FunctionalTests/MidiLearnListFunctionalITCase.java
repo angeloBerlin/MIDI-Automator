@@ -126,7 +126,6 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(2000);
 
 			// open files by learned midi message
-			System.out.println("OPEN");
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel1,
 					controlNo, value);
 			Thread.sleep(2000);

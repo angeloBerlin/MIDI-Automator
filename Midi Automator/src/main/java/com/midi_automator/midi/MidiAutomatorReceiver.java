@@ -4,9 +4,12 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.midi_automator.presenter.Presenter;
-import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.MidiLearnService;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -16,34 +19,24 @@ import com.midi_automator.utils.MidiUtils;
  *         A special midi receiver that normalizes incoming midi data and puts
  *         out debug information.
  */
+@Component
+@Scope("prototype")
 public class MidiAutomatorReceiver implements Receiver {
 
 	protected Logger log = Logger.getLogger(this.getClass().getName());
 
 	protected boolean isExecuting;
 
+	@Autowired
 	protected Presenter presenter;
-	protected MidiService midiService;
+	@Autowired
+	protected MidiLearnService midiLearnService;
 
 	protected long lastTimeStamp = 0;
 	protected final long timeTolerance = 0; // in microseconds
 	protected String name;
 	protected MidiMessage interpretedMessage;
 	protected String interpretedSignature;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param application
-	 *            The main application
-	 * @param midiService
-	 *            The midi service
-	 */
-	public MidiAutomatorReceiver(Presenter presenter,
-			MidiService midiService) {
-		this.presenter = presenter;
-		this.midiService = midiService;
-	}
 
 	@Override
 	public void send(MidiMessage message, long timeStamp) {
@@ -59,7 +52,7 @@ public class MidiAutomatorReceiver implements Receiver {
 			log.debug("MIDI message interpreted: " + interpretedSignature);
 			log.debug("Property isExecuting=" + isExecuting);
 			log.debug("Property isInMidiLearnMode="
-					+ midiService.isMidiLearning());
+					+ midiLearnService.isMidiLearning());
 		}
 	}
 

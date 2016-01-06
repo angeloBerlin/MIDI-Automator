@@ -728,7 +728,7 @@ public class MainFrame extends JFrame {
 	 * @param signature
 	 *            The signature
 	 */
-	public void setMidiSignature(String signature) {
+	public void setGUIAutomationTriggerMidiSignature(String signature) {
 
 		if (preferencesFrame != null && preferencesFrame.isVisible()) {
 			preferencesFrame.setAutomationMidiSignature(signature);
