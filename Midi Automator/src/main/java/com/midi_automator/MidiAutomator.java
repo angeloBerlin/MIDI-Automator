@@ -10,9 +10,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.SystemUtils;
 
-public class Main {
+public class MidiAutomator {
 
-	static Logger log = Logger.getLogger(Main.class.getName());
+	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
 
 	public static String wd = "";
 	public static String os = "";
@@ -55,8 +55,7 @@ public class Main {
 			public void run() {
 				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 						AppConfig.class);
-				Presenter presenter = (Presenter) ctx
-						.getBean(Presenter.class);
+				Presenter presenter = (Presenter) ctx.getBean(Presenter.class);
 
 				presenter.openMainFrame();
 			}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.view.frames.MainFrame;
@@ -270,7 +271,8 @@ public class MidiLearnService {
 				String value = (String) properties.get(key);
 
 				if (value.equals(signature)
-						&& !key.contains(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES)) {
+						&& !key.contains(GUIAutomationKey.GUI_AUTOMATION_MIDI_SIGNATURE
+								.toString())) {
 					found = true;
 				}
 			}

@@ -29,8 +29,8 @@ public class Resources {
 
 	public Resources() {
 
-		OPERATING_SYSTEM = Main.os;
-		WORKING_DIRECTORY = Main.wd;
+		OPERATING_SYSTEM = MidiAutomator.os;
+		WORKING_DIRECTORY = MidiAutomator.wd;
 
 		switch (OPERATING_SYSTEM) {
 		case "MacOS":

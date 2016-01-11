@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.midi_automator.AppConfig;
-import com.midi_automator.Main;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.tests.utils.GUIAutomations;
@@ -55,7 +55,7 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	 */
 	protected void startApplication() {
 
-		Main.test = true;
+		MidiAutomator.test = true;
 		MainFrame mainFrame = GuiActionRunner
 				.execute(new GuiQuery<MainFrame>() {
 					protected MainFrame executeInEDT() {

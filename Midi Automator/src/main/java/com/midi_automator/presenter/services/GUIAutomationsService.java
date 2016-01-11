@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 
@@ -46,108 +47,34 @@ public class GUIAutomationsService {
 	 */
 	public void loadProperties() {
 
-		Set<Entry<Object, Object>> guiAutomationProperties_Images = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES);
-		Set<Entry<Object, Object>> guiAutomationProperties_Types = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES);
-		Set<Entry<Object, Object>> guiAutomationProperties_Triggers = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS);
-		Set<Entry<Object, Object>> guiAutomationProperties_MidiSignatures = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
-		Set<Entry<Object, Object>> guiAutomationProperties_MinDelays = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
-		Set<Entry<Object, Object>> guiAutomationProperties_MinSimilarities = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
-		Set<Entry<Object, Object>> guiAutomationProperties_AreMovable = properties
-				.entrySet(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
-
 		// initiate array with GUI automations
-		guiAutomations = new GUIAutomation[guiAutomationProperties_Images
-				.size()];
+		Set<Entry<Object, Object>> guiAutomationProperties = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString());
+
+		guiAutomations = new GUIAutomation[guiAutomationProperties.size()];
 
 		for (int i = 0; i < guiAutomations.length; i++) {
 			guiAutomations[i] = new GUIAutomation();
 		}
 
-		// initiate image paths
-		for (Entry<Object, Object> property : guiAutomationProperties_Images) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			guiAutomations[index].setImagePath((String) property.getValue());
-		}
+		loadAutomationImageProperties();
+		loadAutomationTypeProperties();
+		loadAutomationTriggerProperties();
+		loadAutomationMinDelayProperties();
+		loadAutomationTimeoutProperties();
+		loadAutomationMidiSignatureProperties();
+		loadAutomationMinSimilarityProperties();
+		loadAutomationIsMovableProperites();
 
-		// initiate types
-		for (Entry<Object, Object> property : guiAutomationProperties_Types) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			guiAutomations[index].setType((String) property.getValue());
-		}
+		stopGUIAutomations();
+		startGuiAutomations();
+	}
 
-		// initiate triggers
-		for (Entry<Object, Object> property : guiAutomationProperties_Triggers) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			String trigger = (String) property.getValue();
-			guiAutomations[index].setTrigger(trigger);
+	/**
+	 * Starts all GUI automations
+	 */
+	private void startGuiAutomations() {
 
-			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-				midiService
-						.loadMidiDeviceByFunctionKey(
-								MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
-										+ "_" + index, trigger.replace(
-										GUIAutomation.CLICKTRIGGER_MIDI, ""));
-			}
-		}
-
-		// MIDI IN Automation Triggers
-		for (int i = 0; i < guiAutomations.length; i++) {
-			midiService
-					.loadMidiDeviceProperty(MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
-							+ "_" + i);
-		}
-
-		// initiate min delays
-		for (Entry<Object, Object> property : guiAutomationProperties_MinDelays) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			long minDelay = Long.valueOf((String) property.getValue());
-			guiAutomations[index].setMinDelay(minDelay);
-		}
-
-		// initiate midi signatures
-		for (Entry<Object, Object> property : guiAutomationProperties_MidiSignatures) {
-
-			String key = (String) property.getKey();
-			int index = MidiAutomatorProperties.getIndexOfPropertyKey(key);
-
-			String value = (String) property.getValue();
-
-			if (value.equals(MidiAutomatorProperties.VALUE_NULL)) {
-				value = null;
-			}
-
-			guiAutomations[index].setMidiSignature(value);
-		}
-
-		// initiate min similarities
-		for (Entry<Object, Object> property : guiAutomationProperties_MinSimilarities) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			float minSimilarity = Float.valueOf((String) property.getValue());
-			guiAutomations[index].setMinSimilarity(minSimilarity);
-		}
-
-		// initiate is movable
-		for (Entry<Object, Object> property : guiAutomationProperties_AreMovable) {
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			boolean isMovable = Boolean.valueOf((String) property.getValue());
-			guiAutomations[index].setMovable(isMovable);
-		}
-
-		terminateAllGUIAutomators();
-
-		// generate GUI automators
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
 			@Override
@@ -167,9 +94,168 @@ public class GUIAutomationsService {
 	}
 
 	/**
-	 * Terminates all GUI automators
+	 * Loads all midi signatures.
 	 */
-	public void terminateAllGUIAutomators() {
+	private void loadAutomationMidiSignatureProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_MIDI_SIGNATURE
+						.toString());
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			String value = (String) property.getValue();
+
+			if (value.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				value = null;
+			}
+
+			guiAutomations[index].setMidiSignature(value);
+		}
+	}
+
+	/**
+	 * Loads all movable options.
+	 */
+	private void loadAutomationIsMovableProperites() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_IS_MOVABLE.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			boolean isMovable = Boolean.valueOf((String) property.getValue());
+			guiAutomations[index].setMovable(isMovable);
+
+		}
+	}
+
+	/**
+	 * Loads all minimum similarities.
+	 */
+	private void loadAutomationMinSimilarityProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
+						.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			float minSimilarity = Float.valueOf((String) property.getValue());
+			guiAutomations[index].setMinSimilarity(minSimilarity);
+
+		}
+	}
+
+	/**
+	 * Loads all time outs.
+	 */
+	private void loadAutomationTimeoutProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_TIMEOUT.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			long timeout = Long.valueOf((String) property.getValue());
+			guiAutomations[index].setTimeout(timeout);
+
+		}
+	}
+
+	/**
+	 * Loads all minimum delays.
+	 */
+	private void loadAutomationMinDelayProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_MIN_DELAY.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			long minDelay = Long.valueOf((String) property.getValue());
+			guiAutomations[index].setMinDelay(minDelay);
+
+		}
+	}
+
+	/**
+	 * Loads all triggers.
+	 */
+	private void loadAutomationTriggerProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_TRIGGER.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			String trigger = (String) property.getValue();
+			guiAutomations[index].setTrigger(trigger);
+
+			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+
+				String midiDeviceKey = MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
+						+ "_" + index;
+
+				String midiDeviceName = trigger.replace(
+						GUIAutomation.CLICKTRIGGER_MIDI, "");
+
+				midiService.loadMidiDeviceByFunctionKey(midiDeviceKey,
+						midiDeviceName);
+			}
+
+		}
+	}
+
+	/**
+	 * Loads all types.
+	 */
+	private void loadAutomationTypeProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_TYPE.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			guiAutomations[index].setType((String) property.getValue());
+
+		}
+	}
+
+	/**
+	 * Loads all images.
+	 */
+	private void loadAutomationImageProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			guiAutomations[index].setImagePath((String) property.getValue());
+
+		}
+	}
+
+	/**
+	 * Terminates all GUI automations
+	 */
+	public void stopGUIAutomations() {
 
 		for (int i = 0; i < guiAutomators.size(); i++) {
 			GUIAutomator guiAutomator = guiAutomators.get(i);
@@ -202,71 +288,75 @@ public class GUIAutomationsService {
 	 * Sets all GUI automations.
 	 * 
 	 * @param guiAutomations
+	 *            The GUIAutomations to store
 	 */
-	public void setGUIAutomations(GUIAutomation[] guiAutomations) {
+	public void saveGUIAutomations(GUIAutomation[] guiAutomations) {
 
 		removeGUIAutomations();
 		this.guiAutomations = guiAutomations;
 
-		for (int i = 0; i < guiAutomations.length; i++) {
+		for (int index = 0; index < guiAutomations.length; index++) {
 
 			// click image path
-			String imagePath = guiAutomations[i].getImagePath();
-
-			if (imagePath == null) {
-				imagePath = MidiAutomatorProperties.VALUE_NULL;
-			}
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					imagePath);
+			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString(),
+					index, guiAutomations[index].getImagePath());
 
 			// click type
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					guiAutomations[i].getType());
+			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_TYPE.toString(),
+					index, guiAutomations[index].getType());
 
 			// click trigger
-			String trigger = guiAutomations[i].getTrigger();
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					trigger);
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_TRIGGER.toString(), index,
+					guiAutomations[index].getTrigger());
 
 			// min delay
-			String minDelay = String.valueOf(guiAutomations[i].getMinDelay());
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					minDelay);
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_MIN_DELAY.toString(),
+					index, guiAutomations[index].getMinDelay());
+
+			// timeout
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_TIMEOUT.toString(), index,
+					guiAutomations[index].getTimeout());
 
 			// midi signature
-			String midiSignature = guiAutomations[i].getMidiSignature();
-
-			if (midiSignature == null || midiSignature.equals("")) {
-				midiSignature = MidiAutomatorProperties.VALUE_NULL;
-			}
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					midiSignature);
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_MIDI_SIGNATURE.toString(),
+					index, guiAutomations[index].getMidiSignature());
 
 			// min similarity
-			String minSimilarity = String.valueOf(guiAutomations[i]
-					.getMinSimilarity());
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					minSimilarity);
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY.toString(),
+					index, guiAutomations[index].getMinSimilarity());
 
 			// movable
-			String isMovable = Boolean.toString(guiAutomations[i].isMovable());
-			properties.setProperty(
-					MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES
-							+ MidiAutomatorProperties.INDEX_SEPARATOR + i,
-					isMovable);
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_IS_MOVABLE.toString(),
+					index, guiAutomations[index].isMovable());
 		}
+	}
+
+	/**
+	 * Saves an automation property to the the properties file.
+	 * 
+	 * @param key
+	 *            The key of the property
+	 * @param index
+	 *            The index of the automation
+	 * @param value
+	 *            The value of the property
+	 */
+	private void saveToProperties(String key, int index, Object value) {
+
+		String strValue = String.valueOf(value);
+
+		if (strValue.equals("null") || strValue.equals("")) {
+			strValue = MidiAutomatorProperties.VALUE_NULL;
+		}
+
+		properties.setProperty(key + MidiAutomatorProperties.INDEX_SEPARATOR
+				+ index, strValue);
 		presenter.storePropertiesFile();
 	}
 
@@ -274,21 +364,14 @@ public class GUIAutomationsService {
 	 * Removes all GUI automations.
 	 */
 	public void removeGUIAutomations() {
+
 		guiAutomations = null;
 
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_IMAGES);
-		properties.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TYPES);
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_TRIGGERS);
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIDI_SIGNATURES);
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_DELAYS);
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MIN_SIMILARITIES);
-		properties
-				.removeKeys(MidiAutomatorProperties.KEY_GUI_AUTOMATION_MOVABLES);
+		for (GUIAutomationKey key : GUIAutomationKey.values()) {
+			properties.removeKeys(key.toString());
+		}
+
+		presenter.storePropertiesFile();
 	}
 
 	/**
@@ -304,7 +387,7 @@ public class GUIAutomationsService {
 	 * De-/Activates the GUI automation.
 	 * 
 	 * @param active
-	 *            <TRUE> activete GUI automation, <FALSE> deactivate GUI
+	 *            <TRUE> activate GUI automation, <FALSE> deactivate GUI
 	 *            automation
 	 */
 	public void setGUIAutomationsToActive(boolean active) {

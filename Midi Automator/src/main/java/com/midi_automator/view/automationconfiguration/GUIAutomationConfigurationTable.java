@@ -52,28 +52,34 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final int TABLEWIDTH = 950;
+	private final int COLWIDTH_IMAGE = 100;
+	private final int COLWIDTH_TYPE = 110;
+	private final int COLWIDTH_TRIGGER = 220;
+	private final int COLWIDTH_MIN_DELAY = 80;
+	private final int COLWIDTH_TIMEOUT = 80;
+	private final int COLWIDTH_MIDI_MESSAGE = 300;
+	private final int COLWIDTH_MIN_SIMILARITY = 65;
+	private final int COLWIDTH_MOVABLE = 60;
+	private final int COLWIDTH_SCREENSHOT_SEARCH = 120;
+	private final int MARGIN_SCREENSHOT = 4;
 	private final int TABLEHEIGHT = 140;
 	private final int ROWHEIGHT = 40;
-	private final int COLWIDTH_SCREENSHOT = 100;
-	private final int COLWIDTH_MIN_DELAY = 40;
-	private final int COLWIDTH_MIDI_MESSAGE = 250;
-	private final int COLWIDTH_MIN_SIMILARITY = 30;
-	private final int COLWIDTH_MOVABLE = 30;
-	private final int COLWIDTH_SCREENSHOT_SEARCH = 90;
-	private final int MARGIN_SCREENSHOT = 4;
+	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
+			+ COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY + COLWIDTH_TIMEOUT
+			+ COLWIDTH_MIDI_MESSAGE + COLWIDTH_MIN_SIMILARITY
+			+ COLWIDTH_MOVABLE + COLWIDTH_SCREENSHOT_SEARCH;
 
 	private final String LABEL_SEARCHBUTTON = "Screenshot...";
 
-	private final String COLNAME_IMAGE = "Screenshot";
-	private final String COLNAME_TYPE = "Type";
-	private final String COLNAME_TRIGGER = "Trigger";
-	private final String COLNAME_MIN_DELAY = "Delay (ms)";
-	private final String COLNAME_MIDI_SIGNATURE = "Midi Message";
-	private final String COLNAME_MIN_SIMILARITY = "Similarity";
-	private final String COLNAME_MOVABLE = "Movable";
-	private final String COLNAME_SEARCH_BUTTON = "";
-	private Vector<String> columnNames;
+	public static final String COLNAME_IMAGE = "Screenshot";
+	public static final String COLNAME_TYPE = "Type";
+	public static final String COLNAME_TRIGGER = "Trigger";
+	public static final String COLNAME_MIN_DELAY = "Delay (ms)";
+	public static final String COLNAME_TIMEOUT = "Timeout (ms)";
+	public static final String COLNAME_MIDI_SIGNATURE = "Midi Message";
+	public static final String COLNAME_MIN_SIMILARITY = "Similarity";
+	public static final String COLNAME_MOVABLE = "Movable";
+	public static final String COLNAME_SEARCH_BUTTON = "";
 
 	private final String DEFAULT_TYPE = GUIAutomation.CLICKTYPE_LEFT;
 	private final String DEFAULT_TRIGGER = GUIAutomation.CLICKTRIGGER_ALWAYS;
@@ -86,7 +92,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	public static final String NAME = "GUI automation table";
 
-	private Vector<Vector<Object>> data;
+	private DefaultTableModel tableModel = new ConfigurationTableModel();
+	private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+	private Vector<String> columnNames = new Vector<String>();
 
 	@Autowired
 	@Qualifier("midiLearnPopupMenu")
@@ -99,52 +107,71 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private MidiService midiDevicesService;
 
 	/**
-	 * Initializes the table
+	 * Initializes the automation table
 	 */
 	public void init() {
 
 		setName(NAME);
 		getTableHeader().setReorderingAllowed(false);
-
-		data = new Vector<Vector<Object>>();
-
-		columnNames = new Vector<String>();
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_IMAGE,
-				COLNAME_IMAGE);
-		columnNames
-				.add(ConfigurationTableModel.COLUMN_INDEX_TYPE, COLNAME_TYPE);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_TRIGGER,
-				COLNAME_TRIGGER);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY,
-				COLNAME_MIN_DELAY);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE,
-				COLNAME_MIDI_SIGNATURE);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY,
-				COLNAME_MIN_SIMILARITY);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_MOVABLE,
-				COLNAME_MOVABLE);
-		columnNames.add(ConfigurationTableModel.COLUMN_INDEX_SEARCH_BUTTON,
-				COLNAME_SEARCH_BUTTON);
-
-		ConfigurationTableModel tableModel = new ConfigurationTableModel();
-		tableModel.setDataVector(data, columnNames);
-		setModel(tableModel);
-
+		getTableHeader().setResizingAllowed(false);
 		setPreferredScrollableViewportSize(new Dimension(TABLEWIDTH,
 				TABLEHEIGHT));
-
 		setRowHeight(ROWHEIGHT);
 
 		setShowGrid(true);
 		setGridColor(Color.LIGHT_GRAY);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		// screenshot
-		getColumn(COLNAME_IMAGE).setPreferredWidth(COLWIDTH_SCREENSHOT);
+		columnNames.add(COLNAME_IMAGE);
+		columnNames.add(COLNAME_TYPE);
+		columnNames.add(COLNAME_TRIGGER);
+		columnNames.add(COLNAME_MIN_DELAY);
+		columnNames.add(COLNAME_TIMEOUT);
+		columnNames.add(COLNAME_MIDI_SIGNATURE);
+		columnNames.add(COLNAME_MIN_SIMILARITY);
+		columnNames.add(COLNAME_MOVABLE);
+		columnNames.add(COLNAME_SEARCH_BUTTON);
 
-		// generate click type ComboBox
-		String[] clickTypes = { GUIAutomation.CLICKTYPE_LEFT,
-				GUIAutomation.CLICKTYPE_RIGHT, GUIAutomation.CLICKTYPE_DOUBLE };
+		tableModel.setDataVector(data, columnNames);
+		setModel(tableModel);
+
+		createImageColumn();
+		createTypeColumn();
+		createTriggerColumn();
+		createMinDelayColumn();
+		createTimeoutColumn();
+		createMidiMessageColumn();
+		createMinSimilarityColumn();
+		createMovableColumn();
+		createImageBrowseColumn();
+
+		// popup Menu
+		addMouseListener(new PopupListener());
+		popupMenu.init();
+		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
+
+		grabFocus();
+	}
+
+	/**
+	 * Creates the image column.
+	 */
+	private void createImageColumn() {
+		getColumn(COLNAME_IMAGE).setMinWidth(COLWIDTH_IMAGE);
+	}
+
+	/**
+	 * Creates the click type column with a combo box
+	 */
+	private void createTypeColumn() {
+
+		getColumn(COLNAME_TYPE).setMinWidth(COLWIDTH_TYPE);
+
+		// set values
+		String[] clickTypes = { GUIAutomation.CLICKTYPE_LEFT, //
+				GUIAutomation.CLICKTYPE_RIGHT, //
+				GUIAutomation.CLICKTYPE_DOUBLE };
+
 		TableCellRenderer clickTypeComboBoxRenderer = new JTableComboBoxRenderer(
 				clickTypes);
 		TableCellEditor clickTypeComboBoxEditor = new JTableComboBoxEditor(
@@ -152,13 +179,22 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		getColumn(COLNAME_TYPE).setCellRenderer(clickTypeComboBoxRenderer);
 		getColumn(COLNAME_TYPE).setCellEditor(clickTypeComboBoxEditor);
+	}
 
-		// click trigger
+	/**
+	 * Creates the click trigger column with a combo box.
+	 */
+	private void createTriggerColumn() {
+
+		getColumn(COLNAME_TRIGGER).setMinWidth(COLWIDTH_TRIGGER);
+
+		// set values
 		List<String> triggerTypes = new ArrayList<String>();
 		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ALWAYS);
 		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE);
 		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE);
 
+		// add midi IN devices as values
 		for (String deviceName : MidiUtils.getMidiDeviceSignatures("IN")) {
 			triggerTypes.add(GUIAutomation.CLICKTRIGGER_MIDI + deviceName);
 		}
@@ -170,11 +206,19 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		triggerComboBox.addActionListener(new TriggerComboBoxListener());
 		JTableComboBoxEditor triggerComboBoxEditor = new JTableComboBoxEditor(
 				triggerComboBox);
+
 		getColumn(COLNAME_TRIGGER).setCellRenderer(triggerComboBoxRenderer);
 		getColumn(COLNAME_TRIGGER).setCellEditor(triggerComboBoxEditor);
+	}
 
-		// min delay field
-		getColumn(COLNAME_MIN_DELAY).setPreferredWidth(COLWIDTH_MIN_DELAY);
+	/**
+	 * Creates the minimun delay columns with a spinner.
+	 */
+	private void createMinDelayColumn() {
+
+		getColumn(COLNAME_MIN_DELAY).setMinWidth(COLWIDTH_MIN_DELAY);
+		getColumn(COLNAME_MIN_DELAY).setMaxWidth(COLWIDTH_MIN_DELAY);
+
 		SpinnerModel minDelaySpinnerModel = new SpinnerNumberModel(
 				GUIAutomation.DEFAULT_MIN_DELAY,
 				GUIAutomation.MIN_DELAY_MIN_VALUE,
@@ -182,16 +226,40 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		JTableSpinnerEditor minDelayEditor = new JTableSpinnerEditor(
 				minDelaySpinnerModel);
 		getColumn(COLNAME_MIN_DELAY).setCellEditor(minDelayEditor);
+	}
 
-		// midi message
-		getColumn(COLNAME_MIDI_SIGNATURE).setPreferredWidth(
-				COLWIDTH_MIDI_MESSAGE);
+	/**
+	 * Creates the timeout column with a spinner.
+	 */
+	private void createTimeoutColumn() {
+
+		getColumn(COLNAME_TIMEOUT).setMinWidth(COLWIDTH_TIMEOUT);
+
+		SpinnerModel timeoutSpinnerModel = new SpinnerNumberModel(
+				GUIAutomation.DEFAULT_TIMEOUT, GUIAutomation.TIMEOUT_MIN_VALUE,
+				GUIAutomation.TIMEOUT_MAX_VALUE, MIN_DELAY_STEP_SIZE);
+		JTableSpinnerEditor timeoutEditor = new JTableSpinnerEditor(
+				timeoutSpinnerModel);
+		getColumn(COLNAME_TIMEOUT).setCellEditor(timeoutEditor);
+	}
+
+	/**
+	 * Creates the midi message column with a not editable cell.
+	 */
+	private void createMidiMessageColumn() {
+
+		getColumn(COLNAME_MIDI_SIGNATURE).setMinWidth(COLWIDTH_MIDI_MESSAGE);
 		JTableNonEditableRenderer nonEditableRenderer = new JTableNonEditableRenderer();
 		getColumn(COLNAME_MIDI_SIGNATURE).setCellRenderer(nonEditableRenderer);
+	}
 
-		// min similarity field
-		getColumn(COLNAME_MIN_SIMILARITY).setPreferredWidth(
-				COLWIDTH_MIN_SIMILARITY);
+	/**
+	 * Creates the minimum similarity column with a spinner.
+	 */
+	private void createMinSimilarityColumn() {
+
+		getColumn(COLNAME_MIN_SIMILARITY).setMinWidth(COLWIDTH_MIN_SIMILARITY);
+
 		SpinnerModel minSimilaritySpinnerModel = new SpinnerNumberModel(
 				GUIAutomation.DEFAULT_MIN_SIMILARITY,
 				GUIAutomation.MIN_SIMILARITY_MIN_VALUE,
@@ -200,13 +268,24 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		JTableSpinnerEditor minSimilarityEditor = new JTableSpinnerEditor(
 				minSimilaritySpinnerModel);
 		getColumn(COLNAME_MIN_SIMILARITY).setCellEditor(minSimilarityEditor);
+	}
 
-		// movable
-		getColumn(COLNAME_MOVABLE).setPreferredWidth(COLWIDTH_MOVABLE);
+	/**
+	 * Creates the movable column with a check box.
+	 */
+	private void createMovableColumn() {
 
-		// browse button
-		getColumn(COLNAME_SEARCH_BUTTON).setPreferredWidth(
-				COLWIDTH_SCREENSHOT_SEARCH);
+		getColumn(COLNAME_MOVABLE).setMinWidth(COLWIDTH_MOVABLE);
+	}
+
+	/**
+	 * Creates the image browse button.
+	 */
+	private void createImageBrowseColumn() {
+
+		getColumn(COLNAME_SEARCH_BUTTON)
+				.setMinWidth(COLWIDTH_SCREENSHOT_SEARCH);
+
 		JTableButtonRenderer buttonRenderer = new JTableButtonRenderer(
 				LABEL_SEARCHBUTTON);
 		JTableButtonEditor buttonEditor = new JTableButtonEditor(
@@ -214,13 +293,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		buttonEditor.addActionListener(new ImageSearchButtonListener(this));
 		getColumn(COLNAME_SEARCH_BUTTON).setCellRenderer(buttonRenderer);
 		getColumn(COLNAME_SEARCH_BUTTON).setCellEditor(buttonEditor);
-
-		// popup Menu
-		addMouseListener(new PopupListener());
-		popupMenu.init();
-		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
-
-		grabFocus();
 	}
 
 	@Override
@@ -247,8 +319,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		ScaleableImageIcon icon = initScreenshotIcon(path);
 
 		try {
-			model.setValueAt(icon, row,
-					ConfigurationTableModel.COLUMN_INDEX_IMAGE);
+			model.setValueAt(icon, row, getColumn(COLNAME_IMAGE)
+					.getModelIndex());
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new AutomationIndexDoesNotExistException();
 		}
@@ -266,45 +338,56 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param minDelay
 	 *            The minimum delay for the automation, <NULL> for default
 	 *            trigger
+	 * @param timeout
+	 *            The timeout for the automation
 	 * @param midiSignature
 	 *            The midi signature, <NULL> for empty signature
 	 * @param minSimilarity
-	 *            The defualt value for the min similarity
+	 *            The default value for the min similarity
 	 * @param isMovable
 	 *            <TRUE> if image may occur on different places on the screen,
 	 *            <FALSE> is not
 	 */
 	private void addAutomation(String imagePath, String type, String trigger,
-			long minDelay, String midiSignature, float minSimilarity,
-			boolean isMovable) {
+			long minDelay, long timeout, String midiSignature,
+			float minSimilarity, boolean isMovable) {
 
 		// extend table model
-		DefaultTableModel model = (DefaultTableModel) getModel();
 		Vector<Object> rowData = new Vector<Object>();
 
 		// fill table data
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_IMAGE,
+		rowData.add(getColumn(COLNAME_IMAGE).getModelIndex(),
 				initScreenshotIcon(imagePath));
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_TYPE, initType(type));
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_TRIGGER,
+		rowData.add(getColumn(COLNAME_TYPE).getModelIndex(), initType(type));
+		rowData.add(getColumn(COLNAME_TRIGGER).getModelIndex(),
 				initTrigger(trigger));
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY, minDelay);
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE,
+		rowData.add(getColumn(COLNAME_MIN_DELAY).getModelIndex(), minDelay);
+		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), minDelay);
+		rowData.add(getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex(),
 				initMidiMessage(midiSignature));
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY,
+		rowData.add(getColumn(COLNAME_MIN_SIMILARITY).getModelIndex(),
 				minSimilarity);
-		rowData.add(ConfigurationTableModel.COLUMN_INDEX_MOVABLE, isMovable);
+		rowData.add(getColumn(COLNAME_MOVABLE).getModelIndex(), isMovable);
 
-		model.addRow(rowData);
+		setAutomationIndexToTriggerComboBox();
+
+		tableModel.addRow(rowData);
+
+	}
+
+	/**
+	 * Sets the automation index to the trigger combo box name.
+	 */
+	private void setAutomationIndexToTriggerComboBox() {
 
 		JTableComboBoxEditor cellEditor = (JTableComboBoxEditor) getCellEditor(
-				model.getRowCount() - 1,
-				ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
+				tableModel.getRowCount() - 1, getColumn(COLNAME_TRIGGER)
+						.getModelIndex());
 		@SuppressWarnings("unchecked")
 		JComboBox<String> triggerEditorComboBox = (JComboBox<String>) cellEditor
 				.getComponent();
 		triggerEditorComboBox.setName(NAME_COMBOBOX_TRIGGER_EDITOR + "_"
-				+ (model.getRowCount() - 1));
+				+ (tableModel.getRowCount() - 1));
 	}
 
 	/**
@@ -319,6 +402,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The trigger for the automation, <NULL> for default trigger
 	 * @param minDelay
 	 *            The minimum delay for the automation
+	 * @param timeout
+	 *            The Timeout for the automation
 	 * @param midiSignature
 	 *            The midi signature, <NULL> for empty signature
 	 * @param minSimilarity
@@ -326,34 +411,34 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param isMovable
 	 *            <TRUE> if image may occur on different places on the screen,
 	 *            <FALSE> is not
-	 * @param index
-	 *            The index of the automation, if < 0 a new row will be added
+	 * @param row
+	 *            The row of the automation, if < 0 a new row will be added
 	 */
 	public void setAutomation(String imagePath, String type, String trigger,
-			long minDelay, String midiSignature, float minSimilarity,
-			boolean isMovable, int index) {
+			long minDelay, long timeout, String midiSignature,
+			float minSimilarity, boolean isMovable, int row) {
 
 		TableModel model = getModel();
 
-		if (model.getRowCount() <= index || index < 0) {
-			addAutomation(imagePath, type, trigger, minDelay, midiSignature,
-					minSimilarity, isMovable);
+		if (model.getRowCount() <= row || row < 0) {
+			addAutomation(imagePath, type, trigger, minDelay, timeout,
+					midiSignature, minSimilarity, isMovable);
 		} else {
 
-			model.setValueAt(initScreenshotIcon(imagePath), index,
-					ConfigurationTableModel.COLUMN_INDEX_IMAGE);
-			model.setValueAt(initType(type), index,
-					ConfigurationTableModel.COLUMN_INDEX_TYPE);
-			model.setValueAt(initTrigger(trigger), index,
-					ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
-			model.setValueAt(minDelay, index,
-					ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY);
-			model.setValueAt(initMidiMessage(midiSignature), index,
-					ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE);
-			model.setValueAt(minSimilarity, index,
-					ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY);
-			model.setValueAt(isMovable, index,
-					ConfigurationTableModel.COLUMN_INDEX_MOVABLE);
+			model.setValueAt(initScreenshotIcon(imagePath), row,
+					getColumn(COLNAME_IMAGE).getModelIndex());
+			model.setValueAt(initType(type), row, getColumn(COLNAME_TYPE)
+					.getModelIndex());
+			model.setValueAt(initTrigger(trigger), row,
+					getColumn(COLNAME_TRIGGER).getModelIndex());
+			model.setValueAt(minDelay, row, getColumn(COLNAME_MIN_DELAY)
+					.getModelIndex());
+			model.setValueAt(initMidiMessage(midiSignature), row,
+					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
+			model.setValueAt(minSimilarity, row,
+					getColumn(COLNAME_MIN_SIMILARITY).getModelIndex());
+			model.setValueAt(isMovable, row, getColumn(COLNAME_MOVABLE)
+					.getModelIndex());
 		}
 	}
 
@@ -396,8 +481,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		try {
 			// set midi signature
-			model.setValueAt(signature, row,
-					ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE);
+			model.setValueAt(signature, row, getColumn(COLNAME_MIDI_SIGNATURE)
+					.getModelIndex());
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new AutomationIndexDoesNotExistException();
 		}
@@ -416,7 +501,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		if (path == null) {
 			return new ScaleableImageIcon();
 		} else {
-			int width = COLWIDTH_SCREENSHOT - (MARGIN_SCREENSHOT * 2);
+			int width = COLWIDTH_IMAGE - (MARGIN_SCREENSHOT * 2);
 			int height = ROWHEIGHT - (MARGIN_SCREENSHOT * 2);
 			return new ScaleableImageIcon(path, width, height);
 		}
@@ -558,7 +643,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 				// de-/activate midi learn item
 				String midiInAutomationDeviceName = (String) table.getValueAt(
-						row, ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
+						row, getColumn(COLNAME_TRIGGER).getModelIndex());
 
 				popupMenu.getMidiLearnMenuItem().setEnabled(false);
 
@@ -572,8 +657,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 				// de-/activate midi unlearn item
 				String midiSignature = (String) table.getModel().getValueAt(
-						row,
-						ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE);
+						row, getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
 
 				popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
 
@@ -595,16 +679,17 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	class TriggerComboBoxListener implements ActionListener {
 
+		private JComboBox<?> comboBox;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			@SuppressWarnings("unchecked")
-			JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
-			String automationIndex = comboBox.getName().replace(
-					NAME_COMBOBOX_TRIGGER_EDITOR + "_", "");
+			if (e.getSource() instanceof JComboBox) {
+				comboBox = (JComboBox<?>) e.getSource();
+			}
 
 			String functionKey = MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
-					+ "_" + automationIndex;
+					+ "_" + getSelectedAutomationIndex();
 			String trigger = (String) comboBox.getSelectedItem();
 
 			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
@@ -614,6 +699,17 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 				midiDevicesService.loadMidiDeviceByFunctionKey(functionKey,
 						MidiAutomatorProperties.VALUE_NULL);
 			}
+		}
+
+		/**
+		 * Gets the automation index from the combo box name.
+		 * 
+		 * @return The automation trigger
+		 */
+		private int getSelectedAutomationIndex() {
+			String automationIndex = comboBox.getName().replace(
+					NAME_COMBOBOX_TRIGGER_EDITOR + "_", "");
+			return Integer.parseInt(automationIndex);
 		}
 	}
 }

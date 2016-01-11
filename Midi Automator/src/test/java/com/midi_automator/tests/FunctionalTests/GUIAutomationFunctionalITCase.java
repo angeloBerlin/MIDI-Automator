@@ -1,28 +1,6 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
-import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAllAutomations;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.robot;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
-import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
-import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import java.awt.Point;
 
@@ -41,7 +19,7 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MainFramePopupMenu;
-import com.midi_automator.view.automationconfiguration.ConfigurationTableModel;
+import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
 public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
@@ -179,11 +157,6 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
 
-			// check if add dialog was canceled again
-			addFrame = openAddDialog();
-			Thread.sleep(5000);
-			addFrame.requireNotVisible();
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -286,11 +259,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// check for empty midi message
 			JTableFixture table = getGUIAutomationTable(preferencesFrame);
-			table.requireCellValue(
-					TableCell
-							.row(0)
-							.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE),
-					"");
+			int column = table
+					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
+			table.requireCellValue(TableCell.row(0).column(column), "");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -317,10 +289,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// check for learned midi message
 			JTableFixture table = getGUIAutomationTable(preferencesFrame);
-			table.requireCellValue(
-					TableCell
-							.row(0)
-							.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE),
+			int column = table
+					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
+			table.requireCellValue(TableCell.row(0).column(column),
 					"channel 1: CONTROL CHANGE 109 value: 127");
 			saveDialog(preferencesFrame);
 
@@ -368,6 +340,39 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// check if add dialog was canceled after delay
 			Thread.sleep(5000);
 			addFrame.requireNotVisible();
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void addDialogShallNotBeCanceledAfterTimeout() {
+
+		try {
+
+			MockUpUtils.setMockupPropertiesFile("mockups/"
+					+ propertiesAlwaysCancelAutomation);
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			startApplication();
+
+			// open preferences
+			FrameFixture preferencesFrame = openPreferences();
+
+			// set delay
+			setAutomationTimeout("10000", 0, preferencesFrame);
+			saveDialog(preferencesFrame);
+
+			// check if add dialog was canceled before time out
+			FrameFixture addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+			// check if add dialog was not canceled after time out
+			Thread.sleep(6000);
+			addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -445,13 +450,13 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		// check for delay = 2
 		JTableFixture table = getGUIAutomationTable(preferencesFrame);
-		table.requireCellValue(automationsDelayCell(0), "2");
+		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "2");
 
 		// spin down three times
 		spinDownAutomationDelaySpinner(3, 0, preferencesFrame);
 
 		// check for delay = 0
-		table.requireCellValue(automationsDelayCell(0), "0");
+		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
 	}
 
 	@Test
@@ -476,7 +481,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		// check for delay = 0
 		JTableFixture table = getGUIAutomationTable(preferencesFrame);
 		table.click();
-		table.requireCellValue(automationsDelayCell(0), "0");
+		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
 
 		// set delay nonsense
 		try {
@@ -489,10 +494,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		// check for delay = 0
 		table = getGUIAutomationTable(preferencesFrame);
 		table.click();
-		table.requireCellValue(automationsDelayCell(0), "0");
-
-		deleteAllAutomations(preferencesFrame);
-		saveDialog(preferencesFrame);
+		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
 	}
 
 	@Test

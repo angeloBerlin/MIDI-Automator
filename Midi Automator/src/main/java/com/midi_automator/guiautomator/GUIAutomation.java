@@ -1,5 +1,6 @@
 package com.midi_automator.guiautomator;
 
+import org.apache.log4j.Logger;
 import org.sikuli.script.Region;
 
 import com.midi_automator.presenter.IDeActivateable;
@@ -13,7 +14,7 @@ import com.midi_automator.utils.SystemUtils;
  */
 public class GUIAutomation implements IDeActivateable {
 
-	private final double DEFAULT_MIN_TIMEOUT = 0.5; // in seconds
+	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
 
 	public static final String[] SCREENSHOT_FILE_EXTENSIONS = { "png", "PNG" };
 	public static final String SCREENSHOT_FILE_TYPE = "Portable Network Graphics (png)";
@@ -30,6 +31,10 @@ public class GUIAutomation implements IDeActivateable {
 	public static final Long MIN_DELAY_MIN_VALUE = 0L;
 	public static final Long MIN_DELAY_MAX_VALUE = Long.MAX_VALUE;
 
+	public static final Long DEFAULT_TIMEOUT = 0L;
+	public static final Long TIMEOUT_MIN_VALUE = 0L;
+	public static final Long TIMEOUT_MAX_VALUE = Long.MAX_VALUE;
+
 	public static final Float DEFAULT_MIN_SIMILARITY = 0.98f;
 	public static final Float MIN_SIMILARITY_MIN_VALUE = 0.5f;
 	public static final Float MIN_SIMILARITY_MAX_VALUE = 0.99f;
@@ -41,18 +46,17 @@ public class GUIAutomation implements IDeActivateable {
 	private String trigger;
 	private String midiSignature;
 	private boolean active;
-	private double minTimeOut;
 	private long minDelay = DEFAULT_MIN_DELAY;
 	private float minSimilarity = DEFAULT_MIN_SIMILARITY;
 	private boolean movable = DEFAULT_IS_MOVABLE;
-	private Double timeout;
+	private long timeout;
+	private long initTime;
 	private Region lastFoundRegion;
 
 	/**
 	 * Standard constructor
 	 */
 	public GUIAutomation() {
-		minTimeOut = DEFAULT_MIN_TIMEOUT;
 		minDelay = DEFAULT_MIN_DELAY;
 	}
 
@@ -67,8 +71,8 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The automation trigger
 	 * @param delay
 	 *            The minimum delay before the automation runs
-	 * @param delay
-	 *            The delay for that automation in seconds
+	 * @param timeout
+	 *            The timeout for the screenshot search
 	 * @param midiSignature
 	 *            The midi signature. Used if trigger is set to a midi port
 	 * @param minSimilarity
@@ -77,13 +81,14 @@ public class GUIAutomation implements IDeActivateable {
 	 *            Flag if the image is movable
 	 */
 	public GUIAutomation(String imagePath, String type, String trigger,
-			long delay, String midiSignature, float minSimilarity,
-			boolean isMovable) {
+			long delay, long timeout, String midiSignature,
+			float minSimilarity, boolean isMovable) {
 		new GUIAutomation();
 		setImagePath(imagePath);
 		setType(type);
 		setTrigger(trigger);
 		setMinDelay(delay);
+		setTimeout(timeout);
 		setMidiSignature(midiSignature);
 		setMinSimilarity(minSimilarity);
 		setMovable(isMovable);
@@ -147,9 +152,9 @@ public class GUIAutomation implements IDeActivateable {
 
 		if (trigger.equals(CLICKTRIGGER_ALWAYS)
 				|| trigger.equals(CLICKTRIGGER_ONCE)) {
-			active = true;
+			setActive(true);
 		} else {
-			active = false;
+			setActive(false);
 		}
 	}
 
@@ -173,26 +178,21 @@ public class GUIAutomation implements IDeActivateable {
 	}
 
 	/**
-	 * Gets the time-out for the search.
+	 * Gets the time out for the search.
 	 * 
-	 * @return The search time-out. The minimum time-out of 1 second is returned
-	 *         if no time-out was set.
+	 * @return The search time out
 	 */
-	public Double getTimeout() {
-		if (timeout == null) {
-			return minTimeOut;
-		} else {
-			return timeout;
-		}
+	public long getTimeout() {
+		return timeout;
 	}
 
 	/**
-	 * Sets the time-out for the search in seconds.
+	 * Sets the time out for the search in seconds.
 	 * 
 	 * @param timeout
 	 *            The search time-out
 	 */
-	public void setTimeout(Double timeout) {
+	public void setTimeout(long timeout) {
 		this.timeout = timeout;
 	}
 
@@ -215,14 +215,30 @@ public class GUIAutomation implements IDeActivateable {
 		this.minDelay = min_delay;
 	}
 
+	/**
+	 * Is active if active flag is set and timeout is not reached yet.
+	 */
 	@Override
 	public boolean isActive() {
+
+		long usedTime = System.currentTimeMillis() - initTime;
+
+		if (active && (usedTime > timeout) && (initTime != 0) && (timeout != 0)) {
+			log.info("Automation: " + this + " timed out after " + usedTime
+					+ "ms.");
+			setActive(false);
+		}
+
 		return active;
 	}
 
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
+
+		if (active) {
+			initTime = System.currentTimeMillis();
+		}
 	}
 
 	@Override

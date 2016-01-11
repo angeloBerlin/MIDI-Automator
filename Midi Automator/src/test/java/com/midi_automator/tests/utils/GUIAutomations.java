@@ -26,7 +26,6 @@ import org.sikuli.script.FindFailed;
 import com.midi_automator.utils.SystemUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
-import com.midi_automator.view.automationconfiguration.ConfigurationTableModel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.AddFrame;
@@ -173,8 +172,11 @@ public class GUIAutomations {
 			FrameFixture preferencesFrame) {
 
 		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
-				.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE));
+				.column(column));
 		popupMenu.menuItem(MidiLearnPopupMenu.NAME_MENU_ITEM_MIDI_LEARN)
 				.click();
 	}
@@ -191,8 +193,11 @@ public class GUIAutomations {
 			FrameFixture preferencesFrame) {
 
 		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
-				.column(ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE));
+				.column(column));
 		popupMenu.menuItemWithPath(
 				MidiLearnPopupMenu.MENU_ITEM_MIDI_LEARN_CANCEL).click();
 	}
@@ -408,13 +413,36 @@ public class GUIAutomations {
 	 *            The value to choose
 	 * @param row
 	 *            The row of the automation
+	 * @param columnName
+	 *            The name of the column
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void setAutomationsComboBox(String value, int row,
+			String columnName, FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		table.enterValue(
+				TableCell.row(row).column(table.columnIndexFor(columnName)),
+				value);
+	}
+
+	/**
+	 * Sets a mouse automation combo box option
+	 * 
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
 	 * @param preferencesFrame
 	 *            The preferencesFrame
 	 */
 	public static void setAutomationTrigger(String value, int row,
 			FrameFixture preferencesFrame) {
+
 		setAutomationsComboBox(value, row,
-				ConfigurationTableModel.COLUMN_INDEX_TRIGGER, preferencesFrame);
+				GUIAutomationConfigurationTable.COLNAME_TRIGGER,
+				preferencesFrame);
 	}
 
 	/**
@@ -430,7 +458,7 @@ public class GUIAutomations {
 	public static void setAutomationType(String value, int row,
 			FrameFixture preferencesFrame) {
 		setAutomationsComboBox(value, row,
-				ConfigurationTableModel.COLUMN_INDEX_TYPE, preferencesFrame);
+				GUIAutomationConfigurationTable.COLNAME_TYPE, preferencesFrame);
 	}
 
 	/**
@@ -449,7 +477,7 @@ public class GUIAutomations {
 			FrameFixture preferencesFrame) {
 
 		spinUpAutomationsSpinner(times, row,
-				ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY,
+				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
 				preferencesFrame);
 	}
 
@@ -469,7 +497,7 @@ public class GUIAutomations {
 			FrameFixture preferencesFrame) {
 
 		spinDownAutomationsSpinner(times, row,
-				ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY,
+				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
 				preferencesFrame);
 	}
 
@@ -478,15 +506,21 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row of the automation
+	 * @param preferencesFrame
+	 *            The preferences frame
 	 * @return The TableCell
 	 */
-	public static TableCell automationsDelayCell(int row) {
-		return TableCell.row(row).column(
-				ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY);
+	public static TableCell automationsDelayCell(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY);
+		return TableCell.row(row).column(column);
 	}
 
 	/**
-	 * Spins up a spinner
+	 * Spins up an automation spinner
 	 * 
 	 * @param times
 	 *            Amount of times to spin up
@@ -495,7 +529,7 @@ public class GUIAutomations {
 	 * @param column
 	 *            The column of the automation
 	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 *            The preferences frame
 	 */
 	public static void spinUpAutomationsSpinner(int times, int row, int column,
 			FrameFixture preferencesFrame) {
@@ -512,7 +546,27 @@ public class GUIAutomations {
 	}
 
 	/**
-	 * Spins down a spinner
+	 * Spins up an automation spinner
+	 * 
+	 * @param times
+	 *            Amount of times to spin up
+	 * @param row
+	 *            The row of the automation
+	 * @param columnName
+	 *            The name of the column
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void spinUpAutomationsSpinner(int times, int row,
+			String columnName, FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		spinUpAutomationsSpinner(times, row, table.columnIndexFor(columnName),
+				preferencesFrame);
+	}
+
+	/**
+	 * Spins down a automation spinner
 	 * 
 	 * @param times
 	 *            Amount of times to spin down
@@ -538,6 +592,26 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Spins down an automation spinner
+	 * 
+	 * @param times
+	 *            Amount of times to spin up
+	 * @param row
+	 *            The row of the automation
+	 * @param columnName
+	 *            The name of the column
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void spinDownAutomationsSpinner(int times, int row,
+			String columnName, FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		spinDownAutomationsSpinner(times, row,
+				table.columnIndexFor(columnName), preferencesFrame);
+	}
+
+	/**
 	 * Gets a Spinner from the automation table
 	 * 
 	 * @param row
@@ -560,7 +634,7 @@ public class GUIAutomations {
 	}
 
 	/**
-	 * Gets the delay Spinner from the automation table
+	 * Gets the delay spinner from the automation table
 	 * 
 	 * @param row
 	 *            The row of the automation
@@ -571,9 +645,13 @@ public class GUIAutomations {
 	public static JSpinnerFixture getAutomationsDelaySpinner(int row,
 			FrameFixture preferencesFrame) {
 
-		return getAutomationsSpinner(row,
-				ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY,
-				preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+
+		int index = table
+				.columnIndexFor(table
+						.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY));
+
+		return getAutomationsSpinner(row, index, preferencesFrame);
 	}
 
 	/**
@@ -605,8 +683,10 @@ public class GUIAutomations {
 	public static void clickAutomationMovableCheckBox(int row,
 			FrameFixture preferencesFrame) {
 
-		clickAutomationCheckBox(row,
-				ConfigurationTableModel.COLUMN_INDEX_MOVABLE, preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MOVABLE);
+		clickAutomationCheckBox(row, column, preferencesFrame);
 	}
 
 	/**
@@ -647,6 +727,26 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Sets a mouse automation spinner option
+	 * 
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @param columnName
+	 *            The column of the automation
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void setAutomationsSpinner(String value, int row,
+			String columnName, FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		setAutomationsSpinner(value, row, table.columnIndexFor(columnName),
+				preferencesFrame);
+	}
+
+	/**
 	 * Sets a mouse automation minimum similarity
 	 * 
 	 * @param value
@@ -660,8 +760,9 @@ public class GUIAutomations {
 	 */
 	public static void setAutomationMinSimilarity(String value, int row,
 			FrameFixture preferencesFrame) {
+
 		setAutomationsSpinner(value, row,
-				ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY,
+				GUIAutomationConfigurationTable.COLNAME_MIN_SIMILARITY,
 				preferencesFrame);
 	}
 
@@ -679,8 +780,29 @@ public class GUIAutomations {
 	 */
 	public static void setAutomationMinDelay(String value, int row,
 			FrameFixture preferencesFrame) {
+
 		setAutomationsSpinner(value, row,
-				ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY,
+				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
+				preferencesFrame);
+	}
+
+	/**
+	 * Sets a mouse automation timeout
+	 * 
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @param column
+	 *            The column of the automation
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void setAutomationTimeout(String value, int row,
+			FrameFixture preferencesFrame) {
+
+		setAutomationsSpinner(value, row,
+				GUIAutomationConfigurationTable.COLNAME_TIMEOUT,
 				preferencesFrame);
 	}
 

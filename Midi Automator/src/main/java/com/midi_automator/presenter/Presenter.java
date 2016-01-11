@@ -9,7 +9,7 @@ import javax.sound.midi.MidiUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.midi_automator.Main;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.Resources;
 import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -51,7 +51,7 @@ public class Presenter {
 	private InfoMessagesService infoMessagesService;
 
 	public Presenter() {
-		Locale.setDefault(Main.locale);
+		Locale.setDefault(MidiAutomator.locale);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class Presenter {
 	 */
 	public void close() {
 		midiService.unloadAllMidiDevices();
-		guiAutomationsService.terminateAllGUIAutomators();
+		guiAutomationsService.stopGUIAutomations();
 		fileListService.resetCurrentItem();
 	}
 
@@ -112,7 +112,7 @@ public class Presenter {
 	 *         application is not in development mode
 	 */
 	public boolean isInTestMode() {
-		return Main.test;
+		return MidiAutomator.test;
 	}
 
 	/**

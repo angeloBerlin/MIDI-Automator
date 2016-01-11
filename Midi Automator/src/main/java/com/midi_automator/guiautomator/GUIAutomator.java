@@ -22,6 +22,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final boolean CHECK_LAST_SEEN = true;
+	private final double SIKULIX_TIMEOUT = 0.5;
 
 	private final MinSimColoredScreen SCREEN;
 	private volatile boolean running = true;
@@ -51,6 +52,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	@Override
 	public void run() {
+
 		while (running) {
 			try {
 				Thread.sleep(10);
@@ -64,7 +66,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Let's the thread terminate
+	 * Terminate the automator thread
 	 */
 	public void terminate() {
 		running = false;
@@ -94,7 +96,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		// always
 		if (guiAutomation.getTrigger()
 				.equals(GUIAutomation.CLICKTRIGGER_ALWAYS)) {
-			runAutomation(guiAutomation);
+			if (guiAutomation.isActive()) {
+				runAutomation(guiAutomation);
+			}
 		}
 
 		// once
@@ -119,7 +123,6 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		// on midi
 		if (guiAutomation.getTrigger()
 				.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-
 			if (guiAutomation.isActive()) {
 				if (runAutomation(guiAutomation)) {
 					guiAutomation.setActive(false);
@@ -141,7 +144,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Activates all automations that shall be run only once per change.
+	 * Activates all automations that shall be run by midi message.
 	 * 
 	 * @param midiSignature
 	 *            The midi signature that shall invoke the automation
@@ -175,9 +178,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		boolean found = false;
 		long startingTime = 0;
 		Region searchRegion = SCREEN;
+		String imagePath = guiAutomation.getImagePath();
 
-		if (!guiAutomation.getImagePath().equals(
-				MidiAutomatorProperties.VALUE_NULL)) {
+		if (!imagePath.equals(MidiAutomatorProperties.VALUE_NULL)) {
 			try {
 
 				// prepare search parameters
@@ -200,9 +203,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 				// search for image
 				startingTime = System.currentTimeMillis();
-				Match match = searchRegion.wait(SystemUtils
-						.replaceSystemVariables(guiAutomation.getImagePath()),
-						guiAutomation.getTimeout());
+				Match match = searchRegion.wait(
+						SystemUtils.replaceSystemVariables(imagePath),
+						SIKULIX_TIMEOUT);
 				guiAutomation.setLastFoundRegion(match);
 				found = true;
 
@@ -234,7 +237,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 						+ getName()
 						+ "): Found match on screen for \""
 						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Timeout after "
+								.getImagePath()) + "\" (Search timeout after "
 						+ (System.currentTimeMillis() - startingTime) + " ms)");
 
 			} catch (FindFailed e) {
@@ -243,7 +246,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 						+ getName()
 						+ "): Could not find match on screen for \""
 						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Timeout after "
+								.getImagePath()) + "\" (Search timeout after "
 						+ (System.currentTimeMillis() - startingTime) + " ms)");
 			}
 		}

@@ -55,7 +55,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.midi_automator.Main;
+import com.midi_automator.MidiAutomator;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
@@ -171,7 +171,7 @@ public class MainFrame extends JFrame {
 	 */
 	public void init() {
 
-		JFileChooser.setDefaultLocale(Main.locale);
+		JFileChooser.setDefaultLocale(MidiAutomator.locale);
 
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setResizable(true);

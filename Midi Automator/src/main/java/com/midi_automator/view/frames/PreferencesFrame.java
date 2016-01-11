@@ -488,7 +488,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 				table.setAutomation(guiAutomations[i].getImagePath(),
 						guiAutomations[i].getType(),
 						guiAutomations[i].getTrigger(),
-						guiAutomations[i].getMinDelay(),
+						guiAutomations[i].getMinDelay(), 0L,
 						guiAutomations[i].getMidiSignature(),
 						guiAutomations[i].getMinSimilarity(),
 						guiAutomations[i].isMovable(), i);
@@ -581,7 +581,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 							MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 			midiService.setMidiDeviceName(midiOUTSwitchItemDeviceName,
 					MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-			guiAutomationsService.setGUIAutomations(guiAutomations);
+			guiAutomationsService.saveGUIAutomations(guiAutomations);
 
 			new CancelAction().actionPerformed(e);
 			presenter.loadProperties();

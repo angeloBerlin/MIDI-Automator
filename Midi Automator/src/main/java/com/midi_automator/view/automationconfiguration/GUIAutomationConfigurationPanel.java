@@ -121,36 +121,163 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		}
 
 		// build GUI automation objects
-		for (int i = 0; i < numberOfConfigurations; i++) {
+		for (int row = 0; row < numberOfConfigurations; row++) {
 
-			ScaleableImageIcon image = (ScaleableImageIcon) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_IMAGE);
-
-			// check for valid image
-			String imagePath = null;
-			if (image != null) {
-				imagePath = image.getPath();
-			}
-
-			String type = (String) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_TYPE);
-			String trigger = (String) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_TRIGGER);
-			String midiSignature = (String) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_MIDI_SIGNATURE);
-			long delay = (long) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_MIN_DELAY);
-			float minSimilarity = (float) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_MIN_SIMILARITY);
-			boolean isMovable = (boolean) model.getValueAt(i,
-					ConfigurationTableModel.COLUMN_INDEX_MOVABLE);
+			String imagePath = getAutomationImagePath(row);
+			String type = getAutomationType(row);
+			String trigger = getAutomationTrigger(row);
+			long delay = getAutomationMinDelay(row);
+			long timeout = getAutomationTimeout(row);
+			String midiSignature = getAutomationMidiSignature(row);
+			float minSimilarity = getAutomationMinSimilarity(row);
+			boolean isMovable = getAutomationMovable(row);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
-					trigger, delay, midiSignature, minSimilarity, isMovable);
-			guiAutomations[i] = guiAutomation;
+					trigger, delay, timeout, midiSignature, minSimilarity,
+					isMovable);
+			guiAutomations[row] = guiAutomation;
 		}
 
 		return guiAutomations;
+	}
+
+	/**
+	 * Gets the image path for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The path to the image
+	 */
+	private String getAutomationImagePath(int row) {
+
+		String imagePath = null;
+
+		ScaleableImageIcon image = getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_IMAGE, row,
+				ScaleableImageIcon.class);
+
+		if (image != null) {
+			imagePath = image.getPath();
+		}
+		return imagePath;
+	}
+
+	/**
+	 * Gets the type for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation type
+	 */
+	private String getAutomationType(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_TYPE, row, String.class);
+	}
+
+	/**
+	 * Gets the trigger for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation trigger
+	 */
+	private String getAutomationTrigger(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_TRIGGER, row,
+				String.class);
+	}
+
+	/**
+	 * Gets the minimum delay for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation minimum delay
+	 */
+	private long getAutomationMinDelay(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY, row,
+				Long.class);
+	}
+
+	/**
+	 * Gets the timeout for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation timeout
+	 */
+	private long getAutomationTimeout(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_TIMEOUT, row,
+				Long.class);
+	}
+
+	/**
+	 * Gets the midi signature for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation midi signature
+	 */
+	private String getAutomationMidiSignature(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE, row,
+				String.class);
+	}
+
+	/**
+	 * Gets the minimum similarity for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation minimum similarity
+	 */
+	private float getAutomationMinSimilarity(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_MIN_SIMILARITY, row,
+				Float.class);
+	}
+
+	/**
+	 * Gets the movable option for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation movable option
+	 */
+	private boolean getAutomationMovable(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_MOVABLE, row,
+				Boolean.class);
+	}
+
+	/**
+	 * Gets the value from the automations table
+	 * 
+	 * @param columnName
+	 *            The name of the column
+	 * @param row
+	 *            The row
+	 * @param type
+	 *            The type of calue
+	 * @return The value
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> T getAutomationsTableValue(String columnName, int row,
+			Class<T> type) {
+
+		int index = configurationTable.getColumn(columnName).getModelIndex();
+		Object value = configurationTable.getModel().getValueAt(row, index);
+
+		return (T) value;
 	}
 
 	/**
@@ -183,7 +310,8 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			configurationTable.setAutomation(null, null, null,
-					GUIAutomation.DEFAULT_MIN_DELAY, null,
+					GUIAutomation.DEFAULT_MIN_DELAY,
+					GUIAutomation.DEFAULT_TIMEOUT, null,
 					GUIAutomation.DEFAULT_MIN_SIMILARITY,
 					GUIAutomation.DEFAULT_IS_MOVABLE, -1);
 		}

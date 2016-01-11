@@ -37,7 +37,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.base.package>com.midi_automator</project.base.package>
-		<project.main.class>${project.base.package}.Main</project.main.class>
+		<project.main.class>${project.base.package}.MidiAutomator</project.main.class>
 		<project.dist.dir>dist</project.dist.dir>
 		<project.filelist.file>file_list.mido</project.filelist.file>
 		<project.properties.file>midiautomator.properties</project.properties.file>
