@@ -182,6 +182,27 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Un-learns a midi message for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void midiUnLearnAutomation(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(MidiLearnPopupMenu.NAME_MENU_ITEM_MIDI_UNLEARN)
+				.click();
+	}
+
+	/**
 	 * Learns a midi message for an automation for the specified row
 	 * 
 	 * @param row

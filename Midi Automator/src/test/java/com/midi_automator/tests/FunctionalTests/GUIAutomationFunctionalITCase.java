@@ -30,6 +30,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 	private String propertiesMidiHelloWorldAutomation;
 	private String propertiesOnceMainFrame;
 	private String propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation;
+	private String propertiesAutomationMidiLearned;
 
 	private int messageType = ShortMessage.CONTROL_CHANGE;
 	private int channel = 1;
@@ -46,6 +47,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Mac.properties";
 			propertiesMidiFullMainFrameAutomation = "automation_midi_automator_midi_left_Mac.properties";
 			propertiesOnceMainFrame = "automation_main_frame_once_left_Mac.properties";
+			propertiesAutomationMidiLearned = "automation_cancel_midi_learned_left_Mac.properties";
 		}
 
 		if (System.getProperty("os.name").contains("Windows")) {
@@ -57,6 +59,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			propertiesMidiCancelAutomation = "automation_cancel_midi_left_Windows.properties";
 			propertiesMidiFullMainFrameAutomation = "automation_midi_automator_midi_left_Windows.properties";
 			propertiesOnceMainFrame = "automation_main_frame_once_left_Windows.properties";
+			propertiesAutomationMidiLearned = "automation_cancel_midi_learned_left_Windows.properties";
 		}
 	}
 
@@ -256,6 +259,32 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// TODO: right click on inactive component
 			cancelMidiLearnAutomation(0, preferencesFrame);
+
+			// check for empty midi message
+			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			int column = table
+					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
+			table.requireCellValue(TableCell.row(0).column(column), "");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void automationMidiShouldBeUnlearned() {
+
+		try {
+			MockUpUtils.setMockupPropertiesFile("mockups/"
+					+ propertiesAutomationMidiLearned);
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			startApplication();
+
+			// unlearn midi
+			FrameFixture preferencesFrame = openPreferences();
+			midiUnLearnAutomation(0, preferencesFrame);
+			Thread.sleep(1000);
 
 			// check for empty midi message
 			JTableFixture table = getGUIAutomationTable(preferencesFrame);

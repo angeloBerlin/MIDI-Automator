@@ -9,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.table.TableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -197,13 +198,31 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 			// File list
 			if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
 				mainFrame.getFileList().setLastSelectedIndex();
+
 				if (component instanceof JList) {
 					JList<?> list = (JList<?>) component;
 					midiLearnService.unsetMidiSignature(
 							MidiLearnService.KEY_MIDI_LEARN_FILE_LIST_ENTRY,
 							list.getSelectedIndex());
 				}
+
 				return;
+			}
+
+			// Automation Table
+			if (component.getName()
+					.equals(GUIAutomationConfigurationTable.NAME)) {
+
+				if (component instanceof JTable) {
+					JTable table = (JTable) component;
+					TableModel model = table.getModel();
+
+					int columnIndex = table
+							.getColumn(
+									GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE)
+							.getModelIndex();
+					model.setValueAt(null, table.getSelectedRow(), columnIndex);
+				}
 			}
 		}
 	}
