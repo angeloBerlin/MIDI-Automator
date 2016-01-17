@@ -1,7 +1,13 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openEditDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -31,8 +37,8 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 
 		if (System.getProperty("os.name").contains("Windows")) {
 			helloWorldMido = "Hello_World_Windows.mido";
-			editedProgramPath = "wordpad.exe";
-			editedProgramScreenshot = "Wordpad.png";
+			editedProgramPath = "C:/Windows/System32/notepad.exe";
+			editedProgramScreenshot = "Notepad.png";
 		}
 	}
 
@@ -108,7 +114,8 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.approve();
 
 		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).requireText(
-				currentPath + "/testfiles/Hello World.rtf");
+				currentPath + File.separator + "testfiles" + File.separator
+						+ "Hello World.rtf");
 	}
 
 	@Test

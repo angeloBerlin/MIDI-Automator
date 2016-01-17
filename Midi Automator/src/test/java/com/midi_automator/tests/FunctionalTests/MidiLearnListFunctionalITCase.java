@@ -1,6 +1,13 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnListEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnListEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -92,7 +99,7 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(2000);
 
 			// check that file was not opened
-			checkEmptyInfoText();
+			sikulix.checkIfFileNotOpened("Hello_World_1_RTF.png");
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {

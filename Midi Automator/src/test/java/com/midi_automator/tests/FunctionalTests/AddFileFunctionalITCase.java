@@ -1,7 +1,14 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addFile;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -29,9 +36,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		}
 
 		if (System.getProperty("os.name").contains("Windows")) {
-			programDirectory = "C:/Program Files/Windows NT/Accessories";
-			programPath = programDirectory + "wordpad.exe";
-			programScreenshot = "Wordpad.png";
+			programDirectory = "C:/Windows/System32/";
+			programPath = programDirectory + "notepad.exe";
+			programScreenshot = "Notepad.png";
 		}
 	}
 
