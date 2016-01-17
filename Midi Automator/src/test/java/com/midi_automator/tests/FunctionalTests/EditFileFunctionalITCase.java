@@ -1,13 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openEditDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -19,9 +13,28 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
+import com.midi_automator.view.frames.AddFrame;
 import com.midi_automator.view.frames.EditFrame;
 
 public class EditFileFunctionalITCase extends FunctionalBaseCase {
+
+	private String helloWorldMido;
+	private String editedProgramPath;
+	private String editedProgramScreenshot;
+
+	public EditFileFunctionalITCase() {
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			helloWorldMido = "Hello_World_MAC.mido";
+			editedProgramPath = "/Applications/Microsoft Office 2011/Microsoft Word.app";
+			editedProgramScreenshot = "Word.png";
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			helloWorldMido = "Hello_World_Windows.mido";
+			editedProgramPath = "wordpad.exe";
+			editedProgramScreenshot = "Wordpad.png";
+		}
+	}
 
 	@Test
 	public void editMenuShouldBeDisabledIfListIsEmpty() {
@@ -41,7 +54,7 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void editingFileShouldBeCanceled() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
@@ -56,7 +69,7 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void helloWorldShouldBeEdited() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
@@ -65,6 +78,8 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 				"Hello World Edit");
 		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
 				currentPath + "/testfiles/Hello World edit.rtf");
+		editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
+				editedProgramPath);
 		saveDialog(editFrame);
 
 		assertEquals(getFileList().contents()[0], "1 Hello World Edit");
@@ -72,21 +87,22 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		openEntryByDoubleClick(0);
 
 		checkIfOpenEntryIsDisplayed("Hello World Edit");
+		sikulix.checkIfProgramOpened(editedProgramScreenshot);
 		sikulix.checkIfFileOpened("Hello_World_Edit_RTF.png");
 	}
 
-	// @Test
+	@Test
 	public void fileChooserOfEditDialogShouldBeOpened() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
 		FrameFixture editFrame = openEditDialog(0);
-		JFileChooserFixture fileChooser = openSearchDialog(editFrame);
+		JFileChooserFixture fileChooser = openSearchDialog(editFrame,
+				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
-		// TODO: problem with select file on file chooser
 		fileChooser.selectFile(new File(currentPath
 				+ "/testfiles/Hello World.rtf"));
 		fileChooser.approve();

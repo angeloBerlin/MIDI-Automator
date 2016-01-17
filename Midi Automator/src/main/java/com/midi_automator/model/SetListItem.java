@@ -12,6 +12,7 @@ public class SetListItem {
 
 	private String name;
 	private String filePath;
+	private String programPath;
 	private String midiListeningSignature;
 	private String midiSendingSignature;
 
@@ -26,11 +27,12 @@ public class SetListItem {
 		this.filePath = filePath;
 	}
 
-	public SetListItem(String name, String filePath,
+	public SetListItem(String name, String filePath, String programPath,
 			String midiListeningSignature, String midiSendingSignature) {
 		super();
 		this.name = name;
 		this.filePath = filePath;
+		this.programPath = programPath;
 		this.midiListeningSignature = midiListeningSignature;
 		this.midiSendingSignature = midiSendingSignature;
 	}
@@ -54,6 +56,17 @@ public class SetListItem {
 		this.filePath = filePath;
 	}
 
+	public String getProgramPath() {
+		if (programPath == null) {
+			return "";
+		}
+		return programPath;
+	}
+
+	public void setProgramPath(String programPath) {
+		this.programPath = programPath;
+	}
+
 	public String getMidiListeningSignature() {
 		return midiListeningSignature;
 	}
@@ -69,4 +82,5 @@ public class SetListItem {
 	public void setMidiSendingSignature(String midiSendingSignature) {
 		this.midiSendingSignature = midiSendingSignature;
 	}
+
 }

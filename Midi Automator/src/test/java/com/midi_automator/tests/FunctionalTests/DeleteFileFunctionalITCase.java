@@ -1,8 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
@@ -13,6 +12,18 @@ import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 
 public class DeleteFileFunctionalITCase extends FunctionalBaseCase {
+
+	private String helloWorldMido;
+
+	public DeleteFileFunctionalITCase() {
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			helloWorldMido = "Hello_World_MAC.mido";
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			helloWorldMido = "Hello_World_Windows.mido";
+		}
+	}
 
 	@Test
 	public void deleteMenuShouldBeDisabledIfListIsEmpty() {
@@ -32,7 +43,7 @@ public class DeleteFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void helloWorldEntryShouldBeDeleted() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World.mido");
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 

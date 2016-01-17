@@ -1,14 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addFile;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -23,6 +16,25 @@ import com.midi_automator.view.frames.AddFrame;
 
 public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
+	private String programPath;
+	private String programScreenshot;
+	private String programDirectory;
+
+	public AddFileFunctionalITCase() {
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			programDirectory = "/Applications/Microsoft Office 2011/";
+			programPath = programDirectory + "Microsoft Word.app";
+			programScreenshot = "Word.png";
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			programDirectory = "C:/Program Files/Windows NT/Accessories";
+			programPath = programDirectory + "wordpad.exe";
+			programScreenshot = "Wordpad.png";
+		}
+	}
+
 	@Test
 	public void newFileShouldBeAdded() {
 
@@ -30,7 +42,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		addFile("Hello World", currentPath + "/testfiles/Hello World.rtf");
+		addFile("Hello World", currentPath + "/testfiles/Hello World.rtf",
+				programPath);
 
 		String firstFileListEntry = getFileList().contents()[0];
 		assertEquals("1 Hello World", firstFileListEntry);
@@ -38,6 +51,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		openEntryByDoubleClick(0);
 
 		checkIfOpenEntryIsDisplayed("Hello World");
+		sikulix.checkIfProgramOpened(programScreenshot);
 		sikulix.checkIfFileOpened("Hello_World_RTF.png");
 	}
 
@@ -49,7 +63,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		startApplication();
 
 		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialog(addFrame);
+		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
 		String rtfPath = currentPath + File.separator + "testfiles"
@@ -58,6 +73,28 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.approve();
 
 		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+	}
+
+	// @Test
+	public void programChooserOfAddDialogShouldChooseSpecificProgram() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture addFrame = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+
+		fileChooser.setCurrentDirectory(new File(programDirectory));
+
+		// TODO: JFileChooserFixture can only select files
+		fileChooser.selectFile(new File(programPath));
+
+		fileChooser.approve();
+
+		addFrame.textBox(AddFrame.NAME_PROGRAM_TEXT_FIELD).requireText(
+				programPath);
 	}
 
 	@Test
@@ -95,7 +132,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		addFile("Hello World 129", currentPath + "/testfiles/Hello World.rtf");
+		addFile("Hello World 129", currentPath + "/testfiles/Hello World.rtf",
+				"");
 
 		checkInfoText(String.format(Messages.MSG_FILE_LIST_IS_FULL,
 				"Hello World 129"));

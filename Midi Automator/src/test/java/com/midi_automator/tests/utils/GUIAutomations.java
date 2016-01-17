@@ -900,14 +900,17 @@ public class GUIAutomations {
 	 * 
 	 * @param name
 	 *            name of the entry
-	 * @param path
+	 * @param filePath
 	 *            path to the file
+	 * @param programPath
+	 *            path to the opening program
 	 */
-	public static void addFile(String name, String path) {
+	public static void addFile(String name, String filePath, String programPath) {
 
 		FrameFixture addFrame = openAddDialog();
 		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText(name);
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText(path);
+		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText(filePath);
+		addFrame.textBox(AddFrame.NAME_PROGRAM_TEXT_FIELD).setText(programPath);
 		saveDialog(addFrame);
 	}
 
@@ -1086,10 +1089,13 @@ public class GUIAutomations {
 	 * 
 	 * @param frame
 	 *            The frame containing the search button
+	 * @param searchButtonName
+	 *            The name of the search button
 	 * @return The file chooser fixture
 	 */
-	public static JFileChooserFixture openSearchDialog(FrameFixture frame) {
-		frame.button("search button").click();
+	public static JFileChooserFixture openSearchDialog(FrameFixture frame,
+			String searchButtonName) {
+		frame.button(searchButtonName).click();
 		return JFileChooserFinder.findFileChooser().using(robot);
 	}
 

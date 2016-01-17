@@ -1114,6 +1114,8 @@ public class MainFrame extends JFrame {
 						.getEntryNameByIndex(oldIndex);
 				String filePath = fileListService
 						.getEntryFilePathByIndex(oldIndex);
+				String programPath = fileListService
+						.getEntryProgramPathByIndex(oldIndex);
 				String midiListeningSignature = fileListService
 						.getMidiFileListListeningSignature(oldIndex);
 				String midiSendingSignature = fileListService
@@ -1131,7 +1133,8 @@ public class MainFrame extends JFrame {
 				}
 
 				fileListService.insertItem(newIndex, entryName, filePath,
-						midiListeningSignature, midiSendingSignature, false);
+						programPath, midiListeningSignature,
+						midiSendingSignature, false);
 
 				reload();
 				log.debug("Moved \"" + entryName + "\" from index " + oldIndex

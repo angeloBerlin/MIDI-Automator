@@ -230,6 +230,25 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 	}
 
 	/**
+	 * Checks if the program opened
+	 * 
+	 * @param states
+	 *            the different states of the region
+	 */
+	public void checkIfProgramOpened(String... states) {
+
+		try {
+
+			// check if file opened
+			SikuliXAutomation.setSearchRegion(SCREEN);
+			findMultipleStateRegion(DEFAULT_TIMEOUT, states);
+
+		} catch (FindFailed e) {
+			Fail.fail("Program did not open.", e);
+		}
+	}
+
+	/**
 	 * Checks if the file did not open.
 	 * 
 	 * @param states

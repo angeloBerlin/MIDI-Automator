@@ -1,7 +1,5 @@
 package com.midi_automator.view.frames;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -18,13 +16,13 @@ public class EditFrame extends AddFrame {
 	static Logger log = Logger.getLogger(EditFrame.class.getName());
 
 	private final String TITLE = "Edit";
-	private final int HEIGHT = 160;
+	private final int HEIGHT = 200;
 	private final String LABEL_LISTENING_TO_MIDI = "Listening:";
-	private JLabel midiListeningSignatureLabel;
 	private JLabel midiListeningSignatureValueLabel;
 	private int index;
 
 	public static String NAME = "Edit Frame";
+	public static String NAME_MIDI_LISTENING_SIGNATURE_VALUE_LABEL = "MIDI listening label";
 
 	/**
 	 * Initializes the edit frame
@@ -39,17 +37,19 @@ public class EditFrame extends AddFrame {
 		setName(NAME);
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
-		setResizable(false);
+
 		// change save action
 		buttonSave.removeActionListener(super.saveAction);
 		saveAction = new SaveAction();
 		buttonSave.addActionListener(saveAction);
 
 		createMidiListeningSignature();
-		setMidiSendingSignatureValueLabelText();
+		initMidiSendingSignatureValueLabelText();
 
 		nameTextField.setText(fileListService.getEntryNameByIndex(index));
 		fileTextField.setText(fileListService.getEntryFilePathByIndex(index));
+		programTextField.setText(fileListService
+				.getEntryProgramPathByIndex(index));
 		midiListeningSignatureValueLabel.setText(fileListService
 				.getMidiFileListListeningSignature(index));
 	}
@@ -59,27 +59,15 @@ public class EditFrame extends AddFrame {
 	 */
 	private void createMidiListeningSignature() {
 
-		GridBagConstraints c = new GridBagConstraints();
-		midiListeningSignatureLabel = new JLabel(LABEL_LISTENING_TO_MIDI);
-		midiListeningSignatureLabel.setPreferredSize(new Dimension(LABEL_WIDTH,
-				midiListeningSignatureLabel.getPreferredSize().height));
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 4;
-		middlePanel.add(midiListeningSignatureLabel, c);
-
-		midiListeningSignatureValueLabel = new JLabel(" ");
-		midiListeningSignatureValueLabel.setPreferredSize(new Dimension(
-				TEXT_PANE_WIDTH, midiListeningSignatureValueLabel
-						.getPreferredSize().height));
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 1;
-		c.gridy = 4;
-		middlePanel.add(midiListeningSignatureValueLabel, c);
+		midiListeningSignatureValueLabel = createMetaLabel(
+				LABEL_LISTENING_TO_MIDI,
+				NAME_MIDI_LISTENING_SIGNATURE_VALUE_LABEL, META_LABEL_WIDTH,
+				TEXT_PANE_WIDTH);
 	}
 
 	@Override
-	protected void setMidiSendingSignatureValueLabelText() {
+	protected void initMidiSendingSignatureValueLabelText() {
+
 		midiSendingSignatureValueLabel.setText(fileListService
 				.getMidiFileListSendingSignature(index));
 	}
@@ -98,7 +86,7 @@ public class EditFrame extends AddFrame {
 		public void actionPerformed(ActionEvent e) {
 			log.debug("Save edited item on index: " + (index + 1));
 			fileListService.setItem(index, nameTextField.getText(),
-					fileTextField.getText(),
+					fileTextField.getText(), programTextField.getText(),
 					midiListeningSignatureValueLabel.getText(),
 					midiSendingSignatureValueLabel.getText());
 			new CancelAction().actionPerformed(e);

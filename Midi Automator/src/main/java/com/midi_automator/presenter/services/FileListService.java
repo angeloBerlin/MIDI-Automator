@@ -72,12 +72,15 @@ public class FileListService {
 	 *            the name of the entry
 	 * @param filePath
 	 *            the path to the file
+	 * @param programPath
+	 *            the path of the opening program
 	 * @param midiSendingSignature
 	 *            the midi signature the item will send on opening
 	 */
-	public void addItem(String entryName, String filePath,
+	public void addItem(String entryName, String filePath, String programPath,
 			String midiSendingSignature) {
-		setItem(null, entryName, filePath, "", midiSendingSignature);
+		setItem(null, entryName, filePath, programPath, "",
+				midiSendingSignature);
 	}
 
 	/**
@@ -89,6 +92,8 @@ public class FileListService {
 	 *            the name of the entry
 	 * @param filePath
 	 *            the path to the file
+	 * @param programPath
+	 *            the path to the program
 	 * @param midiListeningSignature
 	 *            the midi signature the item is listening to
 	 * @param midiSendingSignature
@@ -96,10 +101,11 @@ public class FileListService {
 	 * 
 	 */
 	public void setItem(Integer index, String entryName, String filePath,
-			String midiListeningSignature, String midiSendingSignature) {
+			String programPath, String midiListeningSignature,
+			String midiSendingSignature) {
 
-		insertItem(index, entryName, filePath, midiListeningSignature,
-				midiSendingSignature, true);
+		insertItem(index, entryName, filePath, programPath,
+				midiListeningSignature, midiSendingSignature, true);
 	}
 
 	/**
@@ -111,6 +117,8 @@ public class FileListService {
 	 *            the name of the entry
 	 * @param filePath
 	 *            the path to the file
+	 * @param programPath
+	 *            the path to the program
 	 * @param midiListeningSignature
 	 *            the midi signature the item is listening to
 	 * @param midiSendingSignature
@@ -121,8 +129,8 @@ public class FileListService {
 	 * 
 	 */
 	public void insertItem(Integer index, String entryName, String filePath,
-			String midiListeningSignature, String midiSendingSignature,
-			boolean overwrite) {
+			String programPath, String midiListeningSignature,
+			String midiSendingSignature, boolean overwrite) {
 
 		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_TOO_MUCH_ENTRIES));
@@ -138,8 +146,9 @@ public class FileListService {
 		}
 
 		if (entryName != null && !entryName.equals("")) {
+
 			SetListItem item = new SetListItem(entryName, filePath,
-					midiListeningSignature, midiSendingSignature);
+					programPath, midiListeningSignature, midiSendingSignature);
 
 			if (overwrite) {
 				model.getSetList().setItem(item, index);
@@ -276,72 +285,87 @@ public class FileListService {
 
 		log.debug("Open file with index: " + index);
 
+		if (!model.getSetList().getItems().isEmpty()) {
+
+			SetListItem item = model.getSetList().getItems().get(index);
+
+			infoMessagesService.removeInfoMessage(Messages
+					.get(Messages.KEY_INFO_ENTRY_OPENED));
+
+			mainFrame.setSelectedIndex(index);
+			currentItem = index;
+
+			// Send MIDI change notifier
+			midiNotificationService
+					.sendItemChangeNotifier(midiService
+							.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE));
+			guiAutomationsService.activateAllOncePerChangeAutomations();
+
+			if (send) {
+				midiRemoteOpenService.sendRemoteOpenMidiMessage(index);
+			}
+
+			try {
+				Thread.sleep(WAIT_BEFORE_OPENING);
+			} catch (InterruptedException e) {
+				log.error("Delay before opening a file failed.", e);
+			}
+
+			// Send MIDI item signature
+			midiNotificationService
+					.sendItemSignature(
+							midiService
+									.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
+							item.getMidiSendingSignature());
+
+			openFileFromSetListItem(item);
+		}
+	}
+
+	/**
+	 * Opens a set list item with its stored program or with the OS default
+	 * program if no program path exists
+	 * 
+	 * @param item
+	 *            the set list item
+	 */
+	private void openFileFromSetListItem(SetListItem item) {
+
+		String filePath = resources.generateRelativeLoadingPath(item
+				.getFilePath());
+
+		infoMessagesService.removeInfoMessage(Messages
+				.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
+		infoMessagesService.removeInfoMessage(Messages
+				.get(Messages.KEY_ERROR_ITEM_FILE_IO));
+
+		String errFileNotFound = String.format(
+				Messages.MSG_FILE_LIST_NOT_FOUND, filePath);
+		String errFileNotReadable = String.format(
+				Messages.MSG_FILE_LIST_NOT_READABLE, filePath);
+
+		Messages.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND, errFileNotFound);
+		Messages.put(Messages.KEY_ERROR_ITEM_FILE_IO, errFileNotReadable);
+
+		String infoEntryOpened = String.format(Messages.MSG_OPENING_ENTRY,
+				item.getName());
+		Messages.put(Messages.KEY_INFO_ENTRY_OPENED, infoEntryOpened);
+
 		try {
 
-			if (!model.getSetList().getItems().isEmpty()) {
-				SetListItem item = model.getSetList().getItems().get(index);
+			if (!filePath.equals("")) {
+				log.info("Opening file: " + filePath);
 
-				infoMessagesService.removeInfoMessage(Messages
-						.get(Messages.KEY_INFO_ENTRY_OPENED));
-				String infoEntryOpened = String.format(
-						Messages.MSG_OPENING_ENTRY, item.getName());
-				Messages.put(Messages.KEY_INFO_ENTRY_OPENED, infoEntryOpened);
-
-				mainFrame.setSelectedIndex(index);
-				currentItem = index;
-
-				// Send MIDI change notifier
-				midiNotificationService
-						.sendItemChangeNotifier(midiService
-								.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE));
-
-				// activate per change triggered automations
-				guiAutomationsService.activateAllOncePerChangeAutomations();
-
-				// Send MIDI remote open command
-				if (send) {
-					midiRemoteOpenService.sendRemoteOpenMidiMessage(index);
+				if (item.getProgramPath().equals("")) {
+					FileUtils.openFileFromPath(filePath);
+				} else {
+					FileUtils.openFileFromPathWithProgram(filePath,
+							item.getProgramPath());
 				}
 
-				// wait a little before opening file...
-				try {
-					Thread.sleep(WAIT_BEFORE_OPENING);
-				} catch (InterruptedException e) {
-					log.error("Delay before opening a file failed.", e);
-				}
-
-				// Send MIDI item signature
-				midiNotificationService
-						.sendItemSignature(
-								midiService
-										.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
-								item.getMidiSendingSignature());
-
-				String filePath = item.getFilePath();
-
-				String path = resources.generateRelativeLoadingPath(filePath);
-
-				infoMessagesService.removeInfoMessage(Messages
-						.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
-				infoMessagesService.removeInfoMessage(Messages
-						.get(Messages.KEY_ERROR_ITEM_FILE_IO));
-
-				String errFileNotFound = String.format(
-						Messages.MSG_FILE_LIST_NOT_FOUND, filePath);
-				String errFileNotReadable = String.format(
-						Messages.MSG_FILE_LIST_NOT_READABLE, filePath);
-
-				Messages.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND,
-						errFileNotFound);
-				Messages.put(Messages.KEY_ERROR_ITEM_FILE_IO,
-						errFileNotReadable);
-
-				if (!path.equals("")) {
-					log.info("Opening file: " + path);
-					FileUtils.openFileFromPath(path);
-					infoMessagesService.setInfoMessage(infoEntryOpened);
-				}
+				infoMessagesService.setInfoMessage(infoEntryOpened);
 			}
+
 		} catch (IllegalArgumentException ex) {
 			infoMessagesService.setInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
@@ -351,6 +375,7 @@ public class FileListService {
 					.get(Messages.KEY_ERROR_ITEM_FILE_IO));
 			log.error(Messages.get(Messages.KEY_ERROR_ITEM_FILE_IO), ex);
 		}
+
 	}
 
 	/**
@@ -406,6 +431,21 @@ public class FileListService {
 	public String getEntryFilePathByIndex(int index) {
 		try {
 			return model.getSetList().getItems().get(index).getFilePath();
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the entry program path of the file list by index
+	 * 
+	 * @param index
+	 *            The index
+	 * @return the program path of the entry
+	 */
+	public String getEntryProgramPathByIndex(int index) {
+		try {
+			return model.getSetList().getItems().get(index).getProgramPath();
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}

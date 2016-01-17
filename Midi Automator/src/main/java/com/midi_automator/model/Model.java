@@ -49,17 +49,19 @@ public class Model implements IModel {
 			String filePath = null;
 			String midiListeningSignature = null;
 			String midiSendingSignature = null;
+			String programPath = null;
 
 			try {
 				name = (line.split(VALUE_SEPARATOR))[0];
 				filePath = (line.split(VALUE_SEPARATOR))[1];
 				midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
 				midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
+				programPath = (line.split(VALUE_SEPARATOR))[4];
 			} catch (IndexOutOfBoundsException e) {
 				// catch empty csv values
 			}
 
-			SetListItem item = new SetListItem(name, filePath,
+			SetListItem item = new SetListItem(name, filePath, programPath,
 					midiListeningSignature, midiSendingSignature);
 
 			setList.addItem(item);
@@ -83,7 +85,7 @@ public class Model implements IModel {
 			String csvLine = FileUtils.buildCSVLineFromStrings(VALUE_SEPARATOR,
 					item.getName(), item.getFilePath(),
 					item.getMidiListeningSignature(),
-					item.getMidiSendingSignature());
+					item.getMidiSendingSignature(), item.getProgramPath());
 			log.debug("Save \"" + csvLine + "\"");
 			bufferedWriter.write(csvLine);
 			bufferedWriter.newLine();

@@ -40,6 +40,35 @@ public class FileUtils {
 	}
 
 	/**
+	 * Opens a file with the given application
+	 * 
+	 * @param filePath
+	 *            The path to the file to open
+	 * @param programPath
+	 *            The path to the program the file should be opened with
+	 */
+	public static void openFileFromPathWithProgram(String filePath,
+			String programPath) throws IllegalArgumentException, IOException {
+
+		String[] cmd = null;
+
+		if (filePath == null) {
+			filePath = "";
+		}
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			cmd = new String[] { "open", "-a", programPath, filePath };
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			cmd = new String[] { programPath, filePath };
+		}
+
+		ShellRunner sheallRunner = new ShellRunner(cmd);
+		sheallRunner.start();
+	}
+
+	/**
 	 * Takes a list of file paths and returns the list with file names only
 	 * 
 	 * @param filePaths

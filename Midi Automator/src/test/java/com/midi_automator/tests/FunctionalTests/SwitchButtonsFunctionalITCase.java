@@ -1,11 +1,6 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addFile;
-import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.clickPrevFile;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getNextButton;
-import static com.midi_automator.tests.utils.GUIAutomations.getPrevButton;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import org.junit.Test;
 
@@ -92,7 +87,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
 		// add third file
-		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf");
+		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf",
+				"");
 
 		// open third file
 		clickNextFile();
@@ -162,7 +158,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 		// add third file
-		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf");
+		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf",
+				"");
 
 		// cycle third file
 		clickPrevFile();

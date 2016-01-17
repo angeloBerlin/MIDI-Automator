@@ -19,7 +19,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 /**
- * This class holds functions to maniulate images.
+ * This class holds functions to manipulate images.
  * 
  * @author aguelle
  * 
