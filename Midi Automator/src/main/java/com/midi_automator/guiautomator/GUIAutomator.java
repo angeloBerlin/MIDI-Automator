@@ -22,7 +22,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	private final float MOVE_MOUSE_DELAY = 0;
 	private final boolean CHECK_LAST_SEEN = true;
-	private final double SIKULIX_TIMEOUT = 0.5;
+	private final double SIKULIX_TIMEOUT = 10;
 
 	private final MinSimColoredScreen SCREEN;
 	private volatile boolean running = true;
@@ -56,9 +56,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		while (running) {
 			try {
 				Thread.sleep(10);
-				if (isActive()) {
-					triggerAutomation(guiAutomation);
-				}
+				triggerAutomation(guiAutomation);
 			} catch (InterruptedException e) {
 				log.error("Failure in GUIAutomator Thread sleep", e);
 			}
@@ -97,14 +95,14 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getTrigger()
 				.equals(GUIAutomation.CLICKTRIGGER_ALWAYS)) {
 			if (guiAutomation.isActive()) {
-				runAutomation(guiAutomation);
+				searchAndRunAutomation(guiAutomation);
 			}
 		}
 
 		// once
 		if (guiAutomation.getTrigger().equals(GUIAutomation.CLICKTRIGGER_ONCE)) {
 			if (guiAutomation.isActive()) {
-				if (runAutomation(guiAutomation)) {
+				if (searchAndRunAutomation(guiAutomation)) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -114,7 +112,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getTrigger().equals(
 				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
 			if (guiAutomation.isActive()) {
-				if (runAutomation(guiAutomation)) {
+				if (searchAndRunAutomation(guiAutomation)) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -124,7 +122,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getTrigger()
 				.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
 			if (guiAutomation.isActive()) {
-				if (runAutomation(guiAutomation)) {
+				if (searchAndRunAutomation(guiAutomation)) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -165,17 +163,18 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Searches for the region and does the desired action.
+	 * Searches for the region and runs the desired action if the automations
+	 * are active.
 	 * 
 	 * @param guiAutomation
 	 *            The GUI automation
 	 * 
-	 * @return <TRUE> if the screenshot was found, <FALSE> if not found or
+	 * @return <TRUE> if the automation was run, <FALSE> if not found or
 	 *         automation not active
 	 */
-	private boolean runAutomation(GUIAutomation guiAutomation) {
+	private boolean searchAndRunAutomation(GUIAutomation guiAutomation) {
 
-		boolean found = false;
+		boolean wasRun = false;
 		long startingTime = 0;
 		Region searchRegion = SCREEN;
 		String imagePath = guiAutomation.getImagePath();
@@ -206,31 +205,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 				Match match = searchRegion.wait(
 						SystemUtils.replaceSystemVariables(imagePath),
 						SIKULIX_TIMEOUT);
-				guiAutomation.setLastFoundRegion(match);
-				found = true;
 
-				try {
-					Thread.sleep(guiAutomation.getMinDelay());
-				} catch (InterruptedException e) {
-					log.error("Delay before GUI automation run failed.", e);
-				}
-
-				// left click
-				if (guiAutomation.getType()
-						.equals(GUIAutomation.CLICKTYPE_LEFT)) {
-					match.click();
-				}
-
-				// right click
-				if (guiAutomation.getType().equals(
-						GUIAutomation.CLICKTYPE_RIGHT)) {
-					match.rightClick();
-				}
-
-				// double click
-				if (guiAutomation.getType().equals(
-						GUIAutomation.CLICKTYPE_DOUBLE)) {
-					match.doubleClick();
+				if (isActive()) {
+					runAutomation(match);
+					wasRun = true;
 				}
 
 				log.info("("
@@ -250,7 +228,38 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 						+ (System.currentTimeMillis() - startingTime) + " ms)");
 			}
 		}
-		return found;
+		return wasRun;
+	}
+
+	/**
+	 * Runs automation the automation action on the found region.
+	 * 
+	 * @param match
+	 *            The found region.
+	 */
+	private void runAutomation(Match match) {
+		guiAutomation.setLastFoundRegion(match);
+
+		try {
+			Thread.sleep(guiAutomation.getMinDelay());
+		} catch (InterruptedException e) {
+			log.error("Delay before GUI automation run failed.", e);
+		}
+
+		// left click
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)) {
+			match.click();
+		}
+
+		// right click
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_RIGHT)) {
+			match.rightClick();
+		}
+
+		// double click
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_DOUBLE)) {
+			match.doubleClick();
+		}
 	}
 
 	@Override

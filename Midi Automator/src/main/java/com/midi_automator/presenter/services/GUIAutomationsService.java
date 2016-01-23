@@ -259,6 +259,7 @@ public class GUIAutomationsService {
 
 		for (int i = 0; i < guiAutomators.size(); i++) {
 			GUIAutomator guiAutomator = guiAutomators.get(i);
+			guiAutomator.setActive(false);
 			guiAutomator.terminate();
 
 			log.debug("Terminate GUI automation: "
@@ -384,7 +385,7 @@ public class GUIAutomationsService {
 	}
 
 	/**
-	 * De-/Activates the GUI automation.
+	 * De-/Activates the GUI automations.
 	 * 
 	 * @param active
 	 *            <TRUE> activate GUI automation, <FALSE> deactivate GUI

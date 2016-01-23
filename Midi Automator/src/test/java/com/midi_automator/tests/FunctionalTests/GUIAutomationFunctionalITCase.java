@@ -451,7 +451,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 					preferencesFrame);
 			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE, 0,
 					preferencesFrame);
+			setAutomationMinDelay("1000", 0, preferencesFrame);
 			saveDialog(preferencesFrame);
+
+			window.focus();
 
 			// check if file was opened
 			Thread.sleep(5000);
