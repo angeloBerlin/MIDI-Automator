@@ -2,8 +2,9 @@ package com.midi_automator.guiautomator;
 
 import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
-import org.sikuli.script.FindFailed;
 import org.sikuli.script.Match;
+import org.sikuli.script.ObserveEvent;
+import org.sikuli.script.ObserverCallBack;
 import org.sikuli.script.Region;
 
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -24,17 +25,17 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private final boolean CHECK_LAST_SEEN = true;
 	private final double SIKULIX_TIMEOUT = 10;
 
-	private final MinSimColoredScreen SCREEN;
 	private volatile boolean running = true;
 	private boolean active = true;
 
 	private GUIAutomation guiAutomation;
+	Region searchRegion = null;
+	private Match match;
 
 	/**
 	 * Standard Constructor
 	 */
 	public GUIAutomator() {
-		SCREEN = new MinSimColoredScreen();
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 	}
@@ -53,10 +54,14 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	@Override
 	public void run() {
 
+		if (guiAutomation.getTimeout() > 0) {
+			new TimeOutWatcher().start();
+		}
+
 		while (running) {
 			try {
 				Thread.sleep(10);
-				triggerAutomation(guiAutomation);
+				triggerAutomation();
 			} catch (InterruptedException e) {
 				log.error("Failure in GUIAutomator Thread sleep", e);
 			}
@@ -67,6 +72,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * Terminate the automator thread
 	 */
 	public void terminate() {
+		if (searchRegion != null) {
+			searchRegion.stopObserver();
+		}
 		running = false;
 	}
 
@@ -85,24 +93,21 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Runs a configured GUI automation.
-	 * 
-	 * @param clickimagepath
-	 *            path to the image that should be searched
 	 */
-	private void triggerAutomation(GUIAutomation guiAutomation) {
+	private void triggerAutomation() {
 
 		// always
 		if (guiAutomation.getTrigger()
 				.equals(GUIAutomation.CLICKTRIGGER_ALWAYS)) {
 			if (guiAutomation.isActive()) {
-				searchAndRunAutomation(guiAutomation);
+				searchAndRunAutomation();
 			}
 		}
 
 		// once
 		if (guiAutomation.getTrigger().equals(GUIAutomation.CLICKTRIGGER_ONCE)) {
 			if (guiAutomation.isActive()) {
-				if (searchAndRunAutomation(guiAutomation)) {
+				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -112,7 +117,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getTrigger().equals(
 				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
 			if (guiAutomation.isActive()) {
-				if (searchAndRunAutomation(guiAutomation)) {
+				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -122,7 +127,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getTrigger()
 				.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
 			if (guiAutomation.isActive()) {
-				if (searchAndRunAutomation(guiAutomation)) {
+				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
 				}
 			}
@@ -166,68 +171,60 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * Searches for the region and runs the desired action if the automations
 	 * are active.
 	 * 
-	 * @param guiAutomation
-	 *            The GUI automation
-	 * 
 	 * @return <TRUE> if the automation was run, <FALSE> if not found or
 	 *         automation not active
 	 */
-	private boolean searchAndRunAutomation(GUIAutomation guiAutomation) {
+	private boolean searchAndRunAutomation() {
 
 		boolean wasRun = false;
-		long startingTime = 0;
-		Region searchRegion = SCREEN;
 		String imagePath = guiAutomation.getImagePath();
 
 		if (!imagePath.equals(MidiAutomatorProperties.VALUE_NULL)) {
-			try {
 
-				// prepare search parameters
-				Settings.MinSimilarity = guiAutomation.getMinSimilarity();
-				Settings.CheckLastSeenSimilar = guiAutomation
-						.getMinSimilarity();
+			// prepare search parameters
+			Settings.MinSimilarity = guiAutomation.getMinSimilarity();
+			Settings.CheckLastSeenSimilar = guiAutomation.getMinSimilarity();
 
-				Region lastFound = guiAutomation.getLastFoundRegion();
-				if (lastFound != null && !guiAutomation.isMovable()) {
-					searchRegion = new MinSimColoredScreen(lastFound);
-				}
+			Region lastFound = guiAutomation.getLastFoundRegion();
 
-				log.debug("("
-						+ getName()
-						+ "): Search for match of \""
-						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" "
-						+ "with a minimum smimilarity of "
-						+ guiAutomation.getMinSimilarity());
+			// set search region
+			if (lastFound != null && !guiAutomation.isMovable()) {
+				searchRegion = new MinSimColoredScreen(lastFound);
+			} else {
+				searchRegion = new MinSimColoredScreen();
+			}
 
-				// search for image
-				startingTime = System.currentTimeMillis();
-				Match match = searchRegion.wait(
-						SystemUtils.replaceSystemVariables(imagePath),
-						SIKULIX_TIMEOUT);
+			searchRegion.setObserveScanRate(guiAutomation.getScanRate());
 
+			log.debug("("
+					+ getName()
+					+ "): Search for match of \""
+					+ SystemUtils.replaceSystemVariables(guiAutomation
+							.getImagePath()) + "\" "
+					+ ", minimum smimilarity: " + Settings.MinSimilarity
+					+ ", scan rate: " + searchRegion.getObserveScanRate());
+
+			// search for image
+			searchRegion.onAppear(
+					SystemUtils.replaceSystemVariables(imagePath),
+					new AppearingMatchObserver());
+
+			boolean found = searchRegion.observe(SIKULIX_TIMEOUT);
+
+			if (found) {
 				if (isActive()) {
 					runAutomation(match);
 					wasRun = true;
 				}
-
-				log.info("("
-						+ getName()
-						+ "): Found match on screen for \""
-						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Search timeout after "
-						+ (System.currentTimeMillis() - startingTime) + " ms)");
-
-			} catch (FindFailed e) {
-
+			} else {
 				log.info("("
 						+ getName()
 						+ "): Could not find match on screen for \""
 						+ SystemUtils.replaceSystemVariables(guiAutomation
-								.getImagePath()) + "\" (Search timeout after "
-						+ (System.currentTimeMillis() - startingTime) + " ms)");
+								.getImagePath()) + "\"");
 			}
 		}
+
 		return wasRun;
 	}
 
@@ -274,5 +271,58 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	public GUIAutomation getGuiAutomation() {
 		return guiAutomation;
+	}
+
+	/**
+	 * The observer call back stores the found match on appear.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class AppearingMatchObserver extends ObserverCallBack {
+
+		@Override
+		public void appeared(ObserveEvent e) {
+
+			match = e.getMatch();
+
+			log.info("("
+					+ getName()
+					+ "): Found match on screen for \""
+					+ SystemUtils.replaceSystemVariables(guiAutomation
+							.getImagePath()) + "\"");
+		}
+	}
+
+	/**
+	 * Takes the running time and stops the automation if the timeout exceeded.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class TimeOutWatcher extends Thread {
+
+		private long startingTime;
+		private boolean running = true;
+
+		@Override
+		public void run() {
+
+			startingTime = System.currentTimeMillis();
+
+			while (running) {
+				long runningTime = System.currentTimeMillis() - startingTime;
+
+				if (runningTime > guiAutomation.getTimeout()) {
+
+					running = false;
+
+					log.info("(" + getName()
+							+ "): Automation timed out after: " + runningTime);
+
+					terminate();
+				}
+			}
+		}
 	}
 }

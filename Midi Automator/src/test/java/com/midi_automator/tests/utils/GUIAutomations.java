@@ -808,6 +808,26 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Sets a mouse automation scan rate
+	 * 
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @param column
+	 *            The column of the automation
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 */
+	public static void setAutomationScanRate(String value, int row,
+			FrameFixture preferencesFrame) {
+
+		setAutomationsSpinner(value, row,
+				GUIAutomationConfigurationTable.COLNAME_SCAN_RATE,
+				preferencesFrame);
+	}
+
+	/**
 	 * Sets a mouse automation timeout
 	 * 
 	 * @param value

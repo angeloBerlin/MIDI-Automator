@@ -64,6 +64,7 @@ public class GUIAutomationsService {
 		loadAutomationTimeoutProperties();
 		loadAutomationMidiSignatureProperties();
 		loadAutomationMinSimilarityProperties();
+		loadAutomationScanRateProperties();
 		loadAutomationIsMovableProperites();
 
 		stopGUIAutomations();
@@ -146,8 +147,26 @@ public class GUIAutomationsService {
 
 			int index = MidiAutomatorProperties
 					.getIndexOfPropertyKey((String) property.getKey());
-			float minSimilarity = Float.valueOf((String) property.getValue());
-			guiAutomations[index].setMinSimilarity(minSimilarity);
+			float value = Float.valueOf((String) property.getValue());
+			guiAutomations[index].setMinSimilarity(value);
+
+		}
+	}
+
+	/**
+	 * Loads all scan rates.
+	 */
+	private void loadAutomationScanRateProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_SCAN_RATE.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			float value = Float.valueOf((String) property.getValue());
+			guiAutomations[index].setScanRate(value);
 
 		}
 	}
@@ -298,40 +317,36 @@ public class GUIAutomationsService {
 
 		for (int index = 0; index < guiAutomations.length; index++) {
 
-			// click image path
 			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString(),
 					index, guiAutomations[index].getImagePath());
 
-			// click type
 			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_TYPE.toString(),
 					index, guiAutomations[index].getType());
 
-			// click trigger
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_TRIGGER.toString(), index,
 					guiAutomations[index].getTrigger());
 
-			// min delay
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_MIN_DELAY.toString(),
 					index, guiAutomations[index].getMinDelay());
 
-			// timeout
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_TIMEOUT.toString(), index,
 					guiAutomations[index].getTimeout());
 
-			// midi signature
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_MIDI_SIGNATURE.toString(),
 					index, guiAutomations[index].getMidiSignature());
 
-			// min similarity
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY.toString(),
 					index, guiAutomations[index].getMinSimilarity());
 
-			// movable
+			saveToProperties(
+					GUIAutomationKey.GUI_AUTOMATION_SCAN_RATE.toString(),
+					index, guiAutomations[index].getScanRate());
+
 			saveToProperties(
 					GUIAutomationKey.GUI_AUTOMATION_IS_MOVABLE.toString(),
 					index, guiAutomations[index].isMovable());

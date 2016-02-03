@@ -607,4 +607,37 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void scanRateShouldBeSet() {
+
+		try {
+			MockUpUtils
+					.setMockupPropertiesFile("mockups/"
+							+ propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation);
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			startApplication();
+
+			// check if add dialog was canceled within 5 seconds
+			FrameFixture addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+			// set scan rate to 0.1
+			FrameFixture preferencesFrame = openPreferences();
+			setAutomationScanRate("0.1", 0, preferencesFrame);
+			clickAutomationMovableCheckBox(0, preferencesFrame);
+			saveDialog(preferencesFrame);
+
+			// check if add dialog was canceled after 10 seconds
+			addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireVisible();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

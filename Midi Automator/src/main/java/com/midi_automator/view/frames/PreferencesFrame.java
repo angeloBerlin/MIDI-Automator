@@ -488,9 +488,11 @@ public class PreferencesFrame extends AbstractBasicDialog {
 				table.setAutomation(guiAutomations[i].getImagePath(),
 						guiAutomations[i].getType(),
 						guiAutomations[i].getTrigger(),
-						guiAutomations[i].getMinDelay(), 0L,
+						guiAutomations[i].getMinDelay(),
+						guiAutomations[i].getTimeout(),
 						guiAutomations[i].getMidiSignature(),
 						guiAutomations[i].getMinSimilarity(),
+						guiAutomations[i].getScanRate(),
 						guiAutomations[i].isMovable(), i);
 			}
 		}
