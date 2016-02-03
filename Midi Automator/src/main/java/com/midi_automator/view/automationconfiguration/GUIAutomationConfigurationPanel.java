@@ -130,11 +130,12 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			long timeout = getAutomationTimeout(row);
 			String midiSignature = getAutomationMidiSignature(row);
 			float minSimilarity = getAutomationMinSimilarity(row);
+			float scanRate = getAutomationScanRate(row);
 			boolean isMovable = getAutomationMovable(row);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
 					trigger, delay, timeout, midiSignature, minSimilarity,
-					isMovable);
+					scanRate, isMovable);
 			guiAutomations[row] = guiAutomation;
 		}
 
@@ -246,6 +247,20 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	}
 
 	/**
+	 * Gets the scan rate for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation minimum similarity
+	 */
+	private float getAutomationScanRate(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_SCAN_RATE, row,
+				Float.class);
+	}
+
+	/**
 	 * Gets the movable option for a specific row from the automation table
 	 * 
 	 * @param row
@@ -313,6 +328,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 					GUIAutomation.DEFAULT_MIN_DELAY,
 					GUIAutomation.DEFAULT_TIMEOUT, null,
 					GUIAutomation.DEFAULT_MIN_SIMILARITY,
+					GUIAutomation.DEFAULT_SCAN_RATE,
 					GUIAutomation.DEFAULT_IS_MOVABLE, -1);
 		}
 	}

@@ -59,6 +59,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int COLWIDTH_TIMEOUT = 80;
 	private final int COLWIDTH_MIDI_MESSAGE = 300;
 	private final int COLWIDTH_MIN_SIMILARITY = 65;
+	private final int COLWIDTH_SCAN_RATE = 80;
 	private final int COLWIDTH_MOVABLE = 60;
 	private final int COLWIDTH_SCREENSHOT_SEARCH = 120;
 	private final int MARGIN_SCREENSHOT = 4;
@@ -67,7 +68,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
 			+ COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY + COLWIDTH_TIMEOUT
 			+ COLWIDTH_MIDI_MESSAGE + COLWIDTH_MIN_SIMILARITY
-			+ COLWIDTH_MOVABLE + COLWIDTH_SCREENSHOT_SEARCH;
+			+ COLWIDTH_SCAN_RATE + COLWIDTH_MOVABLE
+			+ COLWIDTH_SCREENSHOT_SEARCH;
 
 	private final String LABEL_SEARCHBUTTON = "Screenshot...";
 
@@ -78,6 +80,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	public static final String COLNAME_TIMEOUT = "Timeout (ms)";
 	public static final String COLNAME_MIDI_SIGNATURE = "Midi Message";
 	public static final String COLNAME_MIN_SIMILARITY = "Similarity";
+	public static final String COLNAME_SCAN_RATE = "Scans (1/s)";
 	public static final String COLNAME_MOVABLE = "Movable";
 	public static final String COLNAME_SEARCH_BUTTON = "";
 
@@ -85,7 +88,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final String DEFAULT_TRIGGER = GUIAutomation.CLICKTRIGGER_ALWAYS;
 	private final String DEFAULT_MIDI_MESSAGE = "";
 	private final Long MIN_DELAY_STEP_SIZE = 1L;
+	private final Long TIMEOUT_STEP_SIZE = 1L;
 	private final Float MIN_SIMILARITY_STEP_SIZE = 0.01f;
+	private final Float SCAN_RATE_STEP_SIZE = 0.1f;
 
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
 	private final String NAME_COMBOBOX_TRIGGER_EDITOR = "COMBOBOX_TRIGGER_EDITOR";
@@ -129,6 +134,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		columnNames.add(COLNAME_TIMEOUT);
 		columnNames.add(COLNAME_MIDI_SIGNATURE);
 		columnNames.add(COLNAME_MIN_SIMILARITY);
+		columnNames.add(COLNAME_SCAN_RATE);
 		columnNames.add(COLNAME_MOVABLE);
 		columnNames.add(COLNAME_SEARCH_BUTTON);
 
@@ -142,6 +148,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createTimeoutColumn();
 		createMidiMessageColumn();
 		createMinSimilarityColumn();
+		createScanRateColumn();
 		createMovableColumn();
 		createImageBrowseColumn();
 
@@ -216,16 +223,11 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	private void createMinDelayColumn() {
 
-		getColumn(COLNAME_MIN_DELAY).setMinWidth(COLWIDTH_MIN_DELAY);
-		getColumn(COLNAME_MIN_DELAY).setMaxWidth(COLWIDTH_MIN_DELAY);
-
-		SpinnerModel minDelaySpinnerModel = new SpinnerNumberModel(
-				GUIAutomation.DEFAULT_MIN_DELAY,
-				GUIAutomation.MIN_DELAY_MIN_VALUE,
-				GUIAutomation.MIN_DELAY_MAX_VALUE, MIN_DELAY_STEP_SIZE);
-		JTableSpinnerEditor minDelayEditor = new JTableSpinnerEditor(
-				minDelaySpinnerModel);
-		getColumn(COLNAME_MIN_DELAY).setCellEditor(minDelayEditor);
+		createSpinnerColumn(COLNAME_MIN_DELAY, COLWIDTH_MIN_DELAY, //
+				GUIAutomation.DEFAULT_MIN_DELAY,//
+				GUIAutomation.MIN_DELAY_MIN_VALUE,//
+				GUIAutomation.MIN_DELAY_MAX_VALUE,//
+				MIN_DELAY_STEP_SIZE);
 	}
 
 	/**
@@ -233,14 +235,11 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	private void createTimeoutColumn() {
 
-		getColumn(COLNAME_TIMEOUT).setMinWidth(COLWIDTH_TIMEOUT);
-
-		SpinnerModel timeoutSpinnerModel = new SpinnerNumberModel(
-				GUIAutomation.DEFAULT_TIMEOUT, GUIAutomation.TIMEOUT_MIN_VALUE,
-				GUIAutomation.TIMEOUT_MAX_VALUE, MIN_DELAY_STEP_SIZE);
-		JTableSpinnerEditor timeoutEditor = new JTableSpinnerEditor(
-				timeoutSpinnerModel);
-		getColumn(COLNAME_TIMEOUT).setCellEditor(timeoutEditor);
+		createSpinnerColumn(COLNAME_TIMEOUT, COLWIDTH_TIMEOUT, //
+				GUIAutomation.DEFAULT_TIMEOUT,//
+				GUIAutomation.TIMEOUT_MIN_VALUE,//
+				GUIAutomation.TIMEOUT_MAX_VALUE,//
+				TIMEOUT_STEP_SIZE);
 	}
 
 	/**
@@ -258,16 +257,23 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	private void createMinSimilarityColumn() {
 
-		getColumn(COLNAME_MIN_SIMILARITY).setMinWidth(COLWIDTH_MIN_SIMILARITY);
-
-		SpinnerModel minSimilaritySpinnerModel = new SpinnerNumberModel(
-				GUIAutomation.DEFAULT_MIN_SIMILARITY,
-				GUIAutomation.MIN_SIMILARITY_MIN_VALUE,
-				GUIAutomation.MIN_SIMILARITY_MAX_VALUE,
+		createSpinnerColumn(COLNAME_MIN_SIMILARITY, COLWIDTH_MIN_SIMILARITY, //
+				GUIAutomation.DEFAULT_MIN_SIMILARITY,//
+				GUIAutomation.MIN_SIMILARITY_MIN_VALUE,//
+				GUIAutomation.MIN_SIMILARITY_MAX_VALUE,//
 				MIN_SIMILARITY_STEP_SIZE);
-		JTableSpinnerEditor minSimilarityEditor = new JTableSpinnerEditor(
-				minSimilaritySpinnerModel);
-		getColumn(COLNAME_MIN_SIMILARITY).setCellEditor(minSimilarityEditor);
+	}
+
+	/**
+	 * Creates the scan rate column with a spinner.
+	 */
+	private void createScanRateColumn() {
+
+		createSpinnerColumn(COLNAME_SCAN_RATE, COLWIDTH_SCAN_RATE,//
+				GUIAutomation.DEFAULT_SCAN_RATE,//
+				GUIAutomation.MIN_SCAN_RATE,//
+				GUIAutomation.MAX_SCAN_RATE,//
+				SCAN_RATE_STEP_SIZE);
 	}
 
 	/**
@@ -293,6 +299,35 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		buttonEditor.addActionListener(new ImageSearchButtonListener(this));
 		getColumn(COLNAME_SEARCH_BUTTON).setCellRenderer(buttonRenderer);
 		getColumn(COLNAME_SEARCH_BUTTON).setCellEditor(buttonEditor);
+	}
+
+	/**
+	 * Creates a column with spinner.
+	 * 
+	 * @param colName
+	 *            The column name
+	 * @param colWidth
+	 *            The column width
+	 * @param defaultValue
+	 *            The default value of the spinner
+	 * @param minValue
+	 *            The minimum value of the spinner
+	 * @param maxValue
+	 *            The maximum value of the spinner
+	 * @param stepSize
+	 *            The step size of the spinner
+	 */
+	private void createSpinnerColumn(String colName, int colWidth,
+			Number defaultValue, Comparable<?> minValue,
+			Comparable<?> maxValue, Number stepSize) {
+
+		getColumn(colName).setMinWidth(colWidth);
+
+		SpinnerModel spinnerModel = new SpinnerNumberModel(defaultValue,
+				minValue, maxValue, stepSize);
+		JTableSpinnerEditor spinnerEditor = new JTableSpinnerEditor(
+				spinnerModel);
+		getColumn(colName).setCellEditor(spinnerEditor);
 	}
 
 	@Override
@@ -343,14 +378,16 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param midiSignature
 	 *            The midi signature, <NULL> for empty signature
 	 * @param minSimilarity
-	 *            The default value for the min similarity
+	 *            The value for the min similarity
+	 * @param scanRate
+	 *            The value for the scan rate
 	 * @param isMovable
 	 *            <TRUE> if image may occur on different places on the screen,
 	 *            <FALSE> is not
 	 */
 	private void addAutomation(String imagePath, String type, String trigger,
 			long minDelay, long timeout, String midiSignature,
-			float minSimilarity, boolean isMovable) {
+			float minSimilarity, float scanRate, boolean isMovable) {
 
 		// extend table model
 		Vector<Object> rowData = new Vector<Object>();
@@ -362,11 +399,12 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(getColumn(COLNAME_TRIGGER).getModelIndex(),
 				initTrigger(trigger));
 		rowData.add(getColumn(COLNAME_MIN_DELAY).getModelIndex(), minDelay);
-		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), minDelay);
+		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), timeout);
 		rowData.add(getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex(),
 				initMidiMessage(midiSignature));
 		rowData.add(getColumn(COLNAME_MIN_SIMILARITY).getModelIndex(),
 				minSimilarity);
+		rowData.add(getColumn(COLNAME_SCAN_RATE).getModelIndex(), scanRate);
 		rowData.add(getColumn(COLNAME_MOVABLE).getModelIndex(), isMovable);
 
 		setAutomationIndexToTriggerComboBox();
@@ -408,6 +446,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The midi signature, <NULL> for empty signature
 	 * @param minSimilarity
 	 *            The default value for the minimum image recognition similarity
+	 * @param scanRate
+	 *            The scan rate of the automation
 	 * @param isMovable
 	 *            <TRUE> if image may occur on different places on the screen,
 	 *            <FALSE> is not
@@ -416,13 +456,13 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	public void setAutomation(String imagePath, String type, String trigger,
 			long minDelay, long timeout, String midiSignature,
-			float minSimilarity, boolean isMovable, int row) {
+			float minSimilarity, float scanRate, boolean isMovable, int row) {
 
 		TableModel model = getModel();
 
 		if (model.getRowCount() <= row || row < 0) {
 			addAutomation(imagePath, type, trigger, minDelay, timeout,
-					midiSignature, minSimilarity, isMovable);
+					midiSignature, minSimilarity, scanRate, isMovable);
 		} else {
 
 			model.setValueAt(initScreenshotIcon(imagePath), row,
@@ -432,6 +472,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			model.setValueAt(initTrigger(trigger), row,
 					getColumn(COLNAME_TRIGGER).getModelIndex());
 			model.setValueAt(minDelay, row, getColumn(COLNAME_MIN_DELAY)
+					.getModelIndex());
+			model.setValueAt(timeout, row, getColumn(COLNAME_TIMEOUT)
 					.getModelIndex());
 			model.setValueAt(initMidiMessage(midiSignature), row,
 					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
