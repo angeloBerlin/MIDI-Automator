@@ -8,8 +8,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.TableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +36,23 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	private final String MIN_SIMILARITY_LABEL = "Similarity:";
 	private final String ADD_LABEL = "+";
 	private final String DELETE_LABEL = "-";
 	private final int EDITOR_BUTTON_SIZE = 41; // min size for Windows
 
+	private JPanel globalSettingsPanel;
 	private JPanel editorPanel;
+	private JSpinner minSimilaritySpinner;
 	private JButton addButton;
 	private JButton deleteButton;
 	private boolean initialized = false;
 
 	public static final String NAME_ADD_BUTTON = "automation add button";
 	public static final String NAME_DELETE_BUTTON = "automation delete button";
+	public static final String NAME_MIN_SIMILARITY_SPINNER = "automation min similarity";
+
+	private final Float MIN_SIMILARITY_STEP_SIZE = 0.01f;
 
 	private GUIAutomationConfigurationTable configurationTable;
 
@@ -61,6 +71,13 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			setName(NAME);
 			setLayout(new GridBagLayout());
 
+			createGlobalSettingsPanel();
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridx = 0;
+			c.gridy = 0;
+			c.anchor = GridBagConstraints.WEST;
+			add(globalSettingsPanel, c);
+
 			// configuration table
 			configurationTable = ctx.getBean("GUIAutomationConfigurationTable",
 					GUIAutomationConfigurationTable.class);
@@ -70,15 +87,13 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 					.getSelectionBackground());
 			JScrollPane scrollPane = new JScrollPane(configurationTable);
 
-			GridBagConstraints c = new GridBagConstraints();
-			c.gridx = 0;
-			c.gridy = 0;
-			add(scrollPane, c);
-
-			// editor panel
-			createEditorPanel();
 			c.gridx = 0;
 			c.gridy = 1;
+			add(scrollPane, c);
+
+			createEditorPanel();
+			c.gridx = 0;
+			c.gridy = 2;
 			c.anchor = GridBagConstraints.WEST;
 			add(editorPanel, c);
 
@@ -129,7 +144,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			long delay = getAutomationMinDelay(row);
 			long timeout = getAutomationTimeout(row);
 			String midiSignature = getAutomationMidiSignature(row);
-			float minSimilarity = getAutomationMinSimilarity(row);
+			float minSimilarity = (float) minSimilaritySpinner.getValue();
 			float scanRate = getAutomationScanRate(row);
 			boolean isMovable = getAutomationMovable(row);
 
@@ -233,20 +248,6 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	}
 
 	/**
-	 * Gets the minimum similarity for a specific row from the automation table
-	 * 
-	 * @param row
-	 *            The row
-	 * @return The automation minimum similarity
-	 */
-	private float getAutomationMinSimilarity(int row) {
-
-		return getAutomationsTableValue(
-				GUIAutomationConfigurationTable.COLNAME_MIN_SIMILARITY, row,
-				Float.class);
-	}
-
-	/**
 	 * Gets the scan rate for a specific row from the automation table
 	 * 
 	 * @param row
@@ -293,6 +294,29 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 		Object value = configurationTable.getModel().getValueAt(row, index);
 
 		return (T) value;
+	}
+
+	/**
+	 * Creates the panel for the global settings.
+	 */
+	private void createGlobalSettingsPanel() {
+
+		globalSettingsPanel = new JPanel();
+		globalSettingsPanel.setLayout(new FlowLayout());
+
+		JLabel minSimilarityLabel = new JLabel(MIN_SIMILARITY_LABEL);
+
+		SpinnerModel spinnerModel = new SpinnerNumberModel(
+				GUIAutomation.DEFAULT_MIN_SIMILARITY,
+				GUIAutomation.MIN_SIMILARITY_MIN_VALUE,
+				GUIAutomation.MIN_SIMILARITY_MAX_VALUE,
+				MIN_SIMILARITY_STEP_SIZE);
+
+		minSimilaritySpinner = new JSpinner(spinnerModel);
+		minSimilaritySpinner.setName(NAME_MIN_SIMILARITY_SPINNER);
+
+		globalSettingsPanel.add(minSimilarityLabel);
+		globalSettingsPanel.add(minSimilaritySpinner);
 	}
 
 	/**

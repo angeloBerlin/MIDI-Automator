@@ -390,23 +390,21 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	private void createGUIAutomation() {
 
 		GridBagConstraints c = new GridBagConstraints();
-		guiAutomationLabel = new JLabel(LABEL_GUI_AUTOMATION);
 
+		guiAutomationLabel = new JLabel(LABEL_GUI_AUTOMATION);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(10, 0, 0, 0);
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 8;
 		middlePanel.add(guiAutomationLabel, c);
 
 		guiAutomationConfigurationPanel = ctx.getBean(
 				"GUIAutomationConfigurationPanel",
 				GUIAutomationConfigurationPanel.class);
-
 		guiAutomationConfigurationPanel.init();
 		guiAutomationConfigurationPanel.setOpaque(true);
-
 		c.gridx = 0;
-		c.gridy = 8;
+		c.gridy = 9;
 		c.gridwidth = 4;
 		middlePanel.add(guiAutomationConfigurationPanel, c);
 

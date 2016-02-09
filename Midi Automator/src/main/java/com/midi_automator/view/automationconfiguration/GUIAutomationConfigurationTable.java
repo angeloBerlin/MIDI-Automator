@@ -58,7 +58,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int COLWIDTH_MIN_DELAY = 80;
 	private final int COLWIDTH_TIMEOUT = 80;
 	private final int COLWIDTH_MIDI_MESSAGE = 300;
-	private final int COLWIDTH_MIN_SIMILARITY = 65;
 	private final int COLWIDTH_SCAN_RATE = 80;
 	private final int COLWIDTH_MOVABLE = 60;
 	private final int COLWIDTH_SCREENSHOT_SEARCH = 120;
@@ -67,8 +66,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int ROWHEIGHT = 40;
 	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
 			+ COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY + COLWIDTH_TIMEOUT
-			+ COLWIDTH_MIDI_MESSAGE + COLWIDTH_MIN_SIMILARITY
-			+ COLWIDTH_SCAN_RATE + COLWIDTH_MOVABLE
+			+ COLWIDTH_MIDI_MESSAGE + COLWIDTH_SCAN_RATE + COLWIDTH_MOVABLE
 			+ COLWIDTH_SCREENSHOT_SEARCH;
 
 	private final String LABEL_SEARCHBUTTON = "Screenshot...";
@@ -79,7 +77,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	public static final String COLNAME_MIN_DELAY = "Delay (ms)";
 	public static final String COLNAME_TIMEOUT = "Timeout (ms)";
 	public static final String COLNAME_MIDI_SIGNATURE = "Midi Message";
-	public static final String COLNAME_MIN_SIMILARITY = "Similarity";
 	public static final String COLNAME_SCAN_RATE = "Scans (1/s)";
 	public static final String COLNAME_MOVABLE = "Movable";
 	public static final String COLNAME_SEARCH_BUTTON = "";
@@ -89,7 +86,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final String DEFAULT_MIDI_MESSAGE = "";
 	private final Long MIN_DELAY_STEP_SIZE = 1L;
 	private final Long TIMEOUT_STEP_SIZE = 1L;
-	private final Float MIN_SIMILARITY_STEP_SIZE = 0.01f;
 	private final Float SCAN_RATE_STEP_SIZE = 0.1f;
 
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
@@ -133,7 +129,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		columnNames.add(COLNAME_MIN_DELAY);
 		columnNames.add(COLNAME_TIMEOUT);
 		columnNames.add(COLNAME_MIDI_SIGNATURE);
-		columnNames.add(COLNAME_MIN_SIMILARITY);
 		columnNames.add(COLNAME_SCAN_RATE);
 		columnNames.add(COLNAME_MOVABLE);
 		columnNames.add(COLNAME_SEARCH_BUTTON);
@@ -147,7 +142,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createMinDelayColumn();
 		createTimeoutColumn();
 		createMidiMessageColumn();
-		createMinSimilarityColumn();
 		createScanRateColumn();
 		createMovableColumn();
 		createImageBrowseColumn();
@@ -250,18 +244,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		getColumn(COLNAME_MIDI_SIGNATURE).setMinWidth(COLWIDTH_MIDI_MESSAGE);
 		JTableNonEditableRenderer nonEditableRenderer = new JTableNonEditableRenderer();
 		getColumn(COLNAME_MIDI_SIGNATURE).setCellRenderer(nonEditableRenderer);
-	}
-
-	/**
-	 * Creates the minimum similarity column with a spinner.
-	 */
-	private void createMinSimilarityColumn() {
-
-		createSpinnerColumn(COLNAME_MIN_SIMILARITY, COLWIDTH_MIN_SIMILARITY, //
-				GUIAutomation.DEFAULT_MIN_SIMILARITY,//
-				GUIAutomation.MIN_SIMILARITY_MIN_VALUE,//
-				GUIAutomation.MIN_SIMILARITY_MAX_VALUE,//
-				MIN_SIMILARITY_STEP_SIZE);
 	}
 
 	/**
@@ -402,8 +384,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), timeout);
 		rowData.add(getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex(),
 				initMidiMessage(midiSignature));
-		rowData.add(getColumn(COLNAME_MIN_SIMILARITY).getModelIndex(),
-				minSimilarity);
 		rowData.add(getColumn(COLNAME_SCAN_RATE).getModelIndex(), scanRate);
 		rowData.add(getColumn(COLNAME_MOVABLE).getModelIndex(), isMovable);
 
@@ -477,8 +457,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					.getModelIndex());
 			model.setValueAt(initMidiMessage(midiSignature), row,
 					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
-			model.setValueAt(minSimilarity, row,
-					getColumn(COLNAME_MIN_SIMILARITY).getModelIndex());
 			model.setValueAt(isMovable, row, getColumn(COLNAME_MOVABLE)
 					.getModelIndex());
 		}

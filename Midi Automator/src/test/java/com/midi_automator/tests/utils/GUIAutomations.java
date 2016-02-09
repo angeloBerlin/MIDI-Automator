@@ -772,19 +772,17 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value to choose
-	 * @param row
-	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
 	 * @param preferencesFrame
 	 *            The preferencesFrame
 	 */
-	public static void setAutomationMinSimilarity(String value, int row,
+	public static void setAutomationMinSimilarity(String value,
 			FrameFixture preferencesFrame) {
 
-		setAutomationsSpinner(value, row,
-				GUIAutomationConfigurationTable.COLNAME_MIN_SIMILARITY,
-				preferencesFrame);
+		JSpinnerFixture spinner = preferencesFrame
+				.spinner(GUIAutomationConfigurationPanel.NAME_MIN_SIMILARITY_SPINNER);
+		spinner.enterText(value);
 	}
 
 	/**

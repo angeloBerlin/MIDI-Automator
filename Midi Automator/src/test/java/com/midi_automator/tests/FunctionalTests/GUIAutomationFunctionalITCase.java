@@ -75,7 +75,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(5000);
+			Thread.sleep(8000);
 
 			// search clicked Midi Automator
 			getFileList().requireSelectedItems(5);
@@ -87,7 +87,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// decrease similarity
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationMinSimilarity("0.5", 0, preferencesFrame);
+			setAutomationMinSimilarity("0.5", preferencesFrame);
 			saveDialog(preferencesFrame);
 
 			Thread.sleep(1000);
