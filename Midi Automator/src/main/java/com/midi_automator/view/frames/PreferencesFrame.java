@@ -153,7 +153,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		// GUI Automation
 		createGUIAutomation();
-		guiAutomationsService.setGUIAutomationsToActive(false);
+		guiAutomationsService.setGUIAutomatorsToActive(false);
 
 		// Save
 		saveAction = new SaveAction();
@@ -649,7 +649,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		@Override
 		public void windowClosing(WindowEvent e) {
 			e.getWindow().dispose();
-			guiAutomationsService.setGUIAutomationsToActive(true);
+			guiAutomationsService.setGUIAutomatorsToActive(true);
 		}
 	}
 }

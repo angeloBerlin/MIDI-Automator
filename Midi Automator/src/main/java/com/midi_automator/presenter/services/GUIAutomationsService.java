@@ -400,13 +400,13 @@ public class GUIAutomationsService {
 	}
 
 	/**
-	 * De-/Activates the GUI automations.
+	 * De-/Activates the GUI automators.
 	 * 
 	 * @param active
 	 *            <TRUE> activate GUI automation, <FALSE> deactivate GUI
 	 *            automation
 	 */
-	public void setGUIAutomationsToActive(boolean active) {
+	public void setGUIAutomatorsToActive(boolean active) {
 		for (GUIAutomator guiAutomator : guiAutomators) {
 			guiAutomator.setActive(active);
 		}

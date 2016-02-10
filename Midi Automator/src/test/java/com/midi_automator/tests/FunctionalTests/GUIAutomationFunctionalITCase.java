@@ -640,4 +640,33 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void storedAutomationsShouldBeActivatedAfterPreferencesFrameWasCanceled() {
+
+		try {
+			MockUpUtils
+					.setMockupPropertiesFile("mockups/"
+							+ propertiesOncePerOpeningHelloWorld1PopupAndAlwaysCancelAutomation);
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12_empty.mido");
+			startApplication();
+
+			// check if add dialog was canceled
+			FrameFixture addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+			// open and cancel preferences
+			FrameFixture preferencesFrame = openPreferences();
+			cancelDialog(preferencesFrame);
+
+			// check if add dialog was canceled
+			addFrame = openAddDialog();
+			Thread.sleep(5000);
+			addFrame.requireNotVisible();
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
