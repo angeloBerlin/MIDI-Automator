@@ -29,8 +29,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private boolean active = true;
 
 	private GUIAutomation guiAutomation;
-	Region searchRegion = null;
+	private Region searchRegion = new MinSimColoredScreen();
 	private Match match;
+	private ObserverCallBack observer = new AppearingMatchObserver();
+	private boolean fixedSearchRegion = false;
 
 	/**
 	 * Standard Constructor
@@ -60,8 +62,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		while (running) {
 			try {
-				Thread.sleep(10);
-				triggerAutomation();
+				Thread.sleep(100);
+				if (isActive()) {
+					triggerAutomation();
+				}
 			} catch (InterruptedException e) {
 				log.error("Failure in GUIAutomator Thread sleep", e);
 			}
@@ -188,10 +192,10 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 			Region lastFound = guiAutomation.getLastFoundRegion();
 
 			// set search region
-			if (lastFound != null && !guiAutomation.isMovable()) {
+			if (lastFound != null && !guiAutomation.isMovable()
+					&& !fixedSearchRegion) {
 				searchRegion = new MinSimColoredScreen(lastFound);
-			} else {
-				searchRegion = new MinSimColoredScreen();
+				fixedSearchRegion = true;
 			}
 
 			searchRegion.setObserveScanRate(guiAutomation.getScanRate());
@@ -206,12 +210,12 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 			// search for image
 			searchRegion.onAppear(
-					SystemUtils.replaceSystemVariables(imagePath),
-					new AppearingMatchObserver());
+					SystemUtils.replaceSystemVariables(imagePath), observer);
 
 			boolean found = searchRegion.observe(SIKULIX_TIMEOUT);
 
 			if (found) {
+				// do not run automation if it was deactivated in the meantime
 				if (isActive()) {
 					runAutomation(match);
 					wasRun = true;
