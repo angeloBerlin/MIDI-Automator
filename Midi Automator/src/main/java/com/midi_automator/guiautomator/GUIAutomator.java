@@ -60,6 +60,13 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 			new TimeOutWatcher().start();
 		}
 
+		// prepare search parameters
+		Settings.MinSimilarity = guiAutomation.getMinSimilarity();
+		Settings.CheckLastSeenSimilar = guiAutomation.getMinSimilarity();
+		searchRegion.setObserveScanRate(guiAutomation.getScanRate());
+		searchRegion.onAppear(SystemUtils.replaceSystemVariables(guiAutomation
+				.getImagePath()), observer);
+
 		while (running) {
 			try {
 				Thread.sleep(100);
@@ -185,20 +192,19 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		if (!imagePath.equals(MidiAutomatorProperties.VALUE_NULL)) {
 
-			// prepare search parameters
-			Settings.MinSimilarity = guiAutomation.getMinSimilarity();
-			Settings.CheckLastSeenSimilar = guiAutomation.getMinSimilarity();
-
 			Region lastFound = guiAutomation.getLastFoundRegion();
 
-			// set search region
+			// reduce search region
 			if (lastFound != null && !guiAutomation.isMovable()
 					&& !fixedSearchRegion) {
-				searchRegion = new MinSimColoredScreen(lastFound);
+
+				searchRegion.x = lastFound.x;
+				searchRegion.y = lastFound.y;
+				searchRegion.w = lastFound.w;
+				searchRegion.h = lastFound.h;
+
 				fixedSearchRegion = true;
 			}
-
-			searchRegion.setObserveScanRate(guiAutomation.getScanRate());
 
 			log.debug("("
 					+ getName()
@@ -207,10 +213,6 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 							.getImagePath()) + "\" "
 					+ ", minimum smimilarity: " + Settings.MinSimilarity
 					+ ", scan rate: " + searchRegion.getObserveScanRate());
-
-			// search for image
-			searchRegion.onAppear(
-					SystemUtils.replaceSystemVariables(imagePath), observer);
 
 			boolean found = searchRegion.observe(SIKULIX_TIMEOUT);
 
