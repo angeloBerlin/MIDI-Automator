@@ -39,7 +39,7 @@ public class GUIAutomation implements IDeActivateable {
 	public static final Float MIN_SIMILARITY_MIN_VALUE = 0.5f;
 	public static final Float MIN_SIMILARITY_MAX_VALUE = 0.99f;
 
-	public static final Float DEFAULT_SCAN_RATE = 3f;
+	public static final Float DEFAULT_SCAN_RATE = 1f;
 	public static final Float MIN_SCAN_RATE = 0.1f;
 	public static final Float MAX_SCAN_RATE = 5f;
 
