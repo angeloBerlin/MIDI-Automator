@@ -16,6 +16,7 @@ import org.assertj.swing.fixture.JTableFixture;
 import org.junit.Test;
 
 import com.midi_automator.guiautomator.GUIAutomation;
+import com.midi_automator.presenter.Messages;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.MainFramePopupMenu;
@@ -442,7 +443,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			MockUpUtils.setMockupPropertiesFile("mockups/"
 					+ propertiesMidiHelloWorldAutomation);
-			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils
+					.setMockupMidoFile("mockups/Hello_World_12_no_file.mido");
 			startApplication();
 
 			// set trigger to double click once
@@ -459,8 +461,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// check if file was opened
 			Thread.sleep(5000);
 
-			checkIfOpenEntryIsDisplayed("Hello World 1");
-			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			checkInfoText(String.format(Messages.MSG_FILE_LIST_NOT_FOUND,
+					"./testfiles/Hello World_no_file.rtf"));
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
