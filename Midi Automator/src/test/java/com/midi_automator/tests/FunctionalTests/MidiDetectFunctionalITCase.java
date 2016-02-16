@@ -95,7 +95,6 @@ public class MidiDetectFunctionalITCase extends FunctionalBaseCase {
 			getMidiOUTDetect().background().requireEqualTo(
 					MainFrame.MIDI_DETECT_COLOR);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

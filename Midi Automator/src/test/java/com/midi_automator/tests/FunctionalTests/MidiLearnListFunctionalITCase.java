@@ -1,13 +1,6 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnlearnListEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setMidiInRemoteDevice;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -45,7 +38,7 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiLearnShouldBeCanceled() {
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
@@ -53,10 +46,16 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 
 		// midi learn
 		midiLearnListEntry(0);
+		getFileList().requireDisabled();
 
 		// cancel midi learn
-		// TODO: not possible as JList is disabled
 		cancelMidiLearnListEntry();
+
+		JPopupMenuFixture popupMenu = openFileListPopupMenu(0);
+		popupMenu.menuItem(MidiLearnPopupMenu.NAME_MENU_ITEM_MIDI_LEARN)
+				.requireVisible();
+
+		getFileList().requireEnabled();
 	}
 
 	@Test

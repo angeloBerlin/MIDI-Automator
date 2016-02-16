@@ -46,6 +46,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.spring.version>4.2.2.RELEASE</project.spring.version>
 		<project.junit.version>4.12</project.junit.version>
 		<project.log4j.version>1.2.17</project.log4j.version>
+		<project.assertj-swing-junit.version>3.1.1</project.assertj-swing-junit.version>
 		<project.jar.descriptor.ref>jar-with-dependencies</project.jar.descriptor.ref>
 		<project.jar>${project.build.finalName}-${project.jar.descriptor.ref}.jar</project.jar>
 		<project.splashscreen.file>splash.png</project.splashscreen.file>
@@ -132,8 +133,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>
-			<artifactId>assertj-swing-junit-4.5</artifactId>
-			<version>1.2.0</version>
+			<artifactId>assertj-swing-junit</artifactId>
+			<version>${project.assertj-swing-junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

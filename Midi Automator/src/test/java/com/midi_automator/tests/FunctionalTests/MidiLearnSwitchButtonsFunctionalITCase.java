@@ -37,19 +37,26 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiLearnShouldBeCanceledOnNextButton() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 		startApplication();
 
+		// midi learn
 		midiLearnNextButton();
+		getNextButton().requireDisabled();
 
 		// cancel midi learn
-		// TODO: not possible as JList is disabled
 		cancelMidiNextButton();
 
+		// midi learn should be shown
+		JPopupMenuFixture popupMenu = openNextButtonPopupMenu();
+		popupMenu.menuItem(MidiLearnPopupMenu.NAME_MENU_ITEM_MIDI_LEARN)
+				.requireVisible();
+
+		getNextButton().requireEnabled();
 	}
 
 	@Test
@@ -129,18 +136,27 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	// @Test
+	@Test
 	public void midiLearnShouldBeCanceledOnPrevButton() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
 		startApplication();
 
+		// midi learn
 		midiLearnPrevButton();
+		getPrevButton().requireDisabled();
 
 		// cancel midi learn
-		// TODO: not possible as JList is disabled
 		cancelMidiPrevButton();
+
+		// midi learn should be shown
+		JPopupMenuFixture popupMenu = openPrevButtonPopupMenu();
+		popupMenu.menuItem(MidiLearnPopupMenu.NAME_MENU_ITEM_MIDI_LEARN)
+				.requireVisible();
+
+		getPrevButton().requireEnabled();
+
 	}
 
 	@Test
