@@ -53,6 +53,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.images.dir>images</project.images.dir>
 		<project.demo.dir>demo</project.demo.dir>
 		<project.jre.dir>jre</project.jre.dir>
+		<project.java.version>1.8</project.java.version>
 
 		<!-- MacOS -->
 		<project.dist.dir.macos>${project.dist.dir}/MacOS</project.dist.dir.macos>
@@ -165,8 +166,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${project.java.version}</source>
+					<target>${project.java.version}</target>
 				</configuration>
 			</plugin>
 
@@ -339,8 +340,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									</classPath>
 									<icon>${project.images.dir}/${project.icon.file.windows}</icon>
 									<jre>
-										<minVersion>1.7.0</minVersion>
-										<maxVersion>1.7.9</maxVersion>
+										<minVersion>${project.java.version}.0</minVersion>
+										<maxVersion>${project.java.version}.9</maxVersion>
 										<jdkPreference>preferJre</jdkPreference>
 										<runtimeBits>64</runtimeBits>
 										<opts>

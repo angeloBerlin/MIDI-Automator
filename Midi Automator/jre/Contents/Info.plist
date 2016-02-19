@@ -7,13 +7,13 @@
         <key>CFBundleExecutable</key>
         <string>libjli.dylib</string>
         <key>CFBundleGetInfoString</key>
-        <string>Java SE 1.7.0_80</string>
+        <string>Java SE 1.8.0_74</string>
         <key>CFBundleIdentifier</key>
-        <string>com.oracle.java.7u80.jdk</string>
+        <string>com.oracle.java.8u74.jdk</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>7.0</string>
         <key>CFBundleName</key>
-        <string>Java SE 7</string>
+        <string>Java SE 8</string>
         <key>CFBundlePackageType</key>
         <string>BNDL</string>
         <key>CFBundleShortVersionString</key>
@@ -21,7 +21,7 @@
         <key>CFBundleSignature</key>
         <string>????</string>
         <key>CFBundleVersion</key>
-        <string>1.7.0_80</string>
+        <string>1.8.0_74</string>
         <key>JavaVM</key>
         <dict>
                 <key>JVMCapabilities</key>
@@ -33,11 +33,11 @@
                 <key>JVMMinimumSystemVersion</key>
                 <string>10.6.0</string>
                 <key>JVMPlatformVersion</key>
-                <string>1.7</string>
+                <string>1.8</string>
                 <key>JVMVendor</key>
                 <string>Oracle Corporation</string>
                 <key>JVMVersion</key>
-                <string>1.7.0_80</string>
+                <string>1.8.0_74</string>
         </dict>
 </dict>
 </plist>
