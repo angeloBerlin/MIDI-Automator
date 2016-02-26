@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.6.0</version>
+	<version>1.5.2</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -340,10 +340,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									</classPath>
 									<icon>${project.images.dir}/${project.icon.file.windows}</icon>
 									<jre>
-										<minVersion>${project.java.version}.0</minVersion>
-										<maxVersion>${project.java.version}.9</maxVersion>
-										<jdkPreference>preferJre</jdkPreference>
-										<runtimeBits>64</runtimeBits>
+										<path>jre</path>
+                                        <runtimeBits>64</runtimeBits>
 										<opts>
 											<opt>-splash:images/${project.splashscreen.file}</opt>
 											<!--<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt> -->
