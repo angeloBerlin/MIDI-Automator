@@ -1,11 +1,13 @@
 /**
  * @author Angelo Guelle
+ *
+ * Note: Download http://nsis.sourceforge.net/AccessControl_plug-in and copy it to the NSIS installation directory
  */
 
 !include "MUI.nsh"
-!include "EnvVarUpdate.nsh"
 
 Name "MIDI Automator Installer"
+RequestExecutionLevel admin
 !define INSTALLATIONNAME "Midi Automator"
 !define PROJECTPATH "..\"
 !define ICON "MidiAutomatorIcon.ico"
@@ -30,21 +32,18 @@ Section
     SetOutPath $INSTDIR
     SetOverwrite on
     File "${PROJECTPATH}\images\${ICON}"
-    File /r /x "file_list.mido" /x "midiautomator.properties" "${PROJECTPATH}\${BUILD}\*"
-      
-    # Copy files to data directory
-    SetOutPath "${APPDIR}"
-    File "${PROJECTPATH}\${BUILD}\file_list.mido"
-    File "${PROJECTPATH}\${BUILD}\midiautomator.properties"
-    WriteUninstaller $INSTDIR\${UNINSTALLER}
+    File /r "${PROJECTPATH}\${BUILD}\*"
+    AccessControl::GrantOnFile "$INSTDIR\midiautomator.properties" "(BU)" "FullAccess"
+    AccessControl::GrantOnFile "$INSTDIR\file_list.mido" "(BU)" "FullAccess"
+    AccessControl::GrantOnFile "$INSTDIR\MidiAutomator.log" "(BU)" "FullAccess"
     
+    # Create uninstaller
+    WriteUninstaller $INSTDIR\${UNINSTALLER}
+        
     # Start menu entries
     SetOutPath $INSTDIR
     SetShellVarContext all
     CreateShortCut "$SMPROGRAMS\${LNK}" "$INSTDIR\${EXE}" "" "$INSTDIR\${EXE}" 0
-    
-    # Set PATH environment variable
-    #${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\lib\libs"
       
     # Set uninstall RegKeys
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayName" "${INSTALLATIONNAME}"
@@ -59,14 +58,9 @@ SectionEnd
 Section "Uninstall"
     # Remove Uninstall RegKeys
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}"
-    # Remove PATH entry
-    # ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\lib\libs"
     # Delete start menu entries
     SetShellVarContext all
     Delete "$SMPROGRAMS\${LNK}"
     # Delete install directory
     RMDir /r $INSTDIR
-    # Delete data directory
-    SetShellVarContext current
-    RMDir /r "${APPDIR}"
 SectionEnd

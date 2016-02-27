@@ -41,6 +41,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.dist.dir>dist</project.dist.dir>
 		<project.filelist.file>file_list.mido</project.filelist.file>
 		<project.properties.file>midiautomator.properties</project.properties.file>
+		<project.log.file>MidiAutomator.log</project.log.file>
 		<project.lib.dir>lib</project.lib.dir>
 		<project.sikulix.version>1.1.0</project.sikulix.version>
 		<project.spring.version>4.2.2.RELEASE</project.spring.version>
@@ -334,7 +335,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									<headerType>gui</headerType>
 									<jar>${project.build.directory}/${project.jar}</jar>
 									<outfile>${project.build.directory}/${project.exe.file}</outfile>
-									<cmdLine>-wd=&quot;%APPDATA%\${project.name}&quot; -os=Win</cmdLine>
+									<cmdLine>-wd=. -os=Win</cmdLine>
 									<classPath>
 										<mainClass>${project.main.class}</mainClass>
 									</classPath>
@@ -344,7 +345,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
                                         <runtimeBits>64</runtimeBits>
 										<opts>
 											<opt>-splash:images/${project.splashscreen.file}</opt>
-											<!--<opt>-Dfile.encoding=${project.build.sourceEncoding}</opt> -->
 										</opts>
 									</jre>
 								</configuration>
@@ -393,6 +393,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 											<includes>
 												<include>${project.filelist.file}</include>
 												<include>${project.properties.file}</include>
+												<include>${project.log.file}</include>
 											</includes>
 										</resource>
 									</resources>
