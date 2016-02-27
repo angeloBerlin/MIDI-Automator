@@ -652,6 +652,7 @@ public class MainFrame extends JFrame {
 		prevButton.setPreferredSize(dimension);
 		prevButton.setAction(new PrevAction());
 		prevButton.setIcon(new ImageIcon(iconPathPrev));
+		log.debug("Loading \"prev\" icon: " + iconPathPrev);
 		prevButton.addMouseListener(new PopupListener());
 		prevButton.setFocusable(false);
 
@@ -662,6 +663,7 @@ public class MainFrame extends JFrame {
 		nextButton.setName(NAME_NEXT_BUTTON);
 		nextButton.setPreferredSize(dimension);
 		nextButton.setAction(new NextAction());
+		log.debug("Loading \"next\" icon: " + iconPathNext);
 		nextButton.setIcon(new ImageIcon(iconPathNext));
 		nextButton.addMouseListener(new PopupListener());
 		nextButton.setFocusable(false);

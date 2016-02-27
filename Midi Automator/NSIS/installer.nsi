@@ -30,22 +30,22 @@ Section
     SetOutPath $INSTDIR
     SetOverwrite on
     File "${PROJECTPATH}\images\${ICON}"
-    File /r /x "file_list.mido" "${PROJECTPATH}\${BUILD}\*"
-    File /r /x "midiautomator.properties" "${PROJECTPATH}\${BUILD}\*"
-    
+    File /r /x "file_list.mido" /x "midiautomator.properties" "${PROJECTPATH}\${BUILD}\*"
+      
     # Copy files to data directory
     SetOutPath "${APPDIR}"
     File "${PROJECTPATH}\${BUILD}\file_list.mido"
     File "${PROJECTPATH}\${BUILD}\midiautomator.properties"
     WriteUninstaller $INSTDIR\${UNINSTALLER}
     
-    # Set PATH environment variable
-    ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\lib\libs"
-    
-    # Startmenu entries
+    # Start menu entries
+    SetOutPath $INSTDIR
     SetShellVarContext all
     CreateShortCut "$SMPROGRAMS\${LNK}" "$INSTDIR\${EXE}" "" "$INSTDIR\${EXE}" 0
     
+    # Set PATH environment variable
+    #${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\lib\libs"
+      
     # Set uninstall RegKeys
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayName" "${INSTALLATIONNAME}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}" "DisplayIcon" '"$INSTDIR\${ICON}"'
@@ -60,7 +60,7 @@ Section "Uninstall"
     # Remove Uninstall RegKeys
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${INSTALLATIONNAME}"
     # Remove PATH entry
-    ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\lib\libs"
+    # ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\lib\libs"
     # Delete start menu entries
     SetShellVarContext all
     Delete "$SMPROGRAMS\${LNK}"

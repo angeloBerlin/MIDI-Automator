@@ -334,7 +334,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									<headerType>gui</headerType>
 									<jar>${project.build.directory}/${project.jar}</jar>
 									<outfile>${project.build.directory}/${project.exe.file}</outfile>
-									<cmdLine>-wd=&quot;%APPDATA%\\${project.name}&quot;\\</cmdLine>
+									<cmdLine>-wd=&quot;%APPDATA%\${project.name}&quot; -os=Win</cmdLine>
 									<classPath>
 										<mainClass>${project.main.class}</mainClass>
 									</classPath>

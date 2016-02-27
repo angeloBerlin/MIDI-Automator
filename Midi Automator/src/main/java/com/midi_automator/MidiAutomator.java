@@ -4,15 +4,12 @@ import java.util.Locale;
 
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.SystemUtils;
 
 public class MidiAutomator {
-
-	static Logger log = Logger.getLogger(MidiAutomator.class.getName());
 
 	public static String wd = "";
 	public static String os = "";
@@ -36,16 +33,13 @@ public class MidiAutomator {
 				if (arg.contains("-wd=")) {
 					wd = SystemUtils.replaceSystemVariables(arg.replace("-wd=",
 							""));
-					log.info("Working Driectory (-wd) set to: " + wd);
 				}
 
 				if (arg.contains("-os=")) {
 					os = arg.replace("-os=", "");
-					log.info("Operating System (-os) set to: " + os);
 				}
 
 				if (arg.contains("-test")) {
-					log.info("Set \"-test\"");
 					test = true;
 				}
 			}
