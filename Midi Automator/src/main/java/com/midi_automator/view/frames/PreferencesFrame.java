@@ -71,7 +71,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 	public static final String NAME = "preferences frame";
 	public static final String NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX = "midiINRemoteDeviceComboBox";
-	public static final String NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX = " midiOUTRemoteDeviceComboBox";
+	public static final String NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX = "midiOUTRemoteDeviceComboBox";
 	public static final String NAME_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX = "midiOUTSwitchNotifierDeviceComboBox";
 	public static final String NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX = "midiOUTSwitchItemDeviceComboBox";
 	public static final String NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX = "midiINMetronomDeviceComboBox";

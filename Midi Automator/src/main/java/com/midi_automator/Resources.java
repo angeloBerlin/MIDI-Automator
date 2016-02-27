@@ -42,7 +42,7 @@ public class Resources {
 			IMAGE_PATH = WORKING_DIRECTORY + "/images/";
 			PROPERTIES_PATH = WORKING_DIRECTORY;
 			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
-			configureLog4J(LOG_FILE_NAME);
+			configureLog4J("Midi Automator/" + LOG_FILE_NAME);
 			break;
 		case "Win":
 			IMAGE_PATH = "images" + File.separator;
