@@ -334,7 +334,8 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 								</goals>
 								<configuration>
 									<headerType>gui</headerType>
-									<jar>${project.build.directory}/${project.jar}</jar>
+									<dontWrapJar>true</dontWrapJar>
+									<jar>${project.jar}</jar>
 									<outfile>${project.build.directory}/${project.exe.file}</outfile>
 									<cmdLine>-wd=. -os=Win</cmdLine>
 									<classPath>
@@ -386,7 +387,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 											<directory>${project.build.directory}</directory>
 											<includes>
 												<include>${project.exe.file}</include>
-												<include>${project.build.finalName}.jar</include>
+												<include>${project.jar}</include>
 											</includes>
 										</resource>
 										<resource>
@@ -412,22 +413,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									<resources>
 										<resource>
 											<directory>${project.images.dir}</directory>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-							<execution>
-								<id>copy-libs</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>${project.nsis.build.dir}/${project.lib.dir}</outputDirectory>
-									<overwrite>true</overwrite>
-									<resources>
-										<resource>
-											<directory>${project.lib.dir}</directory>
 										</resource>
 									</resources>
 								</configuration>
