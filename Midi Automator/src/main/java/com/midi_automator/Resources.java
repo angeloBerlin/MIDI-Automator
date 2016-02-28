@@ -39,7 +39,8 @@ public class Resources {
 
 		switch (OPERATING_SYSTEM) {
 		case "MacOS":
-			IMAGE_PATH = WORKING_DIRECTORY + "/images/";
+			IMAGE_PATH = WORKING_DIRECTORY + File.separator + "images"
+					+ File.separator;
 			PROPERTIES_PATH = WORKING_DIRECTORY;
 			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
 			configureLog4J("Midi Automator/" + LOG_FILE_NAME);

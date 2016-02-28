@@ -38,7 +38,8 @@ public class Model implements IModel {
 			TooManyEntriesException {
 
 		setList.clear();
-		FileReader fileReader = new FileReader(getPersistenceFileName());
+		String fileName = getPersistenceFileName();
+		FileReader fileReader = new FileReader(fileName);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 		String line = null;

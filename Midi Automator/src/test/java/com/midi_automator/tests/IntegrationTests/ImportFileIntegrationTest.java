@@ -1,6 +1,6 @@
 package com.midi_automator.tests.IntegrationTests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -31,12 +31,12 @@ public class ImportFileIntegrationTest extends IntegrationTBase {
 				+ testFileName));
 
 		// test file_list.mido
-		assertEquals(fileListService.getEntryNameByIndex(0), "Hello World 1");
-		assertEquals(fileListService.getEntryNameByIndex(1), "Hello World 2");
-		assertEquals(fileListService.getMidiFileListSendingSignature(0),
-				"channel 16: CONTROL CHANGE 1 value: 127");
-		assertEquals(fileListService.getMidiFileListSendingSignature(1),
-				"channel 16: CONTROL CHANGE 2 value: 127");
+		assertEquals("Hello World 1", fileListService.getEntryNameByIndex(0));
+		assertEquals("Hello World 2", fileListService.getEntryNameByIndex(1));
+		assertEquals("channel 16: CONTROL CHANGE 1 value: 127",
+				fileListService.getMidiFileListSendingSignature(0));
+		assertEquals("channel 16: CONTROL CHANGE 2 value: 127",
+				fileListService.getMidiFileListSendingSignature(1));
 
 		// test midautomator.properties
 		assertEquals(

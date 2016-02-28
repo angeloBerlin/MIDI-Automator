@@ -58,7 +58,7 @@ public class ImportExportService {
 		loadedMidautoFilePath = file.getAbsolutePath();
 		String unzipPath = resources.getPropertiesPath();
 
-		if (unzipPath.equals("")) {
+		if (unzipPath.equals(File.separator)) {
 			unzipPath = ".";
 		}
 

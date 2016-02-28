@@ -11,7 +11,7 @@ import com.midi_automator.utils.SystemUtils;
 
 public class MidiAutomator {
 
-	public static String wd = "";
+	public static String wd = ".";
 	public static String os = "";
 	public static boolean test = false;
 	public static Locale locale = Locale.ENGLISH;
