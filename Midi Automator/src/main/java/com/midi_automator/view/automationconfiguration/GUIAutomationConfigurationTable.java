@@ -632,14 +632,18 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			mouseReleased(e);
+			if (e.isPopupTrigger()) {
+				mouseReleased(e);
+			}
 
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (isActive()) {
-				maybeShowPopup(e);
+			if (e.isPopupTrigger()) {
+				if (isActive()) {
+					maybeShowPopup(e);
+				}
 			}
 		}
 
@@ -651,44 +655,42 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		 *            The mouse event
 		 */
 		private void maybeShowPopup(MouseEvent e) {
-			if (e.isPopupTrigger()) {
 
-				JTable table = (JTable) e.getSource();
-				int row = table.rowAtPoint(e.getPoint());
-				int column = table.columnAtPoint(e.getPoint());
+			JTable table = (JTable) e.getSource();
+			int row = table.rowAtPoint(e.getPoint());
+			int column = table.columnAtPoint(e.getPoint());
 
-				if (!table.isRowSelected(row)) {
-					table.changeSelection(row, column, false, false);
-				}
-
-				// de-/activate midi learn item
-				String midiInAutomationDeviceName = (String) table.getValueAt(
-						row, getColumn(COLNAME_TRIGGER).getModelIndex());
-
-				popupMenu.getMidiLearnMenuItem().setEnabled(false);
-
-				if (midiInAutomationDeviceName != null
-						&& !midiInAutomationDeviceName
-								.equals(MidiAutomatorProperties.VALUE_NULL)
-						&& midiInAutomationDeviceName
-								.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-					popupMenu.getMidiLearnMenuItem().setEnabled(true);
-				}
-
-				// de-/activate midi unlearn item
-				String midiSignature = (String) table.getModel().getValueAt(
-						row, getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
-
-				popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
-
-				if (midiSignature != null) {
-					if (!midiSignature.equals("")) {
-						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
-					}
-				}
-
-				popupMenu.show(e.getComponent(), e.getX(), e.getY());
+			if (!table.isRowSelected(row)) {
+				table.changeSelection(row, column, false, false);
 			}
+
+			// de-/activate midi learn item
+			String midiInAutomationDeviceName = (String) table.getValueAt(row,
+					getColumn(COLNAME_TRIGGER).getModelIndex());
+
+			popupMenu.getMidiLearnMenuItem().setEnabled(false);
+
+			if (midiInAutomationDeviceName != null
+					&& !midiInAutomationDeviceName
+							.equals(MidiAutomatorProperties.VALUE_NULL)
+					&& midiInAutomationDeviceName
+							.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+				popupMenu.getMidiLearnMenuItem().setEnabled(true);
+			}
+
+			// de-/activate midi unlearn item
+			String midiSignature = (String) table.getModel().getValueAt(row,
+					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
+
+			popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+
+			if (midiSignature != null) {
+				if (!midiSignature.equals("")) {
+					popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+				}
+			}
+
+			popupMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
 

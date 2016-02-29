@@ -935,13 +935,17 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			mouseReleased(e);
+			if (e.isPopupTrigger()) {
+				mouseReleased(e);
+			}
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (isActive()) {
-				maybeShowPopup(e);
+			if (e.isPopupTrigger()) {
+				if (isActive()) {
+					maybeShowPopup(e);
+				}
 			}
 		}
 
@@ -953,99 +957,96 @@ public class MainFrame extends JFrame {
 		 *            The mouse event
 		 */
 		private void maybeShowPopup(MouseEvent e) {
-			if (e.isPopupTrigger()) {
 
-				// getting the name of the component
-				Component component = (Component) e.getSource();
-				String componentName = component.getName();
+			// getting the name of the component
+			Component component = (Component) e.getSource();
+			String componentName = component.getName();
 
-				// getting midi device names
-				String midiInRemoteDeviceName = midiService
-						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-				String switchItemDeviceName = midiService
-						.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
+			// getting midi device names
+			String midiInRemoteDeviceName = midiService
+					.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+			String switchItemDeviceName = midiService
+					.getMidiDeviceName(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 
-				if (componentName != null) {
+			if (componentName != null) {
 
-					// show pop-up of file list
-					if (componentName.equals(MainFrame.NAME_FILE_LIST)) {
+				// show pop-up of file list
+				if (componentName.equals(MainFrame.NAME_FILE_LIST)) {
 
-						// set selection in file list
-						fileList.setSelectedIndex(fileList.locationToIndex(e
-								.getPoint()));
+					// set selection in file list
+					fileList.setSelectedIndex(fileList.locationToIndex(e
+							.getPoint()));
 
-						popupMenu.configureFileListPopupMenu();
-						popupMenu.show(e.getComponent(), e.getX(), e.getY());
+					popupMenu.configureFileListPopupMenu();
+					popupMenu.show(e.getComponent(), e.getX(), e.getY());
 
-						// en/disable edit
-						popupMenu.getEditMenuItem().setEnabled(false);
-						if (fileList.getSelectedIndex() > -1) {
-							popupMenu.getEditMenuItem().setEnabled(true);
-						}
+					// en/disable edit
+					popupMenu.getEditMenuItem().setEnabled(false);
+					if (fileList.getSelectedIndex() > -1) {
+						popupMenu.getEditMenuItem().setEnabled(true);
+					}
 
-						// en/disable delete
-						popupMenu.getDeleteMenuItem().setEnabled(false);
-						if (fileList.getSelectedIndex() > -1) {
-							popupMenu.getDeleteMenuItem().setEnabled(true);
-						}
+					// en/disable delete
+					popupMenu.getDeleteMenuItem().setEnabled(false);
+					if (fileList.getSelectedIndex() > -1) {
+						popupMenu.getDeleteMenuItem().setEnabled(true);
+					}
 
-						// en/disable move up
-						popupMenu.getMoveUpMenuItem().setEnabled(false);
-						if (!isFirstItem() && fileList.getSelectedIndex() > -1) {
-							popupMenu.getMoveUpMenuItem().setEnabled(true);
-						}
+					// en/disable move up
+					popupMenu.getMoveUpMenuItem().setEnabled(false);
+					if (!isFirstItem() && fileList.getSelectedIndex() > -1) {
+						popupMenu.getMoveUpMenuItem().setEnabled(true);
+					}
 
-						// en/disable move down
-						popupMenu.getMoveDownMenuItem().setEnabled(false);
-						if (!isLastItem() && fileList.getSelectedIndex() > -1) {
-							popupMenu.getMoveDownMenuItem().setEnabled(true);
-						}
+					// en/disable move down
+					popupMenu.getMoveDownMenuItem().setEnabled(false);
+					if (!isLastItem() && fileList.getSelectedIndex() > -1) {
+						popupMenu.getMoveDownMenuItem().setEnabled(true);
+					}
 
-						// en/disable midi learn
-						popupMenu.getMidiLearnMenuItem().setEnabled(false);
-						if (fileList.getSelectedIndex() > -1
-								&& midiInRemoteDeviceName != null
-								&& !midiInRemoteDeviceName
-										.equals(MidiAutomatorProperties.VALUE_NULL)) {
-							popupMenu.getMidiLearnMenuItem().setEnabled(true);
-						}
-
-						// en/disable send midi
-						popupMenu.getSendMidiMenuItem().setEnabled(false);
-						if (switchItemDeviceName != null) {
-							if (!switchItemDeviceName
+					// en/disable midi learn
+					popupMenu.getMidiLearnMenuItem().setEnabled(false);
+					if (fileList.getSelectedIndex() > -1
+							&& midiInRemoteDeviceName != null
+							&& !midiInRemoteDeviceName
 									.equals(MidiAutomatorProperties.VALUE_NULL)) {
-								popupMenu.getSendMidiMenuItem()
-										.setEnabled(true);
-							}
+						popupMenu.getMidiLearnMenuItem().setEnabled(true);
+					}
+
+					// en/disable send midi
+					popupMenu.getSendMidiMenuItem().setEnabled(false);
+					if (switchItemDeviceName != null) {
+						if (!switchItemDeviceName
+								.equals(MidiAutomatorProperties.VALUE_NULL)) {
+							popupMenu.getSendMidiMenuItem().setEnabled(true);
 						}
-
-						popupWasShown = true;
 					}
 
-					// en/disable midi unlearn
-					popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
-					if (midiRemoteOpenService.isMidiLearned(component)) {
-						popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+					popupWasShown = true;
+				}
+
+				// en/disable midi unlearn
+				popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+				if (midiRemoteOpenService.isMidiLearned(component)) {
+					popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+				}
+
+				// show pop-up of switch buttons
+				if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
+						|| (componentName.equals(MainFrame.NAME_PREV_BUTTON))) {
+
+					if (midiInRemoteDeviceName != null
+							&& !midiInRemoteDeviceName
+									.equals(MidiAutomatorProperties.VALUE_NULL)) {
+						popupMenu.getMidiLearnMenuItem().setEnabled(true);
 					}
 
-					// show pop-up of switch buttons
-					if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
-							|| (componentName
-									.equals(MainFrame.NAME_PREV_BUTTON))) {
-
-						if (midiInRemoteDeviceName != null
-								&& !midiInRemoteDeviceName
-										.equals(MidiAutomatorProperties.VALUE_NULL)) {
-							popupMenu.getMidiLearnMenuItem().setEnabled(true);
-						}
-
-						popupMenu.configureSwitchButtonPopupMenu();
-						popupMenu.show(e.getComponent(), e.getX(), e.getY());
-						popupWasShown = true;
-					}
+					popupMenu.configureSwitchButtonPopupMenu();
+					popupMenu.show(e.getComponent(), e.getX(), e.getY());
+					popupWasShown = true;
 				}
 			}
+
 		}
 	}
 
