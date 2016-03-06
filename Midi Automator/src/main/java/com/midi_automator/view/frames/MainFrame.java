@@ -85,7 +85,7 @@ public class MainFrame extends JFrame {
 
 	private final String TITLE = "Midi Automator";
 	private final int WIDTH = 500;
-	private final int HEIGHT = 600;
+	private final int HEIGHT = 610;
 	public static final int TEST_POSITION_X = 0;
 	public static final int TEST_POSITION_Y = 50;
 	private final int MAIN_LAYOUT_HORIZONTAL_GAP = 10;
