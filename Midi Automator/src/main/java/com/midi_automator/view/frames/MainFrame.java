@@ -455,7 +455,36 @@ public class MainFrame extends JFrame {
 	 */
 	public void setSelectedIndex(int index) {
 		fileList.setSelectedIndex(index);
-		fileList.ensureIndexIsVisible(index);
+		fileList.ensureIndexIsVisible(getVisibleIndex(index));
+	}
+
+	/**
+	 * Calculates the index of the file list that has to be visible so that the
+	 * selected index is on top.
+	 * 
+	 * @param selectedIndex
+	 *            The current selected index
+	 * @return the index that has to be visible
+	 */
+	private int getVisibleIndex(int selectedIndex) {
+
+		int maxIndex = fileList.getModel().getSize() - 1;
+		int lastVisibleIndex = fileList.getLastVisibleIndex();
+		int viewportSize = 7;
+		int visibleIndex = 0;
+
+		if (selectedIndex + viewportSize > maxIndex) {
+			visibleIndex = maxIndex;
+		} else {
+			visibleIndex = selectedIndex + (viewportSize - 1);
+		}
+
+		if (lastVisibleIndex - viewportSize >= selectedIndex
+				|| selectedIndex > lastVisibleIndex) {
+			visibleIndex = selectedIndex;
+		}
+
+		return visibleIndex;
 	}
 
 	/**

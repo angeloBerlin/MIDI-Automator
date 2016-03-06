@@ -275,6 +275,25 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 	}
 
 	/**
+	 * Checks if one of the states exists.
+	 * 
+	 * @param states
+	 *            the different states of the region
+	 */
+	public boolean checkforStates(String... states) {
+
+		try {
+			// check if file opened
+			SikuliXAutomation.setSearchRegion(SCREEN);
+			findMultipleStateRegion(DEFAULT_TIMEOUT, states);
+			return true;
+
+		} catch (FindFailed e) {
+			return false;
+		}
+	}
+
+	/**
 	 * Minimizes the current focused program
 	 */
 	public static void hideFocusedProgram() {

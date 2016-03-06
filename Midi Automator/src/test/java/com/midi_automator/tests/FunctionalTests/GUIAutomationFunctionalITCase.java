@@ -100,7 +100,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(5000);
 
 			// search clicked Midi Automator
-			getFileList().requireSelectedItems(5);
+			getFileList().requireSelectedItems(6);
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
