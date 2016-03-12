@@ -105,4 +105,21 @@ public class MoveEntriesFunctionalITCase extends FunctionalBaseCase {
 		assertEquals((getFileList().contents())[1], "2 Hello World 3");
 		assertEquals((getFileList().contents())[2], "3 Hello World 2");
 	}
+
+	@Test
+	public void emptyEntryShouldBeMovedUpByDND() {
+
+		MockUpUtils.setMockupMidoFile("mockups/Hello_world_12SPACE.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		// move up entry
+		getFileList().drag(2);
+		getFileList().drop(0);
+
+		// check for correct order
+		assertEquals((getFileList().contents())[0], "1 Hello World 1");
+		assertEquals((getFileList().contents())[1], "2  ");
+		assertEquals((getFileList().contents())[2], "3 Hello World 2");
+	}
 }

@@ -130,7 +130,7 @@ public class FileUtils {
 		for (int i = 0; i < strings.length; i++) {
 			String value = strings[i];
 
-			if (value == null || value.equals(" ")) {
+			if (value == null) {
 				value = "";
 			}
 
