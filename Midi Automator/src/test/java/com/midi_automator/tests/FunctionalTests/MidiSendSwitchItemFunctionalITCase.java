@@ -11,6 +11,7 @@ import javax.sound.midi.Receiver;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -55,10 +56,9 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 
 			// open entry 1
 			openEntryByDoubleClick(0);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
-			Thread.sleep(1000);
-
 			if (!"channel 16: CONTROL CHANGE 1 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature
@@ -67,9 +67,9 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 
 			// open entry 2
 			openEntryByDoubleClick(1);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
-			Thread.sleep(1000);
 			if (!"channel 16: CONTROL CHANGE 2 value: 127"
 					.equals(receivedSignature)) {
 				fail(receivedSignature

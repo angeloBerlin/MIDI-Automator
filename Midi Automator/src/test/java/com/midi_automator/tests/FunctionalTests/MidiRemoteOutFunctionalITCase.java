@@ -11,6 +11,7 @@ import javax.sound.midi.Receiver;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -55,6 +56,7 @@ public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 			saveDialog(preferencesFrame);
 
 			openEntryByDoubleClick(0);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			Thread.sleep(remoteTimeout);
@@ -66,6 +68,8 @@ public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 			}
 
 			openEntryByDoubleClick(1);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+
 			// check if midi master message was sent
 			Thread.sleep(remoteTimeout);
 			if (!"channel 1: CONTROL CHANGE 102 value: 1"

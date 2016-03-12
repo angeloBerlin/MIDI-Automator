@@ -14,7 +14,7 @@ import com.midi_automator.utils.SystemUtils;
  */
 public class GUIAutomation implements IDeActivateable {
 
-	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
+	static Logger log = Logger.getLogger(GUIAutomation.class.getName());
 
 	public static final String[] SCREENSHOT_FILE_EXTENSIONS = { "png", "PNG" };
 	public static final String SCREENSHOT_FILE_TYPE = "Portable Network Graphics (png)";

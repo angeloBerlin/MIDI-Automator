@@ -9,6 +9,7 @@ import javax.swing.UIManager;
 
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
@@ -91,7 +92,7 @@ public class MidiDetectFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 			clickNextFile();
-			Thread.sleep(50);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT);
 			getMidiOUTDetect().background().requireEqualTo(
 					MainFrame.MIDI_DETECT_COLOR);
 		} catch (InterruptedException e) {

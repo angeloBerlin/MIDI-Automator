@@ -63,8 +63,7 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 						ctx = new AnnotationConfigApplicationContext(
 								AppConfig.class);
 
-						presenter = (Presenter) ctx
-								.getBean(Presenter.class);
+						presenter = (Presenter) ctx.getBean(Presenter.class);
 
 						return presenter.openMainFrame();
 					}
@@ -93,6 +92,16 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	}
 
 	/**
+	 * Checks that the open entry text for the entry is not displayed
+	 * 
+	 * @param entryName
+	 *            The name of the entry
+	 */
+	protected void checkIfOpenEntryIsNotDisplayed(String entryName) {
+		checkNotInfoText(String.format(Messages.MSG_OPENING_ENTRY, entryName));
+	}
+
+	/**
 	 * Checks for a specific text in the info
 	 * 
 	 * @param text
@@ -102,6 +111,18 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 		String infoMsg = text.replace("\"", "&quot;").replace("Ä", "&#196;")
 				.replace("Ö", "&#214;").replace("Ü", "&#220;");
 		assertThat(getInfoLabelText(), containsString(infoMsg));
+	}
+
+	/**
+	 * Checks for that a specific text is not in the info
+	 * 
+	 * @param text
+	 *            The text to check for
+	 */
+	protected void checkNotInfoText(String text) {
+		String infoMsg = text.replace("\"", "&quot;").replace("Ä", "&#196;")
+				.replace("Ö", "&#214;").replace("Ü", "&#220;");
+		assertThat(getInfoLabelText(), not(containsString(infoMsg)));
 	}
 
 	@After

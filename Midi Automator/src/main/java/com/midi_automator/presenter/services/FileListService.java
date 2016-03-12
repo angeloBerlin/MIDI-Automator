@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,8 @@ public class FileListService {
 	private static int currentItem = -1;
 
 	private final long WAIT_BEFORE_OPENING = 100;
+	public static final long FAST_SWITCHING_TIMESLOT = 300;
+	protected static long lastOpening = 0;
 
 	/**
 	 * Adds a new item
@@ -273,7 +276,7 @@ public class FileListService {
 	}
 
 	/**
-	 * Opens a file from the file list
+	 * Selects an entry from the file list
 	 * 
 	 * @param index
 	 *            The index of the file to open from the list
@@ -281,19 +284,39 @@ public class FileListService {
 	 *            <TRUE> opened index will be sent to slaves, <FALSE> index will
 	 *            not be sent
 	 */
-	public void openFileByIndex(int index, boolean send) {
+	public void selectEntryByIndex(int index, boolean send) {
 
-		log.debug("Open file with index: " + index);
+		infoMessagesService.removeInfoMessage(Messages
+				.get(Messages.KEY_INFO_ENTRY_OPENED));
+
+		mainFrame.setSelectedIndex(index);
+		currentItem = index;
+
+		EntryOpener entryOpener = new EntryOpener(index, send, this);
+		entryOpener.start();
+	}
+
+	/**
+	 * Opens an entry from the file list
+	 * 
+	 * @param index
+	 *            The index of the file to open from the list
+	 * @param send
+	 *            <TRUE> opened index will be sent to slaves, <FALSE> index will
+	 *            not be sent
+	 */
+	protected void openEntryByIndex(int index, boolean send) {
 
 		if (!model.getSetList().getItems().isEmpty()) {
 
 			SetListItem item = model.getSetList().getItems().get(index);
 
-			infoMessagesService.removeInfoMessage(Messages
-					.get(Messages.KEY_INFO_ENTRY_OPENED));
+			String infoEntryOpened = String.format(Messages.MSG_OPENING_ENTRY,
+					item.getName());
+			Messages.put(Messages.KEY_INFO_ENTRY_OPENED, infoEntryOpened);
 
-			mainFrame.setSelectedIndex(index);
-			currentItem = index;
+			infoMessagesService.setInfoMessage(infoEntryOpened);
+			log.debug("Open entry with index: " + index);
 
 			// Send MIDI change notifier
 			midiNotificationService
@@ -301,6 +324,7 @@ public class FileListService {
 							.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE));
 			guiAutomationsService.activateAllOncePerChangeAutomations();
 
+			// Send MIDI remote open
 			if (send) {
 				midiRemoteOpenService.sendRemoteOpenMidiMessage(index);
 			}
@@ -347,10 +371,6 @@ public class FileListService {
 		Messages.put(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND, errFileNotFound);
 		Messages.put(Messages.KEY_ERROR_ITEM_FILE_IO, errFileNotReadable);
 
-		String infoEntryOpened = String.format(Messages.MSG_OPENING_ENTRY,
-				item.getName());
-		Messages.put(Messages.KEY_INFO_ENTRY_OPENED, infoEntryOpened);
-
 		try {
 
 			if (!filePath.equals("")) {
@@ -362,8 +382,6 @@ public class FileListService {
 					FileUtils.openFileFromPathWithProgram(filePath,
 							item.getProgramPath());
 				}
-
-				infoMessagesService.setInfoMessage(infoEntryOpened);
 			}
 
 		} catch (IllegalArgumentException ex) {
@@ -389,7 +407,7 @@ public class FileListService {
 		if (currentItem < 0) {
 			currentItem = (model.getSetList().getItems().size() - 1);
 		}
-		openFileByIndex(currentItem, true);
+		selectEntryByIndex(currentItem, true);
 	}
 
 	/**
@@ -403,7 +421,7 @@ public class FileListService {
 		if (currentItem >= model.getSetList().getItems().size()) {
 			currentItem = 0;
 		}
-		openFileByIndex(currentItem, true);
+		selectEntryByIndex(currentItem, true);
 	}
 
 	/**
@@ -564,5 +582,74 @@ public class FileListService {
 	 */
 	public void resetCurrentItem() {
 		currentItem = -1;
+	}
+}
+
+/**
+ * For asynchronous opening of the list entries.
+ * 
+ * @author aguelle
+ *
+ */
+class EntryOpener extends Thread {
+
+	private Logger log = Logger.getLogger(this.getClass().getName());
+
+	private int index;
+	private boolean send;
+	private FileListService fileListService;
+
+	public EntryOpener(int index, boolean send, FileListService fileListService) {
+		super();
+		this.index = index;
+		this.send = send;
+		this.fileListService = fileListService;
+	}
+
+	@Override
+	public void run() {
+
+		try {
+			FileListService.lastOpening = System.currentTimeMillis();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT);
+
+			if (!isFastSwitching()) {
+
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						fileListService.openEntryByIndex(index, send);
+					}
+				});
+			}
+
+		} catch (InterruptedException e) {
+			log.error("Delay for fast switching file failed.", e);
+		}
+	}
+
+	/**
+	 * Checks if the time since last opening command was bigger than the fast
+	 * switching time slot.
+	 * 
+	 * @return <TRUE> if fast switching, <FALSE> if not fast switching
+	 */
+	private boolean isFastSwitching() {
+
+		boolean isFastSwitching = false;
+
+		long currentTime = System.currentTimeMillis();
+		long lastOpening = FileListService.lastOpening;
+		long timeSinceLastOpening = currentTime - lastOpening;
+
+		if (timeSinceLastOpening < FileListService.FAST_SWITCHING_TIMESLOT) {
+			isFastSwitching = true;
+		}
+
+		// log.debug("currentTime: " + currentTime);
+		// log.debug("lastOpening: " + lastOpening);
+		// log.debug("timeSinceLastOpening: " + timeSinceLastOpening);
+		// log.debug("isFastSwitching: " + isFastSwitching);
+
+		return isFastSwitching;
 	}
 }

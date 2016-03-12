@@ -4,6 +4,7 @@ import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
@@ -23,147 +24,219 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void clickNextFileShouldBeOpenedInCycle() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		// open first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// open first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
-		// open second file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 2");
-		sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
+			// open second file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
-		// cycle first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// cycle first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void nextThirdFileShouldBeOpenedAfterDeletingSecondFile() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		// open first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// open first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
-		// delete second file
-		deleteEntry(1);
+			// delete second file
+			deleteEntry(1);
 
-		// open third file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 3");
-		sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			// open third file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
 
-		// cycle first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// cycle first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void nextThirdFileShouldBeOpenedAfterAddingOnIndex2() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		// open first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// open first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
-		// open second file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 2");
-		sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
+			// open second file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
-		// add third file
-		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf",
-				"");
+			// add third file
+			addFile("Hello World 3", currentPath
+					+ "/testfiles/Hello World 3.rtf", "");
 
-		// open third file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 3");
-		sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			// open third file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
 
-		// cycle first file
-		clickNextFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// cycle first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void prevFileShouldBeOpenedInCycle() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		// cycle second file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 2");
-		sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
+			// cycle second file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
-		// open first file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			// open first file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void prevThirdFileShouldBeOpenedAfterDeletingSecondFile() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_123.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		// cycle third file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 3");
-		sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			// cycle third file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
 
-		// delete second file
-		deleteEntry(1);
+			// delete second file
+			deleteEntry(1);
 
-		// open third file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 3");
-		sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			// open third file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void prevThirdFileShouldBeOpenedAfterAddingOnIndex2() {
 
-		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
+
+			// cycle second file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
+
+			// open first file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+			// add third file
+			addFile("Hello World 3", currentPath
+					+ "/testfiles/Hello World 3.rtf", "");
+
+			// cycle third file
+			clickPrevFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void onlyThirdFileShouldBeOpenedOnFastSwitching() {
+
+		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		// cycle second file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 2");
-		sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
+		// fast switch to third file
+		try {
+			clickNextFile();
+			checkIfOpenEntryIsNotDisplayed("Hello World 1");
 
-		// open first file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 1");
-		sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+			clickNextFile();
+			checkIfOpenEntryIsNotDisplayed("Hello World 2");
 
-		// add third file
-		addFile("Hello World 3", currentPath + "/testfiles/Hello World 3.rtf",
-				"");
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 2);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
 
-		// cycle third file
-		clickPrevFile();
-		checkIfOpenEntryIsDisplayed("Hello World 3");
-		sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

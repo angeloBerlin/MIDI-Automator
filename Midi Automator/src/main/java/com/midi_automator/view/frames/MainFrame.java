@@ -824,8 +824,8 @@ public class MainFrame extends JFrame {
 					if (me.getButton() == MouseEvent.BUTTON1
 							&& me.getClickCount() == 2) {
 						if (!popupWasShown) {
-							fileListService.openFileByIndex(lastSelectedIndex,
-									true);
+							fileListService.selectEntryByIndex(
+									lastSelectedIndex, true);
 						}
 						popupWasShown = false;
 					}

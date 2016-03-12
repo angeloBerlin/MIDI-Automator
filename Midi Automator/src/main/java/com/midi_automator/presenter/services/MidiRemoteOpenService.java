@@ -134,7 +134,7 @@ public class MidiRemoteOpenService {
 					&& shortMessage.getData1() == OPEN_FILE_MIDI_CONTROL_NO) {
 
 				int index = shortMessage.getData2();
-				fileListService.openFileByIndex(index, false);
+				fileListService.selectEntryByIndex(index, false);
 			}
 		}
 	}
@@ -153,7 +153,7 @@ public class MidiRemoteOpenService {
 		index = model.getSetList().getMidiListeningSignatures()
 				.indexOf(signature);
 		if (index > -1) {
-			fileListService.openFileByIndex(index, true);
+			fileListService.selectEntryByIndex(index, true);
 			return;
 		}
 	}

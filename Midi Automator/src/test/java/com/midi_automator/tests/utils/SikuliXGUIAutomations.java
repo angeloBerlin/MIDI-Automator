@@ -227,6 +227,7 @@ public class SikuliXGUIAutomations extends SikuliXAutomation {
 		} catch (FindFailed e) {
 			Fail.fail("File did not open.", e);
 		}
+
 	}
 
 	/**

@@ -1,13 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openEditDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openFileListPopupMenu;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -17,6 +11,7 @@ import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.frames.AddFrame;
@@ -75,26 +70,32 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void helloWorldShouldBeEdited() {
 
-		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
-		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
-		startApplication();
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
+			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+			startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText(
-				"Hello World Edit");
-		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
-				currentPath + "/testfiles/Hello World edit.rtf");
-		editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
-				editedProgramPath);
-		saveDialog(editFrame);
+			FrameFixture editFrame = openEditDialog(0);
+			editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText(
+					"Hello World Edit");
+			editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
+					currentPath + "/testfiles/Hello World edit.rtf");
+			editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
+					editedProgramPath);
+			saveDialog(editFrame);
 
-		assertEquals(getFileList().contents()[0], "1 Hello World Edit");
+			assertEquals(getFileList().contents()[0], "1 Hello World Edit");
 
-		openEntryByDoubleClick(0);
+			openEntryByDoubleClick(0);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
 
-		checkIfOpenEntryIsDisplayed("Hello World Edit");
-		sikulix.checkIfProgramOpened(editedProgramScreenshot);
-		sikulix.checkIfFileOpened("Hello_World_Edit_RTF.png");
+			checkIfOpenEntryIsDisplayed("Hello World Edit");
+			sikulix.checkIfProgramOpened(editedProgramScreenshot);
+			sikulix.checkIfFileOpened("Hello_World_Edit_RTF.png");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test

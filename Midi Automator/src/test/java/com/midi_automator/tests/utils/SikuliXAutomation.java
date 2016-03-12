@@ -111,11 +111,17 @@ public class SikuliXAutomation {
 	 * Closes the current focused program.
 	 */
 	public static void closeFocusedProgram() {
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			SCREEN.type("q", Key.CMD);
-		}
-		if (System.getProperty("os.name").contains("Windows")) {
-			SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
+		try {
+			if (System.getProperty("os.name").equals("Mac OS X")) {
+				SCREEN.type("q", Key.CMD);
+			}
+			if (System.getProperty("os.name").contains("Windows")) {
+				SCREEN.type(Key.F4, KeyModifier.WIN | KeyModifier.ALT);
+			}
+
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }

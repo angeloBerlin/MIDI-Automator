@@ -1,14 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addFile;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -17,6 +10,7 @@ import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.Messages;
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.frames.AddFrame;
@@ -56,6 +50,11 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		assertEquals("1 Hello World", firstFileListEntry);
 
 		openEntryByDoubleClick(0);
+		try {
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		checkIfOpenEntryIsDisplayed("Hello World");
 		sikulix.checkIfProgramOpened(programScreenshot);
