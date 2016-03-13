@@ -60,8 +60,10 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 				.execute(new GuiQuery<MainFrame>() {
 					protected MainFrame executeInEDT() {
 
-						ctx = new AnnotationConfigApplicationContext(
-								AppConfig.class);
+						if (ctx == null) {
+							ctx = new AnnotationConfigApplicationContext(
+									AppConfig.class);
+						}
 
 						presenter = (Presenter) ctx.getBean(Presenter.class);
 
@@ -146,6 +148,10 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 
 		if (presenter != null) {
 			presenter.close();
+		}
+
+		if (ctx != null) {
+			ctx.close();
 		}
 	}
 

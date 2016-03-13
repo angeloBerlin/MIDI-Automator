@@ -31,6 +31,8 @@ public class Resources {
 	private final String PROJECT_PROPERTIES = "project.properties";
 	private final String KEY_VERSION = "midiautomator.version";
 	private final String LOG_FILE_NAME = "MidiAutomator.log";
+	private final String LOG_CONSOLE_APPENDER_NAME = "Console Appender";
+	private final String LOG_FILE_APPENDER_NAME = "File Appender";
 
 	public Resources() {
 
@@ -139,16 +141,22 @@ public class Resources {
 		PatternLayout layout = new PatternLayout("[%-5p] %d %c - %m%n");
 
 		// Add console appender to root logger
-		rootLogger.addAppender(new ConsoleAppender(layout));
+		if (rootLogger.getAppender(LOG_CONSOLE_APPENDER_NAME) == null) {
+			ConsoleAppender consoleAppender = new ConsoleAppender(layout);
+			consoleAppender.setName(LOG_CONSOLE_APPENDER_NAME);
+			rootLogger.addAppender(consoleAppender);
+		}
+
+		// Add file appender with layout and output log file name
 		try {
-			// Define file appender with layout and output log file name
-			FileAppender fileAppender = new FileAppender(layout, logFilePath);
-			fileAppender.setAppend(false);
-			fileAppender.setImmediateFlush(true);
-
-			// Add the appender to root logger
-			rootLogger.addAppender(fileAppender);
-
+			if (rootLogger.getAppender(LOG_FILE_APPENDER_NAME) == null) {
+				FileAppender fileAppender = new FileAppender(layout,
+						logFilePath);
+				fileAppender.setAppend(false);
+				fileAppender.setImmediateFlush(true);
+				fileAppender.setName(LOG_FILE_APPENDER_NAME);
+				rootLogger.addAppender(fileAppender);
+			}
 		} catch (IOException e) {
 			System.out.println("Failed to add appender !!");
 		}
