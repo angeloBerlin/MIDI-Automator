@@ -22,6 +22,8 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -126,6 +128,10 @@ public class MainFrame extends JFrame {
 	private CacheableBlinkableToolTipJList<IToolTipItem> fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
 	private CacheableJButton prevButton = new CacheableJButton();
 	private CacheableJButton nextButton = new CacheableJButton();
+
+	private KeyListener globalKeyListener = new GlobalKeyListener();
+	private AbstractAction prevAction = new PrevAction();
+	private AbstractAction nextAction = new NextAction();
 
 	private List<String> fileEntries = new ArrayList<String>();
 	private List<String> midiListeningSignatures = new ArrayList<String>();
@@ -579,6 +585,8 @@ public class MainFrame extends JFrame {
 		infoLabel = new HTMLLabel();
 		infoLabel.setName(NAME_INFO_LABEL);
 		infoLabel.setPreferredSize(dimension);
+		infoLabel.addKeyListener(globalKeyListener);
+		infoLabel.requestFocusInWindow();
 
 		JScrollPane scrollingInfoLabel = new JScrollPane(infoLabel);
 		scrollingInfoLabel.getViewport().setBackground(this.getBackground());
@@ -679,7 +687,7 @@ public class MainFrame extends JFrame {
 
 		prevButton.setName(NAME_PREV_BUTTON);
 		prevButton.setPreferredSize(dimension);
-		prevButton.setAction(new PrevAction());
+		prevButton.setAction(prevAction);
 		prevButton.setIcon(new ImageIcon(iconPathPrev));
 		log.debug("Loading \"prev\" icon: " + iconPathPrev);
 		prevButton.addMouseListener(new PopupListener());
@@ -691,7 +699,7 @@ public class MainFrame extends JFrame {
 
 		nextButton.setName(NAME_NEXT_BUTTON);
 		nextButton.setPreferredSize(dimension);
-		nextButton.setAction(new NextAction());
+		nextButton.setAction(nextAction);
 		log.debug("Loading \"next\" icon: " + iconPathNext);
 		nextButton.setIcon(new ImageIcon(iconPathNext));
 		nextButton.addMouseListener(new PopupListener());
@@ -1217,5 +1225,58 @@ public class MainFrame extends JFrame {
 
 	public void setPopupWasShown(boolean popupWasShown) {
 		this.popupWasShown = popupWasShown;
+	}
+
+	/**
+	 * Global key listener for "any time" key strokes.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class GlobalKeyListener implements KeyListener {
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+
+			int keyCode = e.getKeyCode();
+			log.debug("Key pressed: " + keyCode);
+
+			switch (keyCode) {
+
+			case KeyEvent.VK_SPACE:
+				nextAction.actionPerformed(null);
+				break;
+			case KeyEvent.VK_RIGHT:
+				nextAction.actionPerformed(null);
+				break;
+			case KeyEvent.VK_DOWN:
+				nextAction.actionPerformed(null);
+				break;
+			case KeyEvent.VK_ENTER:
+				nextAction.actionPerformed(null);
+				break;
+
+			case KeyEvent.VK_LEFT:
+				prevAction.actionPerformed(null);
+				break;
+			case KeyEvent.VK_UP:
+				prevAction.actionPerformed(null);
+				break;
+			case KeyEvent.VK_BACK_SPACE:
+				prevAction.actionPerformed(null);
+				break;
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+
+		}
+
 	}
 }

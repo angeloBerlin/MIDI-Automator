@@ -65,7 +65,7 @@ public class FileListService {
 	private static int currentItem = -1;
 
 	private final long WAIT_BEFORE_OPENING = 100;
-	public static final long FAST_SWITCHING_TIMESLOT = 300;
+	public static final long FAST_SWITCHING_TIMESLOT = 400;
 	protected static long lastOpening = 0;
 
 	/**

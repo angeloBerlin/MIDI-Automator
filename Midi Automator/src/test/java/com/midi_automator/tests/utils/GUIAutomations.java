@@ -1161,4 +1161,14 @@ public class GUIAutomations {
 		GUIAutomations.openMidiAutomator();
 	}
 
+	/**
+	 * Sends the desired key code to the main frame.
+	 * 
+	 * @param keyCode
+	 */
+	public static void pressKeyOnMainFrame(int keyCode) {
+
+		window.textBox(MainFrame.NAME_INFO_LABEL).pressKey(keyCode);
+	}
+
 }

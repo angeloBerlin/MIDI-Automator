@@ -1,11 +1,13 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.clickPrevFile;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static org.junit.Assert.fail;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
+
+import java.awt.event.KeyEvent;
 
 import org.junit.Test;
 
+import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class FileListFunctionalITCase extends FunctionalBaseCase {
@@ -67,6 +69,60 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 		if (!sikulix.checkforStates("selected_Hello_World_2.png")) {
 			fail("Incorrect scrolling");
+		}
+	}
+
+	@Test
+	public void nextFileShouldBeOpenedOnKeyStroke() {
+
+		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		try {
+			pressKeyOnMainFrame(KeyEvent.VK_SPACE);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+
+			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+
+			pressKeyOnMainFrame(KeyEvent.VK_RIGHT);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+
+			pressKeyOnMainFrame(KeyEvent.VK_DOWN);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void previousFileShouldBeOpenedOnKeyStroke() {
+
+		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		try {
+			pressKeyOnMainFrame(KeyEvent.VK_BACK_SPACE);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+
+			pressKeyOnMainFrame(KeyEvent.VK_LEFT);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 2");
+
+			pressKeyOnMainFrame(KeyEvent.VK_UP);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
