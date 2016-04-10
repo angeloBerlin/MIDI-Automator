@@ -62,7 +62,7 @@ public class FileListService {
 	@Autowired
 	private InfoMessagesService infoMessagesService;
 
-	private static int currentItem = -1;
+	private int currentItem = -1;
 
 	private final long WAIT_BEFORE_OPENING = 100;
 	public static final long FAST_SWITCHING_TIMESLOT = 400;
@@ -422,6 +422,10 @@ public class FileListService {
 			currentItem = 0;
 		}
 		selectEntryByIndex(currentItem, true);
+	}
+
+	public void setCurrentItem(int currentItem) {
+		this.currentItem = currentItem;
 	}
 
 	/**

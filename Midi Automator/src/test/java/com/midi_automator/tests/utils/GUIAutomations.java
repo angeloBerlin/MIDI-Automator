@@ -1095,6 +1095,17 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Selects an entry of the list.
+	 * 
+	 * @param index
+	 *            The index of the entry
+	 */
+	public static void selectEntryByLeftClick(int index) {
+
+		getFileList().item(index).click();
+	}
+
+	/**
 	 * Sets the focus on the Midi Automator window
 	 * 
 	 */
@@ -1162,13 +1173,25 @@ public class GUIAutomations {
 	}
 
 	/**
-	 * Sends the desired key code to the main frame.
+	 * Presses the desired key code to the main frame.
 	 * 
 	 * @param keyCode
+	 *            The key code pressed
 	 */
 	public static void pressKeyOnMainFrame(int keyCode) {
 
 		window.textBox(MainFrame.NAME_INFO_LABEL).pressKey(keyCode);
+	}
+
+	/**
+	 * Presses and releases the desired key code to the main frame.
+	 * 
+	 * @param keyCode
+	 *            The key codes pressed and released
+	 */
+	public static void pressAndReleaseKeysOnMainFrame(int... keyCode) {
+
+		window.textBox(MainFrame.NAME_INFO_LABEL).pressAndReleaseKeys(keyCode);
 	}
 
 }

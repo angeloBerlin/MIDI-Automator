@@ -46,10 +46,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -99,6 +102,7 @@ public class MainFrame extends JFrame {
 	private final String LABEL_MIDI_IN_DETECT = "IN";
 	private final String LABEL_MIDI_OUT_DETECT = "OUT";
 
+	public static final String NAME = "Main Frame";
 	public static final String MENU_FILE = "File";
 	public static final String MENU_ITEM_IMPORT = "Import...";
 	public static final String MENU_ITEM_EXPORT = "Export...";
@@ -114,6 +118,8 @@ public class MainFrame extends JFrame {
 	public static final String NAME_INFO_LABEL = "info label";
 	public static final String NAME_MIDI_IN_DETECT_LABEL = "midi IN label";
 	public static final String NAME_MIDI_OUT_DETECT_LABEL = "midi OUT label";
+	public static final String NAME_MIDI_IMPORT_FILECHOOSER = "import file chooser";
+	public static final String NAME_MIDI_EXPORT_FILECHOOSER = "export file chooser";
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
@@ -130,6 +136,7 @@ public class MainFrame extends JFrame {
 	private CacheableJButton nextButton = new CacheableJButton();
 
 	private KeyListener globalKeyListener = new GlobalKeyListener();
+	private PopupListener popupListener = new PopupListener();
 	private AbstractAction prevAction = new PrevAction();
 	private AbstractAction nextAction = new NextAction();
 
@@ -177,6 +184,7 @@ public class MainFrame extends JFrame {
 	 */
 	public void init() {
 
+		setName(NAME);
 		JFileChooser.setDefaultLocale(MidiAutomator.locale);
 
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -461,36 +469,7 @@ public class MainFrame extends JFrame {
 	 */
 	public void setSelectedIndex(int index) {
 		fileList.setSelectedIndex(index);
-		fileList.ensureIndexIsVisible(getVisibleIndex(index));
-	}
-
-	/**
-	 * Calculates the index of the file list that has to be visible so that the
-	 * selected index is on top.
-	 * 
-	 * @param selectedIndex
-	 *            The current selected index
-	 * @return the index that has to be visible
-	 */
-	private int getVisibleIndex(int selectedIndex) {
-
-		int maxIndex = fileList.getModel().getSize() - 1;
-		int lastVisibleIndex = fileList.getLastVisibleIndex();
-		int viewportSize = 7;
-		int visibleIndex = 0;
-
-		if (selectedIndex + viewportSize > maxIndex) {
-			visibleIndex = maxIndex;
-		} else {
-			visibleIndex = selectedIndex + (viewportSize - 1);
-		}
-
-		if (lastVisibleIndex - viewportSize >= selectedIndex
-				|| selectedIndex > lastVisibleIndex) {
-			visibleIndex = selectedIndex;
-		}
-
-		return visibleIndex;
+		fileList.ensureIndexIsOnTop(index);
 	}
 
 	/**
@@ -543,6 +522,10 @@ public class MainFrame extends JFrame {
 		fileMenu.addSeparator();
 		fileMenu.add(exitMenuItem);
 
+		if (System.getProperty("os.name").contains("Windows")) {
+			fileMenu.setMnemonic(KeyEvent.VK_F);
+		}
+
 		setJMenuBar(menuBar);
 	}
 
@@ -555,21 +538,29 @@ public class MainFrame extends JFrame {
 		importMenuItem.setName(NAME_MENU_ITEM_IMPORT);
 		importMenuItem.setEnabled(true);
 		importMenuItem.addActionListener(new ImportAction(this));
+		importMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I,
+				ActionEvent.ALT_MASK));
 
 		exportMenuItem = new JMenuItem(MENU_ITEM_EXPORT);
 		exportMenuItem.setName(NAME_MENU_ITEM_EXPORT);
 		exportMenuItem.setEnabled(true);
 		exportMenuItem.addActionListener(new ExportAction(this));
+		exportMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+				ActionEvent.ALT_MASK));
 
 		preferencesMenuItem = new JMenuItem(MENU_ITEM_PREFERENCES);
 		preferencesMenuItem.setName(NAME_MENU_ITEM_PREFERENCES);
 		preferencesMenuItem.setEnabled(true);
 		preferencesMenuItem.addActionListener(new PreferencesAction());
+		preferencesMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_P, ActionEvent.ALT_MASK));
 
 		exitMenuItem = new JMenuItem(MENU_ITEM_EXIT);
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
 		exitMenuItem.setEnabled(true);
 		exitMenuItem.addActionListener(new ExitAction());
+		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+				ActionEvent.ALT_MASK));
 	}
 
 	/**
@@ -652,7 +643,7 @@ public class MainFrame extends JFrame {
 
 		fileList.setBlinkingStrategy(otherClickStrategy);
 		fileList.addMouseListener(new OpenFileOnDoubleClick());
-		fileList.addMouseListener(new PopupListener());
+		fileList.addMouseListener(popupListener);
 		fileList.setFont(new Font(FONT_FAMILY, Font.BOLD, FONT_SIZE_FILE_LIST));
 		fileList.setName(NAME_FILE_LIST);
 		fileList.setCache(fileList.getSelectionBackground());
@@ -660,6 +651,7 @@ public class MainFrame extends JFrame {
 		fileList.setDropMode(DropMode.INSERT);
 		fileList.setTransferHandler(new FileListTransferHandler());
 		fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		fileList.addListSelectionListener(new CurrentSelectionHandler());
 
 		DragSource fileListDragSource = new DragSource();
 		fileListDragSource.createDefaultDragGestureRecognizer(fileList,
@@ -690,7 +682,7 @@ public class MainFrame extends JFrame {
 		prevButton.setAction(prevAction);
 		prevButton.setIcon(new ImageIcon(iconPathPrev));
 		log.debug("Loading \"prev\" icon: " + iconPathPrev);
-		prevButton.addMouseListener(new PopupListener());
+		prevButton.addMouseListener(popupListener);
 		prevButton.setFocusable(false);
 
 		c.gridx = 0;
@@ -702,7 +694,7 @@ public class MainFrame extends JFrame {
 		nextButton.setAction(nextAction);
 		log.debug("Loading \"next\" icon: " + iconPathNext);
 		nextButton.setIcon(new ImageIcon(iconPathNext));
-		nextButton.addMouseListener(new PopupListener());
+		nextButton.addMouseListener(popupListener);
 		nextButton.setFocusable(false);
 
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -892,6 +884,7 @@ public class MainFrame extends JFrame {
 					ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS);
 			fileChooser.setAcceptAllFileFilterUsed(false);
 			fileChooser.setFileFilter(filter);
+			fileChooser.setName(NAME_MIDI_IMPORT_FILECHOOSER);
 			int returnVal = fileChooser.showOpenDialog(programFrame);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -912,7 +905,7 @@ public class MainFrame extends JFrame {
 
 		private static final long serialVersionUID = 1L;
 		private JFrame programFrame;
-		private final JFileChooser fc = new JFileChooser();
+		private final JFileChooser fileChooser = new JFileChooser();
 
 		public ExportAction(JFrame programFrame) {
 			super();
@@ -924,12 +917,14 @@ public class MainFrame extends JFrame {
 			FileFilter filter = new FileNameExtensionFilter(
 					ImportExportService.MIDI_AUTOMATOR_FILE_TYPE,
 					ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS);
-			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(filter);
-			int returnVal = fc.showSaveDialog(programFrame);
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.setFileFilter(filter);
+			fileChooser.setName(NAME_MIDI_EXPORT_FILECHOOSER);
+			int returnVal = fileChooser.showSaveDialog(programFrame);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				String filePath = fc.getSelectedFile().getAbsolutePath();
+				String filePath = fileChooser.getSelectedFile()
+						.getAbsolutePath();
 				String fileExtension = "."
 						+ ImportExportService.MIDI_AUTOMATOR_FILE_EXTENSIONS[0];
 
@@ -1246,6 +1241,11 @@ public class MainFrame extends JFrame {
 			int keyCode = e.getKeyCode();
 			log.debug("Key pressed: " + keyCode);
 
+			MouseEvent rightClick = new MouseEvent(fileList,
+					MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0,
+					fileList.getSelectedLocation().x,
+					fileList.getSelectedLocation().y, 1, true);
+
 			switch (keyCode) {
 
 			case KeyEvent.VK_SPACE:
@@ -1270,6 +1270,16 @@ public class MainFrame extends JFrame {
 			case KeyEvent.VK_BACK_SPACE:
 				prevAction.actionPerformed(null);
 				break;
+
+			case KeyEvent.VK_CONTEXT_MENU:
+
+				break;
+			case KeyEvent.VK_META:
+				log.debug("Invoking Popup Menu on: "
+						+ fileList.getSelectedLocation().x + " "
+						+ fileList.getSelectedLocation().y);
+				popupListener.mouseReleased(rightClick);
+				break;
 			}
 		}
 
@@ -1277,6 +1287,20 @@ public class MainFrame extends JFrame {
 		public void keyReleased(KeyEvent e) {
 
 		}
+	}
 
+	/**
+	 * This handler sets the current file list item whenever the selection of
+	 * the file list changes.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class CurrentSelectionHandler implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			fileListService.setCurrentItem(fileList.getSelectedIndex());
+		}
 	}
 }
