@@ -649,11 +649,6 @@ class EntryOpener extends Thread {
 			isFastSwitching = true;
 		}
 
-		// log.debug("currentTime: " + currentTime);
-		// log.debug("lastOpening: " + lastOpening);
-		// log.debug("timeSinceLastOpening: " + timeSinceLastOpening);
-		// log.debug("isFastSwitching: " + isFastSwitching);
-
 		return isFastSwitching;
 	}
 }

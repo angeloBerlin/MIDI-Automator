@@ -1243,8 +1243,9 @@ public class MainFrame extends JFrame {
 
 			MouseEvent rightClick = new MouseEvent(fileList,
 					MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0,
-					fileList.getSelectedLocation().x,
-					fileList.getSelectedLocation().y, 1, true);
+					fileList.getSelectedLocation().x + fileList.getWidth() / 2
+							+ 1, fileList.getSelectedLocation().y
+							+ fileList.getSelectionHeight() / 2, 1, true);
 
 			switch (keyCode) {
 
@@ -1272,12 +1273,9 @@ public class MainFrame extends JFrame {
 				break;
 
 			case KeyEvent.VK_CONTEXT_MENU:
-
+				popupListener.mouseReleased(rightClick);
 				break;
 			case KeyEvent.VK_META:
-				log.debug("Invoking Popup Menu on: "
-						+ fileList.getSelectedLocation().x + " "
-						+ fileList.getSelectedLocation().y);
 				popupListener.mouseReleased(rightClick);
 				break;
 			}

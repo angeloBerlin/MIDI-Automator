@@ -1,8 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
-import static org.junit.Assert.assertTrue;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;

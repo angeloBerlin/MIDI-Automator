@@ -1,8 +1,10 @@
 package com.midi_automator.view;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -72,6 +74,8 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		moveUpMenuItem.setName(NAME_MENU_ITEM_MOVE_UP);
 		moveUpMenuItem.setEnabled(true);
 		moveUpMenuItem.addActionListener(new MoveUpAction(mainFrame));
+		moveUpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
+				ActionEvent.ALT_MASK));
 
 		moveDownMenuItem = new JMenuItem(MENU_ITEM_MOVE_DOWN);
 		moveDownMenuItem.setName(NAME_MENU_ITEM_MOVE_DOWN);

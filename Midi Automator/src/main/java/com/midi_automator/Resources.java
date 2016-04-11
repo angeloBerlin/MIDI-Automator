@@ -80,6 +80,10 @@ public class Resources {
 		return WORKING_DIRECTORY;
 	}
 
+	public String getOperatinghSystem() {
+		return OPERATING_SYSTEM;
+	}
+
 	/**
 	 * Handles the relative working directory for the file list
 	 * 

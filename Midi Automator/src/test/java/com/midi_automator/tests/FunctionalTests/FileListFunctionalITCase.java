@@ -5,12 +5,28 @@ import static org.junit.Assert.*;
 
 import java.awt.event.KeyEvent;
 
+import org.assertj.swing.fixture.JListFixture;
+import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
+import com.midi_automator.view.MainFramePopupMenu;
 
 public class FileListFunctionalITCase extends FunctionalBaseCase {
+
+	private int popupMenuKey;
+
+	public FileListFunctionalITCase() {
+
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			popupMenuKey = KeyEvent.VK_META;
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			popupMenuKey = KeyEvent.VK_CONTEXT_MENU;
+		}
+	}
 
 	@Test
 	public void item2ShouldScrollToTopIfSelected() {
@@ -41,7 +57,7 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void item128ShouldbeVisibleIfDecreasedFromItem1ToItem125() {
+	public void item128ShouldeVisibleIfDecreasedFromItem1ToItem125() {
 
 		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -58,7 +74,7 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void item2ShoulScrollToTopIfItem3WasDecreased() {
+	public void item2ShouldScrollToTopIfItem3WasDecreased() {
 
 		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -70,6 +86,22 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 		if (!sikulix.checkforStates("selected_Hello_World_2.png")) {
 			fail("Incorrect scrolling");
 		}
+	}
+
+	@Test
+	public void item8ShouldScrollToTopIfItem7WasIncreased() {
+
+		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		selectEntryByLeftClick(7);
+		clickNextFile();
+
+		if (!sikulix.checkforStates("selected_Hello_World_9.png")) {
+			fail("Incorrect scrolling");
+		}
+
 	}
 
 	@Test
@@ -162,5 +194,41 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void popUpMenuShallBeShownOnSelectedItemOnKeyStroke() {
+
+		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		JListFixture fileList = getFileList();
+		JPopupMenuFixture popupMenu = new JPopupMenuFixture(robot,
+				ctx.getBean(MainFramePopupMenu.class));
+		try {
+			// popup menu on item 1 if none is selected
+			pressAndReleaseKeysOnMainFrame(popupMenuKey);
+			popupMenu.requireVisible();
+			fileList.requireSelection(0);
+
+			// popup menu on item 4
+			selectEntryByLeftClick(3);
+			pressAndReleaseKeysOnMainFrame(popupMenuKey);
+			popupMenu.requireVisible();
+			fileList.requireSelection(3);
+
+			// popup menu on item 8
+			selectEntryByLeftClick(7);
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			pressAndReleaseKeysOnMainFrame(popupMenuKey);
+			popupMenu.requireVisible();
+			fileList.requireSelection(8);
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
