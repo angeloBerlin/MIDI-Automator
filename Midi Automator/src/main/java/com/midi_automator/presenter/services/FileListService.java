@@ -62,11 +62,12 @@ public class FileListService {
 	@Autowired
 	private InfoMessagesService infoMessagesService;
 
-	private int currentItem = -1;
+	private int currentIndex = -1;
+	private int openedIndex = -1;
 
 	private final long WAIT_BEFORE_OPENING = 100;
 	public static final long FAST_SWITCHING_TIMESLOT = 400;
-	protected static long lastOpening = 0;
+	protected static long lastOpeningTime = 0;
 
 	/**
 	 * Adds a new item
@@ -208,6 +209,9 @@ public class FileListService {
 
 	/**
 	 * Loads the model file.
+	 * 
+	 * @param selectedIndex
+	 *            The last selected index
 	 */
 	public void reloadSetList() {
 		try {
@@ -245,7 +249,6 @@ public class FileListService {
 					.get(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG));
 		}
 
-		mainFrame.setSelectedIndex(mainFrame.getLastSelectedIndex());
 		mainFrame.reload();
 	}
 
@@ -257,9 +260,14 @@ public class FileListService {
 	 */
 	public void moveUpItem(int index) {
 
+		if (index < 0) {
+			return;
+		}
+
 		model.getSetList().exchangeIndexes(index, index - 1);
 		saveSetList();
 		reloadSetList();
+		mainFrame.setSelectedIndex(index - 1);
 	}
 
 	/**
@@ -270,9 +278,14 @@ public class FileListService {
 	 */
 	public void moveDownItem(int index) {
 
+		if (index < 0) {
+			return;
+		}
+
 		model.getSetList().exchangeIndexes(index, index + 1);
 		saveSetList();
 		reloadSetList();
+		mainFrame.setSelectedIndex(index + 1);
 	}
 
 	/**
@@ -286,11 +299,12 @@ public class FileListService {
 	 */
 	public void selectEntryByIndex(int index, boolean send) {
 
-		infoMessagesService.removeInfoMessage(Messages
-				.get(Messages.KEY_INFO_ENTRY_OPENED));
+		if (index < 0) {
+			index = 0;
+		}
 
 		mainFrame.setSelectedIndex(index);
-		currentItem = index;
+		currentIndex = index;
 
 		EntryOpener entryOpener = new EntryOpener(index, send, this);
 		entryOpener.start();
@@ -305,7 +319,10 @@ public class FileListService {
 	 *            <TRUE> opened index will be sent to slaves, <FALSE> index will
 	 *            not be sent
 	 */
-	protected void openEntryByIndex(int index, boolean send) {
+	public void openEntryByIndex(int index, boolean send) {
+
+		infoMessagesService.removeInfoMessage(Messages
+				.get(Messages.KEY_INFO_ENTRY_OPENED));
 
 		if (!model.getSetList().getItems().isEmpty()) {
 
@@ -342,6 +359,7 @@ public class FileListService {
 									.getMidiDeviceByKey(MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE),
 							item.getMidiSendingSignature());
 
+			openedIndex = index;
 			openFileFromSetListItem(item);
 		}
 	}
@@ -401,13 +419,13 @@ public class FileListService {
 	 */
 	public void openPreviousFile() {
 
-		currentItem--;
+		currentIndex--;
 
 		// cycle list
-		if (currentItem < 0) {
-			currentItem = (model.getSetList().getItems().size() - 1);
+		if (currentIndex < 0) {
+			currentIndex = (model.getSetList().getItems().size() - 1);
 		}
-		selectEntryByIndex(currentItem, true);
+		selectEntryByIndex(currentIndex, true);
 	}
 
 	/**
@@ -415,17 +433,18 @@ public class FileListService {
 	 */
 	public void openNextFile() {
 
-		currentItem++;
+		currentIndex++;
 
 		// cylce list
-		if (currentItem >= model.getSetList().getItems().size()) {
-			currentItem = 0;
+		if (currentIndex >= model.getSetList().getItems().size()) {
+			currentIndex = 0;
 		}
-		selectEntryByIndex(currentItem, true);
+
+		selectEntryByIndex(currentIndex, true);
 	}
 
-	public void setCurrentItem(int currentItem) {
-		this.currentItem = currentItem;
+	public void setCurrentItem(int currentIndex) {
+		this.currentIndex = currentIndex;
 	}
 
 	/**
@@ -582,10 +601,14 @@ public class FileListService {
 	}
 
 	/**
-	 * Resets the current item.
+	 * Resets the current item's index.
 	 */
-	public void resetCurrentItem() {
-		currentItem = -1;
+	public void resetCurrentIndex() {
+		currentIndex = -1;
+	}
+
+	public int getOpenedIndex() {
+		return openedIndex;
 	}
 }
 
@@ -614,7 +637,7 @@ class EntryOpener extends Thread {
 	public void run() {
 
 		try {
-			FileListService.lastOpening = System.currentTimeMillis();
+			FileListService.lastOpeningTime = System.currentTimeMillis();
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT);
 
 			if (!isFastSwitching()) {
@@ -642,7 +665,7 @@ class EntryOpener extends Thread {
 		boolean isFastSwitching = false;
 
 		long currentTime = System.currentTimeMillis();
-		long lastOpening = FileListService.lastOpening;
+		long lastOpening = FileListService.lastOpeningTime;
 		long timeSinceLastOpening = currentTime - lastOpening;
 
 		if (timeSinceLastOpening < FileListService.FAST_SWITCHING_TIMESLOT) {

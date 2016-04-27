@@ -475,6 +475,10 @@ public class MidiService {
 	public void sendMidiMessage(MidiDevice device, MidiMessage message)
 			throws MidiUnavailableException {
 
+		if (message == null) {
+			return;
+		}
+
 		long timeStamp = device.getMicrosecondPosition();
 		device.open();
 		device.getReceiver().send(message, timeStamp);

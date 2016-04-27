@@ -94,18 +94,23 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
+		try {
+			selectEntryByLeftClick(6);
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			clickNextFile();
 
-		selectEntryByLeftClick(7);
-		clickNextFile();
-
-		if (!sikulix.checkforStates("selected_Hello_World_9.png")) {
-			fail("Incorrect scrolling");
+			if (!sikulix.checkforStates("selected_Hello_World_9.png")) {
+				fail("Incorrect scrolling");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 	}
 
 	@Test
-	public void nextFileShouldBeOpenedOnKeyStroke() {
+	public void nextItemShouldBeOpenedOnKeyStroke() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -116,17 +121,32 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 
-			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
+			pressKeyOnMainFrame(KeyEvent.VK_RIGHT);
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 2");
 
-			pressKeyOnMainFrame(KeyEvent.VK_RIGHT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
-			checkIfOpenEntryIsDisplayed("Hello World 3");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-			pressKeyOnMainFrame(KeyEvent.VK_DOWN);
+	@Test
+	public void selectedItemShouldBeOpenedOnKeyStroke() {
+
+		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		try {
+			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
+			getFileList().requireSelection(0);
+
+			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			getFileList().requireSelection(0);
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -149,17 +169,13 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 2");
 
-			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_UP);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
-			checkIfOpenEntryIsDisplayed("Hello World 1");
-
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
-	public void nextFileAfterSelectionShallBeChosen() {
+	public void nextItemAfterSelectionShallBeOpened() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_123_no_file.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -167,8 +183,10 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 
-			selectEntryByLeftClick(2);
+			selectEntryByLeftClick(1);
 
+			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_RIGHT);
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_RIGHT);
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");

@@ -66,6 +66,7 @@ import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.ImportExportService;
+import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.GUIUtils;
@@ -93,6 +94,8 @@ public class MainFrame extends JFrame {
 	private final int HEIGHT = 610;
 	public static final int TEST_POSITION_X = 0;
 	public static final int TEST_POSITION_Y = 50;
+	private final int FRAME_LOCATION_X_OFFSET = 50;
+	private final int FRAME_LOCATION_Y_OFFSET = 50;
 	private final int MAIN_LAYOUT_HORIZONTAL_GAP = 10;
 	private final int MAIN_LAYOUT_VERTICAL_GAP = 10;
 	private final int FONT_SIZE_FILE_LIST = 26;
@@ -172,6 +175,8 @@ public class MainFrame extends JFrame {
 	private MidiService midiService;
 	@Autowired
 	private MidiRemoteOpenService midiRemoteOpenService;
+	@Autowired
+	private MidiItemChangeNotificationService midiNotificationService;
 
 	@Autowired
 	private Resources resources;
@@ -304,12 +309,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Reloads the data and properties.
+	 * 
 	 */
 	public void reload() {
 
-		// set list entries
+		// // set list entries
 		fileList.setListData(createViewableFileList(fileEntries));
-		fileList.setSelectedIndex(-1);
 
 		if (fileEntries.isEmpty()) {
 			prevButton.setEnabled(false);
@@ -559,7 +564,7 @@ public class MainFrame extends JFrame {
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
 		exitMenuItem.setEnabled(true);
 		exitMenuItem.addActionListener(new ExitAction());
-		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
 				ActionEvent.ALT_MASK));
 	}
 
@@ -1046,12 +1051,16 @@ public class MainFrame extends JFrame {
 					}
 
 					// en/disable send midi
+					String sendingSignature = fileListService
+							.getMidiFileListSendingSignature(fileList
+									.getSelectedIndex());
+
 					popupMenu.getSendMidiMenuItem().setEnabled(false);
-					if (switchItemDeviceName != null) {
-						if (!switchItemDeviceName
-								.equals(MidiAutomatorProperties.VALUE_NULL)) {
-							popupMenu.getSendMidiMenuItem().setEnabled(true);
-						}
+					if (switchItemDeviceName != null
+							&& !switchItemDeviceName
+									.equals(MidiAutomatorProperties.VALUE_NULL)
+							&& sendingSignature != null) {
+						popupMenu.getSendMidiMenuItem().setEnabled(true);
 					}
 
 					popupWasShown = true;
@@ -1223,6 +1232,29 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Opens the add frame
+	 */
+	public void openAddFrame() {
+
+		AddFrame addFrame = ctx.getBean("addFrame", AddFrame.class);
+		addFrame.setLocation(getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
+				getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
+		addFrame.init();
+	}
+
+	/**
+	 * Opens the edit frame with the selected item
+	 */
+	public void openEditFrame() {
+
+		EditFrame editFrame = ctx.getBean(EditFrame.class);
+		editFrame.init(fileList.getSelectedIndex());
+		editFrame.setLocation(
+				getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
+				getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
+	}
+
+	/**
 	 * Global key listener for "any time" key strokes.
 	 * 
 	 * @author aguelle
@@ -1239,7 +1271,9 @@ public class MainFrame extends JFrame {
 		public void keyPressed(KeyEvent e) {
 
 			int keyCode = e.getKeyCode();
-			log.debug("Key pressed: " + keyCode);
+			int keyMod = e.getModifiers();
+
+			int index = fileList.getSelectedIndex();
 
 			MouseEvent rightClick = new MouseEvent(fileList,
 					MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0,
@@ -1250,35 +1284,81 @@ public class MainFrame extends JFrame {
 			switch (keyCode) {
 
 			case KeyEvent.VK_SPACE:
-				nextAction.actionPerformed(null);
+				fileListService.openNextFile();
 				break;
 			case KeyEvent.VK_RIGHT:
-				nextAction.actionPerformed(null);
-				break;
-			case KeyEvent.VK_DOWN:
-				nextAction.actionPerformed(null);
+				fileListService.openNextFile();
 				break;
 			case KeyEvent.VK_ENTER:
-				nextAction.actionPerformed(null);
+				setSelectedIndex(index);
+				fileListService.openEntryByIndex(index, true);
 				break;
-
 			case KeyEvent.VK_LEFT:
-				prevAction.actionPerformed(null);
-				break;
-			case KeyEvent.VK_UP:
-				prevAction.actionPerformed(null);
+				fileListService.openPreviousFile();
 				break;
 			case KeyEvent.VK_BACK_SPACE:
-				prevAction.actionPerformed(null);
+				fileListService.openPreviousFile();
 				break;
-
 			case KeyEvent.VK_CONTEXT_MENU:
 				popupListener.mouseReleased(rightClick);
 				break;
 			case KeyEvent.VK_META:
 				popupListener.mouseReleased(rightClick);
 				break;
+			case KeyEvent.VK_DELETE:
+				fileListService.deleteItem(index);
+				break;
 			}
+
+			// ALT + A
+			if (keyCode == popupMenu.getAddMenuItem().getAccelerator()
+					.getKeyCode()
+					&& keyMod == 8) {
+				openAddFrame();
+			}
+
+			// ALT + E
+			if (keyCode == popupMenu.getEditMenuItem().getAccelerator()
+					.getKeyCode()
+					&& keyMod == 8) {
+				openEditFrame();
+			}
+
+			// ALT + M
+			if (keyCode == popupMenu.getSendMidiMenuItem().getAccelerator()
+					.getKeyCode()
+					&& keyMod == 8) {
+				midiNotificationService.sendItemSignature(index);
+			}
+
+			// arrow up
+			if ((keyCode == popupMenu.getMoveUpMenuItem().getAccelerator()
+					.getKeyCode())) {
+				if (keyMod == 0) {
+					setSelectedIndex(index - 1);
+				}
+				// ALT
+				if (keyMod == 8) {
+					fileListService.moveUpItem(index);
+				}
+			}
+
+			// arrow down
+			if (keyCode == popupMenu.getMoveDownMenuItem().getAccelerator()
+					.getKeyCode()) {
+				if (keyMod == 0) {
+					if (fileList.isSelectionEmpty()) {
+						setSelectedIndex(0);
+					} else {
+						setSelectedIndex(index + 1);
+					}
+				}
+				// ALT
+				if (keyMod == 8) {
+					fileListService.moveDownItem(index);
+				}
+			}
+
 		}
 
 		@Override

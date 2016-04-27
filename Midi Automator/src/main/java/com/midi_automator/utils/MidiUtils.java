@@ -329,7 +329,9 @@ public class MidiUtils {
 	public static MidiMessage signatureToMessage(String signature)
 			throws InvalidMidiDataException {
 
-		System.out.println(signature);
+		if (signature == null) {
+			return null;
+		}
 
 		int channel = -1;
 		Pattern pattern = Pattern.compile("channel [0-9]*");

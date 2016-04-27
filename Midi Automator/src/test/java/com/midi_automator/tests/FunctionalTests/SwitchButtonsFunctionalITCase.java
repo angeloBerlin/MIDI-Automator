@@ -69,17 +69,17 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			// delete second file
 			deleteEntry(1);
 
-			// open third file
-			clickNextFile();
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
-			checkIfOpenEntryIsDisplayed("Hello World 3");
-			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
-
-			// cycle first file
+			// open first file
 			clickNextFile();
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
+
+			// cycle first file
+			clickNextFile();
+			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			checkIfOpenEntryIsDisplayed("Hello World 3");
+			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -172,8 +172,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			// open third file
 			clickPrevFile();
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
-			checkIfOpenEntryIsDisplayed("Hello World 3");
-			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -181,7 +181,7 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void prevThirdFileShouldBeOpenedAfterAddingOnIndex2() {
+	public void prevFirstFileShouldBeOpenedAfterAddingOnIndex2() {
 
 		try {
 			MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
@@ -207,8 +207,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			// cycle third file
 			clickPrevFile();
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
-			checkIfOpenEntryIsDisplayed("Hello World 3");
-			sikulix.checkIfFileOpened("Hello_World_3_RTF.png");
+			checkIfOpenEntryIsDisplayed("Hello World 1");
+			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();

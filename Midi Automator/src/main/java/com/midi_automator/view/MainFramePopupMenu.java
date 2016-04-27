@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
-import com.midi_automator.view.frames.AddFrame;
-import com.midi_automator.view.frames.EditFrame;
 import com.midi_automator.view.frames.MainFrame;
 
 /**
@@ -33,8 +31,6 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 	private final String MENU_ITEM_ADD = "Add";
 	private final String MENU_ITEM_EDIT = "Edit";
 	private final String MENU_ITEM_SEND_MIDI = "Send midi";
-	private final int FRAME_LOCATION_X_OFFSET = 50;
-	private final int FRAME_LOCATION_Y_OFFSET = 50;
 
 	public static final String NAME = "main frame popup menu";
 	public static final String NAME_MENU_ITEM_MOVE_UP = "move up";
@@ -74,33 +70,43 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		moveUpMenuItem.setName(NAME_MENU_ITEM_MOVE_UP);
 		moveUpMenuItem.setEnabled(true);
 		moveUpMenuItem.addActionListener(new MoveUpAction(mainFrame));
-		moveUpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U,
+		moveUpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP,
 				ActionEvent.ALT_MASK));
 
 		moveDownMenuItem = new JMenuItem(MENU_ITEM_MOVE_DOWN);
 		moveDownMenuItem.setName(NAME_MENU_ITEM_MOVE_DOWN);
 		moveDownMenuItem.setEnabled(true);
 		moveDownMenuItem.addActionListener(new MoveDownAction(mainFrame));
+		moveDownMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_DOWN, ActionEvent.ALT_MASK));
 
 		deleteMenuItem = new JMenuItem(MENU_ITEM_DELETE);
 		deleteMenuItem.setName(NAME_MENU_ITEM_DELETE);
 		deleteMenuItem.setEnabled(true);
 		deleteMenuItem.addActionListener(new DeleteAction(mainFrame));
+		deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+				KeyEvent.VK_DELETE, 0));
 
 		addMenuItem = new JMenuItem(MENU_ITEM_ADD);
 		addMenuItem.setName(NAME_MENU_ITEM_ADD);
 		addMenuItem.setEnabled(true);
 		addMenuItem.addActionListener(new AddAction(mainFrame));
+		addMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+				ActionEvent.ALT_MASK));
 
 		editMenuItem = new JMenuItem(MENU_ITEM_EDIT);
 		editMenuItem.setName(NAME_MENU_ITEM_EDIT);
 		editMenuItem.setEnabled(true);
 		editMenuItem.addActionListener(new EditAction(mainFrame));
+		editMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+				ActionEvent.ALT_MASK));
 
 		sendMidiMenuItem = new JMenuItem(MENU_ITEM_SEND_MIDI);
 		sendMidiMenuItem.setName(NAME_MENU_ITEM_SEND_MIDI);
 		sendMidiMenuItem.setEnabled(false);
 		sendMidiMenuItem.addActionListener(new SendMidiAction(mainFrame));
+		sendMidiMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
+				ActionEvent.ALT_MASK));
 	}
 
 	/**
@@ -148,12 +154,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-
-			AddFrame addFrame = ctx.getBean("addFrame", AddFrame.class);
-			addFrame.setLocation(mainFrame.getLocationOnScreen().x
-					+ FRAME_LOCATION_X_OFFSET,
-					mainFrame.getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
-			addFrame.init();
+			mainFrame.openAddFrame();
 		}
 	}
 
@@ -196,14 +197,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-
-			EditFrame editFrame = ctx.getBean(EditFrame.class);
-			editFrame.init(mainFrame.getFileList().getSelectedIndex());
-			editFrame
-					.setLocation(mainFrame.getLocationOnScreen().x
-							+ FRAME_LOCATION_X_OFFSET,
-							mainFrame.getLocationOnScreen().y
-									+ FRAME_LOCATION_Y_OFFSET);
+			mainFrame.openEditFrame();
 		}
 	}
 
@@ -271,6 +265,10 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 			midiNotificationService.sendItemSignature(mainFrame.getFileList()
 					.getSelectedIndex());
 		}
+	}
+
+	public JMenuItem getAddMenuItem() {
+		return addMenuItem;
 	}
 
 	public JMenuItem getMoveUpMenuItem() {

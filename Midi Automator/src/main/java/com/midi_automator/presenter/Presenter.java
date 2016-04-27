@@ -102,7 +102,7 @@ public class Presenter {
 	public void close() {
 		midiService.unloadAllMidiDevices();
 		guiAutomationsService.stopGUIAutomations();
-		fileListService.resetCurrentItem();
+		fileListService.resetCurrentIndex();
 	}
 
 	/**

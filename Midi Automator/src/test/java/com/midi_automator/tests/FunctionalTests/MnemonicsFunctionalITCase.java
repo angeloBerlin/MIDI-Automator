@@ -5,6 +5,8 @@ import static com.midi_automator.tests.utils.GUIAutomations.*;
 import java.awt.event.KeyEvent;
 
 import org.assertj.swing.finder.WindowFinder;
+import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
@@ -27,8 +29,10 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressKeyOnMainFrame(KeyEvent.VK_ALT);
 		pressKeyOnMainFrame(KeyEvent.VK_I);
 
-		window.fileChooser(MainFrame.NAME_MIDI_IMPORT_FILECHOOSER)
-				.requireVisible();
+		JFileChooserFixture fileChooser = window.fileChooser(
+				MainFrame.NAME_MIDI_IMPORT_FILECHOOSER).requireVisible();
+		fileChooser.cancel();
+		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
 
 	@Test
@@ -41,8 +45,10 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressKeyOnMainFrame(KeyEvent.VK_ALT);
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_X);
 
-		window.fileChooser(MainFrame.NAME_MIDI_EXPORT_FILECHOOSER)
-				.requireVisible();
+		JFileChooserFixture fileChooser = window.fileChooser(
+				MainFrame.NAME_MIDI_EXPORT_FILECHOOSER).requireVisible();
+		fileChooser.cancel();
+		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
 
 	@Test
@@ -55,8 +61,10 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressKeyOnMainFrame(KeyEvent.VK_ALT);
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_P);
 
-		WindowFinder.findFrame(PreferencesFrame.NAME).using(robot)
-				.requireVisible();
+		FrameFixture preferncesFrame = WindowFinder
+				.findFrame(PreferencesFrame.NAME).using(robot).requireVisible();
+		preferncesFrame.close();
+		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
 
 	// @Test
@@ -68,5 +76,6 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 
 		pressKeyOnMainFrame(KeyEvent.VK_ALT);
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_E);
+		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
 }

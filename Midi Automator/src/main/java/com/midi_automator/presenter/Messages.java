@@ -10,7 +10,7 @@ public class Messages {
 	public static final String MSG_FILE_LIST_EMPTY = "File list is empty.";
 	public static final String MSG_FILE_LIST_TOO_BIG = "The file <b>\"%s\"</b> cannot be loaded because it has more than 128 entries.";
 	public static final String MSG_OPENING_FILE = "The file <b>\"%s\"</b> will be opened...";
-	public static final String MSG_OPENING_ENTRY = "Opening <b>\"%s\"</b>...";
+	public static final String MSG_OPENING_ENTRY = "Item <b>\"%s\"</b> opened...";
 	public static final String MSG_FILE_COULD_NOT_BE_OPENED = "No program found to open file <b>\"%s\"</b>.";
 	public static final String MSG_FILE_NOT_FOUND = "File <b>\"%s\"</b> could not be found.";
 	public static final String MSG_MIDI_DEVICE_NOT_AVAILABLE = "The MIDI device <b>%s</b> is unavailable.";
