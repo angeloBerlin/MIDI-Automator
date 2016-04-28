@@ -26,6 +26,8 @@ public class MidiAutomator {
 	 */
 	public static void main(String[] args) {
 
+		Locale.setDefault(locale);
+
 		if (args.length > 0) {
 
 			for (String arg : args) {

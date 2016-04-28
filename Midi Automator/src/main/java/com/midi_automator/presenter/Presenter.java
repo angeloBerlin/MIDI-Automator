@@ -2,7 +2,6 @@ package com.midi_automator.presenter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.sound.midi.MidiUnavailableException;
 
@@ -51,7 +50,6 @@ public class Presenter {
 	private InfoMessagesService infoMessagesService;
 
 	public Presenter() {
-		Locale.setDefault(MidiAutomator.locale);
 	}
 
 	/**
