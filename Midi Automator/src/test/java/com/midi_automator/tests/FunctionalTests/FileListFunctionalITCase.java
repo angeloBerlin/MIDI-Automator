@@ -1,7 +1,14 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
+import static com.midi_automator.tests.utils.GUIAutomations.clickPrevFile;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.pressAndReleaseKeysOnMainFrame;
+import static com.midi_automator.tests.utils.GUIAutomations.pressKeyOnMainFrame;
+import static com.midi_automator.tests.utils.GUIAutomations.robot;
+import static com.midi_automator.tests.utils.GUIAutomations.selectEntryByLeftClick;
+import static org.junit.Assert.fail;
 
 import java.awt.event.KeyEvent;
 
