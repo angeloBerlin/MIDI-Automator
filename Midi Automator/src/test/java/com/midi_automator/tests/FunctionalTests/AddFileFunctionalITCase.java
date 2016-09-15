@@ -43,8 +43,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		addFile("Hello World", currentPath + "/testfiles/Hello World.rtf",
-				programPath);
+		saveDialog(addFile("Hello World", currentPath
+				+ "/testfiles/Hello World.rtf", programPath));
 
 		String firstFileListEntry = getFileList().contents()[0];
 		assertEquals("1 Hello World", firstFileListEntry);
@@ -62,6 +62,20 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
+	public void newFileShouldBeAddedOnEnterSaveButton() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		saveDialogByEnter(addFile("Hello World", currentPath
+				+ "/testfiles/Hello World.rtf", programPath));
+
+		String firstFileListEntry = getFileList().contents()[0];
+		assertEquals("1 Hello World", firstFileListEntry);
+	}
+
+	@Test
 	public void fileChooserOfAddDialogShouldChooseHelloWorldRtf() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
@@ -70,6 +84,26 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		FrameFixture addFrame = openAddDialog();
 		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_FILE_SEARCH_BUTTON);
+
+		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
+		String rtfPath = currentPath + File.separator + "testfiles"
+				+ File.separator + "Hello World.rtf";
+		fileChooser.selectFile(new File(rtfPath));
+		fileChooser.approve();
+
+		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+	}
+
+	@Test
+	public void fileChooserOfAddDialogShouldChooseHelloWorldRtfByKeyboard() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture addFrame = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialogOnEnter(addFrame,
 				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
@@ -119,6 +153,21 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
+	public void addingFileShouldBeCanceledByEnterCancelButton() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture addFrame = openAddDialog();
+		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText("x");
+		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialogByEnter(addFrame);
+
+		assertEquals(getFileList().contents().length, 0);
+	}
+
+	@Test
 	public void addingEmptyFileNameShouldNotBePossible() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
@@ -138,8 +187,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		addFile("Hello World 129", currentPath + "/testfiles/Hello World.rtf",
-				"");
+		saveDialog(addFile("Hello World 129", currentPath
+				+ "/testfiles/Hello World.rtf", ""));
 
 		checkInfoText(String.format(Messages.MSG_FILE_LIST_IS_FULL,
 				"Hello World 129"));

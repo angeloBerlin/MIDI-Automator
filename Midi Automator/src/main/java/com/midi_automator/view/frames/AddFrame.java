@@ -1,17 +1,15 @@
 package com.midi_automator.view.frames;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
@@ -53,6 +51,8 @@ public class AddFrame extends AbstractBasicDialog {
 	protected JTextField programTextField;
 	protected JLabel midiSendingSignatureLabel;
 	protected JLabel midiSendingSignatureValueLabel;
+	protected JFileChooser fileChooser;
+	protected JFileChooser programChooser;
 
 	@Autowired
 	protected Presenter presenter;
@@ -66,6 +66,14 @@ public class AddFrame extends AbstractBasicDialog {
 	public void init() {
 		super.init();
 
+		UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
+		fileChooser = new JFileChooser();
+		// KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+		// InputMap map = fileChooser.getInputMap();
+		// map.put(enter, "approveSelection");
+		UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
+		programChooser = new JFileChooser();
+
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 		setName(NAME);
@@ -76,13 +84,9 @@ public class AddFrame extends AbstractBasicDialog {
 		createMidiSendingSignature();
 
 		// Save
-		saveAction = new SaveAction();
-		buttonSave.addActionListener(saveAction);
 		footerPanel.add(buttonSave);
 
 		// Cancel
-		cancelAction = new CancelAction();
-		buttonCancel.addActionListener(cancelAction);
 		footerPanel.add(buttonCancel);
 
 		setAlwaysOnTop(true);
@@ -107,8 +111,9 @@ public class AddFrame extends AbstractBasicDialog {
 				META_LABEL_WIDTH, TEXT_PANE_WIDTH);
 
 		JButton searchButton = new JButton(BUTTON_FILE_SEARCH);
-		searchButton.addActionListener(new FileSearchAction(this));
+		searchButton.addActionListener(new FileSearchAction());
 		searchButton.setName(NAME_FILE_SEARCH_BUTTON);
+		searchButton.addKeyListener(new FileSearchKeyListener());
 		addComponentAtPosition(searchButton, 2, gridRows - 1);
 	}
 
@@ -122,8 +127,9 @@ public class AddFrame extends AbstractBasicDialog {
 				NAME_PROGRAM_TEXT_FIELD, META_LABEL_WIDTH, TEXT_PANE_WIDTH);
 
 		JButton searchButton = new JButton(BUTTON_PROGRAM_SEARCH);
-		searchButton.addActionListener(new ProgramSearchAction(this));
+		searchButton.addActionListener(new ProgramSearchAction());
 		searchButton.setName(NAME_PROGRAM_SEARCH_BUTTON);
+		searchButton.addKeyListener(new ProgramSearchKeyListener());
 		addComponentAtPosition(searchButton, 2, gridRows - 1);
 
 	}
@@ -149,7 +155,42 @@ public class AddFrame extends AbstractBasicDialog {
 	}
 
 	/**
-	 * Opens a file chooser and puts the return value to the file text pane
+	 * Opens a file chooser and puts the return value to the file text pane.
+	 */
+	protected void openFileChooser() {
+		int returnVal = fileChooser.showOpenDialog(this);
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			fileTextField.setText(file.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * Opens a file chooser and puts the return value to the program text pane.
+	 */
+	protected void openProgramChooser() {
+		int returnVal = programChooser.showOpenDialog(this);
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = programChooser.getSelectedFile();
+			programTextField.setText(file.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * Saves the dialog and closes it.
+	 */
+	@Override
+	protected void save() {
+		fileListService.addItem(nameTextField.getText(),
+				fileTextField.getText(), programTextField.getText(),
+				midiSendingSignatureValueLabel.getText());
+		close();
+	}
+
+	/**
+	 * Opens the file chooser
 	 * 
 	 * @author aguelle
 	 * 
@@ -157,34 +198,31 @@ public class AddFrame extends AbstractBasicDialog {
 	class FileSearchAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private final JFileChooser fileChooser;
-		private AddFrame parent;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param parent
-		 *            the parent component
-		 */
-		public FileSearchAction(AddFrame parent) {
-			this.parent = parent;
-			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
-			fileChooser = new JFileChooser();
-		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int returnVal = fileChooser.showOpenDialog(parent);
+			openFileChooser();
+		}
+	}
 
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				fileTextField.setText(file.getAbsolutePath());
+	/**
+	 * Opens the file chooser
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class FileSearchKeyListener extends KeyAdapter {
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				openFileChooser();
 			}
 		}
 	}
 
 	/**
-	 * Opens a file chooser and puts the return value to the program text pane
+	 * Opens the program chooser
 	 * 
 	 * @author aguelle
 	 * 
@@ -192,68 +230,26 @@ public class AddFrame extends AbstractBasicDialog {
 	class ProgramSearchAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private final JFileChooser fileChooser;
-		private AddFrame parent;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param parent
-		 *            the parent component
-		 */
-		public ProgramSearchAction(AddFrame parent) {
-			this.parent = parent;
-			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
-			fileChooser = new JFileChooser();
-		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int returnVal = fileChooser.showOpenDialog(parent);
+			openProgramChooser();
+		}
+	}
 
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				programTextField.setText(file.getAbsolutePath());
+	/**
+	 * Opens the program chooser
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class ProgramSearchKeyListener extends KeyAdapter {
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				openProgramChooser();
 			}
-		}
-	}
-
-	/**
-	 * Closes the frame, saves the entry and reloads the entry list
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class SaveAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fileListService.addItem(nameTextField.getText(),
-					fileTextField.getText(), programTextField.getText(),
-					midiSendingSignatureValueLabel.getText());
-			new CancelAction().actionPerformed(e);
-		}
-	}
-
-	/**
-	 * Closes the frame
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class CancelAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Component component = (Component) e.getSource();
-			JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-			WindowEvent windowClosing = new WindowEvent(frame,
-					WindowEvent.WINDOW_CLOSING);
-			frame.dispatchEvent(windowClosing);
 		}
 	}
 }

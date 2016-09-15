@@ -6,8 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,8 +36,6 @@ public abstract class AbstractBasicDialog extends JFrame {
 
 	protected JButton buttonSave;
 	protected JButton buttonCancel;
-	protected ActionListener saveAction;
-	protected ActionListener cancelAction;
 
 	protected JPanel middlePanel;
 	protected JPanel footerPanel;
@@ -55,8 +57,13 @@ public abstract class AbstractBasicDialog extends JFrame {
 
 		buttonSave = new JButton(BUTTON_SAVE);
 		buttonSave.setName(NAME_SAVE_BUTTON);
+		buttonSave.addActionListener(new SaveAction());
+		buttonSave.addKeyListener(new SaveKeyListener());
+
 		buttonCancel = new JButton(BUTTON_CANCEL);
 		buttonCancel.setName(NAME_CANCEL_BUTTON);
+		buttonCancel.addActionListener(new CancelAction());
+		buttonCancel.addKeyListener(new CancelKeyListener());
 	}
 
 	/**
@@ -138,5 +145,79 @@ public abstract class AbstractBasicDialog extends JFrame {
 		c.gridx = x;
 		c.gridy = y;
 		middlePanel.add(component, c);
+	}
+
+	/**
+	 * Closes the frame
+	 */
+	protected void close() {
+		WindowEvent windowClosing = new WindowEvent(this,
+				WindowEvent.WINDOW_CLOSING);
+		dispatchEvent(windowClosing);
+	}
+
+	/**
+	 * Called by the "save" button
+	 */
+	abstract protected void save();
+
+	/**
+	 * Closes the frame
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class CancelAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			close();
+		}
+	}
+
+	/**
+	 * Closes the frame
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class CancelKeyListener extends KeyAdapter {
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			close();
+		}
+	}
+
+	/**
+	 * Calls the save method
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class SaveAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			save();
+		}
+	}
+
+	/**
+	 * Calls the save method
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class SaveKeyListener extends KeyAdapter {
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			save();
+		}
 	}
 }

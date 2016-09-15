@@ -1,7 +1,6 @@
 package com.midi_automator.view.frames;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -19,10 +18,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
@@ -156,13 +153,9 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		guiAutomationsService.setGUIAutomatorsToActive(false);
 
 		// Save
-		saveAction = new SaveAction();
-		buttonSave.addActionListener(saveAction);
 		footerPanel.add(buttonSave);
 
 		// Cancel
-		cancelAction = new CancelAction();
-		buttonCancel.addActionListener(cancelAction);
 		footerPanel.add(buttonCancel);
 
 		add(middlePanel, BorderLayout.CENTER);
@@ -545,67 +538,36 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 	/**
 	 * Closes the preferences window, saves and loads the configuration.
-	 * 
-	 * @author aguelle
-	 * 
 	 */
-	class SaveAction extends AbstractAction {
+	protected void save() {
 
-		private static final long serialVersionUID = 1L;
+		String midiINRemoteDeviceName = (String) midiINRemoteDeviceComboBox
+				.getSelectedItem();
+		String midiOUTRemoteDeviceName = (String) midiOUTRemoteDeviceComboBox
+				.getSelectedItem();
+		String midiINMetronomDeviceName = (String) midiINMetronomDeviceComboBox
+				.getSelectedItem();
+		String midiOUTSwitchNotifierDeviceName = (String) midiOUTSwitchNotifierDeviceComboBox
+				.getSelectedItem();
+		String midiOUTSwitchItemDeviceName = (String) midiOUTSwitchItemDeviceComboBox
+				.getSelectedItem();
+		GUIAutomation[] guiAutomations = guiAutomationConfigurationPanel
+				.getGUIAutomations();
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		midiService.setMidiDeviceName(midiINRemoteDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
+		midiService.setMidiDeviceName(midiINMetronomDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
+		midiService.setMidiDeviceName(midiOUTRemoteDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
+		midiService.setMidiDeviceName(midiOUTSwitchNotifierDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
+		midiService.setMidiDeviceName(midiOUTSwitchItemDeviceName,
+				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
+		guiAutomationsService.saveGUIAutomations(guiAutomations);
 
-			String midiINRemoteDeviceName = (String) midiINRemoteDeviceComboBox
-					.getSelectedItem();
-			String midiOUTRemoteDeviceName = (String) midiOUTRemoteDeviceComboBox
-					.getSelectedItem();
-			String midiINMetronomDeviceName = (String) midiINMetronomDeviceComboBox
-					.getSelectedItem();
-			String midiOUTSwitchNotifierDeviceName = (String) midiOUTSwitchNotifierDeviceComboBox
-					.getSelectedItem();
-			String midiOUTSwitchItemDeviceName = (String) midiOUTSwitchItemDeviceComboBox
-					.getSelectedItem();
-			GUIAutomation[] guiAutomations = guiAutomationConfigurationPanel
-					.getGUIAutomations();
-
-			midiService.setMidiDeviceName(midiINRemoteDeviceName,
-					MidiAutomatorProperties.KEY_MIDI_IN_REMOTE_DEVICE);
-			midiService.setMidiDeviceName(midiINMetronomDeviceName,
-					MidiAutomatorProperties.KEY_MIDI_IN_METRONOM_DEVICE);
-			midiService.setMidiDeviceName(midiOUTRemoteDeviceName,
-					MidiAutomatorProperties.KEY_MIDI_OUT_REMOTE_DEVICE);
-			midiService
-					.setMidiDeviceName(
-							midiOUTSwitchNotifierDeviceName,
-							MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
-			midiService.setMidiDeviceName(midiOUTSwitchItemDeviceName,
-					MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-			guiAutomationsService.saveGUIAutomations(guiAutomations);
-
-			new CancelAction().actionPerformed(e);
-			presenter.loadProperties();
-		}
-	}
-
-	/**
-	 * Closes the preferences window.
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class CancelAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Component component = (Component) e.getSource();
-			JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-			WindowEvent windowClosing = new WindowEvent(frame,
-					WindowEvent.WINDOW_CLOSING);
-			frame.dispatchEvent(windowClosing);
-		}
+		close();
+		presenter.loadProperties();
 	}
 
 	/**

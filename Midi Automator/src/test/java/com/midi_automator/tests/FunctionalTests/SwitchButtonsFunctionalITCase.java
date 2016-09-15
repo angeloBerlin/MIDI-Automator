@@ -107,8 +107,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			sikulix.checkIfFileOpened("Hello_World_2_RTF.png");
 
 			// add third file
-			addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 3.rtf", "");
+			saveDialog(addFile("Hello World 3", currentPath
+					+ "/testfiles/Hello World 3.rtf", ""));
 
 			// open third file
 			clickNextFile();
@@ -201,8 +201,8 @@ public class SwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			sikulix.checkIfFileOpened("Hello_World_1_RTF.png");
 
 			// add third file
-			addFile("Hello World 3", currentPath
-					+ "/testfiles/Hello World 3.rtf", "");
+			saveDialog(addFile("Hello World 3", currentPath
+					+ "/testfiles/Hello World 3.rtf", ""));
 
 			// cycle third file
 			clickPrevFile();

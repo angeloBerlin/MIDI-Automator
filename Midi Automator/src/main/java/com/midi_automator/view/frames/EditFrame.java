@@ -1,8 +1,5 @@
 package com.midi_automator.view.frames;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
@@ -38,11 +35,6 @@ public class EditFrame extends AddFrame {
 		setTitle(TITLE);
 		setSize(WIDTH, HEIGHT);
 
-		// change save action
-		buttonSave.removeActionListener(super.saveAction);
-		saveAction = new SaveAction();
-		buttonSave.addActionListener(saveAction);
-
 		createMidiListeningSignature();
 		initMidiSendingSignatureValueLabelText();
 
@@ -66,30 +58,18 @@ public class EditFrame extends AddFrame {
 	}
 
 	@Override
+	protected void save() {
+		fileListService.setItem(index, nameTextField.getText(),
+				fileTextField.getText(), programTextField.getText(),
+				midiListeningSignatureValueLabel.getText(),
+				midiSendingSignatureValueLabel.getText());
+		close();
+	}
+
+	@Override
 	protected void initMidiSendingSignatureValueLabelText() {
 
 		midiSendingSignatureValueLabel.setText(fileListService
 				.getMidiFileListSendingSignature(index));
-	}
-
-	/**
-	 * Closes the frame, saves the entry and reloads the entry list
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class SaveAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			log.debug("Save edited item on index: " + (index + 1));
-			fileListService.setItem(index, nameTextField.getText(),
-					fileTextField.getText(), programTextField.getText(),
-					midiListeningSignatureValueLabel.getText(),
-					midiSendingSignatureValueLabel.getText());
-			new CancelAction().actionPerformed(e);
-		}
 	}
 }

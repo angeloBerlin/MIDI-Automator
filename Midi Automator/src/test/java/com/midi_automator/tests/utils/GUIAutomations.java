@@ -1,6 +1,7 @@
 package com.midi_automator.tests.utils;
 
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.JSpinner;
@@ -922,14 +923,16 @@ public class GUIAutomations {
 	 *            path to the file
 	 * @param programPath
 	 *            path to the opening program
+	 * @return the add frame
 	 */
-	public static void addFile(String name, String filePath, String programPath) {
+	public static FrameFixture addFile(String name, String filePath,
+			String programPath) {
 
 		FrameFixture addFrame = openAddDialog();
 		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText(name);
 		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText(filePath);
 		addFrame.textBox(AddFrame.NAME_PROGRAM_TEXT_FIELD).setText(programPath);
-		saveDialog(addFrame);
+		return addFrame;
 	}
 
 	/**
@@ -1129,6 +1132,21 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Opens a search file chooser
+	 * 
+	 * @param frame
+	 *            The frame containing the search button
+	 * @param searchButtonName
+	 *            The name of the search button
+	 * @return The file chooser fixture
+	 */
+	public static JFileChooserFixture openSearchDialogOnEnter(
+			FrameFixture frame, String searchButtonName) {
+		frame.button(searchButtonName).pressAndReleaseKeys(KeyEvent.VK_ENTER);
+		return JFileChooserFinder.findFileChooser().using(robot);
+	}
+
+	/**
 	 * Cancels a dialog
 	 * 
 	 * @param frame
@@ -1139,13 +1157,33 @@ public class GUIAutomations {
 	}
 
 	/**
-	 * Saves a dialog
+	 * Cancels a dialog by hitting enter on the save button
+	 * 
+	 * @param frame
+	 *            The frame containing the save button
+	 */
+	public static void cancelDialogByEnter(FrameFixture frame) {
+		frame.button("cancel button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
+	}
+
+	/**
+	 * Saves a dialog by clicking the save button
 	 * 
 	 * @param frame
 	 *            The frame containing the save button
 	 */
 	public static void saveDialog(FrameFixture frame) {
 		frame.button("save button").click();
+	}
+
+	/**
+	 * Saves a dialog by hitting enter on the save button
+	 * 
+	 * @param frame
+	 *            The frame containing the save button
+	 */
+	public static void saveDialogByEnter(FrameFixture frame) {
+		frame.button("save button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
 	}
 
 	/**

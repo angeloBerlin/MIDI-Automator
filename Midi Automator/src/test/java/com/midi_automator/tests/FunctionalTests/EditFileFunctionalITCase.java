@@ -68,6 +68,21 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
+	public void editingFileShouldBeCanceledByEnterCancelButton() {
+
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture editFrame = openEditDialog(0);
+		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText("x");
+		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialogByEnter(editFrame);
+
+		assertEquals(getFileList().contents()[0], "1 Hello World");
+	}
+
+	@Test
 	public void helloWorldShouldBeEdited() {
 
 		try {
@@ -96,6 +111,25 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void helloWorldShouldBeEditedOnEnterSaveButton() {
+
+		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture editFrame = openEditDialog(0);
+		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText(
+				"Hello World Edit");
+		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
+				currentPath + "/testfiles/Hello World edit.rtf");
+		editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
+				editedProgramPath);
+		saveDialogByEnter(editFrame);
+
+		assertEquals(getFileList().contents()[0], "1 Hello World Edit");
 	}
 
 	@Test
