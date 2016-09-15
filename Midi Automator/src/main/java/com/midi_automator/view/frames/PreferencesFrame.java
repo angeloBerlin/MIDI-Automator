@@ -474,6 +474,9 @@ public class PreferencesFrame extends AbstractBasicDialog {
 		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
 				.getGUIAutomationsTable();
 
+		guiAutomationConfigurationPanel.setMinSimilarity(guiAutomationsService
+				.getMinSimilarity());
+
 		if (guiAutomations != null) {
 			for (int i = 0; i < guiAutomations.length; i++) {
 				table.setAutomation(guiAutomations[i].getImagePath(),
@@ -482,7 +485,6 @@ public class PreferencesFrame extends AbstractBasicDialog {
 						guiAutomations[i].getMinDelay(),
 						guiAutomations[i].getTimeout(),
 						guiAutomations[i].getMidiSignature(),
-						guiAutomations[i].getMinSimilarity(),
 						guiAutomations[i].getScanRate(),
 						guiAutomations[i].isMovable(), i);
 			}
@@ -564,7 +566,8 @@ public class PreferencesFrame extends AbstractBasicDialog {
 				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_NOTIFIER_DEVICE);
 		midiService.setMidiDeviceName(midiOUTSwitchItemDeviceName,
 				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
-		guiAutomationsService.saveGUIAutomations(guiAutomations);
+		guiAutomationsService.saveGUIAutomations(guiAutomations,
+				guiAutomationConfigurationPanel.getMinSimilarity());
 
 		close();
 		presenter.loadProperties();

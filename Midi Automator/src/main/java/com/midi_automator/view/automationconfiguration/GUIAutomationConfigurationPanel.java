@@ -120,6 +120,25 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	}
 
 	/**
+	 * Gets the minimum similarity
+	 * 
+	 * @return The minimum similarity
+	 */
+	public float getMinSimilarity() {
+		return (float) minSimilaritySpinner.getValue();
+	}
+
+	/**
+	 * Sets the minimum similarity
+	 * 
+	 * @param minSimilarity
+	 *            The minimum similarity
+	 */
+	public void setMinSimilarity(float minSimilarity) {
+		minSimilaritySpinner.setValue(minSimilarity);
+	}
+
+	/**
 	 * Gets all GUI automations
 	 * 
 	 * @return An array with all GUI automations
@@ -144,13 +163,11 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			long delay = getAutomationMinDelay(row);
 			long timeout = getAutomationTimeout(row);
 			String midiSignature = getAutomationMidiSignature(row);
-			float minSimilarity = (float) minSimilaritySpinner.getValue();
 			float scanRate = getAutomationScanRate(row);
 			boolean isMovable = getAutomationMovable(row);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
-					trigger, delay, timeout, midiSignature, minSimilarity,
-					scanRate, isMovable);
+					trigger, delay, timeout, midiSignature, scanRate, isMovable);
 			guiAutomations[row] = guiAutomation;
 		}
 
@@ -351,7 +368,6 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			configurationTable.setAutomation(null, null, null,
 					GUIAutomation.DEFAULT_MIN_DELAY,
 					GUIAutomation.DEFAULT_TIMEOUT, null,
-					GUIAutomation.DEFAULT_MIN_SIMILARITY,
 					GUIAutomation.DEFAULT_SCAN_RATE,
 					GUIAutomation.DEFAULT_IS_MOVABLE, -1);
 		}

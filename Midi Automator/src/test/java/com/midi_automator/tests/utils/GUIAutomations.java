@@ -783,7 +783,7 @@ public class GUIAutomations {
 
 		JSpinnerFixture spinner = preferencesFrame
 				.spinner(GUIAutomationConfigurationPanel.NAME_MIN_SIMILARITY_SPINNER);
-		spinner.enterText(value);
+		spinner.enterTextAndCommit(value);
 	}
 
 	/**

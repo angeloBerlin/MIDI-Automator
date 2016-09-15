@@ -79,11 +79,29 @@ public class MidiAutomatorProperties extends Properties {
 
 	@Override
 	public Object setProperty(String key, String value) {
-		if (value == null) {
-			value = "";
+
+		if (value.equals("null") || value.equals("")) {
+			value = MidiAutomatorProperties.VALUE_NULL;
 		}
+
 		Object obj = super.setProperty(key, value);
 		return obj;
+	}
+
+	/**
+	 * Saves a common property to the properties file.
+	 * 
+	 * @param key
+	 *            The key of the property
+	 * 
+	 * @param value
+	 *            The value of the property
+	 */
+	public void setProperty(String key, Object value) {
+
+		String strValue = String.valueOf(value);
+		setProperty(key, strValue);
+
 	}
 
 	/**

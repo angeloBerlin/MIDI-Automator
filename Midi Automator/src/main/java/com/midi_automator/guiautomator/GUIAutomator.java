@@ -35,9 +35,14 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private boolean fixedSearchRegion = false;
 
 	/**
-	 * Standard Constructor
+	 * Constructor
+	 * 
+	 * @param minSimilarity
+	 *            The minimum similarity for the automation
 	 */
-	public GUIAutomator() {
+	public GUIAutomator(float minSimilarity) {
+		Settings.MinSimilarity = minSimilarity;
+		Settings.CheckLastSeenSimilar = minSimilarity;
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
 	}
@@ -45,11 +50,13 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	/**
 	 * Constructor
 	 * 
-	 * @param guiAutomations
-	 *            An array of GUI automations to run
+	 * @param guiAutomation
+	 *            The gui automation to run
+	 * @param minSimilarity
+	 *            The minimum similarity for the automation
 	 */
-	public GUIAutomator(GUIAutomation guiAutomation) {
-		this();
+	public GUIAutomator(GUIAutomation guiAutomation, float minSimilarity) {
+		this(minSimilarity);
 		setGUIAutomation(guiAutomation);
 	}
 
@@ -61,8 +68,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		}
 
 		// prepare search parameters
-		Settings.MinSimilarity = guiAutomation.getMinSimilarity();
-		Settings.CheckLastSeenSimilar = guiAutomation.getMinSimilarity();
+
 		searchRegion.setObserveScanRate(guiAutomation.getScanRate());
 		searchRegion.onAppear(SystemUtils.replaceSystemVariables(guiAutomation
 				.getImagePath()), observer);

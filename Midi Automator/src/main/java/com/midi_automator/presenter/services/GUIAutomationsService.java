@@ -40,6 +40,7 @@ public class GUIAutomationsService {
 	private MidiService midiService;
 
 	private GUIAutomation[] guiAutomations;
+	private float minSimilarity;
 	private List<GUIAutomator> guiAutomators = new ArrayList<GUIAutomator>();;
 
 	/**
@@ -63,7 +64,7 @@ public class GUIAutomationsService {
 		loadAutomationMinDelayProperties();
 		loadAutomationTimeoutProperties();
 		loadAutomationMidiSignatureProperties();
-		loadAutomationMinSimilarityProperties();
+		loadAutomationMinSimilarityProperty();
 		loadAutomationScanRateProperties();
 		loadAutomationIsMovableProperites();
 
@@ -82,7 +83,7 @@ public class GUIAutomationsService {
 			protected Void doInBackground() throws Exception {
 				for (int i = 0; i < guiAutomations.length; i++) {
 
-					GUIAutomator guiAutomator = new GUIAutomator();
+					GUIAutomator guiAutomator = new GUIAutomator(minSimilarity);
 					guiAutomator.setName("GUIAutomator " + i);
 					guiAutomator.setGUIAutomation(guiAutomations[i]);
 					guiAutomators.add(guiAutomator);
@@ -137,20 +138,12 @@ public class GUIAutomationsService {
 	/**
 	 * Loads all minimum similarities.
 	 */
-	private void loadAutomationMinSimilarityProperties() {
-
-		Set<Entry<Object, Object>> propertiesSet = properties
-				.entrySet(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
+	private void loadAutomationMinSimilarityProperty() {
+		String strMinSimilarity = properties
+				.getProperty(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
 						.toString());
-
-		for (Entry<Object, Object> property : propertiesSet) {
-
-			int index = MidiAutomatorProperties
-					.getIndexOfPropertyKey((String) property.getKey());
-			float value = Float.valueOf((String) property.getValue());
-			guiAutomations[index].setMinSimilarity(value);
-
-		}
+		strMinSimilarity = strMinSimilarity.replace(",", ".");
+		minSimilarity = Float.parseFloat(strMinSimilarity);
 	}
 
 	/**
@@ -310,44 +303,47 @@ public class GUIAutomationsService {
 	 * @param guiAutomations
 	 *            The GUIAutomations to store
 	 */
-	public void saveGUIAutomations(GUIAutomation[] guiAutomations) {
+	public void saveGUIAutomations(GUIAutomation[] guiAutomations,
+			float minSimilarity) {
 
 		removeGUIAutomations();
+
+		saveProperty(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY.toString(),
+				String.format("%.2f", (float) minSimilarity));
+
 		this.guiAutomations = guiAutomations;
 
 		for (int index = 0; index < guiAutomations.length; index++) {
 
-			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString(),
-					index, guiAutomations[index].getImagePath());
+			saveAutomationProperty(
+					GUIAutomationKey.GUI_AUTOMATION_IMAGE.toString(), index,
+					guiAutomations[index].getImagePath());
 
-			saveToProperties(GUIAutomationKey.GUI_AUTOMATION_TYPE.toString(),
-					index, guiAutomations[index].getType());
+			saveAutomationProperty(
+					GUIAutomationKey.GUI_AUTOMATION_TYPE.toString(), index,
+					guiAutomations[index].getType());
 
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_TRIGGER.toString(), index,
 					guiAutomations[index].getTrigger());
 
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_MIN_DELAY.toString(),
 					index, guiAutomations[index].getMinDelay());
 
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_TIMEOUT.toString(), index,
 					guiAutomations[index].getTimeout());
 
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_MIDI_SIGNATURE.toString(),
 					index, guiAutomations[index].getMidiSignature());
 
-			saveToProperties(
-					GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY.toString(),
-					index, guiAutomations[index].getMinSimilarity());
-
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_SCAN_RATE.toString(),
 					index, guiAutomations[index].getScanRate());
 
-			saveToProperties(
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_IS_MOVABLE.toString(),
 					index, guiAutomations[index].isMovable());
 		}
@@ -363,7 +359,7 @@ public class GUIAutomationsService {
 	 * @param value
 	 *            The value of the property
 	 */
-	private void saveToProperties(String key, int index, Object value) {
+	private void saveAutomationProperty(String key, int index, Object value) {
 
 		String strValue = String.valueOf(value);
 
@@ -373,6 +369,21 @@ public class GUIAutomationsService {
 
 		properties.setProperty(key + MidiAutomatorProperties.INDEX_SEPARATOR
 				+ index, strValue);
+		presenter.storePropertiesFile();
+	}
+
+	/**
+	 * Saves a common property to the properties file.
+	 * 
+	 * @param key
+	 *            The key of the property
+	 * 
+	 * @param value
+	 *            The value of the property
+	 */
+	private void saveProperty(String key, Object value) {
+
+		properties.setProperty(key, value);
 		presenter.storePropertiesFile();
 	}
 
@@ -414,6 +425,13 @@ public class GUIAutomationsService {
 
 	public GUIAutomation[] getGuiAutomations() {
 		return guiAutomations;
+	}
+
+	public float getMinSimilarity() {
+		return Float
+				.parseFloat((String) properties
+						.get(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
+								.toString()));
 	}
 
 }

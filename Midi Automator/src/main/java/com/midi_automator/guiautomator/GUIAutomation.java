@@ -51,7 +51,6 @@ public class GUIAutomation implements IDeActivateable {
 	private String midiSignature;
 	private boolean active;
 	private long minDelay = DEFAULT_MIN_DELAY;
-	private float minSimilarity = DEFAULT_MIN_SIMILARITY;
 	private float scanRate = DEFAULT_SCAN_RATE;
 	private boolean movable = DEFAULT_IS_MOVABLE;
 	private long timeout;
@@ -80,16 +79,14 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The timeout for the screenshot search
 	 * @param midiSignature
 	 *            The midi signature. Used if trigger is set to a midi port
-	 * @param minSimilarity
-	 *            The minimum similarity for the image recognition
 	 * @param scanRate
 	 *            The scan rate for the image recognition
 	 * @param isMovable
 	 *            Flag if the image is movable
 	 */
 	public GUIAutomation(String imagePath, String type, String trigger,
-			long delay, long timeout, String midiSignature,
-			float minSimilarity, float scanRate, boolean isMovable) {
+			long delay, long timeout, String midiSignature, float scanRate,
+			boolean isMovable) {
 		new GUIAutomation();
 		setImagePath(imagePath);
 		setType(type);
@@ -97,7 +94,6 @@ public class GUIAutomation implements IDeActivateable {
 		setMinDelay(delay);
 		setTimeout(timeout);
 		setMidiSignature(midiSignature);
-		setMinSimilarity(minSimilarity);
 		setScanRate(scanRate);
 		setMovable(isMovable);
 	}
@@ -254,14 +250,6 @@ public class GUIAutomation implements IDeActivateable {
 		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
 				+ "\" TYPE: " + type + " TRIGGER: " + trigger + " MIDI: "
 				+ midiSignature;
-	}
-
-	public float getMinSimilarity() {
-		return minSimilarity;
-	}
-
-	public void setMinSimilarity(float minSimilarity) {
-		this.minSimilarity = minSimilarity;
 	}
 
 	public boolean isMovable() {

@@ -86,7 +86,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// decrease similarity
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationMinSimilarity("0.5", preferencesFrame);
+			setAutomationMinSimilarity("0,5", preferencesFrame);
 			saveDialog(preferencesFrame);
 
 			Thread.sleep(1000);

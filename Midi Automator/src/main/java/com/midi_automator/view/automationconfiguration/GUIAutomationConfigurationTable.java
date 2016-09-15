@@ -359,8 +359,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The timeout for the automation
 	 * @param midiSignature
 	 *            The midi signature, <NULL> for empty signature
-	 * @param minSimilarity
-	 *            The value for the min similarity
 	 * @param scanRate
 	 *            The value for the scan rate
 	 * @param isMovable
@@ -368,8 +366,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            <FALSE> is not
 	 */
 	private void addAutomation(String imagePath, String type, String trigger,
-			long minDelay, long timeout, String midiSignature,
-			float minSimilarity, float scanRate, boolean isMovable) {
+			long minDelay, long timeout, String midiSignature, float scanRate,
+			boolean isMovable) {
 
 		// extend table model
 		Vector<Object> rowData = new Vector<Object>();
@@ -424,8 +422,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The Timeout for the automation
 	 * @param midiSignature
 	 *            The midi signature, <NULL> for empty signature
-	 * @param minSimilarity
-	 *            The default value for the minimum image recognition similarity
 	 * @param scanRate
 	 *            The scan rate of the automation
 	 * @param isMovable
@@ -435,14 +431,14 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The row of the automation, if < 0 a new row will be added
 	 */
 	public void setAutomation(String imagePath, String type, String trigger,
-			long minDelay, long timeout, String midiSignature,
-			float minSimilarity, float scanRate, boolean isMovable, int row) {
+			long minDelay, long timeout, String midiSignature, float scanRate,
+			boolean isMovable, int row) {
 
 		TableModel model = getModel();
 
 		if (model.getRowCount() <= row || row < 0) {
 			addAutomation(imagePath, type, trigger, minDelay, timeout,
-					midiSignature, minSimilarity, scanRate, isMovable);
+					midiSignature, scanRate, isMovable);
 		} else {
 
 			model.setValueAt(initScreenshotIcon(imagePath), row,
