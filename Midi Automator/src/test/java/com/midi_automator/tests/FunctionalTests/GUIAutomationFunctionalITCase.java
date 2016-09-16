@@ -625,7 +625,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// set scan rate to 0.1
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationScanRate("0.1", 0, preferencesFrame);
+			setAutomationScanRate("0,1", 0, preferencesFrame);
 			clickAutomationMovableCheckBox(0, preferencesFrame);
 			saveDialog(preferencesFrame);
 

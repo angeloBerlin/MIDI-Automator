@@ -95,7 +95,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
-	@Test
+	// @Test
 	public void fileChooserOfAddDialogShouldChooseHelloWorldRtfByKeyboard() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
@@ -108,7 +108,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
 		String rtfPath = currentPath + File.separator + "testfiles"
-				+ File.separator + "Hello World.rtf";
+				+ File.separator + "Hello World 1.rtf";
+		// TODO: is dependent from
+		// fileChooserOfAddDialogShouldChooseHelloWorldRtf()
 		fileChooser.selectFile(new File(rtfPath));
 		fileChooser.approve();
 

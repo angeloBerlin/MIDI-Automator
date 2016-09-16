@@ -142,8 +142,11 @@ public class GUIAutomationsService {
 		String strMinSimilarity = properties
 				.getProperty(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
 						.toString());
-		strMinSimilarity = strMinSimilarity.replace(",", ".");
-		minSimilarity = Float.parseFloat(strMinSimilarity);
+
+		if (strMinSimilarity != null) {
+			strMinSimilarity = strMinSimilarity.replace(",", ".");
+			minSimilarity = Float.parseFloat(strMinSimilarity);
+		}
 	}
 
 	/**
@@ -428,10 +431,8 @@ public class GUIAutomationsService {
 	}
 
 	public float getMinSimilarity() {
-		return Float
-				.parseFloat((String) properties
-						.get(GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY
-								.toString()));
+
+		return minSimilarity;
 	}
 
 }

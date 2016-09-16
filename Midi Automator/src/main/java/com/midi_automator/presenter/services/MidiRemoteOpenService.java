@@ -232,7 +232,8 @@ public class MidiRemoteOpenService {
 
 		// previous switch button
 		String prevSignature = getMidiListeningSignature(SWITCH_DIRECTION_PREV);
-		if (prevSignature != null) {
+		if (prevSignature != null
+				&& !prevSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
 			if (component.getName().equals(MainFrame.NAME_PREV_BUTTON)
 					&& (!prevSignature.equals(""))) {
 				isLearned = true;
@@ -241,7 +242,8 @@ public class MidiRemoteOpenService {
 
 		// next switch button
 		String nextSignature = getMidiListeningSignature(SWITCH_DIRECTION_NEXT);
-		if (nextSignature != null) {
+		if (nextSignature != null
+				&& !nextSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
 			if (component.getName().equals(MainFrame.NAME_NEXT_BUTTON)
 					&& (!nextSignature.equals(""))) {
 				isLearned = true;

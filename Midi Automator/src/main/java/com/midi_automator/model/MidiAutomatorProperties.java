@@ -80,8 +80,12 @@ public class MidiAutomatorProperties extends Properties {
 	@Override
 	public Object setProperty(String key, String value) {
 
-		if (value.equals("null") || value.equals("")) {
+		if (value == null) {
 			value = MidiAutomatorProperties.VALUE_NULL;
+		} else {
+			if (value.equals("null") || value.equals("")) {
+				value = MidiAutomatorProperties.VALUE_NULL;
+			}
 		}
 
 		Object obj = super.setProperty(key, value);
