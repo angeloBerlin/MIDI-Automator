@@ -1,6 +1,30 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
+import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
+import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.midiUnLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.robot;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationScanRate;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTimeout;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
+import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
 
 import java.awt.Point;
 
@@ -86,7 +110,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// decrease similarity
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationMinSimilarity("0,5", preferencesFrame);
+			setAutomationMinSimilarity("0.5", preferencesFrame);
 			saveDialog(preferencesFrame);
 
 			Thread.sleep(1000);
@@ -625,7 +649,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// set scan rate to 0.1
 			FrameFixture preferencesFrame = openPreferences();
-			setAutomationScanRate("0,1", 0, preferencesFrame);
+			setAutomationScanRate("0.1", 0, preferencesFrame);
 			clickAutomationMovableCheckBox(0, preferencesFrame);
 			saveDialog(preferencesFrame);
 
