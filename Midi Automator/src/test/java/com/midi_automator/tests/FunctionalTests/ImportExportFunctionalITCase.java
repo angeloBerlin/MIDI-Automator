@@ -1,7 +1,8 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,11 +85,10 @@ public class ImportExportFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.setCurrentDirectory(new File(testFilePath));
 
 		// Swing Look&Feel problem, s.
+		//
 		// http://stackoverflow.com/questions/33945713/setselectedfilefile-file-does-not-present-selection-in-gui-of-jfilechooser/33948120#33948120
 		// so we just check visibility of the dialog
 		fileChooser.selectFile(new File(testFilePath + "/" + testFileName));
 		fileChooser.requireVisible();
-		fileChooser.cancel();
-
 	}
 }

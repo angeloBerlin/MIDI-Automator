@@ -1,8 +1,10 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.getInfoLabelText;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,7 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 
 	@Before
 	public void log() {
+		System.setProperty("user.language", "en");
 		System.out.println();
 		System.out.println("Running Test: " + this.getClass().getSimpleName()
 				+ " - " + name.getMethodName());
