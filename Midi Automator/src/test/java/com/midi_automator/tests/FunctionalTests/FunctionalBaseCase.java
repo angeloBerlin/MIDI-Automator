@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.edt.GuiQuery;
@@ -39,13 +40,14 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	protected String currentPath;
 	protected SikuliXGUIAutomations sikulix;
 	protected AnnotationConfigApplicationContext ctx;
+	protected static Locale locale = Locale.ENGLISH;
 
 	@Autowired
 	private Presenter presenter;
 
 	@Before
 	public void log() {
-		System.setProperty("user.language", "en");
+		Locale.setDefault(locale);
 		System.out.println();
 		System.out.println("Running Test: " + this.getClass().getSimpleName()
 				+ " - " + name.getMethodName());
