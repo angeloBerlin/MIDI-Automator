@@ -18,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Base class of dialogs with save and cancel buttons.
  * 
@@ -42,6 +44,9 @@ public abstract class AbstractBasicDialog extends JFrame {
 	// The number of rows in the dialogs global grid layout
 	protected int gridRows = 0;
 
+	@Autowired
+	protected MainFrame mainFrame;
+
 	/**
 	 * Initializes some basic dialog features.
 	 */
@@ -64,6 +69,10 @@ public abstract class AbstractBasicDialog extends JFrame {
 		buttonCancel.setName(NAME_CANCEL_BUTTON);
 		buttonCancel.addActionListener(new CancelAction());
 		buttonCancel.addKeyListener(new CancelKeyListener());
+
+		mainFrame.setAlwaysOnTop(false);
+		this.setAlwaysOnTop(true);
+		setVisible(true);
 	}
 
 	/**
@@ -154,6 +163,7 @@ public abstract class AbstractBasicDialog extends JFrame {
 		WindowEvent windowClosing = new WindowEvent(this,
 				WindowEvent.WINDOW_CLOSING);
 		dispatchEvent(windowClosing);
+		mainFrame.setAlwaysOnTop(true);
 	}
 
 	/**

@@ -89,8 +89,6 @@ public class AddFrame extends AbstractBasicDialog {
 		// Cancel
 		footerPanel.add(buttonCancel);
 
-		setAlwaysOnTop(true);
-		setVisible(true);
 	}
 
 	/**
