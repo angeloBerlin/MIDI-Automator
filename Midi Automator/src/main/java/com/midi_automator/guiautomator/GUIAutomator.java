@@ -217,7 +217,8 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 					+ "): Search for match of \""
 					+ SystemUtils.replaceSystemVariables(guiAutomation
 							.getImagePath()) + "\" "
-					+ ", minimum smimilarity: " + Settings.MinSimilarity
+					+ ", minimum smimilarity: "
+					+ String.format("%.2g%n", Settings.MinSimilarity)
 					+ ", scan rate: " + searchRegion.getObserveScanRate());
 
 			boolean found = searchRegion.observe(SIKULIX_TIMEOUT);
