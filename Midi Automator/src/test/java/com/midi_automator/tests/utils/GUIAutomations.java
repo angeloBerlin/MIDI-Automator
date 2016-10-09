@@ -763,10 +763,6 @@ public class GUIAutomations {
 	public static void setAutomationsSpinner(String value, int row,
 			String columnName, FrameFixture preferencesFrame) {
 
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			value = value.replace('.', ',');
-		}
-
 		JTableFixture table = getGUIAutomationTable(preferencesFrame);
 		setAutomationsSpinner(value, row, table.columnIndexFor(columnName),
 				preferencesFrame);

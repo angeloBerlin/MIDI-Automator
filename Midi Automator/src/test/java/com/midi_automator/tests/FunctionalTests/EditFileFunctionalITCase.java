@@ -144,6 +144,12 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
+
+		// issue in MAC implementation s.
+		// https://github.com/joel-costigliola/assertj-swing/issues/191
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			return;
+		}
 		fileChooser.selectFile(new File(currentPath
 				+ "/testfiles/Hello World.rtf"));
 		fileChooser.approve();

@@ -86,7 +86,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
 				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
-		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
+		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
+				+ "testfiles"));
 		String rtfPath = currentPath + File.separator + "testfiles"
 				+ File.separator + "Hello World.rtf";
 		fileChooser.selectFile(new File(rtfPath));
@@ -95,7 +96,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
-	// @Test
+	@Test
 	public void fileChooserOfAddDialogShouldChooseHelloWorldRtfByKeyboard() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
@@ -106,18 +107,23 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		JFileChooserFixture fileChooser = openSearchDialogOnEnter(addFrame,
 				AddFrame.NAME_FILE_SEARCH_BUTTON);
 
-		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
+		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
+				+ "testfiles"));
 		String rtfPath = currentPath + File.separator + "testfiles"
 				+ File.separator + "Hello World 1.rtf";
-		// TODO: is dependent from
-		// fileChooserOfAddDialogShouldChooseHelloWorldRtf()
+
+		// issue in MAC implementation s.
+		// https://github.com/joel-costigliola/assertj-swing/issues/191
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			return;
+		}
+
 		fileChooser.selectFile(new File(rtfPath));
 		fileChooser.approve();
-
 		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
-	// @Test
+	@Test
 	public void programChooserOfAddDialogShouldChooseSpecificProgram() {
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
@@ -130,7 +136,11 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		fileChooser.setCurrentDirectory(new File(programDirectory));
 
-		// TODO: JFileChooserFixture can only select files
+		// issue in MAC implementation s.
+		// https://github.com/joel-costigliola/assertj-swing/issues/192
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			return;
+		}
 		fileChooser.selectFile(new File(programPath));
 
 		fileChooser.approve();
