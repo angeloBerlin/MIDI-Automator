@@ -202,11 +202,16 @@ public class MainFrame extends JFrame {
 
 		setTitle("");
 
-		String icon16 = resources.getImagePath() + "MidiAutomatorIcon16.png";
-		String icon32 = resources.getImagePath() + "MidiAutomatorIcon32.png";
-		String icon64 = resources.getImagePath() + "MidiAutomatorIcon64.png";
-		String icon128 = resources.getImagePath() + "MidiAutomatorIcon128.png";
-		String icon256 = resources.getImagePath() + "MidiAutomatorIcon256.png";
+		String icon16 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon16.png";
+		String icon32 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon32.png";
+		String icon64 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon64.png";
+		String icon128 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon128.png";
+		String icon256 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon256.png";
 		ArrayList<Image> icons = new ArrayList<Image>();
 		icons.add(new ImageIcon(icon16).getImage());
 		icons.add(new ImageIcon(icon32).getImage());
@@ -215,8 +220,10 @@ public class MainFrame extends JFrame {
 		icons.add(new ImageIcon(icon256).getImage());
 		setIconImages(icons);
 
-		iconPathPrev = resources.getImagePath() + "arrow_prev.png";
-		iconPathNext = resources.getImagePath() + "arrow_next.png";
+		iconPathPrev = resources.getImagePath() + File.separator
+				+ "arrow_prev.png";
+		iconPathNext = resources.getImagePath() + File.separator
+				+ "arrow_next.png";
 
 		// Menu
 		createMenuItems();

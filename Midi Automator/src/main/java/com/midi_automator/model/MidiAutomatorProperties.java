@@ -1,5 +1,6 @@
 package com.midi_automator.model;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -66,13 +67,24 @@ public class MidiAutomatorProperties extends Properties {
 
 	/**
 	 * Loads properties from the file.
-	 * 
-	 * @throws FileNotFoundException
+	 *
 	 * @throws IOException
 	 */
-	public void load() throws FileNotFoundException, IOException {
+	public void load() throws IOException {
 
-		Reader reader = new FileReader(getPropertiesFilePath());
+		Reader reader = null;
+		String filepath = getPropertiesFilePath();
+
+		try {
+			reader = new FileReader(filepath);
+		} catch (FileNotFoundException e) {
+
+			File f = new File(filepath);
+			f.getParentFile().mkdirs();
+			f.createNewFile();
+			reader = new FileReader(filepath);
+		}
+
 		load(reader);
 		reader.close();
 	}
@@ -165,6 +177,6 @@ public class MidiAutomatorProperties extends Properties {
 	}
 
 	public String getPropertiesFilePath() {
-		return resources.getPropertiesPath() + FILENAME;
+		return resources.getPropertiesPath() + File.separator + FILENAME;
 	}
 }

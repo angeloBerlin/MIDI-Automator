@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.6</version>
+	<version>1.7</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -39,8 +39,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.base.package>com.midi_automator</project.base.package>
 		<project.main.class>${project.base.package}.MidiAutomator</project.main.class>
 		<project.dist.dir>dist</project.dist.dir>
-		<project.filelist.file>file_list.mido</project.filelist.file>
-		<project.properties.file>midiautomator.properties</project.properties.file>
 		<project.log.file>MidiAutomator.log</project.log.file>
 		<project.lib.dir>lib</project.lib.dir>
 		<project.sikulix.version>1.1.0</project.sikulix.version>
@@ -258,8 +256,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									<target>
 										<property name="name" value="${project.name}" />
 										<property name="demo.dir" value="${project.demo.dir}" />
-										<property name="filelist.file" value="${project.filelist.file}" />
-										<property name="properties.file" value="${project.properties.file}" />
 										<property name="target.dir" value="${project.build.directory}" />
 										<property name="lib.dir" value="${project.lib.dir}" />
 										<property name="images.dir" value="${project.images.dir}" />
@@ -388,14 +384,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 											<includes>
 												<include>${project.exe.file}</include>
 												<include>${project.jar}</include>
-											</includes>
-										</resource>
-										<resource>
-											<directory>${project.demo.dir}</directory>
-											<includes>
-												<include>${project.filelist.file}</include>
-												<include>${project.properties.file}</include>
-												<include>${project.log.file}</include>
 											</includes>
 										</resource>
 									</resources>

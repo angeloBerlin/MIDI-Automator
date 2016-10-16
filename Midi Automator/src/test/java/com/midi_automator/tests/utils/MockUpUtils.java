@@ -10,12 +10,6 @@ import com.midi_automator.utils.SystemUtils;
 
 public class MockUpUtils {
 
-	/*
-	 * <TRUE> returns the an empty string for the actual path, <FALSE> returns
-	 * the default installation path depending on the operating system
-	 */
-	private static boolean installation_mockup = false;
-
 	/**
 	 * Gets the path to the mido and properties files
 	 * 
@@ -25,15 +19,13 @@ public class MockUpUtils {
 
 		String settingsPath = "";
 
-		if (installation_mockup) {
-			if (System.getProperty("os.name").equals("Mac OS X")) {
-				settingsPath = "/Applications/Midi Automator.app/Contents/Resources/";
-			}
+		if (System.getProperty("os.name").equals("Mac OS X")) {
+			settingsPath = "/Users/Shared/Midi Automator";
+		}
 
-			if (System.getProperty("os.name").contains("Windows")) {
-				settingsPath = SystemUtils
-						.replaceSystemVariables("%APPDATA%\\Midi Automator\\");
-			}
+		if (System.getProperty("os.name").contains("Windows")) {
+			settingsPath = SystemUtils
+					.replaceSystemVariables("%APPDATA%\\Midi Automator");
 		}
 
 		return settingsPath;
@@ -45,7 +37,8 @@ public class MockUpUtils {
 	 * @return The backuped mido file
 	 */
 	private static File getMidoBackupFile() {
-		return new File(getMidiAutomatorSettingsPath() + "file_list.mido.bak");
+		return new File(getMidiAutomatorSettingsPath() + File.separator
+				+ "file_list.mido.bak");
 	}
 
 	/**
@@ -54,7 +47,7 @@ public class MockUpUtils {
 	 * @return The backuped mido file
 	 */
 	private static File getPropertiesBackupFile() {
-		return new File(getMidiAutomatorSettingsPath()
+		return new File(getMidiAutomatorSettingsPath() + File.separator
 				+ "midiautomator.properties.bak");
 	}
 
@@ -64,7 +57,8 @@ public class MockUpUtils {
 	 * @return The original mido file
 	 */
 	private static File getMidoFile() {
-		return new File(getMidiAutomatorSettingsPath() + "file_list.mido");
+		return new File(getMidiAutomatorSettingsPath() + File.separator
+				+ "file_list.mido");
 	}
 
 	/**
@@ -73,7 +67,7 @@ public class MockUpUtils {
 	 * @return The original properties file
 	 */
 	private static File getPropertiesFile() {
-		return new File(getMidiAutomatorSettingsPath()
+		return new File(getMidiAutomatorSettingsPath() + File.separator
 				+ "midiautomator.properties");
 	}
 

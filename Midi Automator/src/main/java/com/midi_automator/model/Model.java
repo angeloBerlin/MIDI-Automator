@@ -2,6 +2,7 @@ package com.midi_automator.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -30,7 +31,8 @@ public class Model implements IModel {
 
 	@Override
 	public String getPersistenceFileName() {
-		return resources.getDefaultFileListPath() + DEFAULT_FILE_NAME;
+		return resources.getDefaultFileListPath() + File.separator
+				+ DEFAULT_FILE_NAME;
 	}
 
 	@Override

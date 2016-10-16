@@ -23,7 +23,6 @@ public class Resources {
 
 	static Logger log = Logger.getLogger(Resources.class.getName());
 
-	private final String OPERATING_SYSTEM;
 	private final String WORKING_DIRECTORY;
 	private final String IMAGE_PATH;
 	private final String PROPERTIES_PATH;
@@ -36,32 +35,29 @@ public class Resources {
 
 	public Resources() {
 
-		OPERATING_SYSTEM = MidiAutomator.os;
 		WORKING_DIRECTORY = MidiAutomator.wd;
 
-		switch (OPERATING_SYSTEM) {
-		case "MacOS":
-			IMAGE_PATH = WORKING_DIRECTORY + File.separator + "images"
-					+ File.separator;
+		switch (System.getProperty("os.name")) {
+		case "Mac OS X":
+			IMAGE_PATH = WORKING_DIRECTORY + "/images";
+			PROPERTIES_PATH = "/Users/Shared/Midi Automator";
+			DEFAULT_FILE_LIST_PATH = "/Users/Shared/Midi Automator";
+			configureLog4J("/Users/Shared/Midi Automator/" + LOG_FILE_NAME);
+			break;
+		case "Windows":
+			IMAGE_PATH = "images";
 			PROPERTIES_PATH = WORKING_DIRECTORY;
 			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
-			configureLog4J("Midi Automator/" + LOG_FILE_NAME);
-			break;
-		case "Win":
-			IMAGE_PATH = "images" + File.separator;
-			PROPERTIES_PATH = WORKING_DIRECTORY + File.separator;
-			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY + File.separator;
 			configureLog4J(WORKING_DIRECTORY + File.separator + LOG_FILE_NAME);
 			break;
 		default:
-			IMAGE_PATH = "images" + File.separator;
-			PROPERTIES_PATH = WORKING_DIRECTORY + File.separator;
-			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY + File.separator;
+			IMAGE_PATH = "";
+			PROPERTIES_PATH = "";
+			DEFAULT_FILE_LIST_PATH = "";
 			configureLog4J(LOG_FILE_NAME);
 		}
 
 		log.info("Working Driectory (-wd) set to: " + WORKING_DIRECTORY);
-		log.info("Operating System (-os) set to: " + OPERATING_SYSTEM);
 	}
 
 	public String getImagePath() {
@@ -78,37 +74,6 @@ public class Resources {
 
 	public String getWorkingDirectory() {
 		return WORKING_DIRECTORY;
-	}
-
-	public String getOperatinghSystem() {
-		return OPERATING_SYSTEM;
-	}
-
-	/**
-	 * Handles the relative working directory for the file list
-	 * 
-	 * @param path
-	 *            The path from the file list
-	 * @return The corrected relative path
-	 */
-	public String generateRelativeLoadingPath(String path) {
-		String result = null;
-		// initialize resources
-		switch (OPERATING_SYSTEM) {
-		case "MacOS":
-			result = path;
-			break;
-
-		case "Win":
-			result = path;
-			break;
-
-		default:
-			result = path;
-		}
-
-		log.debug("Relative loading path: " + result);
-		return result;
 	}
 
 	/**

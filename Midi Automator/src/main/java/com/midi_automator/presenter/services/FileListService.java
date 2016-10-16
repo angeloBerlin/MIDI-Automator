@@ -373,8 +373,7 @@ public class FileListService {
 	 */
 	private void openFileFromSetListItem(SetListItem item) {
 
-		String filePath = resources.generateRelativeLoadingPath(item
-				.getFilePath());
+		String filePath = item.getFilePath();
 
 		infoMessagesService.removeInfoMessage(Messages
 				.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));

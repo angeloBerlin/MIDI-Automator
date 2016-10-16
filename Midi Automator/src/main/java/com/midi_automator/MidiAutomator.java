@@ -20,9 +20,7 @@ public class MidiAutomator {
 	 * The main program
 	 * 
 	 * @param args
-	 *            -wd specifies the working directory, -os specifies the current
-	 *            operating system ["MacOS"|"Win"], no prefix specifies the
-	 *            .mido file to load
+	 *            -wd specifies the working directory
 	 */
 	public static void main(String[] args) {
 
@@ -35,10 +33,6 @@ public class MidiAutomator {
 				if (arg.contains("-wd=")) {
 					wd = SystemUtils.replaceSystemVariables(arg.replace("-wd=",
 							""));
-				}
-
-				if (arg.contains("-os=")) {
-					os = arg.replace("-os=", "");
 				}
 
 				if (arg.contains("-test")) {
