@@ -1118,8 +1118,11 @@ public class MainFrame extends JFrame {
 			IToolTipItem item = fileList.getSelectedValue();
 			int index = fileList.getSelectedIndex();
 
-			dge.startDrag(null, new TransferableJListToolTipItem(item, index));
-			log.debug("Dragging \"" + item.getValue() + "\"");
+			if (item != null) {
+				dge.startDrag(null, new TransferableJListToolTipItem(item,
+						index));
+				log.debug("Dragging \"" + item.getValue() + "\"");
+			}
 		}
 
 	}
