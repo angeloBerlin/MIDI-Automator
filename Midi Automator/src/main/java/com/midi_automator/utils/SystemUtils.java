@@ -23,13 +23,13 @@ public class SystemUtils {
 		log.trace("String to replace with system variables: " + str);
 
 		if (str != null) {
-			String pattern = "(%|\\$)[A-Za-z0-9_]+%*";
+			String pattern = "(%|\\$)[A-Za-z0-9_]+";
 			Pattern expr = Pattern.compile(pattern);
 			Matcher matcher = expr.matcher(str);
 			TreeMap<String, String> env = new TreeMap<String, String>(
 					System.getenv());
 
-			if (System.getProperty("os.name").equals("Windows 7")) {
+			if (System.getProperty("os.name").contains("Windows")) {
 
 				TreeMap<String, String> insensitiveEnv = new TreeMap<String, String>(
 						String.CASE_INSENSITIVE_ORDER);

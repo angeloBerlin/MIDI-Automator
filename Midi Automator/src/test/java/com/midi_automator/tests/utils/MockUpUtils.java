@@ -1,6 +1,6 @@
 package com.midi_automator.tests.utils;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardCopyOption.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,8 @@ public class MockUpUtils {
 		String settingsPath = "";
 
 		if (System.getProperty("os.name").contains("Mac")) {
-			settingsPath = "/Users/Shared/Midi Automator";
+			settingsPath = SystemUtils
+					.replaceSystemVariables("$HOME/Library/Application Support/Midi Automator");
 		}
 
 		if (System.getProperty("os.name").contains("Windows")) {

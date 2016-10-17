@@ -40,9 +40,13 @@ public class Resources {
 
 		if (System.getProperty("os.name").contains("Mac")) {
 			IMAGE_PATH = WORKING_DIRECTORY + "/images";
-			PROPERTIES_PATH = "/Users/Shared/Midi Automator";
-			DEFAULT_FILE_LIST_PATH = "/Users/Shared/Midi Automator";
-			configureLog4J("/Users/Shared/Midi Automator/" + LOG_FILE_NAME);
+			PROPERTIES_PATH = SystemUtils
+					.replaceSystemVariables("$HOME/Library/Application Support/Midi Automator");
+			DEFAULT_FILE_LIST_PATH = SystemUtils
+					.replaceSystemVariables("$HOME/Library/Application Support/Midi Automator");
+			configureLog4J(SystemUtils
+					.replaceSystemVariables("$HOME/Library/Application Support/Midi Automator/")
+					+ LOG_FILE_NAME);
 		} else if (System.getProperty("os.name").contains("Windows")) {
 			IMAGE_PATH = "images";
 			PROPERTIES_PATH = SystemUtils
