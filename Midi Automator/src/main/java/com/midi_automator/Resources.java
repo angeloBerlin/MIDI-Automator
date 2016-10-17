@@ -1,6 +1,5 @@
 package com.midi_automator;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -11,6 +10,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.springframework.context.annotation.Configuration;
+
+import com.midi_automator.utils.SystemUtils;
 
 /**
  * This class handles the OS specific resource locations
@@ -37,24 +38,24 @@ public class Resources {
 
 		WORKING_DIRECTORY = MidiAutomator.wd;
 
-		switch (System.getProperty("os.name")) {
-		case "Mac OS X":
+		if (System.getProperty("os.name").contains("Mac")) {
 			IMAGE_PATH = WORKING_DIRECTORY + "/images";
 			PROPERTIES_PATH = "/Users/Shared/Midi Automator";
 			DEFAULT_FILE_LIST_PATH = "/Users/Shared/Midi Automator";
 			configureLog4J("/Users/Shared/Midi Automator/" + LOG_FILE_NAME);
-			break;
-		case "Windows":
+		} else if (System.getProperty("os.name").contains("Windows")) {
 			IMAGE_PATH = "images";
-			PROPERTIES_PATH = WORKING_DIRECTORY;
-			DEFAULT_FILE_LIST_PATH = WORKING_DIRECTORY;
-			configureLog4J(WORKING_DIRECTORY + File.separator + LOG_FILE_NAME);
-			break;
-		default:
-			IMAGE_PATH = "";
-			PROPERTIES_PATH = "";
-			DEFAULT_FILE_LIST_PATH = "";
-			configureLog4J(LOG_FILE_NAME);
+			PROPERTIES_PATH = SystemUtils
+					.replaceSystemVariables("%HOMEPATH%\\AppData\\Roaming\\Midi Automator");
+			DEFAULT_FILE_LIST_PATH = SystemUtils
+					.replaceSystemVariables("%HOMEPATH%\\AppData\\Roaming\\Midi Automator");
+			configureLog4J(SystemUtils
+					.replaceSystemVariables("%HOMEPATH%\\AppData\\Roaming\\Midi Automator\\")
+					+ LOG_FILE_NAME);
+		} else {
+			IMAGE_PATH = "null";
+			PROPERTIES_PATH = "null";
+			DEFAULT_FILE_LIST_PATH = "null";
 		}
 
 		log.info("Working Driectory (-wd) set to: " + WORKING_DIRECTORY);

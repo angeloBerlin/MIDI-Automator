@@ -1,7 +1,17 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.addFile;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelDialogByEnter;
+import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
+import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
+import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialogOnEnter;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialogByEnter;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
@@ -31,7 +41,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		if (System.getProperty("os.name").contains("Windows")) {
 			programDirectory = "C:/Windows/System32/";
-			programPath = programDirectory + "notepad.exe";
+			programPath = "C:\\Windows\\System32\\" + "notepad.exe";
 			programScreenshot = "Notepad.png";
 		}
 	}
@@ -138,7 +148,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		// issue in MAC implementation s.
 		// https://github.com/joel-costigliola/assertj-swing/issues/192
-		if (System.getProperty("os.name").equals("Mac OS X")) {
+		if (System.getProperty("os.name").contains("Mac")) {
 			return;
 		}
 		fileChooser.selectFile(new File(programPath));
