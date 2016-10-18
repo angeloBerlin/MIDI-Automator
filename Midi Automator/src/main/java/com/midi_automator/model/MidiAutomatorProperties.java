@@ -1,17 +1,21 @@
 package com.midi_automator.model;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,8 @@ public class MidiAutomatorProperties extends Properties {
 
 	@Autowired
 	private Resources resources;
+
+	public static final String KEY_VERSION = "VERSION";
 
 	public static final String KEY_MIDI_IN_REMOTE_DEVICE = "MIDI_IN_REMOTE_DEVICE";
 	public static final String KEY_MIDI_IN_METRONOM_DEVICE = "MIDI_IN_METRONOM_DEVICE";
@@ -55,15 +61,35 @@ public class MidiAutomatorProperties extends Properties {
 	}
 
 	/**
-	 * Stores properties to the file.
+	 * Stores properties to the file order by keys.
 	 * 
 	 * @throws IOException
 	 */
 	public void store() throws IOException {
 
-		Writer writer = new FileWriter(getPropertiesFilePath());
-		store(writer, null);
-		writer.close();
+		Enumeration<Object> keysEnum = super.keys();
+		Vector<Object> keyList = new Vector<Object>();
+
+		while (keysEnum.hasMoreElements()) {
+			keyList.add(keysEnum.nextElement());
+		}
+
+		Collections.sort(keyList, new Comparator<Object>() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				return o1.toString().compareTo(o2.toString());
+			}
+		});
+
+		FileWriter fileWriter = new FileWriter(getPropertiesFilePath());
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+		for (Object key : keyList) {
+			String strKey = (String) key;
+			bufferedWriter.write(strKey + "=" + getProperty(strKey));
+			bufferedWriter.newLine();
+		}
+		bufferedWriter.close();
 	}
 
 	/**
@@ -167,7 +193,22 @@ public class MidiAutomatorProperties extends Properties {
 	 * Migrates the properties file to the current version
 	 */
 	public void migrate() {
-		setProperty("VERSION", resources.getVersion());
+		setProperty(KEY_VERSION, resources.getVersion());
+
+		// 1.6
+		// Convert GUI_AUTOMATION_MIN_SIMILARITY_0 to
+		// GUI_AUTOMATION_MIN_SIMILARITY
+		String minSimilarity = (String) get("GUI_AUTOMATION_MIN_SIMILARITY_0");
+
+		if (minSimilarity != null) {
+			setProperty(
+					GUIAutomationKey.GUI_AUTOMATION_MIN_SIMILARITY.toString(),
+					minSimilarity);
+		}
+
+		// remove all GUI_AUTOMATION_MIN_SIMILARITY_ keys
+		removeKeys("GUI_AUTOMATION_MIN_SIMILARITY_");
+
 		try {
 			store();
 		} catch (IOException e) {

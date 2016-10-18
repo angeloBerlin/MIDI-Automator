@@ -216,6 +216,9 @@ public class FileListService {
 	public void reloadSetList() {
 		try {
 			model.load();
+			model.migrate();
+			model.load();
+
 			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_ITEM_FILE_NOT_FOUND));
 			infoMessagesService.removeInfoMessage(Messages

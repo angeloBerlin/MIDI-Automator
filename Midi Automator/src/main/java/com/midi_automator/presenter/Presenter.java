@@ -75,10 +75,9 @@ public class Presenter {
 		Messages.put(Messages.KEY_ERROR_MIDO_FILE_TOO_BIG, errMidoFileIsTooBig);
 
 		mainFrame.init();
-		fileListService.reloadSetList();
+
 		loadProperties();
-		properties.migrate();
-		model.migrate();
+		fileListService.reloadSetList();
 
 		return mainFrame;
 	}
@@ -130,6 +129,8 @@ public class Presenter {
 			infoMessagesService.removeInfoMessage(Messages
 					.get(Messages.KEY_ERROR_PROPERTIES_FILE_NOT_READABLE));
 
+			properties.load();
+			properties.migrate();
 			properties.load();
 
 		} catch (FileNotFoundException e) {

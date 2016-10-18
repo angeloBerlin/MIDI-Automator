@@ -21,6 +21,7 @@ public class Model {
 	static Logger log = Logger.getLogger(Model.class.getName());
 
 	private final String VALUE_SEPARATOR = ";";
+	public static final char COMMENT_SIGN = '#';
 
 	@Autowired
 	private SetList setList;
@@ -55,8 +56,6 @@ public class Model {
 
 		String line = null;
 
-		// skip first line
-		bufferedReader.readLine();
 		while ((line = bufferedReader.readLine()) != null) {
 
 			String name = null;
@@ -65,20 +64,22 @@ public class Model {
 			String midiSendingSignature = null;
 			String programPath = null;
 
-			try {
-				name = (line.split(VALUE_SEPARATOR))[0];
-				filePath = (line.split(VALUE_SEPARATOR))[1];
-				midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
-				midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
-				programPath = (line.split(VALUE_SEPARATOR))[4];
-			} catch (IndexOutOfBoundsException e) {
-				// catch empty csv values
+			if (line.charAt(0) != COMMENT_SIGN) {
+				try {
+					name = (line.split(VALUE_SEPARATOR))[0];
+					filePath = (line.split(VALUE_SEPARATOR))[1];
+					midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
+					midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
+					programPath = (line.split(VALUE_SEPARATOR))[4];
+				} catch (IndexOutOfBoundsException e) {
+					// catch empty csv values
+				}
+
+				SetListItem item = new SetListItem(name, filePath, programPath,
+						midiListeningSignature, midiSendingSignature);
+
+				setList.addItem(item);
 			}
-
-			SetListItem item = new SetListItem(name, filePath, programPath,
-					midiListeningSignature, midiSendingSignature);
-
-			setList.addItem(item);
 		}
 		bufferedReader.close();
 		fileReader.close();
@@ -99,7 +100,7 @@ public class Model {
 		FileWriter fileWriter = new FileWriter(getPersistenceFileName());
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-		bufferedWriter.write("#Midi Automator Version: "
+		bufferedWriter.write(COMMENT_SIGN + " Midi Automator Version: "
 				+ resources.getVersion());
 		bufferedWriter.newLine();
 
