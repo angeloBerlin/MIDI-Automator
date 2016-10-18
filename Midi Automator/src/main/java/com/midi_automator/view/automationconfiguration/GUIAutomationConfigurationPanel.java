@@ -135,7 +135,10 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 *            The minimum similarity
 	 */
 	public void setMinSimilarity(float minSimilarity) {
-		minSimilaritySpinner.setValue(minSimilarity);
+
+		if (minSimilarity != 0) {
+			minSimilaritySpinner.setValue(minSimilarity);
+		}
 	}
 
 	/**
