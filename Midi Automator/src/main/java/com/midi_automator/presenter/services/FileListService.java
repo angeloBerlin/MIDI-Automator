@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.Resources;
-import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.Model;
 import com.midi_automator.model.SetList;
 import com.midi_automator.model.SetListItem;
 import com.midi_automator.model.TooManyEntriesException;
@@ -40,7 +40,7 @@ public class FileListService {
 	private Resources resources;
 
 	@Autowired
-	private IModel model;
+	private Model model;
 
 	@Autowired
 	private Presenter presenter;

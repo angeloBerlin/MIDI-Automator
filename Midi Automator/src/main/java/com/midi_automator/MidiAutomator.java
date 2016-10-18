@@ -41,12 +41,12 @@ public class MidiAutomator {
 			}
 		}
 
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+				AppConfig.class);
+		Presenter presenter = (Presenter) ctx.getBean(Presenter.class);
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-						AppConfig.class);
-				Presenter presenter = (Presenter) ctx.getBean(Presenter.class);
-
 				presenter.openMainFrame();
 			}
 		});

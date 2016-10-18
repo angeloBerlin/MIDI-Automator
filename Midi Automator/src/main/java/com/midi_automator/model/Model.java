@@ -16,11 +16,10 @@ import com.midi_automator.Resources;
 import com.midi_automator.utils.FileUtils;
 
 @Repository
-public class Model implements IModel {
+public class Model {
 
 	static Logger log = Logger.getLogger(Model.class.getName());
 
-	private final String DEFAULT_FILE_NAME = "file_list.mido";
 	private final String VALUE_SEPARATOR = ";";
 
 	@Autowired
@@ -29,13 +28,23 @@ public class Model implements IModel {
 	@Autowired
 	private Resources resources;
 
-	@Override
+	/**
+	 * Gets the file name of the model
+	 * 
+	 * @return The name of the persisting file
+	 */
 	public String getPersistenceFileName() {
 		return resources.getDefaultFileListPath() + File.separator
-				+ DEFAULT_FILE_NAME;
+				+ resources.getDefaultFileName();
 	}
 
-	@Override
+	/**
+	 * Loads the persistent file
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws TooManyEntriesException
+	 */
 	public void load() throws FileNotFoundException, IOException,
 			TooManyEntriesException {
 
@@ -46,6 +55,8 @@ public class Model implements IModel {
 
 		String line = null;
 
+		// skip first line
+		bufferedReader.readLine();
 		while ((line = bufferedReader.readLine()) != null) {
 
 			String name = null;
@@ -77,11 +88,20 @@ public class Model implements IModel {
 		}
 	}
 
-	@Override
+	/**
+	 * Saves to the persistent file
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void save() throws FileNotFoundException, IOException {
 
 		FileWriter fileWriter = new FileWriter(getPersistenceFileName());
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+		bufferedWriter.write("#Midi Automator Version: "
+				+ resources.getVersion());
+		bufferedWriter.newLine();
 
 		for (SetListItem item : setList.getItems()) {
 			log.debug("Save item: " + item.getName() + " " + item.getFilePath());
@@ -94,14 +114,31 @@ public class Model implements IModel {
 			bufferedWriter.newLine();
 		}
 
-		log.debug("Save model to file");
+		log.debug("Saved model to file");
 		bufferedWriter.close();
 		fileWriter.close();
 	}
 
-	@Override
+	/**
+	 * Gets the set list
+	 * 
+	 * @return a SetList object
+	 */
 	public SetList getSetList() {
 		return setList;
 	}
 
+	/**
+	 * Migrates the properties file to the current version
+	 */
+	public void migrate() {
+		try {
+			save();
+		} catch (FileNotFoundException e) {
+			log.error(getPersistenceFileName() + " not found for migration.", e);
+		} catch (IOException e) {
+			log.error("Storing migration of " + getPersistenceFileName()
+					+ " failed.", e);
+		}
+	}
 }

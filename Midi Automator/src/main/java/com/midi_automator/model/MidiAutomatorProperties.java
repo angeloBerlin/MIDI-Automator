@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,11 +23,11 @@ import com.midi_automator.Resources;
 public class MidiAutomatorProperties extends Properties {
 
 	private static final long serialVersionUID = 1L;
+	static Logger log = Logger.getLogger(MidiAutomatorProperties.class
+			.getName());
 
 	@Autowired
 	private Resources resources;
-
-	private final String FILENAME = "midiautomator.properties";
 
 	public static final String KEY_MIDI_IN_REMOTE_DEVICE = "MIDI_IN_REMOTE_DEVICE";
 	public static final String KEY_MIDI_IN_METRONOM_DEVICE = "MIDI_IN_METRONOM_DEVICE";
@@ -163,6 +164,21 @@ public class MidiAutomatorProperties extends Properties {
 	}
 
 	/**
+	 * Migrates the properties file to the current version
+	 */
+	public void migrate() {
+		setProperty("VERSION", resources.getVersion());
+		try {
+			store();
+		} catch (IOException e) {
+			log.error(
+					"Storing migration of "
+							+ resources.getMidiAutomatorPropertiesFileName()
+							+ " failed.", e);
+		}
+	}
+
+	/**
 	 * Gets the index of a property key
 	 * 
 	 * @param key
@@ -177,6 +193,7 @@ public class MidiAutomatorProperties extends Properties {
 	}
 
 	public String getPropertiesFilePath() {
-		return resources.getPropertiesPath() + File.separator + FILENAME;
+		return resources.getPropertiesPath() + File.separator
+				+ resources.getMidiAutomatorPropertiesFileName();
 	}
 }

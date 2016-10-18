@@ -5,13 +5,14 @@ import java.io.IOException;
 
 import javax.sound.midi.MidiUnavailableException;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.MidiAutomator;
 import com.midi_automator.Resources;
-import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.Model;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.InfoMessagesService;
@@ -24,12 +25,14 @@ import com.midi_automator.view.frames.MainFrame;
 @Controller
 public class Presenter {
 
+	static Logger log = Logger.getLogger(Presenter.class.getName());
+
 	@Autowired
 	private Resources resources;
 	@Autowired
 	private MidiAutomatorProperties properties;
 	@Autowired
-	private IModel model;
+	private Model model;
 
 	@Autowired
 	private MainFrame mainFrame;
@@ -74,6 +77,8 @@ public class Presenter {
 		mainFrame.init();
 		fileListService.reloadSetList();
 		loadProperties();
+		properties.migrate();
+		model.migrate();
 
 		return mainFrame;
 	}

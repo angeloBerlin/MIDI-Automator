@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.midi_automator.model.IModel;
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.model.Model;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.frames.MainFrame;
@@ -42,7 +42,7 @@ public class MidiRemoteOpenService {
 			+ OPEN_FILE_MIDI_CONTROL_NO;
 
 	@Autowired
-	private IModel model;
+	private Model model;
 
 	@Autowired
 	private MidiAutomatorProperties properties;

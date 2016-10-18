@@ -28,6 +28,8 @@ public class Resources {
 	private final String IMAGE_PATH;
 	private final String PROPERTIES_PATH;
 	private final String DEFAULT_FILE_LIST_PATH;
+	private final String DEFAULT_FILE_NAME = "file_list.mido";
+	private final String MIDIAUTOMATOR_PROPERTIES = "midiautomator.properties";
 	private final String PROJECT_PROPERTIES = "project.properties";
 	private final String KEY_VERSION = "midiautomator.version";
 	private final String LOG_FILE_NAME = "MidiAutomator.log";
@@ -62,6 +64,8 @@ public class Resources {
 			DEFAULT_FILE_LIST_PATH = "null";
 		}
 
+		migrate();
+		log.info("Starting Midi Automator version: " + getVersion());
 		log.info("Working Driectory (-wd) set to: " + WORKING_DIRECTORY);
 	}
 
@@ -79,6 +83,14 @@ public class Resources {
 
 	public String getWorkingDirectory() {
 		return WORKING_DIRECTORY;
+	}
+
+	public String getDefaultFileName() {
+		return DEFAULT_FILE_NAME;
+	}
+
+	public String getMidiAutomatorPropertiesFileName() {
+		return MIDIAUTOMATOR_PROPERTIES;
 	}
 
 	/**
@@ -134,6 +146,14 @@ public class Resources {
 		} catch (IOException e) {
 			System.out.println("Failed to add appender !!");
 		}
+	}
+
+	/**
+	 * Migrates the persistence files to this version.
+	 */
+	private void migrate() {
+		// add version to properties file
+		log.info("Migrating to version: " + getVersion());
 	}
 
 }
