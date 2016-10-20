@@ -1,8 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
-import static org.junit.Assert.assertTrue;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -127,7 +126,7 @@ public class ImportExportFunctionalITCase extends FunctionalBaseCase {
 			while ((line = bufferedReader.readLine()) != null) {
 				if (!line.contains(remove)) {
 					bufferedWriter.write(line);
-					bufferedWriter.newLine();
+					bufferedWriter.write("\r\n");
 				}
 			}
 			bufferedReader.close();
