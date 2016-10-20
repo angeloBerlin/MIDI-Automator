@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 import org.springframework.context.annotation.Configuration;
 
 import com.midi_automator.utils.SystemUtils;
@@ -136,11 +136,13 @@ public class Resources {
 		// Add file appender with layout and output log file name
 		try {
 			if (rootLogger.getAppender(LOG_FILE_APPENDER_NAME) == null) {
-				FileAppender fileAppender = new FileAppender(layout,
-						logFilePath);
+				RollingFileAppender fileAppender = new RollingFileAppender(
+						layout, logFilePath);
 				fileAppender.setAppend(false);
 				fileAppender.setImmediateFlush(true);
 				fileAppender.setName(LOG_FILE_APPENDER_NAME);
+				fileAppender.setMaxFileSize("1MB");
+				fileAppender.setMaxBackupIndex(10);
 				rootLogger.addAppender(fileAppender);
 			}
 		} catch (IOException e) {
