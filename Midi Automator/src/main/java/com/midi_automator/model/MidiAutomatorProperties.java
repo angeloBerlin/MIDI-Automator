@@ -87,7 +87,7 @@ public class MidiAutomatorProperties extends Properties {
 		for (Object key : keyList) {
 			String strKey = (String) key;
 			bufferedWriter.write(strKey + "=" + getProperty(strKey));
-			bufferedWriter.newLine();
+			bufferedWriter.write("\r\n");
 		}
 		bufferedWriter.close();
 	}

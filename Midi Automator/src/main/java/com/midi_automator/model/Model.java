@@ -48,7 +48,6 @@ public class Model {
 	 */
 	public void load() throws FileNotFoundException, IOException,
 			TooManyEntriesException {
-
 		setList.clear();
 		String fileName = getPersistenceFileName();
 		FileReader fileReader = new FileReader(fileName);
@@ -64,21 +63,24 @@ public class Model {
 			String midiSendingSignature = null;
 			String programPath = null;
 
-			if (line.charAt(0) != COMMENT_SIGN) {
-				try {
-					name = (line.split(VALUE_SEPARATOR))[0];
-					filePath = (line.split(VALUE_SEPARATOR))[1];
-					midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
-					midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
-					programPath = (line.split(VALUE_SEPARATOR))[4];
-				} catch (IndexOutOfBoundsException e) {
-					// catch empty csv values
+			if (line.length() > 0) {
+				if (line.charAt(0) != COMMENT_SIGN) {
+					try {
+						name = (line.split(VALUE_SEPARATOR))[0];
+						filePath = (line.split(VALUE_SEPARATOR))[1];
+						midiListeningSignature = (line.split(VALUE_SEPARATOR))[2];
+						midiSendingSignature = (line.split(VALUE_SEPARATOR))[3];
+						programPath = (line.split(VALUE_SEPARATOR))[4];
+					} catch (IndexOutOfBoundsException e) {
+						// catch empty csv values
+					}
+
+					SetListItem item = new SetListItem(name, filePath,
+							programPath, midiListeningSignature,
+							midiSendingSignature);
+
+					setList.addItem(item);
 				}
-
-				SetListItem item = new SetListItem(name, filePath, programPath,
-						midiListeningSignature, midiSendingSignature);
-
-				setList.addItem(item);
 			}
 		}
 		bufferedReader.close();
@@ -102,7 +104,7 @@ public class Model {
 
 		bufferedWriter.write(COMMENT_SIGN + " Midi Automator Version: "
 				+ resources.getVersion());
-		bufferedWriter.newLine();
+		bufferedWriter.write("\r\n");
 
 		for (SetListItem item : setList.getItems()) {
 			log.debug("Save item: " + item.getName() + " " + item.getFilePath());
@@ -112,7 +114,7 @@ public class Model {
 					item.getMidiSendingSignature(), item.getProgramPath());
 			log.debug("Save \"" + csvLine + "\"");
 			bufferedWriter.write(csvLine);
-			bufferedWriter.newLine();
+			bufferedWriter.write("\r\n");
 		}
 
 		log.debug("Saved model to file");

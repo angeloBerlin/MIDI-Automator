@@ -46,6 +46,7 @@ public class SystemUtils {
 
 				if (sysVarValue != null) {
 					str = str.replace(sysVar, sysVarValue);
+					str = str.replace("%", "");
 				}
 			}
 		}

@@ -1,7 +1,8 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.openExportDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.openImportDialog;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -51,8 +52,8 @@ public class ImportExportFunctionalITCase extends FunctionalBaseCase {
 			// compare file contents
 			File midoFile = new File(testFilePath + File.separator
 					+ "file_list.mido");
-			midoFile = removeLineFromFile(midoFile, Model.COMMENT_SIGN
-					+ " Midi Automator Version: ");
+			midoFile = removeLineFromFile(midoFile, Model.COMMENT_SIGN + "");
+
 			boolean midoCorrect = org.apache.commons.io.FileUtils
 					.contentEquals(midoFile, new File("mockups"
 							+ File.separator + "Hello_World_12_empty.mido"));
