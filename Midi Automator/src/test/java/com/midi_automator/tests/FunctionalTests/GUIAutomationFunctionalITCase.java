@@ -1,32 +1,10 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.automationsDelayCell;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelMidiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.clickAutomationMovableCheckBox;
-import static com.midi_automator.tests.utils.GUIAutomations.clickNextFile;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.midiLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.midiUnLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.moveUpEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.robot;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinDelay;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationMinSimilarity;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationScanRate;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTimeout;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationTrigger;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
-import static com.midi_automator.tests.utils.GUIAutomations.spinDownAutomationDelaySpinner;
-import static com.midi_automator.tests.utils.GUIAutomations.spinUpAutomationDelaySpinner;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.awt.Point;
+import java.io.File;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -35,6 +13,7 @@ import javax.sound.midi.ShortMessage;
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.exception.UnexpectedException;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.assertj.swing.fixture.JTableFixture;
 import org.junit.Test;
@@ -691,6 +670,44 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void screenshotChooserShouldRememberLastDirectory() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils
+				.setMockupPropertiesFile("mockups/automation1_empty.properties");
+		startApplication();
+
+		FrameFixture preferencesFrame = openPreferences();
+		JFileChooserFixture fileChooser = openScreenshotFileChooser(0,
+				preferencesFrame);
+
+		// choose a file
+		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
+				+ "testfiles"));
+		String cancelButtonImage1 = currentPath + File.separator + "testfiles"
+				+ File.separator + "cancel_button.png";
+		File cancelButtonImageFile1 = new File(cancelButtonImage1);
+		fileChooser.selectFile(cancelButtonImageFile1);
+		fileChooser.approve();
+
+		saveDialog(preferencesFrame);
+
+		// re-select file
+		preferencesFrame = openPreferences();
+		fileChooser = openScreenshotFileChooser(0, preferencesFrame);
+
+		String cancelButtonImage2 = currentPath + File.separator + "testfiles"
+				+ File.separator + "cancel_button2.png";
+		File cancelButtonImageFile2 = new File(cancelButtonImage2);
+		fileChooser.selectFile(cancelButtonImageFile2);
+		fileChooser.approve();
+
+		if (!sikulix.checkforStates("cancel_button2.png")) {
+			fail();
 		}
 	}
 }

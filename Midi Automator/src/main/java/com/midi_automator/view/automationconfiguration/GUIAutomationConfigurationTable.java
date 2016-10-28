@@ -32,6 +32,7 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
@@ -96,6 +97,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private DefaultTableModel tableModel = new ConfigurationTableModel();
 	private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	private Vector<String> columnNames = new Vector<String>();
+	private String screenShotFileChooserDir;
 
 	@Autowired
 	@Qualifier("midiLearnPopupMenu")
@@ -106,6 +108,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	@Autowired
 	private MidiService midiDevicesService;
+
+	@Autowired
+	protected PresenterService presenterService;
 
 	/**
 	 * Initializes the automation table
@@ -145,6 +150,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createScanRateColumn();
 		createMovableColumn();
 		createImageBrowseColumn();
+
+		screenShotFileChooserDir = presenterService
+				.getLastScreenshotChooserDirectory();
 
 		// popup Menu
 		addMouseListener(new PopupListener());
@@ -278,6 +286,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 				LABEL_SEARCHBUTTON);
 		JTableButtonEditor buttonEditor = new JTableButtonEditor(
 				LABEL_SEARCHBUTTON);
+
 		buttonEditor.addActionListener(new ImageSearchButtonListener(this));
 		getColumn(COLNAME_SEARCH_BUTTON).setCellRenderer(buttonRenderer);
 		getColumn(COLNAME_SEARCH_BUTTON).setCellEditor(buttonEditor);
@@ -388,7 +397,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		setAutomationIndexToTriggerComboBox();
 
 		tableModel.addRow(rowData);
-
 	}
 
 	/**
@@ -582,7 +590,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 */
 	class ImageSearchButtonListener implements ActionListener {
 
-		private final JFileChooser fc = new JFileChooser();
+		private final JFileChooser fileChooser = new JFileChooser();
 		private GUIAutomationConfigurationTable parent;
 
 		/**
@@ -601,12 +609,21 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			FileFilter filter = new FileNameExtensionFilter(
 					GUIAutomation.SCREENSHOT_FILE_TYPE,
 					GUIAutomation.SCREENSHOT_FILE_EXTENSIONS);
-			fc.setAcceptAllFileFilterUsed(false);
-			fc.setFileFilter(filter);
-			int returnVal = fc.showOpenDialog(parent);
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.setFileFilter(filter);
+
+			if (screenShotFileChooserDir != null) {
+				fileChooser.setCurrentDirectory(new File(
+						screenShotFileChooserDir));
+			}
+
+			int returnVal = fileChooser.showOpenDialog(parent);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
+				File file = fileChooser.getSelectedFile();
+				screenShotFileChooserDir = file.getParent();
+				presenterService
+						.setLastScreenshotChooserDirectory(screenShotFileChooserDir);
 				try {
 					parent.setClickImage(file.getAbsolutePath(), row);
 				} catch (AutomationIndexDoesNotExistException ex) {

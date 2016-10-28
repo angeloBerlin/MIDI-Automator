@@ -724,6 +724,29 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Opens the screen shot file chooser
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param preferencesFrame
+	 *            The preferencesFrame
+	 * @return The file chooser fixture
+	 */
+	public static JFileChooserFixture openScreenshotFileChooser(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableCellFixture cell = table
+				.cell(TableCell
+						.row(row)
+						.column(table
+								.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_SEARCH_BUTTON)));
+
+		cell.click();
+		return JFileChooserFinder.findFileChooser().using(robot);
+	}
+
+	/**
 	 * Sets a mouse automation spinner option
 	 * 
 	 * @param value

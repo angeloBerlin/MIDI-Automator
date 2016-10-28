@@ -858,7 +858,9 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
+			
+			presenter.close();
+			
 			// Find the active frame before creating and dispatching the event
 			for (Frame frame : Frame.getFrames()) {
 				if (frame.isActive()) {
@@ -868,7 +870,6 @@ public class MainFrame extends JFrame {
 					frame.dispatchEvent(windowClosing);
 				}
 			}
-			presenter.close();
 		}
 	}
 

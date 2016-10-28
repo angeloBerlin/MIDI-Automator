@@ -1,17 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.addFile;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.cancelDialogByEnter;
-import static com.midi_automator.tests.utils.GUIAutomations.deleteEntry;
-import static com.midi_automator.tests.utils.GUIAutomations.getFileList;
-import static com.midi_automator.tests.utils.GUIAutomations.openAddDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openEntryByDoubleClick;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.openSearchDialogOnEnter;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialogByEnter;
-import static org.junit.Assert.assertEquals;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
@@ -44,6 +34,72 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 			programPath = "C:\\Windows\\System32\\" + "notepad.exe";
 			programScreenshot = "Notepad.png";
 		}
+	}
+
+	@Test
+	public void fileChooserShouldRememberLastDirectory() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture addFrame = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_FILE_SEARCH_BUTTON);
+
+		// choose a file
+		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
+				+ "testfiles"));
+		String rtfPath = currentPath + File.separator + "testfiles"
+				+ File.separator + "Hello World.rtf";
+		File rtfFile = new File(rtfPath);
+		fileChooser.selectFile(rtfFile);
+		fileChooser.approve();
+
+		saveDialog(addFrame);
+
+		// re-select file
+		addFrame = openAddDialog();
+		fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_FILE_SEARCH_BUTTON);
+
+		fileChooser.selectFile(rtfFile);
+		fileChooser.approve();
+
+		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+	}
+
+	@Test
+	public void programChooserShouldRememberLastDirectory() {
+
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		startApplication();
+
+		FrameFixture addFrame = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+
+		// choose a file
+		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
+				+ "testfiles"));
+		String rtfPath = currentPath + File.separator + "testfiles"
+				+ File.separator + "Hello World.rtf";
+		File rtfFile = new File(rtfPath);
+		fileChooser.selectFile(rtfFile);
+		fileChooser.approve();
+
+		saveDialog(addFrame);
+
+		// re-select file
+		addFrame = openAddDialog();
+		fileChooser = openSearchDialog(addFrame,
+				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+
+		fileChooser.selectFile(rtfFile);
+		fileChooser.approve();
+
+		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
 	@Test

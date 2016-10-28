@@ -489,6 +489,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 						guiAutomations[i].isMovable(), i);
 			}
 		}
+		validate();
 	}
 
 	/**

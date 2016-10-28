@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.PresenterService;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
@@ -53,12 +54,17 @@ public class AddFrame extends AbstractBasicDialog {
 	protected JLabel midiSendingSignatureValueLabel;
 	protected JFileChooser fileChooser;
 	protected JFileChooser programChooser;
+	protected String fileChooserDir;
+	protected String programChooserDir;
 
 	@Autowired
 	protected Presenter presenter;
 
 	@Autowired
 	protected FileListService fileListService;
+
+	@Autowired
+	protected PresenterService presenterService;
 
 	/**
 	 * Initializes the frame
@@ -82,6 +88,9 @@ public class AddFrame extends AbstractBasicDialog {
 		createEntryFile();
 		createProgramPath();
 		createMidiSendingSignature();
+
+		fileChooserDir = presenterService.getLastFileChooserDirectory();
+		programChooserDir = presenterService.getLastProgramChooserDirectory();
 
 		// Save
 		footerPanel.add(buttonSave);
@@ -156,10 +165,17 @@ public class AddFrame extends AbstractBasicDialog {
 	 * Opens a file chooser and puts the return value to the file text pane.
 	 */
 	protected void openFileChooser() {
+
+		if (fileChooserDir != null) {
+			fileChooser.setCurrentDirectory(new File(fileChooserDir));
+		}
+
 		int returnVal = fileChooser.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
+			fileChooserDir = file.getParent();
+			presenterService.setLastFileChooserDirectory(fileChooserDir);
 			fileTextField.setText(file.getAbsolutePath());
 		}
 	}
@@ -168,10 +184,17 @@ public class AddFrame extends AbstractBasicDialog {
 	 * Opens a file chooser and puts the return value to the program text pane.
 	 */
 	protected void openProgramChooser() {
+
+		if (programChooserDir != null) {
+			programChooser.setCurrentDirectory(new File(programChooserDir));
+		}
+
 		int returnVal = programChooser.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = programChooser.getSelectedFile();
+			programChooserDir = file.getParent();
+			presenterService.setLastProgramChooserDirectory(programChooserDir);
 			programTextField.setText(file.getAbsolutePath());
 		}
 	}

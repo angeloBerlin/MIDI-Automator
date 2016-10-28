@@ -15,7 +15,8 @@ import javax.swing.table.TableCellEditor;
  * @author aguelle
  * 
  */
-class JTableButtonEditor extends AbstractCellEditor implements TableCellEditor {
+public class JTableButtonEditor extends AbstractCellEditor implements
+		TableCellEditor {
 
 	private static final long serialVersionUID = 1L;
 	JPanel panel;

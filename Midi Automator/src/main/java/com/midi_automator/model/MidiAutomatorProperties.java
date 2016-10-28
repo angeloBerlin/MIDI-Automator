@@ -45,6 +45,10 @@ public class MidiAutomatorProperties extends Properties {
 	public static final String KEY_PREV_MIDI_SIGNATURE = "PREV_MIDI_SIGNATURE";
 	public static final String KEY_NEXT_MIDI_SIGNATURE = "NEXT_MIDI_SIGNATURE";
 
+	public static final String KEY_LAST_FILE_CHOOSER_DIR = "LAST_FILE_CHOOSER_DIR";
+	public static final String KEY_LAST_PROGRAM_CHOOSER_DIR = "LAST_PROGRAM_CHOOSER_DIR";
+	public static final String KEY_LAST_SCREENSHOT_CHOOSER_DIR = "LAST_SCREENSHOT_CHOOSER_DIR";
+
 	public static final String INDEX_SEPARATOR = "_";
 	public static final String VALUE_NULL = "-none-";
 
