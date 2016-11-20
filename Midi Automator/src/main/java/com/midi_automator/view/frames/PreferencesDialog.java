@@ -14,13 +14,11 @@ import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +43,6 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private static final long serialVersionUID = 1L;
 
 	static Logger log = Logger.getLogger(PreferencesDialog.class.getName());
-
-	private final int PADDING_HORIZONTAL = 20;
-	private final int PADDING_VERTICAL = 10;
 
 	private final String TITLE = "Preferences";
 	private final String LABEL_MIDI_IN_REMOTE_DEVICES = "Midi Remote IN:";
@@ -121,12 +116,6 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		setName(NAME);
 
 		// set layout
-		JPanel contentPanel = new JPanel();
-		Border padding = BorderFactory.createEmptyBorder(PADDING_VERTICAL,
-				PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL);
-		contentPanel.setBorder(padding);
-		contentPanel.setLayout(new BorderLayout());
-		setContentPane(contentPanel);
 		middlePanel = new JPanel(new GridBagLayout());
 		footerPanel = new JPanel(new FlowLayout());
 

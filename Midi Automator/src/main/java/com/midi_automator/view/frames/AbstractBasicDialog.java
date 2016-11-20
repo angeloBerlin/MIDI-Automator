@@ -15,11 +15,13 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractBasicDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+
+	private final int PADDING_HORIZONTAL = 20;
+	private final int PADDING_VERTICAL = 10;
 
 	private final String BUTTON_SAVE = "Save";
 	private final String BUTTON_CANCEL = "Cancel";
@@ -62,7 +67,13 @@ public abstract class AbstractBasicDialog extends JDialog {
 		setResizable(false);
 
 		// set layout
-		getContentPane().setLayout(new BorderLayout());
+		JPanel contentPanel = new JPanel();
+		Border padding = BorderFactory.createEmptyBorder(PADDING_VERTICAL,
+				PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL);
+		contentPanel.setBorder(padding);
+		contentPanel.setLayout(new BorderLayout());
+		setContentPane(contentPanel);
+
 		middlePanel = new JPanel(new GridBagLayout());
 		add(middlePanel, BorderLayout.CENTER);
 		footerPanel = new JPanel(new FlowLayout());
