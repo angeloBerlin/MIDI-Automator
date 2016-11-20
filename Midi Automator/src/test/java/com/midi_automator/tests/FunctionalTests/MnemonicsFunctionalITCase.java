@@ -5,7 +5,7 @@ import static com.midi_automator.tests.utils.GUIAutomations.*;
 import java.awt.event.KeyEvent;
 
 import org.assertj.swing.finder.WindowFinder;
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Test;
 
@@ -61,9 +61,10 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressKeyOnMainFrame(KeyEvent.VK_ALT);
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_P);
 
-		FrameFixture preferncesFrame = WindowFinder
-				.findFrame(PreferencesDialog.NAME).using(robot).requireVisible();
-		preferncesFrame.close();
+		DialogFixture preferncesDialog = WindowFinder
+				.findDialog(PreferencesDialog.NAME).using(robot)
+				.requireVisible();
+		preferncesDialog.close();
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
 

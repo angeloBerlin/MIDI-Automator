@@ -99,7 +99,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.selectFile(rtfFile);
 		fileChooser.approve();
 
-		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+		addDialog.textBox(AddDialog.NAME_PROGRAM_TEXT_FIELD).requireText(
+				rtfPath);
 	}
 
 	@Test
