@@ -22,9 +22,9 @@ import com.midi_automator.presenter.services.PresenterService;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
-public class AddFrame extends AbstractBasicDialog {
+public class AddDialog extends AbstractBasicDialog {
 
-	static Logger log = Logger.getLogger(AddFrame.class.getName());
+	static Logger log = Logger.getLogger(AddDialog.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	private final String TITLE = "Add";

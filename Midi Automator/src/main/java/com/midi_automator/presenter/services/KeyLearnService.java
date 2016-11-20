@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesFrame;
+import com.midi_automator.view.frames.PreferencesDialog;
 
 /**
  * Handles all key learning functions
@@ -33,7 +33,7 @@ public class KeyLearnService {
 	@Autowired
 	protected MainFrame mainFrame;
 	@Autowired
-	protected PreferencesFrame preferencesFrame;
+	protected PreferencesDialog preferencesDialog;
 
 	/**
 	 * Returns if the the key learning mode is still active.
@@ -83,14 +83,14 @@ public class KeyLearnService {
 		if (key.contains(KEY_KEY_LEARN_AUTOMATION)) {
 
 			if (newLearning) {
-				GUIAutomationConfigurationTable table = preferencesFrame
+				GUIAutomationConfigurationTable table = preferencesDialog
 						.getGuiAutomationPanel().getGUIAutomationsTable();
 				keysCache = table.getKeysOfSelectedRow();
-				preferencesFrame.deleteKeyCodeFromSelectedAutomation();
+				preferencesDialog.deleteKeyCodeFromSelectedAutomation();
 				newLearning = false;
 			}
 
-			preferencesFrame.addKeyCodeToSelectedAutomation(keyCode);
+			preferencesDialog.addKeyCodeToSelectedAutomation(keyCode);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class KeyLearnService {
 	public void deleteKeyCodes(String key) {
 
 		if (key.contains(KEY_KEY_LEARN_AUTOMATION)) {
-			preferencesFrame.deleteKeyCodeFromSelectedAutomation();
+			preferencesDialog.deleteKeyCodeFromSelectedAutomation();
 		}
 	}
 
@@ -146,7 +146,7 @@ public class KeyLearnService {
 	 */
 	public void cancelKeyLearn() {
 		setKeyLearnMode(false);
-		GUIAutomationConfigurationTable table = preferencesFrame
+		GUIAutomationConfigurationTable table = preferencesDialog
 				.getGuiAutomationPanel().getGUIAutomationsTable();
 		table.setKeysOfSelectedRow(keysCache);
 		newLearning = false;

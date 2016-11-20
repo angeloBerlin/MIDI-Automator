@@ -12,7 +12,7 @@ import javax.sound.midi.ShortMessage;
 
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.exception.UnexpectedException;
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.assertj.swing.fixture.JTableFixture;
@@ -88,9 +88,9 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			moveUpEntry(5);
 
 			// decrease similarity
-			FrameFixture preferencesFrame = openPreferences();
-			setAutomationMinSimilarity("0.5", preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setAutomationMinSimilarity("0.5", preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			Thread.sleep(1000);
 
@@ -116,10 +116,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
-		addAutomation(preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		addAutomation(preferencesDialog);
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		table.requireRowCount(1);
 	}
 
@@ -131,10 +131,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
-		deleteAutomation(0, preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		deleteAutomation(0, preferencesDialog);
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		table.requireRowCount(0);
 	}
 
@@ -148,19 +148,19 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// check if add dialog was canceled
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(6000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if add dialog was canceled again
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(6000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if add dialog was canceled again
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(6000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -177,29 +177,29 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set trigger to once
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE, 0,
-					preferencesFrame);
-			saveDialog(preferencesFrame);
+					preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if add dialog was not canceled again
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
-			cancelDialog(addFrame);
+			addDialog.requireVisible();
+			cancelDialog(addDialog);
 
 			// check if add dialog was not canceled after opening
 			clickNextFile();
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 
-			cancelDialog(addFrame);
+			cancelDialog(addDialog);
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -216,29 +216,29 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set trigger to once per opening
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE, 0,
-					preferencesFrame);
-			saveDialog(preferencesFrame);
+					preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was not canceled before opening
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
-			cancelDialog(addFrame);
+			addDialog.requireVisible();
+			cancelDialog(addDialog);
 
 			// check if add dialog was canceled after opening
 			clickNextFile();
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if add dialog was canceled twice after opening
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 
-			cancelDialog(addFrame);
+			cancelDialog(addDialog);
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -255,15 +255,15 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// cancel midi learn
-			FrameFixture preferencesFrame = openPreferences();
-			midiLearnAutomation(0, preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			midiLearnAutomation(0, preferencesDialog);
 			Thread.sleep(1000);
 
 			// TODO: right click on inactive component
-			cancelMidiLearnAutomation(0, preferencesFrame);
+			cancelMidiLearnAutomation(0, preferencesDialog);
 
 			// check for empty midi message
-			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
 					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
@@ -284,12 +284,12 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// unlearn midi
-			FrameFixture preferencesFrame = openPreferences();
-			midiUnLearnAutomation(0, preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			midiUnLearnAutomation(0, preferencesDialog);
 			Thread.sleep(1000);
 
 			// check for empty midi message
-			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
 					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
@@ -310,8 +310,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// midi learn automation
-			FrameFixture preferencesFrame = openPreferences();
-			midiLearnAutomation(0, preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			midiLearnAutomation(0, preferencesDialog);
 			Thread.sleep(1000);
 
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -319,18 +319,18 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(2000);
 
 			// check for learned midi message
-			JTableFixture table = getGUIAutomationTable(preferencesFrame);
+			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
 					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
 			table.requireCellValue(TableCell.row(0).column(column),
 					"channel 1: CONTROL CHANGE 109 value: 127");
-			saveDialog(preferencesFrame);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled by some other trigger
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -338,7 +338,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(5000);
 
 			// check if add dialog was canceled
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -357,20 +357,20 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// open preferences
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 
 			// set delay
-			setAutomationMinDelay("6000", 0, preferencesFrame);
-			saveDialog(preferencesFrame);
+			setAutomationMinDelay("6000", 0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled before delay
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 
 			// check if add dialog was canceled after delay
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -388,22 +388,22 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// open preferences
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 
 			// set delay
-			setAutomationTimeout("10000", 0, preferencesFrame);
-			saveDialog(preferencesFrame);
+			setAutomationTimeout("10000", 0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled before time out
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if add dialog was not canceled after time out
 			Thread.sleep(6000);
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -420,10 +420,10 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set type to once right click
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 			setAutomationType(GUIAutomation.CLICKTYPE_RIGHT, 0,
-					preferencesFrame);
-			saveDialog(preferencesFrame);
+					preferencesDialog);
+			saveDialog(preferencesDialog);
 			Thread.sleep(1000);
 
 			// check if popup menu appears
@@ -449,13 +449,13 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set trigger to double click once
-			FrameFixture preferencesFrame = openPreferences();
+			DialogFixture preferencesDialog = openPreferences();
 			setAutomationType(GUIAutomation.CLICKTYPE_DOUBLE, 0,
-					preferencesFrame);
+					preferencesDialog);
 			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE, 0,
-					preferencesFrame);
-			setAutomationMinDelay("1000", 0, preferencesFrame);
-			saveDialog(preferencesFrame);
+					preferencesDialog);
+			setAutomationMinDelay("1000", 0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			window.focus();
 
@@ -478,20 +478,20 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
+		DialogFixture preferencesDialog = openPreferences();
 
 		// spin up two times
-		spinUpAutomationDelaySpinner(2, 0, preferencesFrame);
+		spinUpAutomationDelaySpinner(2, 0, preferencesDialog);
 
 		// check for delay = 2
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
-		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "2");
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
+		table.requireCellValue(automationsDelayCell(0, preferencesDialog), "2");
 
 		// spin down three times
-		spinDownAutomationDelaySpinner(3, 0, preferencesFrame);
+		spinDownAutomationDelaySpinner(3, 0, preferencesDialog);
 
 		// check for delay = 0
-		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
+		table.requireCellValue(automationsDelayCell(0, preferencesDialog), "0");
 	}
 
 	@Test
@@ -502,34 +502,34 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
+		DialogFixture preferencesDialog = openPreferences();
 
 		// set delay negative
 		// change keyboard layout to EN to be sure this is working properly
 		try {
-			setAutomationMinDelay("-1000", 0, preferencesFrame);
+			setAutomationMinDelay("-1000", 0, preferencesDialog);
 		} catch (UnexpectedException e) {
 		}
-		saveDialog(preferencesFrame);
-		preferencesFrame = openPreferences();
+		saveDialog(preferencesDialog);
+		preferencesDialog = openPreferences();
 
 		// check for delay = 0
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		table.click();
-		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
+		table.requireCellValue(automationsDelayCell(0, preferencesDialog), "0");
 
 		// set delay nonsense
 		try {
-			setAutomationMinDelay("$%Ghg12", 0, preferencesFrame);
+			setAutomationMinDelay("$%Ghg12", 0, preferencesDialog);
 		} catch (UnexpectedException e) {
 		}
-		saveDialog(preferencesFrame);
-		preferencesFrame = openPreferences();
+		saveDialog(preferencesDialog);
+		preferencesDialog = openPreferences();
 
 		// check for delay = 0
-		table = getGUIAutomationTable(preferencesFrame);
+		table = getGUIAutomationTable(preferencesDialog);
 		table.click();
-		table.requireCellValue(automationsDelayCell(0, preferencesFrame), "0");
+		table.requireCellValue(automationsDelayCell(0, preferencesDialog), "0");
 	}
 
 	@Test
@@ -543,9 +543,9 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// check if dialogs are always canceled
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// check if popup menu is opened after file opening
 			openEntryByDoubleClick(1);
@@ -555,9 +555,9 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			popupMenu.requireVisible();
 
 			// check if dialogs are always canceled
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -575,36 +575,36 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// check if add dialog was canceled unmoved
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// move cancel button
 			window.moveTo(new Point(500, 200));
 
 			// check if dialog was not canceled
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
-			cancelDialog(addFrame);
+			addDialog.requireVisible();
+			cancelDialog(addDialog);
 
 			// activate movable
-			FrameFixture preferencesFrame = openPreferences();
-			clickAutomationMovableCheckBox(0, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			clickAutomationMovableCheckBox(0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled unmoved
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// move cancel button
 			window.moveTo(new Point(10, 10));
 
 			// check if add dialog was canceled unmoved
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -622,22 +622,22 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// check if add dialog was canceled within 5 seconds
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// set scan rate to 0.1
-			FrameFixture preferencesFrame = openPreferences();
-			setAutomationScanRate("0.1", 0, preferencesFrame);
-			clickAutomationMovableCheckBox(0, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setAutomationScanRate("0.1", 0, preferencesDialog);
+			clickAutomationMovableCheckBox(0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// check if add dialog was canceled after 10 seconds
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireVisible();
+			addDialog.requireVisible();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -645,7 +645,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void storedAutomationsShouldBeActivatedAfterPreferencesFrameWasCanceled() {
+	public void storedAutomationsShouldBeActivatedAfterpreferencesDialogWasCanceled() {
 
 		try {
 			MockUpUtils
@@ -655,18 +655,18 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// check if add dialog was canceled
-			FrameFixture addFrame = openAddDialog();
+			DialogFixture addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 			// open and cancel preferences
-			FrameFixture preferencesFrame = openPreferences();
-			cancelDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			cancelDialog(preferencesDialog);
 
 			// check if add dialog was canceled
-			addFrame = openAddDialog();
+			addDialog = openAddDialog();
 			Thread.sleep(5000);
-			addFrame.requireNotVisible();
+			addDialog.requireNotVisible();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -681,9 +681,9 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 				.setMockupPropertiesFile("mockups/automation1_empty.properties");
 		startApplication();
 
-		FrameFixture preferencesFrame = openPreferences();
+		DialogFixture preferencesDialog = openPreferences();
 		JFileChooserFixture fileChooser = openScreenshotFileChooser(0,
-				preferencesFrame);
+				preferencesDialog);
 
 		// choose a file
 		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
@@ -694,11 +694,11 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.selectFile(cancelButtonImageFile1);
 		fileChooser.approve();
 
-		saveDialog(preferencesFrame);
+		saveDialog(preferencesDialog);
 
 		// re-select file
-		preferencesFrame = openPreferences();
-		fileChooser = openScreenshotFileChooser(0, preferencesFrame);
+		preferencesDialog = openPreferences();
+		fileChooser = openScreenshotFileChooser(0, preferencesDialog);
 
 		String cancelButtonImage2 = currentPath + File.separator + "testfiles"
 				+ File.separator + "cancel_button2.png";

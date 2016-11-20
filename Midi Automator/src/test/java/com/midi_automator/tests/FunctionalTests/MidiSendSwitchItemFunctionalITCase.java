@@ -10,7 +10,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
@@ -57,9 +57,9 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set midi switch list entry out device
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutSwitchItemDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiOutSwitchItemDevice(deviceName, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// open entry 1
 			openEntryByDoubleClick(0);

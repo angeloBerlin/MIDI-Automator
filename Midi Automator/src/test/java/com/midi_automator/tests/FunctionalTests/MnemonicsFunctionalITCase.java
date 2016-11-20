@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesFrame;
+import com.midi_automator.view.frames.PreferencesDialog;
 
 public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 
@@ -62,7 +62,7 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_P);
 
 		FrameFixture preferncesFrame = WindowFinder
-				.findFrame(PreferencesFrame.NAME).using(robot).requireVisible();
+				.findFrame(PreferencesDialog.NAME).using(robot).requireVisible();
 		preferncesFrame.close();
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}

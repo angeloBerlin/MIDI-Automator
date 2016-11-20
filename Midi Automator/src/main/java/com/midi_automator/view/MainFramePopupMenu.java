@@ -154,7 +154,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			mainFrame.openAddFrame();
+			mainFrame.openAddDialog();
 		}
 	}
 
@@ -197,7 +197,7 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			super.actionPerformed(e);
-			mainFrame.openEditFrame();
+			mainFrame.openEditDialog();
 		}
 	}
 

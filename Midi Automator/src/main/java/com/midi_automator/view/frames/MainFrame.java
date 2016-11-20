@@ -162,7 +162,7 @@ public class MainFrame extends JFrame {
 	@Autowired
 	private ApplicationContext ctx;
 
-	private PreferencesFrame preferencesFrame;
+	private PreferencesDialog preferencsDialog;
 
 	@Autowired
 	private Presenter presenter;
@@ -342,8 +342,8 @@ public class MainFrame extends JFrame {
 		}
 
 		// reload preferences frame
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.reload();
+		if (preferencsDialog != null && preferencsDialog.isVisible()) {
+			preferencsDialog.reload();
 		}
 	}
 
@@ -424,11 +424,9 @@ public class MainFrame extends JFrame {
 	public void midiLearnOff() {
 
 		// set all frames to midi learn off
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.midiLearnOff();
+		if (preferencsDialog != null && preferencsDialog.isVisible()) {
+			preferencsDialog.midiLearnOff();
 		}
-		System.out.println(preferencesFrame.guiAutomationConfigurationPanel
-				.getName());
 		learnOff();
 	}
 
@@ -438,8 +436,8 @@ public class MainFrame extends JFrame {
 	public void keyLearnOff() {
 
 		// set all frames to midi learn off
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.keyLearnOff();
+		if (preferencsDialog != null && preferencsDialog.isVisible()) {
+			preferencsDialog.keyLearnOff();
 		}
 
 		learnOff();
@@ -495,8 +493,8 @@ public class MainFrame extends JFrame {
 	public void midiLearnOn(JComponent learningComponent) {
 
 		// set all frames to midi learn on
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.midiLearnOn(learningComponent);
+		if (preferencsDialog != null && preferencsDialog.isVisible()) {
+			preferencsDialog.midiLearnOn(learningComponent);
 		}
 
 		learnOn(learningComponent);
@@ -514,8 +512,8 @@ public class MainFrame extends JFrame {
 	 */
 	public void keyLearnOn(JComponent learningComponent) {
 
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.keyLearnOn(learningComponent);
+		if (preferencsDialog != null && preferencsDialog.isVisible()) {
+			preferencsDialog.keyLearnOn(learningComponent);
 		}
 
 		learnOn(learningComponent);
@@ -805,12 +803,12 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Gets the preferences frame
+	 * Gets the preferences dialog
 	 * 
-	 * @return The preferences frame
+	 * @return The preferences dialog
 	 */
-	public PreferencesFrame getPreferencesFrame() {
-		return preferencesFrame;
+	public PreferencesDialog getPreferencesDialog() {
+		return preferencsDialog;
 	}
 
 	/**
@@ -998,12 +996,10 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			preferencesFrame = ctx.getBean("preferencesFrame",
-					PreferencesFrame.class);
-			preferencesFrame.setLocation(getLocationOnScreen());
-			preferencesFrame.init();
-			System.out.println(preferencesFrame.guiAutomationConfigurationPanel
-					.getName());
+			preferencsDialog = ctx.getBean("preferencesDialog",
+					PreferencesDialog.class);
+			preferencsDialog.setLocation(getLocationOnScreen());
+			preferencsDialog.init();
 		}
 	}
 
@@ -1280,26 +1276,27 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Opens the add frame
+	 * Opens the add dialog
 	 */
-	public void openAddFrame() {
+	public void openAddDialog() {
 
-		AddFrame addFrame = ctx.getBean("addFrame", AddFrame.class);
-		addFrame.setLocation(getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
+		AddDialog addDialog = ctx.getBean("addDialog", AddDialog.class);
+		addDialog.setLocation(
+				getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
 				getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
-		addFrame.init();
+		addDialog.init();
 	}
 
 	/**
-	 * Opens the edit frame with the selected item
+	 * Opens the edit dialog with the selected item
 	 */
-	public void openEditFrame() {
+	public void openEditDialog() {
 
-		EditFrame editFrame = ctx.getBean(EditFrame.class);
-		editFrame.init(fileList.getSelectedIndex());
-		editFrame.setLocation(
-				getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
-				getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
+		EditDialog editDialog = ctx.getBean(EditDialog.class);
+		editDialog.init(fileList.getSelectedIndex());
+		editDialog.setLocation(getLocationOnScreen().x
+				+ FRAME_LOCATION_X_OFFSET, getLocationOnScreen().y
+				+ FRAME_LOCATION_Y_OFFSET);
 	}
 
 	/**
@@ -1362,14 +1359,14 @@ public class MainFrame extends JFrame {
 			if (keyCode == popupMenu.getAddMenuItem().getAccelerator()
 					.getKeyCode()
 					&& keyMod == 8) {
-				openAddFrame();
+				openAddDialog();
 			}
 
 			// ALT + E
 			if (keyCode == popupMenu.getEditMenuItem().getAccelerator()
 					.getKeyCode()
 					&& keyMod == 8) {
-				openEditFrame();
+				openEditDialog();
 			}
 
 			// ALT + M

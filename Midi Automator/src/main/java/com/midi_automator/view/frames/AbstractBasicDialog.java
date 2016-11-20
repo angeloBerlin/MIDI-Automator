@@ -2,6 +2,7 @@ package com.midi_automator.view.frames;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -10,10 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -26,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author aguelle
  *
  */
-public abstract class AbstractBasicDialog extends JFrame {
+public abstract class AbstractBasicDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,6 +53,7 @@ public abstract class AbstractBasicDialog extends JFrame {
 	 * Initializes some basic dialog features.
 	 */
 	public void init() {
+		setParent(mainFrame);
 		setResizable(false);
 
 		// set layout
@@ -73,6 +76,22 @@ public abstract class AbstractBasicDialog extends JFrame {
 		mainFrame.setAlwaysOnTop(false);
 		this.setAlwaysOnTop(true);
 		setVisible(true);
+	}
+
+	/**
+	 * Sets the parent of the dialog
+	 * 
+	 * @param parent
+	 *            The parent Container
+	 */
+	public void setParent(Container parent) {
+		try {
+			Field declaredField = Component.class.getDeclaredField("parent");
+			declaredField.setAccessible(true);
+			declaredField.set(this, parent);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 	}
 
 	/**

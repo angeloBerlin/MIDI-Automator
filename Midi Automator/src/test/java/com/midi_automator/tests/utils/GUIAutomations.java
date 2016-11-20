@@ -12,6 +12,8 @@ import org.assertj.swing.core.Robot;
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.finder.JFileChooserFinder;
 import org.assertj.swing.finder.WindowFinder;
+import org.assertj.swing.fixture.AbstractWindowFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
@@ -31,10 +33,10 @@ import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.frames.AddFrame;
-import com.midi_automator.view.frames.EditFrame;
+import com.midi_automator.view.frames.AddDialog;
+import com.midi_automator.view.frames.EditDialog;
 import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesFrame;
+import com.midi_automator.view.frames.PreferencesDialog;
 
 public class GUIAutomations {
 
@@ -172,9 +174,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void midiLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
@@ -193,9 +195,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void midiUnLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
@@ -214,9 +216,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void cancelMidiLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
 
@@ -234,9 +236,10 @@ public class GUIAutomations {
 	 * @param prferencesFrame
 	 *            The preferences frame
 	 */
-	public static void keyLearnAutomation(int row, FrameFixture preferencesFrame) {
+	public static void keyLearnAutomation(int row,
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 
@@ -254,9 +257,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void submitKeyLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 
@@ -275,9 +278,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void keyUnLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 
@@ -296,9 +299,9 @@ public class GUIAutomations {
 	 *            The preferences frame
 	 */
 	public static void cancelKeyLearnAutomation(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 
@@ -314,27 +317,27 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row number to delete
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
-	public static void deleteAutomation(int row, FrameFixture preferencesFrame) {
-		getGUIAutomationTable(preferencesFrame).selectRows(row);
-		preferencesFrame.button(
+	public static void deleteAutomation(int row, DialogFixture preferencesDialog) {
+		getGUIAutomationTable(preferencesDialog).selectRows(row);
+		preferencesDialog.button(
 				GUIAutomationConfigurationPanel.NAME_DELETE_BUTTON).click();
 	}
 
 	/**
 	 * Deletes all automations
 	 * 
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
-	public static void deleteAllAutomations(FrameFixture preferencesFrame) {
+	public static void deleteAllAutomations(DialogFixture preferencesDialog) {
 
-		int rowCount = getGUIAutomationTable(preferencesFrame).rowCount();
+		int rowCount = getGUIAutomationTable(preferencesDialog).rowCount();
 
 		for (int i = 0; i < rowCount; i++) {
-			deleteAutomation(0, preferencesFrame);
+			deleteAutomation(0, preferencesDialog);
 		}
 	}
 
@@ -342,21 +345,20 @@ public class GUIAutomations {
 	 * Deletes all active automations
 	 */
 	public static void resetAutomations() {
-		FrameFixture preferencesFrame = openPreferences();
-		deleteAllAutomations(preferencesFrame);
-		saveDialog(preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		deleteAllAutomations(preferencesDialog);
+		saveDialog(preferencesDialog);
 	}
 
 	/**
 	 * Adds an empty automation
 	 * 
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences Frame
 	 */
-	public static void addAutomation(FrameFixture preferencesFrame) {
-		preferencesFrame
-				.button(GUIAutomationConfigurationPanel.NAME_ADD_BUTTON)
-				.click();
+	public static void addAutomation(DialogFixture preferencesDialog) {
+		preferencesDialog.button(
+				GUIAutomationConfigurationPanel.NAME_ADD_BUTTON).click();
 	}
 
 	/**
@@ -364,11 +366,12 @@ public class GUIAutomations {
 	 * 
 	 * @return The preferences window
 	 */
-	public static FrameFixture openPreferences() {
+	public static DialogFixture openPreferences() {
 
 		window.menuItemWithPath(MainFrame.MENU_FILE,
 				MainFrame.MENU_ITEM_PREFERENCES).click();
-		return WindowFinder.findFrame(PreferencesFrame.NAME).using(robot);
+
+		return WindowFinder.findDialog(PreferencesDialog.NAME).using(robot);
 	}
 
 	/**
@@ -398,14 +401,14 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setMidiInRemoteDevice(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setPreferencesComboBox(
-				PreferencesFrame.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX, value,
-				preferencesFrame);
+				PreferencesDialog.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX, value,
+				preferencesDialog);
 	}
 
 	/**
@@ -413,14 +416,14 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setMidiOutSwitchItemDevice(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setPreferencesComboBox(
-				PreferencesFrame.NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX,
-				value, preferencesFrame);
+				PreferencesDialog.NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX,
+				value, preferencesDialog);
 	}
 
 	/**
@@ -428,14 +431,14 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setMidiInMetronomDevice(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setPreferencesComboBox(
-				PreferencesFrame.NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX,
-				value, preferencesFrame);
+				PreferencesDialog.NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX,
+				value, preferencesDialog);
 	}
 
 	/**
@@ -443,14 +446,14 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setMidiOutNotifierDevice(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setPreferencesComboBox(
-				PreferencesFrame.NAME_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX,
-				value, preferencesFrame);
+				PreferencesDialog.NAME_MIDI_OUT_SWITCH_NOTIFIER_DEVICE_COMBO_BOX,
+				value, preferencesDialog);
 	}
 
 	/**
@@ -458,24 +461,24 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setMidiOutRemoteDevice(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setPreferencesComboBox(
-				PreferencesFrame.NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX, value,
-				preferencesFrame);
+				PreferencesDialog.NAME_MIDI_OUT_REMOTE_DEVICE_COMBO_BOX, value,
+				preferencesDialog);
 	}
 
 	/**
 	 * Clicks the switch notifier send button
 	 * 
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
-	public static void clickNotifierSendButton(FrameFixture preferencesFrame) {
-		preferencesFrame.button(PreferencesFrame.NAME_BUTTON_SEND_NOTIFIER)
+	public static void clickNotifierSendButton(DialogFixture preferencesDialog) {
+		preferencesDialog.button(PreferencesDialog.NAME_BUTTON_SEND_NOTIFIER)
 				.click();
 	}
 
@@ -486,12 +489,12 @@ public class GUIAutomations {
 	 *            The name of the combo box
 	 * @param value
 	 *            The value of the combo box
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void setPreferencesComboBox(String name, String value,
-			FrameFixture preferencesFrame) {
-		preferencesFrame.comboBox(name).selectItem(value);
+			DialogFixture preferencesDialog) {
+		preferencesDialog.comboBox(name).selectItem(value);
 	}
 
 	/**
@@ -503,13 +506,13 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationsComboBox(String value, int row,
-			int column, FrameFixture preferencesFrame) {
+			int column, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		table.enterValue(TableCell.row(row).column(column), value);
 	}
 
@@ -522,13 +525,13 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param columnName
 	 *            The name of the column
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationsComboBox(String value, int row,
-			String columnName, FrameFixture preferencesFrame) {
+			String columnName, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		table.enterValue(
 				TableCell.row(row).column(table.columnIndexFor(columnName)),
 				value);
@@ -541,15 +544,15 @@ public class GUIAutomations {
 	 *            The value to choose
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationTrigger(String value, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		setAutomationsComboBox(value, row,
 				GUIAutomationConfigurationTable.COLNAME_TRIGGER,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -559,13 +562,13 @@ public class GUIAutomations {
 	 *            The value to choose
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationType(String value, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 		setAutomationsComboBox(value, row,
-				GUIAutomationConfigurationTable.COLNAME_TYPE, preferencesFrame);
+				GUIAutomationConfigurationTable.COLNAME_TYPE, preferencesDialog);
 	}
 
 	/**
@@ -577,15 +580,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void spinUpAutomationDelaySpinner(int times, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		spinUpAutomationsSpinner(times, row,
 				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -597,15 +600,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void spinDownAutomationDelaySpinner(int times, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		spinDownAutomationsSpinner(times, row,
 				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -613,14 +616,14 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 * @return The TableCell
 	 */
 	public static TableCell automationsDelayCell(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY);
 		return TableCell.row(row).column(column);
@@ -635,18 +638,18 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void spinUpAutomationsSpinner(int times, int row, int column,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table.cell(TableCell.row(row).column(column));
 		cell.doubleClick();
 
 		JSpinnerFixture spinnerEditor = getAutomationsSpinner(row, column,
-				preferencesFrame);
+				preferencesDialog);
 
 		spinnerEditor.increment(times);
 		spinnerEditor.pressAndReleaseKey(KeyPressInfo
@@ -662,15 +665,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param columnName
 	 *            The name of the column
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void spinUpAutomationsSpinner(int times, int row,
-			String columnName, FrameFixture preferencesFrame) {
+			String columnName, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		spinUpAutomationsSpinner(times, row, table.columnIndexFor(columnName),
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -682,18 +685,18 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 */
 	public static void spinDownAutomationsSpinner(int times, int row,
-			int column, FrameFixture preferencesFrame) {
+			int column, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table.cell(TableCell.row(row).column(column));
 		cell.doubleClick();
 
 		JSpinnerFixture spinnerEditor = getAutomationsSpinner(row, column,
-				preferencesFrame);
+				preferencesDialog);
 
 		spinnerEditor.decrement(times);
 		spinnerEditor.pressAndReleaseKey(KeyPressInfo
@@ -709,15 +712,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param columnName
 	 *            The name of the column
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void spinDownAutomationsSpinner(int times, int row,
-			String columnName, FrameFixture preferencesFrame) {
+			String columnName, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		spinDownAutomationsSpinner(times, row,
-				table.columnIndexFor(columnName), preferencesFrame);
+				table.columnIndexFor(columnName), preferencesDialog);
 	}
 
 	/**
@@ -727,14 +730,14 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 * @return
 	 */
 	public static JSpinnerFixture getAutomationsSpinner(int row, int column,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table.cell(TableCell.row(row).column(column));
 		JSpinnerFixture spinnerEditor = new JSpinnerFixture(robot,
 				(JSpinner) cell.editor());
@@ -747,20 +750,20 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 * @return
 	 */
 	public static JSpinnerFixture getAutomationsDelaySpinner(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 
 		int index = table
 				.columnIndexFor(table
 						.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY));
 
-		return getAutomationsSpinner(row, index, preferencesFrame);
+		return getAutomationsSpinner(row, index, preferencesDialog);
 	}
 
 	/**
@@ -770,13 +773,13 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences Frame
 	 */
 	public static void clickAutomationCheckBox(int row, int column,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table.cell(TableCell.row(row).column(column));
 		cell.click();
 	}
@@ -786,28 +789,28 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences Frame
 	 */
 	public static void clickAutomationMovableCheckBox(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MOVABLE);
-		clickAutomationCheckBox(row, column, preferencesFrame);
+		clickAutomationCheckBox(row, column, preferencesDialog);
 	}
 
 	/**
 	 * Gets the automation table from the preferences frame
 	 * 
-	 * @param preferencesFrame
+	 * @param preferencesDialog
 	 *            The preferences frame
 	 * @return The GUI automation table
 	 */
 	public static JTableFixture getGUIAutomationTable(
-			FrameFixture preferencesFrame) {
-		return preferencesFrame.table(GUIAutomationConfigurationTable.NAME);
+			DialogFixture preferencesDialog) {
+		return preferencesDialog.table(GUIAutomationConfigurationTable.NAME);
 	}
 
 	/**
@@ -815,14 +818,14 @@ public class GUIAutomations {
 	 * 
 	 * @param row
 	 *            The row of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 * @return The file chooser fixture
 	 */
 	public static JFileChooserFixture openScreenshotFileChooser(int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table
 				.cell(TableCell
 						.row(row)
@@ -842,13 +845,13 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationsSpinner(String value, int row, int column,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		JTableCellFixture cell = table.cell(TableCell.row(row).column(column));
 		JSpinnerFixture spinnerEditor = new JSpinnerFixture(robot,
 				(JSpinner) cell.editor());
@@ -867,15 +870,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param columnName
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationsSpinner(String value, int row,
-			String columnName, FrameFixture preferencesFrame) {
+			String columnName, DialogFixture preferencesDialog) {
 
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		setAutomationsSpinner(value, row, table.columnIndexFor(columnName),
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -885,13 +888,13 @@ public class GUIAutomations {
 	 *            The value to choose
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationMinSimilarity(String value,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
-		JSpinnerFixture spinner = preferencesFrame
+		JSpinnerFixture spinner = preferencesDialog
 				.spinner(GUIAutomationConfigurationPanel.NAME_MIN_SIMILARITY_SPINNER);
 		spinner.enterTextAndCommit(value);
 	}
@@ -905,15 +908,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationMinDelay(String value, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
 				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -925,15 +928,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationScanRate(String value, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
 				GUIAutomationConfigurationTable.COLNAME_SCAN_RATE,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -945,15 +948,15 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param column
 	 *            The column of the automation
-	 * @param preferencesFrame
-	 *            The preferencesFrame
+	 * @param preferencesDialog
+	 *            The preferencesDialog
 	 */
 	public static void setAutomationTimeout(String value, int row,
-			FrameFixture preferencesFrame) {
+			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
 				GUIAutomationConfigurationTable.COLNAME_TIMEOUT,
-				preferencesFrame);
+				preferencesDialog);
 	}
 
 	/**
@@ -1035,14 +1038,15 @@ public class GUIAutomations {
 	 *            path to the opening program
 	 * @return the add frame
 	 */
-	public static FrameFixture addFile(String name, String filePath,
+	public static DialogFixture addFile(String name, String filePath,
 			String programPath) {
 
-		FrameFixture addFrame = openAddDialog();
-		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText(name);
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText(filePath);
-		addFrame.textBox(AddFrame.NAME_PROGRAM_TEXT_FIELD).setText(programPath);
-		return addFrame;
+		DialogFixture addDialog = openAddDialog();
+		addDialog.textBox(AddDialog.NAME_NAME_TEXT_FIELD).setText(name);
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).setText(filePath);
+		addDialog.textBox(AddDialog.NAME_PROGRAM_TEXT_FIELD).setText(
+				programPath);
+		return addDialog;
 	}
 
 	/**
@@ -1092,12 +1096,12 @@ public class GUIAutomations {
 	 * 
 	 * @return The add dialog as FrameFixtrue
 	 */
-	public static FrameFixture openAddDialog() {
+	public static DialogFixture openAddDialog() {
 
 		focusMidiAutomator();
 		JPopupMenuFixture popupMenu = openFileListPopupMenu();
 		popupMenu.menuItem(MainFramePopupMenu.NAME_MENU_ITEM_ADD).click();
-		return WindowFinder.findFrame(AddFrame.NAME).using(robot);
+		return WindowFinder.findDialog(AddDialog.NAME).using(robot);
 	}
 
 	/**
@@ -1107,12 +1111,12 @@ public class GUIAutomations {
 	 *            The index of the entry to edit
 	 * @return The edit dialog as FrameFixture
 	 */
-	public static FrameFixture openEditDialog(int index) {
+	public static DialogFixture openEditDialog(int index) {
 
 		focusMidiAutomator();
 		JPopupMenuFixture popupMenu = openFileListPopupMenu(index);
 		popupMenu.menuItem(MainFramePopupMenu.NAME_MENU_ITEM_EDIT).click();
-		return WindowFinder.findFrame(EditFrame.NAME).using(robot);
+		return WindowFinder.findDialog(EditDialog.NAME).using(robot);
 	}
 
 	/**
@@ -1229,71 +1233,71 @@ public class GUIAutomations {
 	/**
 	 * Opens a search file chooser
 	 * 
-	 * @param frame
-	 *            The frame containing the search button
+	 * @param window
+	 *            The window containing the search button
 	 * @param searchButtonName
 	 *            The name of the search button
 	 * @return The file chooser fixture
 	 */
-	public static JFileChooserFixture openSearchDialog(FrameFixture frame,
-			String searchButtonName) {
-		frame.button(searchButtonName).click();
+	public static JFileChooserFixture openSearchDialog(
+			AbstractWindowFixture<?, ?, ?> window, String searchButtonName) {
+		window.button(searchButtonName).click();
 		return JFileChooserFinder.findFileChooser().using(robot);
 	}
 
 	/**
 	 * Opens a search file chooser
 	 * 
-	 * @param frame
-	 *            The frame containing the search button
+	 * @param window
+	 *            The window containing the search button
 	 * @param searchButtonName
 	 *            The name of the search button
 	 * @return The file chooser fixture
 	 */
 	public static JFileChooserFixture openSearchDialogOnEnter(
-			FrameFixture frame, String searchButtonName) {
-		frame.button(searchButtonName).pressAndReleaseKeys(KeyEvent.VK_ENTER);
+			AbstractWindowFixture<?, ?, ?> window, String searchButtonName) {
+		window.button(searchButtonName).pressAndReleaseKeys(KeyEvent.VK_ENTER);
 		return JFileChooserFinder.findFileChooser().using(robot);
 	}
 
 	/**
 	 * Cancels a dialog
 	 * 
-	 * @param frame
-	 *            The frame containing the search button
+	 * @param dialog
+	 *            The dialog containing the search button
 	 */
-	public static void cancelDialog(FrameFixture frame) {
-		frame.button("cancel button").click();
+	public static void cancelDialog(DialogFixture dialog) {
+		dialog.button("cancel button").click();
 	}
 
 	/**
 	 * Cancels a dialog by hitting enter on the save button
 	 * 
-	 * @param frame
-	 *            The frame containing the save button
+	 * @param window
+	 *            The window containing the save button
 	 */
-	public static void cancelDialogByEnter(FrameFixture frame) {
-		frame.button("cancel button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
+	public static void cancelDialogByEnter(AbstractWindowFixture<?, ?, ?> window) {
+		window.button("cancel button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
 	}
 
 	/**
 	 * Saves a dialog by clicking the save button
 	 * 
-	 * @param frame
-	 *            The frame containing the save button
+	 * @param dialog
+	 *            The dialog containing the save button
 	 */
-	public static void saveDialog(FrameFixture frame) {
-		frame.button("save button").click();
+	public static void saveDialog(DialogFixture dialog) {
+		dialog.button("save button").click();
 	}
 
 	/**
 	 * Saves a dialog by hitting enter on the save button
 	 * 
-	 * @param frame
-	 *            The frame containing the save button
+	 * @param dialog
+	 *            The dialog containing the save button
 	 */
-	public static void saveDialogByEnter(FrameFixture frame) {
-		frame.button("save button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
+	public static void saveDialogByEnter(DialogFixture dialog) {
+		dialog.button("save button").pressAndReleaseKeys(KeyEvent.VK_ENTER);
 	}
 
 	/**
@@ -1345,29 +1349,29 @@ public class GUIAutomations {
 	/**
 	 * Presses the desired key code on the GUI automation table.
 	 * 
-	 * @param preferencesFrame
-	 *            The preferences frame with the automation table
+	 * @param preferencesDialog
+	 *            The preferences dialog with the automation table
 	 * @param keyCode
 	 *            The key code pressed
 	 */
 	public static void pressKeyOnGUIAutomationTable(
-			FrameFixture preferencesFrame, int keyCode) {
+			DialogFixture preferencesDialog, int keyCode) {
 
-		getGUIAutomationTable(preferencesFrame).pressKey(keyCode);
+		getGUIAutomationTable(preferencesDialog).pressKey(keyCode);
 	}
 
 	/**
 	 * Presses and releases the desired key code on the GUI automation table.
 	 * 
-	 * @param preferencesFrame
-	 *            The preferences frame with the automation table
+	 * @param preferencesDialog
+	 *            The preferences dialog with the automation table
 	 * @param keyCode
 	 *            The key codes pressed and released
 	 */
 	public static void pressAndReleaseKeysOnGUIAutomationTable(
-			FrameFixture preferencesFrame, int... keyCode) {
+			DialogFixture preferencesDialog, int... keyCode) {
 
-		getGUIAutomationTable(preferencesFrame).pressAndReleaseKeys(keyCode);
+		getGUIAutomationTable(preferencesDialog).pressAndReleaseKeys(keyCode);
 	}
 
 }

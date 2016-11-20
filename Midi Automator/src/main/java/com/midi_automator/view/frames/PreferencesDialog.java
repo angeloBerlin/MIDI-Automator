@@ -25,7 +25,6 @@ import javax.swing.border.Border;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -41,12 +40,11 @@ import com.midi_automator.view.automationconfiguration.GUIAutomationConfiguratio
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
 @org.springframework.stereotype.Component
-@Scope("prototype")
-public class PreferencesFrame extends AbstractBasicDialog {
+public class PreferencesDialog extends AbstractBasicDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	static Logger log = Logger.getLogger(PreferencesFrame.class.getName());
+	static Logger log = Logger.getLogger(PreferencesDialog.class.getName());
 
 	private final int PADDING_HORIZONTAL = 20;
 	private final int PADDING_VERTICAL = 10;
@@ -90,7 +88,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
 
-	public GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
+	private GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
 
 	private JButton buttonSendNotify;
 
@@ -118,6 +116,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	 */
 	public void init() {
 		super.init();
+
 		setResizable(false);
 		setTitle(TITLE);
 		setName(NAME);
@@ -169,8 +168,6 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		// action on close
 		addWindowListener(new WindowCloseListener());
-
-		System.out.println(this.guiAutomationConfigurationPanel.getName());
 	}
 
 	/**

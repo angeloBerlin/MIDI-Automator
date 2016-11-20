@@ -8,7 +8,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.services.FileListService;
@@ -51,9 +51,9 @@ public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			startApplication();
 
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutRemoteDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiOutRemoteDevice(deviceName, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			openEntryByDoubleClick(0);
 			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);

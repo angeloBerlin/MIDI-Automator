@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Scope;
 
 @org.springframework.stereotype.Component
 @Scope("prototype")
-public class EditFrame extends AddFrame {
+public class EditDialog extends AddDialog {
 
 	private static final long serialVersionUID = 1L;
-	static Logger log = Logger.getLogger(EditFrame.class.getName());
+	static Logger log = Logger.getLogger(EditDialog.class.getName());
 
 	private final String TITLE = "Edit";
 	private final int HEIGHT = 200;

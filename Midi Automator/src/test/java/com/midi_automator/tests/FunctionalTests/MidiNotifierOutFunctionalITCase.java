@@ -8,7 +8,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.services.FileListService;
@@ -51,9 +51,9 @@ public class MidiNotifierOutFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set notifier out
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutNotifierDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiOutNotifierDevice(deviceName, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// open entry
 			openEntryByDoubleClick(0);
@@ -81,11 +81,11 @@ public class MidiNotifierOutFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set notifier out
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiOutNotifierDevice(deviceName, preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiOutNotifierDevice(deviceName, preferencesDialog);
 
 			// hit send button
-			clickNotifierSendButton(preferencesFrame);
+			clickNotifierSendButton(preferencesDialog);
 
 			// check if midi master message was sent
 			Thread.sleep(1000);

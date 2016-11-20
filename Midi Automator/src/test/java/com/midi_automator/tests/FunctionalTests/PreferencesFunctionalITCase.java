@@ -2,12 +2,12 @@ package com.midi_automator.tests.FunctionalTests;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.junit.Test;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.PreferencesFrame;
+import com.midi_automator.view.frames.PreferencesDialog;
 
 public class PreferencesFunctionalITCase extends FunctionalBaseCase {
 
@@ -31,14 +31,14 @@ public class PreferencesFunctionalITCase extends FunctionalBaseCase {
 		startApplication();
 
 		// set midi in device
-		FrameFixture preferencesFrame = openPreferences();
-		setMidiInRemoteDevice(deviceName, preferencesFrame);
-		saveDialogByEnter(preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		setMidiInRemoteDevice(deviceName, preferencesDialog);
+		saveDialogByEnter(preferencesDialog);
 
 		// check midi device
-		preferencesFrame = openPreferences();
-		preferencesFrame.comboBox(
-				PreferencesFrame.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX)
+		preferencesDialog = openPreferences();
+		preferencesDialog.comboBox(
+				PreferencesDialog.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX)
 				.requireSelection(deviceName);
 	}
 
@@ -50,14 +50,14 @@ public class PreferencesFunctionalITCase extends FunctionalBaseCase {
 		startApplication();
 
 		// set midi in device
-		FrameFixture preferencesFrame = openPreferences();
-		setMidiInRemoteDevice(deviceName, preferencesFrame);
-		cancelDialogByEnter(preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		setMidiInRemoteDevice(deviceName, preferencesDialog);
+		cancelDialogByEnter(preferencesDialog);
 
 		// check midi device
-		preferencesFrame = openPreferences();
-		preferencesFrame.comboBox(
-				PreferencesFrame.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX)
+		preferencesDialog = openPreferences();
+		preferencesDialog.comboBox(
+				PreferencesDialog.NAME_MIDI_IN_REMOTE_DEVICE_COMBO_BOX)
 				.requireSelection(MidiAutomatorProperties.VALUE_NULL);
 	}
 }

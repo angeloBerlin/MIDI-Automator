@@ -7,7 +7,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 
 import org.assertj.swing.data.TableCell;
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JTableFixture;
 import org.junit.Test;
 
@@ -53,14 +53,14 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set type to send keys
-			FrameFixture preferencesFrame = openPreferences();
-			setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
 
 			// key learn ALT + P
-			keyLearnAutomation(0, preferencesFrame);
-			pressAndReleaseKeysOnGUIAutomationTable(preferencesFrame, 18, 80);
-			submitKeyLearnAutomation(0, preferencesFrame);
-			saveDialog(preferencesFrame);
+			keyLearnAutomation(0, preferencesDialog);
+			pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog, 18, 80);
+			submitKeyLearnAutomation(0, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			// send midi trigger
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
@@ -68,7 +68,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(1000);
 
 			// check if preferences frame is visible
-			preferencesFrame.requireVisible();
+			preferencesDialog.requireVisible();
 
 		} catch (InterruptedException | InvalidMidiDataException
 				| MidiUnavailableException e) {
@@ -85,11 +85,11 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		startApplication();
 
 		// unlearn keys
-		FrameFixture preferencesFrame = openPreferences();
-		keyUnLearnAutomation(0, preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		keyUnLearnAutomation(0, preferencesDialog);
 
 		// check if keys were unlearned
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 		table.requireCellValue(TableCell.row(0).column(column), "");
@@ -104,16 +104,16 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		startApplication();
 
 		// set type to send keys
-		FrameFixture preferencesFrame = openPreferences();
-		setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesFrame);
+		DialogFixture preferencesDialog = openPreferences();
+		setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
 
 		// cancel key learn
-		keyLearnAutomation(0, preferencesFrame);
-		pressAndReleaseKeysOnGUIAutomationTable(preferencesFrame, 19, 81);
-		cancelKeyLearnAutomation(0, preferencesFrame);
+		keyLearnAutomation(0, preferencesDialog);
+		pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog, 19, 81);
+		cancelKeyLearnAutomation(0, preferencesDialog);
 
 		// check if learned keys are revoked
-		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 		int[] keyCodes = { 18, 80 };

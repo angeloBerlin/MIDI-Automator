@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
@@ -14,8 +14,8 @@ import org.junit.Test;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.MainFramePopupMenu;
-import com.midi_automator.view.frames.AddFrame;
-import com.midi_automator.view.frames.EditFrame;
+import com.midi_automator.view.frames.AddDialog;
+import com.midi_automator.view.frames.EditDialog;
 
 public class EditFileFunctionalITCase extends FunctionalBaseCase {
 
@@ -59,10 +59,10 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText("x");
-		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText("y");
-		cancelDialog(editFrame);
+		DialogFixture editDialog = openEditDialog(0);
+		editDialog.textBox(EditDialog.NAME_NAME_TEXT_FIELD).setText("x");
+		editDialog.textBox(EditDialog.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialog(editDialog);
 
 		assertEquals(getFileList().contents()[0], "1 Hello World");
 	}
@@ -74,10 +74,10 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText("x");
-		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText("y");
-		cancelDialogByEnter(editFrame);
+		DialogFixture editDialog = openEditDialog(0);
+		editDialog.textBox(EditDialog.NAME_NAME_TEXT_FIELD).setText("x");
+		editDialog.textBox(EditDialog.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialogByEnter(editDialog);
 
 		assertEquals(getFileList().contents()[0], "1 Hello World");
 	}
@@ -90,14 +90,14 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			startApplication();
 
-			FrameFixture editFrame = openEditDialog(0);
-			editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText(
+			DialogFixture editDialog = openEditDialog(0);
+			editDialog.textBox(EditDialog.NAME_NAME_TEXT_FIELD).setText(
 					"Hello World Edit");
-			editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
+			editDialog.textBox(EditDialog.NAME_FILE_TEXT_FIELD).setText(
 					currentPath + "/testfiles/Hello World edit.rtf");
-			editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
+			editDialog.textBox(EditDialog.NAME_PROGRAM_TEXT_FIELD).setText(
 					editedProgramPath);
-			saveDialog(editFrame);
+			saveDialog(editDialog);
 
 			assertEquals(getFileList().contents()[0], "1 Hello World Edit");
 
@@ -120,14 +120,14 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		editFrame.textBox(EditFrame.NAME_NAME_TEXT_FIELD).setText(
+		DialogFixture editDialog = openEditDialog(0);
+		editDialog.textBox(EditDialog.NAME_NAME_TEXT_FIELD).setText(
 				"Hello World Edit");
-		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).setText(
+		editDialog.textBox(EditDialog.NAME_FILE_TEXT_FIELD).setText(
 				currentPath + "/testfiles/Hello World edit.rtf");
-		editFrame.textBox(EditFrame.NAME_PROGRAM_TEXT_FIELD).setText(
+		editDialog.textBox(EditDialog.NAME_PROGRAM_TEXT_FIELD).setText(
 				editedProgramPath);
-		saveDialogByEnter(editFrame);
+		saveDialogByEnter(editDialog);
 
 		assertEquals(getFileList().contents()[0], "1 Hello World Edit");
 	}
@@ -139,9 +139,9 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		JFileChooserFixture fileChooser = openSearchDialog(editFrame,
-				AddFrame.NAME_FILE_SEARCH_BUTTON);
+		DialogFixture editDialog = openEditDialog(0);
+		JFileChooserFixture fileChooser = openSearchDialog(editDialog,
+				AddDialog.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + "/testfiles"));
 
@@ -154,7 +154,7 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 				+ "/testfiles/Hello World.rtf"));
 		fileChooser.approve();
 
-		editFrame.textBox(EditFrame.NAME_FILE_TEXT_FIELD).requireText(
+		editDialog.textBox(EditDialog.NAME_FILE_TEXT_FIELD).requireText(
 				currentPath + File.separator + "testfiles" + File.separator
 						+ "Hello World.rtf");
 	}
@@ -166,14 +166,14 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture editFrame = openEditDialog(0);
-		editFrame.label(EditFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL)
+		DialogFixture editDialog = openEditDialog(0);
+		editDialog.label(EditDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL)
 				.requireText("channel 16: CONTROL CHANGE 1 value: 127");
 
-		cancelDialog(editFrame);
+		cancelDialog(editDialog);
 
-		editFrame = openEditDialog(1);
-		editFrame.label(EditFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL)
+		editDialog = openEditDialog(1);
+		editDialog.label(EditDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL)
 				.requireText("channel 16: CONTROL CHANGE 2 value: 127");
 	}
 }

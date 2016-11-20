@@ -6,7 +6,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
@@ -42,9 +42,9 @@ public class MidiMetronomFunctionalITCase extends FunctionalBaseCase {
 			MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 			startApplication();
 
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiInMetronomDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiInMetronomDevice(deviceName, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,

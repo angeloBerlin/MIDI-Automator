@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.AddFrame;
+import com.midi_automator.view.frames.AddDialog;
 
 public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
@@ -43,9 +43,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_FILE_SEARCH_BUTTON);
+		DialogFixture addDialog = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_FILE_SEARCH_BUTTON);
 
 		// choose a file
 		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
@@ -56,17 +56,17 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.selectFile(rtfFile);
 		fileChooser.approve();
 
-		saveDialog(addFrame);
+		saveDialog(addDialog);
 
 		// re-select file
-		addFrame = openAddDialog();
-		fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_FILE_SEARCH_BUTTON);
+		addDialog = openAddDialog();
+		fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.selectFile(rtfFile);
 		fileChooser.approve();
 
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
 	@Test
@@ -76,9 +76,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+		DialogFixture addDialog = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_PROGRAM_SEARCH_BUTTON);
 
 		// choose a file
 		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
@@ -89,17 +89,17 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.selectFile(rtfFile);
 		fileChooser.approve();
 
-		saveDialog(addFrame);
+		saveDialog(addDialog);
 
 		// re-select file
-		addFrame = openAddDialog();
-		fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+		addDialog = openAddDialog();
+		fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_PROGRAM_SEARCH_BUTTON);
 
 		fileChooser.selectFile(rtfFile);
 		fileChooser.approve();
 
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
 	@Test
@@ -148,9 +148,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_FILE_SEARCH_BUTTON);
+		DialogFixture addDialog = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
 				+ "testfiles"));
@@ -159,7 +159,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		fileChooser.selectFile(new File(rtfPath));
 		fileChooser.approve();
 
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
 	@Test
@@ -169,9 +169,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialogOnEnter(addFrame,
-				AddFrame.NAME_FILE_SEARCH_BUTTON);
+		DialogFixture addDialog = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialogOnEnter(addDialog,
+				AddDialog.NAME_FILE_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(currentPath + File.separator
 				+ "testfiles"));
@@ -186,7 +186,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		fileChooser.selectFile(new File(rtfPath));
 		fileChooser.approve();
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).requireText(rtfPath);
 	}
 
 	@Test
@@ -196,9 +196,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		JFileChooserFixture fileChooser = openSearchDialog(addFrame,
-				AddFrame.NAME_PROGRAM_SEARCH_BUTTON);
+		DialogFixture addDialog = openAddDialog();
+		JFileChooserFixture fileChooser = openSearchDialog(addDialog,
+				AddDialog.NAME_PROGRAM_SEARCH_BUTTON);
 
 		fileChooser.setCurrentDirectory(new File(programDirectory));
 
@@ -211,7 +211,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		fileChooser.approve();
 
-		addFrame.textBox(AddFrame.NAME_PROGRAM_TEXT_FIELD).requireText(
+		addDialog.textBox(AddDialog.NAME_PROGRAM_TEXT_FIELD).requireText(
 				programPath);
 	}
 
@@ -222,10 +222,10 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText("x");
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText("y");
-		cancelDialog(addFrame);
+		DialogFixture addDialog = openAddDialog();
+		addDialog.textBox(AddDialog.NAME_NAME_TEXT_FIELD).setText("x");
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialog(addDialog);
 
 		assertEquals(getFileList().contents().length, 0);
 	}
@@ -237,10 +237,10 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD).setText("x");
-		addFrame.textBox(AddFrame.NAME_FILE_TEXT_FIELD).setText("y");
-		cancelDialogByEnter(addFrame);
+		DialogFixture addDialog = openAddDialog();
+		addDialog.textBox(AddDialog.NAME_NAME_TEXT_FIELD).setText("x");
+		addDialog.textBox(AddDialog.NAME_FILE_TEXT_FIELD).setText("y");
+		cancelDialogByEnter(addDialog);
 
 		assertEquals(getFileList().contents().length, 0);
 	}
@@ -252,8 +252,8 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		GUIAutomations.saveDialog(addFrame);
+		DialogFixture addDialog = openAddDialog();
+		GUIAutomations.saveDialog(addDialog);
 
 		assertEquals(getFileList().contents().length, 0);
 	}
@@ -279,40 +279,40 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
 
-		FrameFixture addFrame = openAddDialog();
-		String sendingSignature = addFrame.label(
-				AddFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
+		DialogFixture addDialog = openAddDialog();
+		String sendingSignature = addDialog.label(
+				AddDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
 
 		assertEquals(sendingSignature,
 				"channel 16: CONTROL CHANGE 1 value: 127");
 
-		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD)
-				.setText("Hello World 1");
-		saveDialog(addFrame);
-		addFrame = openAddDialog();
-		sendingSignature = addFrame.label(
-				AddFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
+		addDialog.textBox(AddDialog.NAME_NAME_TEXT_FIELD).setText(
+				"Hello World 1");
+		saveDialog(addDialog);
+		addDialog = openAddDialog();
+		sendingSignature = addDialog.label(
+				AddDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
 
 		assertEquals(sendingSignature,
 				"channel 16: CONTROL CHANGE 2 value: 127");
 
-		addFrame.textBox(AddFrame.NAME_NAME_TEXT_FIELD)
-				.setText("Hello World 2");
-		saveDialog(addFrame);
+		addDialog.textBox(AddDialog.NAME_NAME_TEXT_FIELD).setText(
+				"Hello World 2");
+		saveDialog(addDialog);
 
-		addFrame = openAddDialog();
-		sendingSignature = addFrame.label(
-				AddFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
+		addDialog = openAddDialog();
+		sendingSignature = addDialog.label(
+				AddDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
 
 		assertEquals(sendingSignature,
 				"channel 16: CONTROL CHANGE 3 value: 127");
 
-		cancelDialog(addFrame);
+		cancelDialog(addDialog);
 
 		deleteEntry(1);
-		addFrame = openAddDialog();
-		sendingSignature = addFrame.label(
-				AddFrame.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
+		addDialog = openAddDialog();
+		sendingSignature = addDialog.label(
+				AddDialog.NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL).text();
 		assertEquals(sendingSignature,
 				"channel 16: CONTROL CHANGE 2 value: 127");
 	}

@@ -6,7 +6,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 
-import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
@@ -115,9 +115,9 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			// set midi in device
-			FrameFixture preferencesFrame = openPreferences();
-			setMidiInRemoteDevice(deviceName, preferencesFrame);
-			saveDialog(preferencesFrame);
+			DialogFixture preferencesDialog = openPreferences();
+			setMidiInRemoteDevice(deviceName, preferencesDialog);
+			saveDialog(preferencesDialog);
 
 			midiLearnListEntry(0);
 			Thread.sleep(1000);
