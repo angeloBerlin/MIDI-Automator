@@ -400,12 +400,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Puts the frame to normal mode.
 	 */
-	public void midiLearnOff() {
-
-		// set all frames to midi learn off
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.midiLearnOff();
-		}
+	private void learnOff() {
 
 		// enable inputs
 		GUIUtils.disEnableAllInputs(this, true);
@@ -424,17 +419,38 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Puts the frame to midi learn mode
+	 * Puts the frame to normal mode.
+	 */
+	public void midiLearnOff() {
+
+		// set all frames to midi learn off
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
+			preferencesFrame.midiLearnOff();
+		}
+		System.out.println(preferencesFrame.guiAutomationConfigurationPanel
+				.getName());
+		learnOff();
+	}
+
+	/**
+	 * Puts the frame to normal mode.
+	 */
+	public void keyLearnOff() {
+
+		// set all frames to midi learn off
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
+			preferencesFrame.keyLearnOff();
+		}
+
+		learnOff();
+	}
+
+	/**
+	 * Puts the GUI to the learning mode
 	 * 
 	 * @param learningComponent
-	 *            The component to learn for
 	 */
-	public void midiLearnOn(JComponent learningComponent) {
-
-		// set all frames to midi learn on
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.midiLearnOn(learningComponent);
-		}
+	private void learnOn(JComponent learningComponent) {
 
 		// disable inputs
 		GUIUtils.disEnableAllInputs(this, false);
@@ -448,16 +464,13 @@ public class MainFrame extends JFrame {
 			}
 		}
 
-		// change menu item text
-		popupMenu.midiLearnOn();
-
 		// highlight component
 		if (learningComponent.getName() != null) {
 			if (learningComponent.getName().equals(NAME_FILE_LIST)) {
 
 				GUIUtils.deHighlightListItem(fileList, true);
 
-				log.info("Learning midi for index: "
+				log.info("Learning for index: "
 						+ (fileList.getSelectedIndex() + 1));
 
 			} else {
@@ -466,11 +479,46 @@ public class MainFrame extends JFrame {
 						|| learningComponent.getName().equals(NAME_NEXT_BUTTON)) {
 					GUIUtils.deHighlightComponent(learningComponent, true);
 
-					log.info("Learning midi for button: "
+					log.info("Learning for button: "
 							+ learningComponent.getName());
 				}
 			}
 		}
+	}
+
+	/**
+	 * Puts the frame to midi learn mode
+	 * 
+	 * @param learningComponent
+	 *            The component to learn for
+	 */
+	public void midiLearnOn(JComponent learningComponent) {
+
+		// set all frames to midi learn on
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
+			preferencesFrame.midiLearnOn(learningComponent);
+		}
+
+		learnOn(learningComponent);
+
+		// change menu item text
+		popupMenu.midiLearnOn();
+
+	}
+
+	/**
+	 * Puts the frame to key learn mode
+	 * 
+	 * @param learningComponent
+	 *            The component to learn for
+	 */
+	public void keyLearnOn(JComponent learningComponent) {
+
+		if (preferencesFrame != null && preferencesFrame.isVisible()) {
+			preferencesFrame.keyLearnOn(learningComponent);
+		}
+
+		learnOn(learningComponent);
 	}
 
 	/**
@@ -766,19 +814,6 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Sets a learned midi signature for the selected GUI automation.
-	 * 
-	 * @param signature
-	 *            The signature
-	 */
-	public void setGUIAutomationTriggerMidiSignature(String signature) {
-
-		if (preferencesFrame != null && preferencesFrame.isVisible()) {
-			preferencesFrame.setAutomationMidiSignature(signature);
-		}
-	}
-
-	/**
 	 * Opens the previous file from the file list.
 	 * 
 	 * @author aguelle
@@ -858,9 +893,9 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			presenter.close();
-			
+
 			// Find the active frame before creating and dispatching the event
 			for (Frame frame : Frame.getFrames()) {
 				if (frame.isActive()) {
@@ -967,6 +1002,8 @@ public class MainFrame extends JFrame {
 					PreferencesFrame.class);
 			preferencesFrame.setLocation(getLocationOnScreen());
 			preferencesFrame.init();
+			System.out.println(preferencesFrame.guiAutomationConfigurationPanel
+					.getName());
 		}
 	}
 

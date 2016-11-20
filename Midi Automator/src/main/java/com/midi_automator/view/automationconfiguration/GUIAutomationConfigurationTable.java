@@ -2,8 +2,10 @@ package com.midi_automator.view.automationconfiguration;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -33,9 +35,12 @@ import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
+import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
+import com.midi_automator.view.KeyLearnListener;
+import com.midi_automator.view.KeyLearnPopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
 
@@ -55,10 +60,11 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	private final int COLWIDTH_IMAGE = 100;
 	private final int COLWIDTH_TYPE = 110;
+	private final int COLWIDTH_KEY = 80;
 	private final int COLWIDTH_TRIGGER = 220;
 	private final int COLWIDTH_MIN_DELAY = 80;
 	private final int COLWIDTH_TIMEOUT = 80;
-	private final int COLWIDTH_MIDI_MESSAGE = 300;
+	private final int COLWIDTH_MIDI_MESSAGE = 150;
 	private final int COLWIDTH_SCAN_RATE = 80;
 	private final int COLWIDTH_MOVABLE = 60;
 	private final int COLWIDTH_SCREENSHOT_SEARCH = 120;
@@ -66,14 +72,15 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int TABLEHEIGHT = 140;
 	private final int ROWHEIGHT = 40;
 	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
-			+ COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY + COLWIDTH_TIMEOUT
-			+ COLWIDTH_MIDI_MESSAGE + COLWIDTH_SCAN_RATE + COLWIDTH_MOVABLE
-			+ COLWIDTH_SCREENSHOT_SEARCH;
+			+ COLWIDTH_KEY + COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY
+			+ COLWIDTH_TIMEOUT + COLWIDTH_MIDI_MESSAGE + COLWIDTH_SCAN_RATE
+			+ COLWIDTH_MOVABLE + COLWIDTH_SCREENSHOT_SEARCH;
 
 	private final String LABEL_SEARCHBUTTON = "Screenshot...";
 
 	public static final String COLNAME_IMAGE = "Screenshot";
 	public static final String COLNAME_TYPE = "Type";
+	public static final String COLNAME_KEYS = "Keys";
 	public static final String COLNAME_TRIGGER = "Trigger";
 	public static final String COLNAME_MIN_DELAY = "Delay (ms)";
 	public static final String COLNAME_TIMEOUT = "Timeout (ms)";
@@ -85,14 +92,17 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final String DEFAULT_TYPE = GUIAutomation.CLICKTYPE_LEFT;
 	private final String DEFAULT_TRIGGER = GUIAutomation.CLICKTRIGGER_ALWAYS;
 	private final String DEFAULT_MIDI_MESSAGE = "";
+	private static final String DEFAULT_KEYS = "";
 	private final Long MIN_DELAY_STEP_SIZE = 1L;
 	private final Long TIMEOUT_STEP_SIZE = 1L;
 	private final Float SCAN_RATE_STEP_SIZE = 0.1f;
 
 	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
+	private final String NAME_MENU_ITEM_KEY_LEARN = "GUIAutomationConfigurationTable key learn";
 	private final String NAME_COMBOBOX_TRIGGER_EDITOR = "COMBOBOX_TRIGGER_EDITOR";
 
 	public static final String NAME = "GUI automation table";
+	public static final String KEYS_DELIMITER = "+";
 
 	private DefaultTableModel tableModel = new ConfigurationTableModel();
 	private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -101,7 +111,14 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	@Autowired
 	@Qualifier("midiLearnPopupMenu")
-	private MidiLearnPopupMenu popupMenu;
+	private MidiLearnPopupMenu midiLearnPopupMenu;
+
+	@Autowired
+	@Qualifier("keyLearnPopupMenu")
+	private KeyLearnPopupMenu keyLearnPopupMenu;
+
+	@Autowired
+	private KeyLearnListener keyLearnListener;
 
 	@Autowired
 	private Presenter presenter;
@@ -130,6 +147,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		columnNames.add(COLNAME_IMAGE);
 		columnNames.add(COLNAME_TYPE);
+		columnNames.add(COLNAME_KEYS);
 		columnNames.add(COLNAME_TRIGGER);
 		columnNames.add(COLNAME_MIN_DELAY);
 		columnNames.add(COLNAME_TIMEOUT);
@@ -143,6 +161,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		createImageColumn();
 		createTypeColumn();
+		createKeysColumn();
 		createTriggerColumn();
 		createMinDelayColumn();
 		createTimeoutColumn();
@@ -156,8 +175,13 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		// popup Menu
 		addMouseListener(new PopupListener());
-		popupMenu.init();
-		popupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
+		midiLearnPopupMenu.init();
+		midiLearnPopupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
+		keyLearnPopupMenu.init();
+		keyLearnPopupMenu.setName(NAME_MENU_ITEM_KEY_LEARN);
+
+		// key learn listener
+		GUIUtils.addKeyListenerToComponent(keyLearnListener, this);
 
 		grabFocus();
 	}
@@ -177,9 +201,11 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		getColumn(COLNAME_TYPE).setMinWidth(COLWIDTH_TYPE);
 
 		// set values
-		String[] clickTypes = { GUIAutomation.CLICKTYPE_LEFT, //
+		String[] clickTypes = { //
+		GUIAutomation.CLICKTYPE_LEFT, //
 				GUIAutomation.CLICKTYPE_RIGHT, //
-				GUIAutomation.CLICKTYPE_DOUBLE };
+				GUIAutomation.CLICKTYPE_DOUBLE, //
+				GUIAutomation.TYPE_SENDKEY };
 
 		TableCellRenderer clickTypeComboBoxRenderer = new JTableComboBoxRenderer(
 				clickTypes);
@@ -188,6 +214,43 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		getColumn(COLNAME_TYPE).setCellRenderer(clickTypeComboBoxRenderer);
 		getColumn(COLNAME_TYPE).setCellEditor(clickTypeComboBoxEditor);
+	}
+
+	/**
+	 * Creates the keys column with a text box
+	 */
+	private void createKeysColumn() {
+
+		getColumn(COLNAME_KEYS).setMinWidth(COLWIDTH_KEY);
+
+		TableCellRenderer keysRenderer = new JTableKeyTextRenderer();
+		getColumn(COLNAME_KEYS).setCellRenderer(keysRenderer);
+	}
+
+	/**
+	 * Gets the keys of the selected row
+	 * 
+	 * @return The String of the keys
+	 */
+	public String getKeysOfSelectedRow() {
+		int row = getSelectedRow();
+		int col = getColumn(GUIAutomationConfigurationTable.COLNAME_KEYS)
+				.getModelIndex();
+		String keys = (String) getModel().getValueAt(row, col);
+		return keys;
+	}
+
+	/**
+	 * Sets the keys for the selected row
+	 * 
+	 * @param keys
+	 *            The String of the keys
+	 */
+	public void setKeysOfSelectedRow(String keys) {
+		int row = getSelectedRow();
+		int col = getColumn(GUIAutomationConfigurationTable.COLNAME_KEYS)
+				.getModelIndex();
+		getModel().setValueAt(keys, row, col);
 	}
 
 	/**
@@ -361,6 +424,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The type of automation, <NULL> for default type
 	 * @param trigger
 	 *            The trigger for the automation, <NULL> for default trigger
+	 * @param keyCodes
+	 *            The keys send from the automation, <NULL> for default key
 	 * @param minDelay
 	 *            The minimum delay for the automation, <NULL> for default
 	 *            trigger
@@ -374,9 +439,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            <TRUE> if image may occur on different places on the screen,
 	 *            <FALSE> is not
 	 */
-	private void addAutomation(String imagePath, String type, String trigger,
-			long minDelay, long timeout, String midiSignature, float scanRate,
-			boolean isMovable) {
+	private void addAutomation(String imagePath, String type, int[] keyCodes,
+			String trigger, long minDelay, long timeout, String midiSignature,
+			float scanRate, boolean isMovable) {
 
 		// extend table model
 		Vector<Object> rowData = new Vector<Object>();
@@ -385,6 +450,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(getColumn(COLNAME_IMAGE).getModelIndex(),
 				initScreenshotIcon(imagePath));
 		rowData.add(getColumn(COLNAME_TYPE).getModelIndex(), initType(type));
+		rowData.add(getColumn(COLNAME_KEYS).getModelIndex(), initKeys(keyCodes));
 		rowData.add(getColumn(COLNAME_TRIGGER).getModelIndex(),
 				initTrigger(trigger));
 		rowData.add(getColumn(COLNAME_MIN_DELAY).getModelIndex(), minDelay);
@@ -422,6 +488,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The path to the click image, <NULL> for empty screenshot
 	 * @param type
 	 *            The type of automation, <NULL> for default type
+	 * @param keyCodes
+	 *            The keys send from the automation, <NULL> for default key
 	 * @param trigger
 	 *            The trigger for the automation, <NULL> for default trigger
 	 * @param minDelay
@@ -438,20 +506,22 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param row
 	 *            The row of the automation, if < 0 a new row will be added
 	 */
-	public void setAutomation(String imagePath, String type, String trigger,
-			long minDelay, long timeout, String midiSignature, float scanRate,
-			boolean isMovable, int row) {
+	public void setAutomation(String imagePath, String type, int[] keyCodes,
+			String trigger, long minDelay, long timeout, String midiSignature,
+			float scanRate, boolean isMovable, int row) {
 
 		TableModel model = getModel();
 
 		if (model.getRowCount() <= row || row < 0) {
-			addAutomation(imagePath, type, trigger, minDelay, timeout,
-					midiSignature, scanRate, isMovable);
+			addAutomation(imagePath, type, keyCodes, trigger, minDelay,
+					timeout, midiSignature, scanRate, isMovable);
 		} else {
 
 			model.setValueAt(initScreenshotIcon(imagePath), row,
 					getColumn(COLNAME_IMAGE).getModelIndex());
 			model.setValueAt(initType(type), row, getColumn(COLNAME_TYPE)
+					.getModelIndex());
+			model.setValueAt(initKeys(keyCodes), row, getColumn(COLNAME_KEYS)
 					.getModelIndex());
 			model.setValueAt(initTrigger(trigger), row,
 					getColumn(COLNAME_TRIGGER).getModelIndex());
@@ -480,13 +550,12 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		}
 	}
 
-	/**
-	 * Gets the popup menu
-	 * 
-	 * @return The popup menu
-	 */
-	public MidiLearnPopupMenu getPopupMenu() {
-		return popupMenu;
+	public MidiLearnPopupMenu getMidiLearnPopupMenu() {
+		return midiLearnPopupMenu;
+	}
+
+	public KeyLearnPopupMenu getKeyLearnPopupMenu() {
+		return keyLearnPopupMenu;
 	}
 
 	/**
@@ -495,7 +564,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param signature
 	 *            The midi message
 	 * @param row
-	 *            The row of the autoamtion
+	 *            The row of the automation
 	 * @throws AutomationIndexDoesNotExistException
 	 */
 	public void setMidiSignature(String signature, int row)
@@ -513,12 +582,61 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	}
 
 	/**
-	 * Initializes a scaleable image icon for the screenshot.
+	 * Adds a key code for a GUI automation
+	 * 
+	 * @param keyCode
+	 *            The key code
+	 * @param row
+	 *            The row of the automation
+	 * @throws AutomationIndexDoesNotExistException
+	 */
+	public void addKeyCode(int keyCode, int row)
+			throws AutomationIndexDoesNotExistException {
+
+		DefaultTableModel model = (DefaultTableModel) getModel();
+
+		try {
+			String keys = (String) model.getValueAt(row,
+					getColumn(COLNAME_KEYS).getModelIndex());
+
+			if (keys.equals("")) {
+				keys = keys + keyCode;
+			} else {
+				keys = keys + KEYS_DELIMITER + keyCode;
+			}
+
+			model.setValueAt(keys, row, getColumn(COLNAME_KEYS).getModelIndex());
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new AutomationIndexDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Deletes the key for an automation
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @throws AutomationIndexDoesNotExistException
+	 */
+	public void deleteKeys(int row) throws AutomationIndexDoesNotExistException {
+
+		DefaultTableModel model = (DefaultTableModel) getModel();
+
+		try {
+			model.setValueAt(DEFAULT_KEYS, row, getColumn(COLNAME_KEYS)
+					.getModelIndex());
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new AutomationIndexDoesNotExistException();
+		}
+	}
+
+	/**
+	 * Initializes a scalable image icon for the screenshot.
 	 * 
 	 * @param path
 	 *            The path to the image, if <NULL> an empty icon will be
 	 *            returned
-	 * @return A scaleable image icon
+	 * @return A scalable image icon
 	 */
 	private ScaleableImageIcon initScreenshotIcon(String path) {
 
@@ -566,6 +684,31 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	}
 
 	/**
+	 * Initializes the keys signature.
+	 * 
+	 * @param keyCodes
+	 *            The key codes, if <NULL> the default value will be returned.
+	 * @return The initialized trigger
+	 */
+	private String initKeys(int[] keyCodes) {
+
+		String keys = "";
+
+		if (keyCodes != null) {
+			for (int i = 0; i < keyCodes.length; i++) {
+				keys = keys + keyCodes[i];
+
+				if (i != keyCodes.length - 1) {
+					keys = keys
+							+ GUIAutomationConfigurationTable.KEYS_DELIMITER;
+				}
+			}
+		}
+
+		return keys;
+	}
+
+	/**
 	 * Initializes a midi signature.
 	 * 
 	 * @param message
@@ -580,6 +723,32 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		} else {
 			return message;
 		}
+	}
+
+	/**
+	 * Transforms an array of key codes to a representable String
+	 * 
+	 * @param keyCodes
+	 *            The array of key codes
+	 * @return The String representation
+	 */
+	public static String keyCodesToString(int[] keyCodes) {
+
+		String keyCodesString = "";
+
+		if (keyCodes == null) {
+			return "";
+		}
+
+		for (int i = 0; i < keyCodes.length; i++) {
+			keyCodesString = keyCodesString + KeyEvent.getKeyText(keyCodes[i]);
+
+			if (i < keyCodes.length - 1) {
+				keyCodesString = keyCodesString + KEYS_DELIMITER;
+			}
+		}
+
+		return keyCodesString;
 	}
 
 	/**
@@ -677,33 +846,96 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 				table.changeSelection(row, column, false, false);
 			}
 
+			if (column == getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex()) {
+				openMidiLearnPopupMenu(table, e.getX(), e.getY());
+			}
+
+			if (column == getColumn(COLNAME_KEYS).getModelIndex()) {
+				openKeyLearnPopupMenu(table, e.getX(), e.getY());
+			}
+		}
+
+		/**
+		 * Opens the key learn popup menu
+		 * 
+		 * @param table
+		 *            The gui automation table
+		 * @param x
+		 *            The x coordinate of the menu
+		 * @param y
+		 *            The y coordinate of the menu
+		 */
+		private void openKeyLearnPopupMenu(JTable table, int x, int y) {
+
+			int row = table.rowAtPoint(new Point(x, y));
+
+			// de-/activate key learn item
+			String automationType = (String) table.getValueAt(row,
+					getColumn(COLNAME_TYPE).getModelIndex());
+
+			keyLearnPopupMenu.getKeyLearnMenuItem().setEnabled(false);
+
+			if (automationType.equals(GUIAutomation.TYPE_SENDKEY)) {
+				keyLearnPopupMenu.getKeyLearnMenuItem().setEnabled(true);
+			}
+
+			// de-/activate key unlearn item
+			String keySignature = (String) table.getModel().getValueAt(row,
+					getColumn(COLNAME_KEYS).getModelIndex());
+
+			keyLearnPopupMenu.getKeyUnlearnMenuItem().setEnabled(false);
+
+			if (keySignature != null) {
+				if (!keySignature.equals("")) {
+					keyLearnPopupMenu.getKeyUnlearnMenuItem().setEnabled(true);
+				}
+			}
+
+			keyLearnPopupMenu.show(table, x, y);
+		}
+
+		/**
+		 * Opens the Midi learn popup menu
+		 * 
+		 * @param table
+		 *            The gui automation table
+		 * @param x
+		 *            The x coordinate of the menu
+		 * @param y
+		 *            The y coordinate of the menu
+		 */
+		private void openMidiLearnPopupMenu(JTable table, int x, int y) {
+
+			int row = table.rowAtPoint(new Point(x, y));
+
 			// de-/activate midi learn item
 			String midiInAutomationDeviceName = (String) table.getValueAt(row,
 					getColumn(COLNAME_TRIGGER).getModelIndex());
 
-			popupMenu.getMidiLearnMenuItem().setEnabled(false);
+			midiLearnPopupMenu.getMidiLearnMenuItem().setEnabled(false);
 
 			if (midiInAutomationDeviceName != null
 					&& !midiInAutomationDeviceName
 							.equals(MidiAutomatorProperties.VALUE_NULL)
 					&& midiInAutomationDeviceName
 							.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
-				popupMenu.getMidiLearnMenuItem().setEnabled(true);
+				midiLearnPopupMenu.getMidiLearnMenuItem().setEnabled(true);
 			}
 
 			// de-/activate midi unlearn item
 			String midiSignature = (String) table.getModel().getValueAt(row,
 					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
 
-			popupMenu.getMidiUnlearnMenuItem().setEnabled(false);
+			midiLearnPopupMenu.getMidiUnlearnMenuItem().setEnabled(false);
 
 			if (midiSignature != null) {
 				if (!midiSignature.equals("")) {
-					popupMenu.getMidiUnlearnMenuItem().setEnabled(true);
+					midiLearnPopupMenu.getMidiUnlearnMenuItem()
+							.setEnabled(true);
 				}
 			}
 
-			popupMenu.show(e.getComponent(), e.getX(), e.getY());
+			midiLearnPopupMenu.show(table, x, y);
 		}
 	}
 

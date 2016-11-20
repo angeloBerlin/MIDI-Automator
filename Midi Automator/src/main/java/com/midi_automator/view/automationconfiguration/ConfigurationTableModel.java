@@ -14,6 +14,15 @@ public class ConfigurationTableModel extends DefaultTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return column != findColumn(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+
+		if (column == findColumn(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE)) {
+			return false;
+		}
+
+		if (column == findColumn(GUIAutomationConfigurationTable.COLNAME_KEYS)) {
+			return false;
+		}
+
+		return true;
 	}
 }

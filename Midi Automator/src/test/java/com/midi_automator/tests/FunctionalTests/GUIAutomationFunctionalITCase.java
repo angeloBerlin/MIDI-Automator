@@ -419,7 +419,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 			startApplication();
 
-			// set trigger to once right click
+			// set type to once right click
 			FrameFixture preferencesFrame = openPreferences();
 			setAutomationType(GUIAutomation.CLICKTYPE_RIGHT, 0,
 					preferencesFrame);

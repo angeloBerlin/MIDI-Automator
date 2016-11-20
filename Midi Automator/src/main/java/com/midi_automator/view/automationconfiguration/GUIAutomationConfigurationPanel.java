@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,6 +22,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
+import com.midi_automator.utils.CommonUtils;
+import com.midi_automator.view.KeyLearnPopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
 
@@ -102,12 +105,21 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	}
 
 	/**
-	 * Gets the popup menu
+	 * Gets the midi learn popup menu
 	 * 
-	 * @return The popup menu
+	 * @return The midi learn popup menu
 	 */
-	public MidiLearnPopupMenu getPopupMenu() {
-		return configurationTable.getPopupMenu();
+	public MidiLearnPopupMenu getMidiLearnPopupMenu() {
+		return configurationTable.getMidiLearnPopupMenu();
+	}
+
+	/**
+	 * Gets the key learn popup menu
+	 * 
+	 * @return The key learn popup menu
+	 */
+	public KeyLearnPopupMenu getKeyLearnPopupMenu() {
+		return configurationTable.getKeyLearnPopupMenu();
 	}
 
 	/**
@@ -142,9 +154,9 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	}
 
 	/**
-	 * Gets all GUI automations
+	 * Gets all GUI automation
 	 * 
-	 * @return An array with all GUI automations
+	 * @return An array with all GUI automation
 	 */
 	public GUIAutomation[] getGUIAutomations() {
 
@@ -162,6 +174,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 			String imagePath = getAutomationImagePath(row);
 			String type = getAutomationType(row);
+			int[] keyCodes = getAutomationKeyCodes(row);
 			String trigger = getAutomationTrigger(row);
 			long delay = getAutomationMinDelay(row);
 			long timeout = getAutomationTimeout(row);
@@ -170,7 +183,8 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			boolean isMovable = getAutomationMovable(row);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
-					trigger, delay, timeout, midiSignature, scanRate, isMovable);
+					trigger, delay, timeout, midiSignature, scanRate,
+					isMovable, keyCodes);
 			guiAutomations[row] = guiAutomation;
 		}
 
@@ -209,6 +223,32 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		return getAutomationsTableValue(
 				GUIAutomationConfigurationTable.COLNAME_TYPE, row, String.class);
+	}
+
+	/**
+	 * Gets the key codes for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation key codes, <NULL> if there are no key codes
+	 */
+	private int[] getAutomationKeyCodes(int row) {
+
+		String keyCodesString = getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_KEYS, row, String.class);
+
+		if (keyCodesString == null) {
+			return null;
+		}
+		if (keyCodesString.equals("")) {
+			return null;
+		}
+
+		String[] keyCodeStrings = keyCodesString.split(Pattern
+				.quote(GUIAutomationConfigurationTable.KEYS_DELIMITER));
+		int[] keyCodes = CommonUtils.stringArrayToIntArray(keyCodeStrings);
+		return keyCodes;
+
 	}
 
 	/**
@@ -368,7 +408,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			configurationTable.setAutomation(null, null, null,
+			configurationTable.setAutomation(null, null, null, null,
 					GUIAutomation.DEFAULT_MIN_DELAY,
 					GUIAutomation.DEFAULT_TIMEOUT, null,
 					GUIAutomation.DEFAULT_SCAN_RATE,

@@ -3,6 +3,7 @@ package com.midi_automator.utils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -210,6 +211,25 @@ public class GUIUtils {
 			table.setSelectionBackground(highlightedColor);
 		} else {
 			table.setSelectionBackground(defaultColor);
+		}
+	}
+
+	/**
+	 * Adds a key listener to a Container and all its Components
+	 * 
+	 * @param listener
+	 *            The key listener
+	 * @param container
+	 *            The container
+	 */
+	public static void addKeyListenerToComponent(KeyListener listener,
+			Container container) {
+
+		container.addKeyListener(listener);
+		List<Component> components = getAllComponents(container);
+
+		for (Component component : components) {
+			component.addKeyListener(listener);
 		}
 	}
 

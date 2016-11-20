@@ -5,6 +5,7 @@ import org.sikuli.script.Region;
 
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
+import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
 /**
  * Represents a GUI automation.
@@ -21,6 +22,7 @@ public class GUIAutomation implements IDeActivateable {
 	public static final String CLICKTYPE_LEFT = "left click";
 	public static final String CLICKTYPE_RIGHT = "right click";
 	public static final String CLICKTYPE_DOUBLE = "double click";
+	public static final String TYPE_SENDKEY = "send key";
 
 	public static final String CLICKTRIGGER_ALWAYS = "always";
 	public static final String CLICKTRIGGER_ONCE_PER_CHANGE = "once per opening";
@@ -47,6 +49,7 @@ public class GUIAutomation implements IDeActivateable {
 
 	private String imagePath;
 	private String type;
+	private int[] keyCodes;
 	private String trigger;
 	private String midiSignature;
 	private boolean active;
@@ -83,10 +86,12 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The scan rate for the image recognition
 	 * @param isMovable
 	 *            Flag if the image is movable
+	 * @param key
+	 *            The key to press
 	 */
 	public GUIAutomation(String imagePath, String type, String trigger,
 			long delay, long timeout, String midiSignature, float scanRate,
-			boolean isMovable) {
+			boolean isMovable, int[] keyCodes) {
 		new GUIAutomation();
 		setImagePath(imagePath);
 		setType(type);
@@ -96,6 +101,7 @@ public class GUIAutomation implements IDeActivateable {
 		setMidiSignature(midiSignature);
 		setScanRate(scanRate);
 		setMovable(isMovable);
+		setKeyCodes(keyCodes);
 	}
 
 	/**
@@ -247,9 +253,11 @@ public class GUIAutomation implements IDeActivateable {
 
 	@Override
 	public String toString() {
+
 		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
-				+ "\" TYPE: " + type + " TRIGGER: " + trigger + " MIDI: "
-				+ midiSignature;
+				+ "\" TYPE: " + type + "KEYS: "
+				+ GUIAutomationConfigurationTable.keyCodesToString(keyCodes)
+				+ " TRIGGER: " + trigger + " MIDI: " + midiSignature;
 	}
 
 	public boolean isMovable() {
@@ -276,4 +284,11 @@ public class GUIAutomation implements IDeActivateable {
 		this.scanRate = scanRate;
 	}
 
+	public int[] getKeyCodes() {
+		return keyCodes;
+	}
+
+	public void setKeyCodes(int[] keyCodes) {
+		this.keyCodes = keyCodes;
+	}
 }

@@ -17,6 +17,7 @@ import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.presenter.Presenter;
+import com.midi_automator.utils.CommonUtils;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -60,6 +61,7 @@ public class GUIAutomationsService {
 
 		loadAutomationImageProperties();
 		loadAutomationTypeProperties();
+		loadAutomationKeyCodesProperties();
 		loadAutomationTriggerProperties();
 		loadAutomationMinDelayProperties();
 		loadAutomationTimeoutProperties();
@@ -93,6 +95,30 @@ public class GUIAutomationsService {
 			}
 		};
 		worker.execute();
+	}
+
+	/**
+	 * Loads all key codes.
+	 */
+	private void loadAutomationKeyCodesProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_KEY_CODES.toString());
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			String keyCodesString = (String) property.getValue();
+
+			if (keyCodesString.equals(MidiAutomatorProperties.VALUE_NULL)) {
+				keyCodesString = null;
+			} else {
+				int[] keyCodes = CommonUtils
+						.stringArrayToIntArray(keyCodesString
+								.split(MidiAutomatorProperties.KEY_CODES_DELIMITER));
+				guiAutomations[index].setKeyCodes(keyCodes);
+			}
+		}
 	}
 
 	/**
@@ -325,6 +351,18 @@ public class GUIAutomationsService {
 			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_TYPE.toString(), index,
 					guiAutomations[index].getType());
+
+			String keyCodesString = CommonUtils.intArrayToString(
+					guiAutomations[index].getKeyCodes(),
+					MidiAutomatorProperties.KEY_CODES_DELIMITER);
+
+			if (keyCodesString == null) {
+				keyCodesString = MidiAutomatorProperties.VALUE_NULL;
+			}
+
+			saveAutomationProperty(
+					GUIAutomationKey.GUI_AUTOMATION_KEY_CODES.toString(),
+					index, keyCodesString);
 
 			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_TRIGGER.toString(), index,

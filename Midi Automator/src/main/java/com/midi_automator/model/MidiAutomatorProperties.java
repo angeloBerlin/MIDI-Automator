@@ -51,10 +51,12 @@ public class MidiAutomatorProperties extends Properties {
 
 	public static final String INDEX_SEPARATOR = "_";
 	public static final String VALUE_NULL = "-none-";
+	public static final String KEY_CODES_DELIMITER = " ";
 
 	public enum GUIAutomationKey {
 		GUI_AUTOMATION_IMAGE, //
 		GUI_AUTOMATION_TYPE, //
+		GUI_AUTOMATION_KEY_CODES, //
 		GUI_AUTOMATION_TRIGGER, //
 		GUI_AUTOMATION_MIN_DELAY, //
 		GUI_AUTOMATION_TIMEOUT, //

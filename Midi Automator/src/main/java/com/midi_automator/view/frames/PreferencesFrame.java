@@ -35,7 +35,6 @@ import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.HTMLLabel;
 import com.midi_automator.view.automationconfiguration.AutomationIndexDoesNotExistException;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
@@ -63,7 +62,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	private final String LABEL_MIDI_IN_METRONOM_DEVICES = "Midi Metronom IN:";
 	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16 NOTE ON A4<br/>"
 			+ "Other clicks: ch 16 NOTE ON E4";
-	private final String LABEL_GUI_AUTOMATION = "Mouse Automation:";
+	private final String LABEL_GUI_AUTOMATION = "Automation:";
 	private final String BUTTON_SEND_NOTIFIER = "Send...";
 
 	public static final String NAME = "preferences frame";
@@ -91,7 +90,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
 
-	private GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
+	public GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
 
 	private JButton buttonSendNotify;
 
@@ -170,6 +169,8 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 		// action on close
 		addWindowListener(new WindowCloseListener());
+
+		System.out.println(this.guiAutomationConfigurationPanel.getName());
 	}
 
 	/**
@@ -422,6 +423,40 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	}
 
 	/**
+	 * Adds a learned key code for the selected GUI automation
+	 * 
+	 * @param keyCode
+	 *            The key code
+	 */
+	public void addKeyCodeToSelectedAutomation(int keyCode) {
+
+		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
+				.getGUIAutomationsTable();
+		try {
+			table.addKeyCode(keyCode, table.getSelectedRow());
+		} catch (AutomationIndexDoesNotExistException e) {
+			log.error("The automation for the key does not exist", e);
+		}
+	}
+
+	/**
+	 * Deletes a learned key code for the selected GUI automation
+	 * 
+	 * @param keyCode
+	 *            The key code
+	 */
+	public void deleteKeyCodeFromSelectedAutomation() {
+
+		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
+				.getGUIAutomationsTable();
+		try {
+			table.deleteKeys(table.getSelectedRow());
+		} catch (AutomationIndexDoesNotExistException e) {
+			log.error("The automation of the key does not exist", e);
+		}
+	}
+
+	/**
 	 * Reloads the data of the frame
 	 */
 	public void reload() {
@@ -481,6 +516,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 			for (int i = 0; i < guiAutomations.length; i++) {
 				table.setAutomation(guiAutomations[i].getImagePath(),
 						guiAutomations[i].getType(),
+						guiAutomations[i].getKeyCodes(),
 						guiAutomations[i].getTrigger(),
 						guiAutomations[i].getMinDelay(),
 						guiAutomations[i].getTimeout(),
@@ -493,18 +529,18 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	}
 
 	/**
-	 * Puts the frame to midi learn mode
+	 * Puts the frame to learn mode
 	 * 
 	 * @param learningComponent
 	 *            The component to learn for
 	 */
-	public void midiLearnOn(JComponent learningComponent) {
+	private void learnOn(JComponent learningComponent) {
 
 		// disable inputs
-		GUIUtils.disEnableAllInputs(this, false);
+		GUIUtils.disEnableAllInputs(this, false,
+				GUIAutomationConfigurationTable.NAME);
 
-		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOn();
-		CacheableJTable table = guiAutomationConfigurationPanel
+		GUIAutomationConfigurationTable table = guiAutomationConfigurationPanel
 				.getGUIAutomationsTable();
 
 		if (learningComponent.getName() != null) {
@@ -513,7 +549,7 @@ public class PreferencesFrame extends AbstractBasicDialog {
 
 				GUIUtils.deHighlightTableRow(table, true);
 
-				log.info("Learning midi for automation index: "
+				log.info("Learning for automation index: "
 						+ table.getSelectedRow());
 
 			}
@@ -521,18 +557,63 @@ public class PreferencesFrame extends AbstractBasicDialog {
 	}
 
 	/**
+	 * Puts the frame to midi learn mode
+	 * 
+	 * @param learningComponent
+	 *            The component to learn for
+	 */
+	public void midiLearnOn(JComponent learningComponent) {
+
+		learnOn(learningComponent);
+		guiAutomationConfigurationPanel.getMidiLearnPopupMenu().midiLearnOn();
+
+	}
+
+	/**
+	 * Puts the frame to key learn mode
+	 * 
+	 * @param learningComponent
+	 *            The component to learn for
+	 */
+	public void keyLearnOn(JComponent learningComponent) {
+
+		learnOn(learningComponent);
+		guiAutomationConfigurationPanel.getKeyLearnPopupMenu().keyLearnOn();
+
+	}
+
+	/**
 	 * Puts the frame to normal mode.
 	 */
-	public void midiLearnOff() {
+	private void learnOff() {
 
 		// enable inputs
 		GUIUtils.disEnableAllInputs(this, true);
 
-		// change menu item
-		guiAutomationConfigurationPanel.getPopupMenu().midiLearnOff();
-
 		GUIUtils.deHighlightTableRow(
 				guiAutomationConfigurationPanel.getGUIAutomationsTable(), false);
+	}
+
+	/**
+	 * Puts the frame to normal mode.
+	 */
+	public void midiLearnOff() {
+
+		// change menu item
+		guiAutomationConfigurationPanel.getMidiLearnPopupMenu().midiLearnOff();
+
+		learnOff();
+	}
+
+	/**
+	 * Puts the frame to normal mode.
+	 */
+	public void keyLearnOff() {
+
+		// change menu item
+		guiAutomationConfigurationPanel.getKeyLearnPopupMenu().keyLearnOff();
+
+		learnOff();
 	}
 
 	public GUIAutomationConfigurationPanel getGuiAutomationPanel() {

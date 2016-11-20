@@ -50,6 +50,7 @@ public class MidiLearnPopupMenu extends JPopupMenu {
 	 */
 	public void init() {
 
+		removeAll();
 		midiLearnMenuItem = new JMenuItem(MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setName(NAME_MENU_ITEM_MIDI_LEARN);
 		midiLearnMenuItem.setEnabled(false);

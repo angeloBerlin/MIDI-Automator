@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.swing.JSpinner;
 
+import org.assertj.swing.core.KeyPressInfo;
 import org.assertj.swing.core.MouseButton;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.data.TableCell;
@@ -25,6 +26,7 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.utils.SystemUtils;
+import com.midi_automator.view.KeyLearnPopupMenu;
 import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
@@ -204,7 +206,7 @@ public class GUIAutomations {
 	}
 
 	/**
-	 * Learns a midi message for an automation for the specified row
+	 * Cancels midi learning for an automation for the specified row
 	 * 
 	 * @param row
 	 *            The row of the automation
@@ -222,6 +224,89 @@ public class GUIAutomations {
 				.column(column));
 		popupMenu.menuItemWithPath(
 				MidiLearnPopupMenu.MENU_ITEM_MIDI_LEARN_CANCEL).click();
+	}
+
+	/**
+	 * Learns a key for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void keyLearnAutomation(int row, FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_LEARN).click();
+	}
+
+	/**
+	 * Submits key learning for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void submitKeyLearnAutomation(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_SUBMIT)
+				.click();
+	}
+
+	/**
+	 * Un-learns a key for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void keyUnLearnAutomation(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_UNLEARN)
+				.click();
+	}
+
+	/**
+	 * Cancels key learning for an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void cancelKeyLearnAutomation(int row,
+			FrameFixture preferencesFrame) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesFrame);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL)
+				.click();
+
 	}
 
 	/**
@@ -564,7 +649,8 @@ public class GUIAutomations {
 				preferencesFrame);
 
 		spinnerEditor.increment(times);
-		table.click();
+		spinnerEditor.pressAndReleaseKey(KeyPressInfo
+				.keyCode(KeyEvent.VK_ENTER));
 	}
 
 	/**
@@ -610,7 +696,8 @@ public class GUIAutomations {
 				preferencesFrame);
 
 		spinnerEditor.decrement(times);
-		table.click();
+		spinnerEditor.pressAndReleaseKey(KeyPressInfo
+				.keyCode(KeyEvent.VK_ENTER));
 	}
 
 	/**
@@ -1253,6 +1340,34 @@ public class GUIAutomations {
 	public static void pressAndReleaseKeysOnMainFrame(int... keyCode) {
 
 		window.textBox(MainFrame.NAME_INFO_LABEL).pressAndReleaseKeys(keyCode);
+	}
+
+	/**
+	 * Presses the desired key code on the GUI automation table.
+	 * 
+	 * @param preferencesFrame
+	 *            The preferences frame with the automation table
+	 * @param keyCode
+	 *            The key code pressed
+	 */
+	public static void pressKeyOnGUIAutomationTable(
+			FrameFixture preferencesFrame, int keyCode) {
+
+		getGUIAutomationTable(preferencesFrame).pressKey(keyCode);
+	}
+
+	/**
+	 * Presses and releases the desired key code on the GUI automation table.
+	 * 
+	 * @param preferencesFrame
+	 *            The preferences frame with the automation table
+	 * @param keyCode
+	 *            The key codes pressed and released
+	 */
+	public static void pressAndReleaseKeysOnGUIAutomationTable(
+			FrameFixture preferencesFrame, int... keyCode) {
+
+		getGUIAutomationTable(preferencesFrame).pressAndReleaseKeys(keyCode);
 	}
 
 }

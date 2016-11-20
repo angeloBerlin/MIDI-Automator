@@ -14,6 +14,7 @@ import com.midi_automator.model.Model;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.frames.PreferencesFrame;
 
 /**
  * Handles all midi learning functions
@@ -42,6 +43,8 @@ public class MidiLearnService {
 	private Presenter presenter;
 	@Autowired
 	protected MainFrame mainFrame;
+	@Autowired
+	protected PreferencesFrame preferencesFrame;
 
 	@Autowired
 	private FileListService fileListService;
@@ -89,7 +92,7 @@ public class MidiLearnService {
 		}
 
 		if (key.contains(KEY_MIDI_LEARN_AUTOMATION_TRIGGER)) {
-			mainFrame.setGUIAutomationTriggerMidiSignature(midiSignature);
+			preferencesFrame.setAutomationMidiSignature(midiSignature);
 		}
 	}
 

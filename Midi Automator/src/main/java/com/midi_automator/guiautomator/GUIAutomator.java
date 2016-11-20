@@ -1,5 +1,9 @@
 package com.midi_automator.guiautomator;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+
 import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
 import org.sikuli.script.Match;
@@ -152,7 +156,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Activates all automations that shall be run only once per change.
+	 * Activates all automation that shall be run only once per change.
 	 */
 	public void activateOncePerChangeAutomations() {
 
@@ -164,7 +168,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Activates all automations that shall be run by midi message.
+	 * Activates all automation that shall be run by midi message.
 	 * 
 	 * @param midiSignature
 	 *            The midi signature that shall invoke the automation
@@ -185,8 +189,8 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	}
 
 	/**
-	 * Searches for the region and runs the desired action if the automations
-	 * are active.
+	 * Searches for the region and runs the desired action if the automation are
+	 * active.
 	 * 
 	 * @return <TRUE> if the automation was run, <FALSE> if not found or
 	 *         automation not active
@@ -196,34 +200,15 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		boolean wasRun = false;
 		String imagePath = guiAutomation.getImagePath();
 
-		if (!imagePath.equals(MidiAutomatorProperties.VALUE_NULL)) {
+		// Run automation without searching if no screenshot was given
+		if (imagePath.equals(MidiAutomatorProperties.VALUE_NULL)) {
 
-			Region lastFound = guiAutomation.getLastFoundRegion();
+			runAutomation(match);
+			wasRun = true;
 
-			// reduce search region
-			if (lastFound != null && !guiAutomation.isMovable()
-					&& !fixedSearchRegion) {
+		} else {
 
-				searchRegion.x = lastFound.x;
-				searchRegion.y = lastFound.y;
-				searchRegion.w = lastFound.w;
-				searchRegion.h = lastFound.h;
-
-				fixedSearchRegion = true;
-			}
-
-			log.debug("("
-					+ getName()
-					+ "): Search for match of \""
-					+ SystemUtils.replaceSystemVariables(guiAutomation
-							.getImagePath()) + "\" "
-					+ ", minimum smimilarity: "
-					+ String.format("%.2g%n", Settings.MinSimilarity)
-					+ ", scan rate: " + searchRegion.getObserveScanRate());
-
-			boolean found = searchRegion.observe(SIKULIX_TIMEOUT);
-
-			if (found) {
+			if (searchForScreenshot()) {
 				// do not run automation if it was deactivated in the meantime
 				if (isActive()) {
 					runAutomation(match);
@@ -236,9 +221,43 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 						+ SystemUtils.replaceSystemVariables(guiAutomation
 								.getImagePath()) + "\"");
 			}
+
 		}
 
 		return wasRun;
+	}
+
+	/**
+	 * Search for the given screenshot
+	 * 
+	 * @return <TRUE> if it was found, <FALSE> if it was not found within the
+	 *         time period.
+	 */
+	private boolean searchForScreenshot() {
+
+		Region lastFound = guiAutomation.getLastFoundRegion();
+
+		// reduce search region
+		if (lastFound != null && !guiAutomation.isMovable()
+				&& !fixedSearchRegion) {
+
+			searchRegion.x = lastFound.x;
+			searchRegion.y = lastFound.y;
+			searchRegion.w = lastFound.w;
+			searchRegion.h = lastFound.h;
+
+			fixedSearchRegion = true;
+		}
+
+		log.debug("("
+				+ getName()
+				+ "): Search for match of \""
+				+ SystemUtils.replaceSystemVariables(guiAutomation
+						.getImagePath()) + "\" " + ", minimum smimilarity: "
+				+ String.format("%.2g%n", Settings.MinSimilarity)
+				+ ", scan rate: " + searchRegion.getObserveScanRate());
+
+		return searchRegion.observe(SIKULIX_TIMEOUT);
 	}
 
 	/**
@@ -248,27 +267,64 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 *            The found region.
 	 */
 	private void runAutomation(Match match) {
-		guiAutomation.setLastFoundRegion(match);
-
 		try {
 			Thread.sleep(guiAutomation.getMinDelay());
 		} catch (InterruptedException e) {
 			log.error("Delay before GUI automation run failed.", e);
 		}
 
+		guiAutomation.setLastFoundRegion(match);
+
 		// left click
-		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)) {
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)
+				&& match != null) {
 			match.click();
 		}
 
 		// right click
-		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_RIGHT)) {
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_RIGHT)
+				&& match != null) {
 			match.rightClick();
 		}
 
 		// double click
-		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_DOUBLE)) {
+		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_DOUBLE)
+				&& match != null) {
 			match.doubleClick();
+		}
+
+		// key stroke
+		if (guiAutomation.getType().equals(GUIAutomation.TYPE_SENDKEY)) {
+			pressAndReleaseKeys(guiAutomation.getKeyCodes());
+		}
+	}
+
+	/**
+	 * Sends the key of the automation with modifiers.
+	 * 
+	 * @param keyCodes
+	 *            The key codes to press and release i order
+	 */
+	private void pressAndReleaseKeys(int[] keyCodes) {
+
+		try {
+			Robot robot = new Robot();
+			for (int keyCode : keyCodes) {
+
+				robot.keyPress(keyCode);
+				log.info("(" + getName() + "): Pressing key "
+						+ KeyEvent.getKeyText(keyCode));
+			}
+
+			for (int keyCode : keyCodes) {
+
+				robot.keyRelease(keyCode);
+				log.info("(" + getName() + "): Releasing key "
+						+ KeyEvent.getKeyText(keyCode));
+			}
+
+		} catch (AWTException e) {
+			log.error("Error generating Robot object.", e);
 		}
 	}
 
