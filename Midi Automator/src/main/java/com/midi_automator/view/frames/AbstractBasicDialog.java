@@ -3,6 +3,7 @@ package com.midi_automator.view.frames;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -49,11 +50,15 @@ public abstract class AbstractBasicDialog extends JDialog {
 	@Autowired
 	protected MainFrame mainFrame;
 
+	protected boolean initialized = false;
+
 	/**
 	 * Initializes some basic dialog features.
 	 */
 	public void init() {
+
 		setParent(mainFrame);
+		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 
 		// set layout
@@ -73,8 +78,13 @@ public abstract class AbstractBasicDialog extends JDialog {
 		buttonCancel.addActionListener(new CancelAction());
 		buttonCancel.addKeyListener(new CancelKeyListener());
 
-		mainFrame.setAlwaysOnTop(false);
-		this.setAlwaysOnTop(true);
+	}
+
+	/**
+	 * Shows the build dialog.
+	 */
+	public void showDialog() {
+		pack();
 		setVisible(true);
 	}
 
@@ -182,7 +192,6 @@ public abstract class AbstractBasicDialog extends JDialog {
 		WindowEvent windowClosing = new WindowEvent(this,
 				WindowEvent.WINDOW_CLOSING);
 		dispatchEvent(windowClosing);
-		mainFrame.setAlwaysOnTop(true);
 	}
 
 	/**

@@ -28,7 +28,6 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -51,7 +50,6 @@ import com.midi_automator.view.ScaleableImageIcon;
  * 
  */
 @org.springframework.stereotype.Component
-@Scope("prototype")
 public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	static Logger log = Logger.getLogger(Presenter.class.getName());

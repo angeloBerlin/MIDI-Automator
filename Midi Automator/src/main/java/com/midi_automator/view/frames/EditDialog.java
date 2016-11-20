@@ -3,10 +3,8 @@ package com.midi_automator.view.frames;
 import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.annotation.Scope;
 
 @org.springframework.stereotype.Component
-@Scope("prototype")
 public class EditDialog extends AddDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -18,7 +16,7 @@ public class EditDialog extends AddDialog {
 	private JLabel midiListeningSignatureValueLabel;
 	private int index;
 
-	public static String NAME = "Edit Frame";
+	public static String NAME = "Edit Dialog";
 	public static String NAME_MIDI_LISTENING_SIGNATURE_VALUE_LABEL = "MIDI listening label";
 
 	/**
@@ -28,22 +26,30 @@ public class EditDialog extends AddDialog {
 	 *            The current chosen index
 	 */
 	public void init(int index) {
-		super.init();
+
+		if (!initialized) {
+			super.init();
+
+			setName(NAME);
+			setTitle(TITLE);
+			setSize(WIDTH, HEIGHT);
+
+			createMidiListeningSignature();
+			initMidiSendingSignatureValueLabelText();
+		}
 
 		this.index = index;
-		setName(NAME);
-		setTitle(TITLE);
-		setSize(WIDTH, HEIGHT);
-
-		createMidiListeningSignature();
-		initMidiSendingSignatureValueLabelText();
-
 		nameTextField.setText(fileListService.getEntryNameByIndex(index));
 		fileTextField.setText(fileListService.getEntryFilePathByIndex(index));
 		programTextField.setText(fileListService
 				.getEntryProgramPathByIndex(index));
-		midiListeningSignatureValueLabel.setText(fileListService
-				.getMidiFileListListeningSignature(index));
+		String midiListeningSignature = fileListService
+				.getMidiFileListListeningSignature(index);
+		midiListeningSignatureValueLabel.setText(midiListeningSignature);
+		String midiSendingSignature = fileListService
+				.getMidiFileListSendingSignature(index);
+		midiSendingSignatureValueLabel.setText(midiSendingSignature);
+
 	}
 
 	/**

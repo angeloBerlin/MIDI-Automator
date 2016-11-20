@@ -117,7 +117,6 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	public void init() {
 		super.init();
 
-		setResizable(false);
 		setTitle(TITLE);
 		setName(NAME);
 
@@ -162,12 +161,9 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		// load data
 		reload();
 
-		setAlwaysOnTop(true);
-		pack();
-		setVisible(true);
-
 		// action on close
 		addWindowListener(new WindowCloseListener());
+
 	}
 
 	/**
@@ -692,7 +688,6 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		@Override
 		public void windowClosing(WindowEvent e) {
-			e.getWindow().dispose();
 			guiAutomationsService.setGUIAutomatorsToActive(true);
 		}
 	}

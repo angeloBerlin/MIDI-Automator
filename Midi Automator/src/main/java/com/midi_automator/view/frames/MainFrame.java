@@ -162,7 +162,7 @@ public class MainFrame extends JFrame {
 	@Autowired
 	private ApplicationContext ctx;
 
-	private PreferencesDialog preferencsDialog;
+	private PreferencesDialog preferencesDialog;
 
 	@Autowired
 	private Presenter presenter;
@@ -342,8 +342,8 @@ public class MainFrame extends JFrame {
 		}
 
 		// reload preferences frame
-		if (preferencsDialog != null && preferencsDialog.isVisible()) {
-			preferencsDialog.reload();
+		if (preferencesDialog != null && preferencesDialog.isVisible()) {
+			preferencesDialog.reload();
 		}
 	}
 
@@ -424,8 +424,8 @@ public class MainFrame extends JFrame {
 	public void midiLearnOff() {
 
 		// set all frames to midi learn off
-		if (preferencsDialog != null && preferencsDialog.isVisible()) {
-			preferencsDialog.midiLearnOff();
+		if (preferencesDialog != null && preferencesDialog.isVisible()) {
+			preferencesDialog.midiLearnOff();
 		}
 		learnOff();
 	}
@@ -436,8 +436,8 @@ public class MainFrame extends JFrame {
 	public void keyLearnOff() {
 
 		// set all frames to midi learn off
-		if (preferencsDialog != null && preferencsDialog.isVisible()) {
-			preferencsDialog.keyLearnOff();
+		if (preferencesDialog != null && preferencesDialog.isVisible()) {
+			preferencesDialog.keyLearnOff();
 		}
 
 		learnOff();
@@ -493,8 +493,8 @@ public class MainFrame extends JFrame {
 	public void midiLearnOn(JComponent learningComponent) {
 
 		// set all frames to midi learn on
-		if (preferencsDialog != null && preferencsDialog.isVisible()) {
-			preferencsDialog.midiLearnOn(learningComponent);
+		if (preferencesDialog != null && preferencesDialog.isVisible()) {
+			preferencesDialog.midiLearnOn(learningComponent);
 		}
 
 		learnOn(learningComponent);
@@ -512,8 +512,8 @@ public class MainFrame extends JFrame {
 	 */
 	public void keyLearnOn(JComponent learningComponent) {
 
-		if (preferencsDialog != null && preferencsDialog.isVisible()) {
-			preferencsDialog.keyLearnOn(learningComponent);
+		if (preferencesDialog != null && preferencesDialog.isVisible()) {
+			preferencesDialog.keyLearnOn(learningComponent);
 		}
 
 		learnOn(learningComponent);
@@ -808,7 +808,7 @@ public class MainFrame extends JFrame {
 	 * @return The preferences dialog
 	 */
 	public PreferencesDialog getPreferencesDialog() {
-		return preferencsDialog;
+		return preferencesDialog;
 	}
 
 	/**
@@ -996,10 +996,11 @@ public class MainFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			preferencsDialog = ctx.getBean("preferencesDialog",
+			preferencesDialog = ctx.getBean("preferencesDialog",
 					PreferencesDialog.class);
-			preferencsDialog.setLocation(getLocationOnScreen());
-			preferencsDialog.init();
+			preferencesDialog.init();
+			preferencesDialog.setLocation(getLocationOnScreen());
+			preferencesDialog.showDialog();
 		}
 	}
 
@@ -1281,10 +1282,11 @@ public class MainFrame extends JFrame {
 	public void openAddDialog() {
 
 		AddDialog addDialog = ctx.getBean("addDialog", AddDialog.class);
+		addDialog.init();
 		addDialog.setLocation(
 				getLocationOnScreen().x + FRAME_LOCATION_X_OFFSET,
 				getLocationOnScreen().y + FRAME_LOCATION_Y_OFFSET);
-		addDialog.init();
+		addDialog.showDialog();
 	}
 
 	/**
@@ -1297,6 +1299,7 @@ public class MainFrame extends JFrame {
 		editDialog.setLocation(getLocationOnScreen().x
 				+ FRAME_LOCATION_X_OFFSET, getLocationOnScreen().y
 				+ FRAME_LOCATION_Y_OFFSET);
+		editDialog.showDialog();
 	}
 
 	/**

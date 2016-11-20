@@ -19,7 +19,6 @@ import javax.swing.table.TableModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.utils.CommonUtils;
@@ -34,7 +33,6 @@ import com.midi_automator.view.ScaleableImageIcon;
  * @date 10-12-2014
  */
 @org.springframework.stereotype.Component
-@Scope("prototype")
 public class GUIAutomationConfigurationPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;

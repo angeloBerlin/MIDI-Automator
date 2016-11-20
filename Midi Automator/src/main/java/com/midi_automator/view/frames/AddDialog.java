@@ -14,14 +14,12 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.presenter.services.PresenterService;
 
 @org.springframework.stereotype.Component
-@Scope("prototype")
 public class AddDialog extends AbstractBasicDialog {
 
 	static Logger log = Logger.getLogger(AddDialog.class.getName());
@@ -39,7 +37,7 @@ public class AddDialog extends AbstractBasicDialog {
 	private final String BUTTON_FILE_SEARCH = "Search...";
 	private final String BUTTON_PROGRAM_SEARCH = "Search...";
 
-	public static String NAME = "Add Frame";
+	public static String NAME = "Add Dialog";
 	public static String NAME_NAME_TEXT_FIELD = "name text field";
 	public static String NAME_FILE_TEXT_FIELD = "file text field";
 	public static String NAME_PROGRAM_TEXT_FIELD = "program text field";
@@ -70,34 +68,37 @@ public class AddDialog extends AbstractBasicDialog {
 	 * Initializes the frame
 	 */
 	public void init() {
-		super.init();
 
-		UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
-		fileChooser = new JFileChooser();
-		// KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
-		// InputMap map = fileChooser.getInputMap();
-		// map.put(enter, "approveSelection");
-		UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
-		programChooser = new JFileChooser();
+		if (!initialized) {
+			super.init();
 
-		setTitle(TITLE);
-		setSize(WIDTH, HEIGHT);
-		setName(NAME);
+			setTitle(TITLE);
+			setSize(WIDTH, HEIGHT);
+			setName(NAME);
 
-		createEntryName();
-		createEntryFile();
-		createProgramPath();
-		createMidiSendingSignature();
+			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
+			fileChooser = new JFileChooser();
+			programChooser = new JFileChooser();
 
-		fileChooserDir = presenterService.getLastFileChooserDirectory();
-		programChooserDir = presenterService.getLastProgramChooserDirectory();
+			createEntryName();
+			createEntryFile();
+			createProgramPath();
+			createMidiSendingSignature();
 
-		// Save
-		footerPanel.add(buttonSave);
+			fileChooserDir = presenterService.getLastFileChooserDirectory();
+			programChooserDir = presenterService
+					.getLastProgramChooserDirectory();
 
-		// Cancel
-		footerPanel.add(buttonCancel);
+			// Save
+			footerPanel.add(buttonSave);
 
+			// Cancel
+			footerPanel.add(buttonCancel);
+
+			initialized = true;
+		}
+
+		initMidiSendingSignatureValueLabelText();
 	}
 
 	/**
@@ -149,8 +150,6 @@ public class AddDialog extends AbstractBasicDialog {
 		midiSendingSignatureValueLabel = createMetaLabel(LABEL_SENDING_MIDI,
 				NAME_MIDI_SENDING_SIGNATURE_VALUE_LABEL, META_LABEL_WIDTH,
 				TEXT_PANE_WIDTH);
-
-		initMidiSendingSignatureValueLabelText();
 	}
 
 	/**
