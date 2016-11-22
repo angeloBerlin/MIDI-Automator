@@ -721,7 +721,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			DialogFixture preferencesDialog = openPreferences();
-			// removeScreenshotFromAutomation(0, preferencesDialog);
+			removeScreenshotFromAutomation(0, preferencesDialog);
 			saveDialog(preferencesDialog);
 
 			// check if screenshot was removed
