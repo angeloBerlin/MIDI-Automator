@@ -65,16 +65,13 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int COLWIDTH_MIDI_MESSAGE = 150;
 	private final int COLWIDTH_SCAN_RATE = 80;
 	private final int COLWIDTH_MOVABLE = 60;
-	private final int COLWIDTH_SCREENSHOT_SEARCH = 120;
 	private final int MARGIN_SCREENSHOT = 4;
 	private final int TABLEHEIGHT = 140;
 	private final int ROWHEIGHT = 40;
 	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
 			+ COLWIDTH_KEY + COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY
 			+ COLWIDTH_TIMEOUT + COLWIDTH_MIDI_MESSAGE + COLWIDTH_SCAN_RATE
-			+ COLWIDTH_MOVABLE + COLWIDTH_SCREENSHOT_SEARCH;
-
-	private final String LABEL_SEARCHBUTTON = "Screenshot...";
+			+ COLWIDTH_MOVABLE;
 
 	public static final String COLNAME_IMAGE = "Screenshot";
 	public static final String COLNAME_TYPE = "Type";
@@ -85,7 +82,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	public static final String COLNAME_MIDI_SIGNATURE = "Midi Message";
 	public static final String COLNAME_SCAN_RATE = "Scans (1/s)";
 	public static final String COLNAME_MOVABLE = "Movable";
-	public static final String COLNAME_SEARCH_BUTTON = "";
 
 	private final String DEFAULT_TYPE = GUIAutomation.CLICKTYPE_LEFT;
 	private final String DEFAULT_TRIGGER = GUIAutomation.CLICKTRIGGER_ALWAYS;
@@ -95,8 +91,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final Long TIMEOUT_STEP_SIZE = 1L;
 	private final Float SCAN_RATE_STEP_SIZE = 0.1f;
 
-	private final String NAME_MENU_ITEM_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn";
-	private final String NAME_MENU_ITEM_KEY_LEARN = "GUIAutomationConfigurationTable key learn";
+	private final String NAME_POPUP_MENU_MIDI_LEARN = "GUIAutomationConfigurationTable midi learn popup";
+	private final String NAME_POPUP_MENU_KEY_LEARN = "GUIAutomationConfigurationTable key learn popup";
+	private final String NAME_POPUP_MENU_IMAGE = "GUIAutomationConfigurationTable image popup";
+
 	private final String NAME_COMBOBOX_TRIGGER_EDITOR = "COMBOBOX_TRIGGER_EDITOR";
 
 	public static final String NAME = "GUI automation table";
@@ -114,6 +112,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	@Autowired
 	@Qualifier("keyLearnPopupMenu")
 	private KeyLearnPopupMenu keyLearnPopupMenu;
+
+	@Autowired
+	@Qualifier("imagePopupMenu")
+	private ImagePopupMenu imagePopupMenu;
 
 	@Autowired
 	private KeyLearnListener keyLearnListener;
@@ -152,7 +154,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		columnNames.add(COLNAME_MIDI_SIGNATURE);
 		columnNames.add(COLNAME_SCAN_RATE);
 		columnNames.add(COLNAME_MOVABLE);
-		columnNames.add(COLNAME_SEARCH_BUTTON);
 
 		tableModel.setDataVector(data, columnNames);
 		setModel(tableModel);
@@ -166,7 +167,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createMidiMessageColumn();
 		createScanRateColumn();
 		createMovableColumn();
-		createImageBrowseColumn();
 
 		screenShotFileChooserDir = presenterService
 				.getLastScreenshotChooserDirectory();
@@ -174,9 +174,11 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		// popup Menu
 		addMouseListener(new PopupListener());
 		midiLearnPopupMenu.init();
-		midiLearnPopupMenu.setName(NAME_MENU_ITEM_MIDI_LEARN);
+		midiLearnPopupMenu.setName(NAME_POPUP_MENU_MIDI_LEARN);
 		keyLearnPopupMenu.init();
-		keyLearnPopupMenu.setName(NAME_MENU_ITEM_KEY_LEARN);
+		keyLearnPopupMenu.setName(NAME_POPUP_MENU_KEY_LEARN);
+		imagePopupMenu.init();
+		imagePopupMenu.setName(NAME_POPUP_MENU_IMAGE);
 
 		// key learn listener
 		GUIUtils.addKeyListenerToComponent(keyLearnListener, this);
@@ -336,24 +338,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	}
 
 	/**
-	 * Creates the image browse button.
-	 */
-	private void createImageBrowseColumn() {
-
-		getColumn(COLNAME_SEARCH_BUTTON)
-				.setMinWidth(COLWIDTH_SCREENSHOT_SEARCH);
-
-		JTableButtonRenderer buttonRenderer = new JTableButtonRenderer(
-				LABEL_SEARCHBUTTON);
-		JTableButtonEditor buttonEditor = new JTableButtonEditor(
-				LABEL_SEARCHBUTTON);
-
-		buttonEditor.addActionListener(new ImageSearchButtonListener(this));
-		getColumn(COLNAME_SEARCH_BUTTON).setCellRenderer(buttonRenderer);
-		getColumn(COLNAME_SEARCH_BUTTON).setCellEditor(buttonEditor);
-	}
-
-	/**
 	 * Creates a column with spinner.
 	 * 
 	 * @param colName
@@ -385,8 +369,12 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	@Override
 	public Class<?> getColumnClass(int column) {
 		// Return the class of a column to choose the appropriate renderer
+		Class<?> objClass = null;
+
 		Object obj = getValueAt(0, column);
-		Class<?> objClass = obj.getClass();
+		if (obj != null) {
+			objClass = obj.getClass();
+		}
 		return objClass;
 	}
 
@@ -803,7 +791,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	}
 
 	/**
-	 * Shows the midi learn context menu.
+	 * Shows the context menu.
 	 * 
 	 * @author aguelle
 	 * 
@@ -851,6 +839,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			if (column == getColumn(COLNAME_KEYS).getModelIndex()) {
 				openKeyLearnPopupMenu(table, e.getX(), e.getY());
 			}
+
+			if (column == getColumn(COLNAME_IMAGE).getModelIndex()) {
+				openImagePopupMenu(table, e.getX(), e.getY());
+			}
 		}
 
 		/**
@@ -890,6 +882,34 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			}
 
 			keyLearnPopupMenu.show(table, x, y);
+		}
+
+		/**
+		 * Opens the image popup menu
+		 * 
+		 * @param table
+		 *            The gui automation table
+		 * @param x
+		 *            The x coordinate of the menu
+		 * @param y
+		 *            The y coordinate of the menu
+		 */
+		private void openImagePopupMenu(JTable table, int x, int y) {
+
+			int row = table.rowAtPoint(new Point(x, y));
+
+			// de-/activate remove image item
+			ScaleableImageIcon image = (ScaleableImageIcon) table.getValueAt(
+					row, getColumn(COLNAME_IMAGE).getModelIndex());
+
+			imagePopupMenu.getRemoveImageMenuItem().setEnabled(false);
+
+			if (image != null) {
+				if (!image.getPath().equals(MidiAutomatorProperties.VALUE_NULL))
+					imagePopupMenu.getRemoveImageMenuItem().setEnabled(true);
+			}
+
+			imagePopupMenu.show(table, x, y);
 		}
 
 		/**

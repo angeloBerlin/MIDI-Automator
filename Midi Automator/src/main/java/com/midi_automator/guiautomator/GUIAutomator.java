@@ -72,7 +72,6 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		}
 
 		// prepare search parameters
-
 		searchRegion.setObserveScanRate(guiAutomation.getScanRate());
 		searchRegion.onAppear(SystemUtils.replaceSystemVariables(guiAutomation
 				.getImagePath()), observer);

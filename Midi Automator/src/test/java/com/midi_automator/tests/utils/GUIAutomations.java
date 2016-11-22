@@ -33,6 +33,7 @@ import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
+import com.midi_automator.view.automationconfiguration.ImagePopupMenu;
 import com.midi_automator.view.frames.AddDialog;
 import com.midi_automator.view.frames.EditDialog;
 import com.midi_automator.view.frames.MainFrame;
@@ -309,7 +310,26 @@ public class GUIAutomations {
 				.column(column));
 		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL)
 				.click();
+	}
 
+	/**
+	 * Removes a screenshot from an automation for the specified row
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param prferencesFrame
+	 *            The preferences frame
+	 */
+	public static void removeScreenshotFromAutomation(int row,
+			DialogFixture preferencesDialog) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_IMAGE);
+
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(ImagePopupMenu.NAME_MENU_ITEM_REMOVE_IMAGE).click();
 	}
 
 	/**
@@ -826,13 +846,12 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
-		JTableCellFixture cell = table
-				.cell(TableCell
-						.row(row)
-						.column(table
-								.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_SEARCH_BUTTON)));
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_IMAGE);
 
-		cell.click();
+		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
+				.column(column));
+		popupMenu.menuItem(ImagePopupMenu.NAME_MENU_ITEM_NEW_IMAGE).click();
 		return JFileChooserFinder.findFileChooser().using(robot);
 	}
 

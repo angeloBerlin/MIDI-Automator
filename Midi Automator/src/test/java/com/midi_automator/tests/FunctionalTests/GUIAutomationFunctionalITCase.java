@@ -710,4 +710,27 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			fail();
 		}
 	}
+
+	@Test
+	public void screenshotShouldBeRemoved() {
+
+		try {
+			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+			MockUpUtils.setMockupPropertiesFile("mockups/"
+					+ propertiesAlwaysCancelAutomation);
+			startApplication();
+
+			DialogFixture preferencesDialog = openPreferences();
+			// removeScreenshotFromAutomation(0, preferencesDialog);
+			saveDialog(preferencesDialog);
+
+			// check if screenshot was removed
+			DialogFixture addDialog = openAddDialog();
+			Thread.sleep(5000);
+			addDialog.requireVisible();
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
