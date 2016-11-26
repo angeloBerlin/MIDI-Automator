@@ -306,24 +306,26 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	private void pressAndReleaseKeys(int[] keyCodes) {
 
-		try {
-			Robot robot = new Robot();
-			for (int keyCode : keyCodes) {
+		if (keyCodes != null) {
+			try {
+				Robot robot = new Robot();
+				for (int keyCode : keyCodes) {
 
-				robot.keyPress(keyCode);
-				log.info("(" + getName() + "): Pressing key "
-						+ KeyEvent.getKeyText(keyCode));
+					robot.keyPress(keyCode);
+					log.info("(" + getName() + "): Pressing key "
+							+ KeyEvent.getKeyText(keyCode));
+				}
+
+				for (int keyCode : keyCodes) {
+
+					robot.keyRelease(keyCode);
+					log.info("(" + getName() + "): Releasing key "
+							+ KeyEvent.getKeyText(keyCode));
+				}
+
+			} catch (AWTException e) {
+				log.error("Error generating Robot object.", e);
 			}
-
-			for (int keyCode : keyCodes) {
-
-				robot.keyRelease(keyCode);
-				log.info("(" + getName() + "): Releasing key "
-						+ KeyEvent.getKeyText(keyCode));
-			}
-
-		} catch (AWTException e) {
-			log.error("Error generating Robot object.", e);
 		}
 	}
 

@@ -26,6 +26,9 @@ public class KeyLearnListener extends KeyAdapter {
 	@Override
 	public void keyPressed(KeyEvent e) {
 
+		// prevent any further OS listener to react on the key
+		e.consume();
+
 		if (keyLearnService.isKeyLearning()) {
 
 			keyLearnService.keyLearn(e.getKeyCode());
