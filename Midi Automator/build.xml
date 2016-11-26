@@ -10,21 +10,18 @@
 
 	<!-- Generates a MacOS Bundle from the jar -->
 	<target name="macbundle">
-        <!-- change to ant/appBundler-1.0ea.jar for using appbundler branch from https://bitbucket.org/infinitekind/appbundler -->
+        <!-- change to ant/appBundler-1.0.jar for using the originial appbundler instead of branch from https://bitbucket.org/infinitekind/appbundler -->
 		<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-			classpath="ant/appBundler-1.0.jar" />
+			classpath="ant/appBundler-1.0ea.jar" />
 		<bundleapp outputdirectory="${target.dir}" name="${name}"
 			displayname="${name}" identifier="${base.package}" icon="${images.dir}/${icon.file.macos}"
 			mainclassname="${main.class}">
 			<runtime dir="${java.runtime}" />
-			<!-- <option value="-Dfile.encoding=${encoding}" /> -->
 			<option
 				value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
-			<argument value="-os=MacOS" />
 			<argument value="-wd=${working.dir.macos.resources}/" />
-			
-			<!-- <arch name="x86_64"/> -->
-			<!-- <plistentry key="NSHighResolutionCapable" value="true"/> -->
+			<arch name="x86_64"/>
+			<plistentry key="NSHighResolutionCapable" value="true"/>
 		</bundleapp>
 
 		<copy file="${target.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
