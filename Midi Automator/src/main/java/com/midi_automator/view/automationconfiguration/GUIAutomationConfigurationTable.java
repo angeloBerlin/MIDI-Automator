@@ -905,8 +905,12 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 			imagePopupMenu.getRemoveImageMenuItem().setEnabled(false);
 
 			if (image != null) {
-				if (!image.getPath().equals(MidiAutomatorProperties.VALUE_NULL))
-					imagePopupMenu.getRemoveImageMenuItem().setEnabled(true);
+				if (image.getPath() != null) {
+					if (!image.getPath().equals(
+							MidiAutomatorProperties.VALUE_NULL))
+						imagePopupMenu.getRemoveImageMenuItem()
+								.setEnabled(true);
+				}
 			}
 
 			imagePopupMenu.show(table, x, y);
