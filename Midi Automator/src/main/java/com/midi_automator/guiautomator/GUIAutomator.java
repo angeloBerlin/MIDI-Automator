@@ -13,6 +13,7 @@ import org.sikuli.script.Region;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.IDeActivateable;
+import com.midi_automator.utils.ShellRunner;
 import com.midi_automator.utils.SystemUtils;
 
 /**
@@ -274,6 +275,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		guiAutomation.setLastFoundRegion(match);
 
+		// set focus
+		setFocus("Ableton Live 9 Suite.app");
+
 		// left click
 		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)
 				&& match != null) {
@@ -296,6 +300,24 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		if (guiAutomation.getType().equals(GUIAutomation.TYPE_SENDKEY)) {
 			pressAndReleaseKeys(guiAutomation.getKeyCodes());
 		}
+	}
+
+	/**
+	 * Sets the focus to given program
+	 * 
+	 * @param program
+	 */
+	private void setFocus(String program) {
+
+		String[] cmd = new String[2];
+
+		if (System.getProperty("os.name").contains("Mac")) {
+			cmd[0] = "open";
+			cmd[1] = program;
+		}
+
+		ShellRunner shellRunner = new ShellRunner(cmd);
+		shellRunner.run();
 	}
 
 	/**
