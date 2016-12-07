@@ -38,7 +38,7 @@ public class ScaleableImageIcon extends ImageIcon {
 	 */
 	public ScaleableImageIcon(String path, int maxWidth, int maxHeight) {
 		super(SystemUtils.replaceSystemVariables(path));
-		this.path = path;
+		setPath(path);
 		scale(maxWidth, maxHeight);
 	}
 
@@ -70,12 +70,12 @@ public class ScaleableImageIcon extends ImageIcon {
 		}
 	}
 
-	/**
-	 * Gets the image path in the file system
-	 * 
-	 * @return The path to the image
-	 */
 	public String getPath() {
 		return path;
 	}
+
+	public void setPath(String path) {
+		this.path = path.replace("\\", "/");
+	}
+
 }
