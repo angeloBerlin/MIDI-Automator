@@ -311,6 +311,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		String[] cmd = new String[2];
 
+		// test
 		if (System.getProperty("os.name").contains("Mac")) {
 			cmd[0] = "open";
 			cmd[1] = program;
