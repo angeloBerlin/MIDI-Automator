@@ -3,6 +3,7 @@ package com.midi_automator.guiautomator;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.sikuli.basics.Settings;
@@ -10,7 +11,11 @@ import org.sikuli.script.Match;
 import org.sikuli.script.ObserveEvent;
 import org.sikuli.script.ObserverCallBack;
 import org.sikuli.script.Region;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.ShellRunner;
@@ -22,6 +27,8 @@ import com.midi_automator.utils.SystemUtils;
  * 
  *         This class automates GUI interactions.
  */
+@Component
+@Scope("prototype")
 public class GUIAutomator extends Thread implements IDeActivateable {
 
 	static Logger log = Logger.getLogger(GUIAutomator.class.getName());
@@ -39,30 +46,20 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private ObserverCallBack observer = new AppearingMatchObserver();
 	private boolean fixedSearchRegion = false;
 
+	@Autowired
+	private Resources resources;
+
 	/**
-	 * Constructor
+	 * Initializes the automator
 	 * 
 	 * @param minSimilarity
 	 *            The minimum similarity for the automation
 	 */
-	public GUIAutomator(float minSimilarity) {
+	public void init(float minSimilarity) {
 		Settings.MinSimilarity = minSimilarity;
 		Settings.CheckLastSeenSimilar = minSimilarity;
 		Settings.MoveMouseDelay = MOVE_MOUSE_DELAY;
 		Settings.CheckLastSeen = CHECK_LAST_SEEN;
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param guiAutomation
-	 *            The gui automation to run
-	 * @param minSimilarity
-	 *            The minimum similarity for the automation
-	 */
-	public GUIAutomator(GUIAutomation guiAutomation, float minSimilarity) {
-		this(minSimilarity);
-		setGUIAutomation(guiAutomation);
 	}
 
 	@Override
@@ -276,7 +273,8 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		guiAutomation.setLastFoundRegion(match);
 
 		// set focus
-		setFocus("Ableton Live 9 Suite.app");
+		// setFocus("Ableton Live 9 Suite.app");
+		setFocus("Ableton Live 9 Suite");
 
 		// left click
 		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)
@@ -309,12 +307,18 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	private void setFocus(String program) {
 
-		String[] cmd = new String[2];
+		String[] cmd = new String[3];
 
-		// test
 		if (System.getProperty("os.name").contains("Mac")) {
 			cmd[0] = "open";
 			cmd[1] = program;
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+			cmd[0] = "cscript";
+			cmd[1] = resources.getWorkingDirectory() + File.separator + "VBS"
+					+ File.separator + "setFocus.vbs";
+			cmd[2] = program;
 		}
 
 		ShellRunner shellRunner = new ShellRunner(cmd);

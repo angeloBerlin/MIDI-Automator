@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.7.1</version>
+	<version>1.8.0</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
@@ -50,7 +50,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.jar>${project.build.finalName}-${project.jar.descriptor.ref}.jar</project.jar>
 		<project.splashscreen.file>splash.png</project.splashscreen.file>
 		<project.images.dir>images</project.images.dir>
-		<project.demo.dir>demo</project.demo.dir>
+		<project.vbs.dir>VBS</project.vbs.dir>
 		<project.jre.dir>jre</project.jre.dir>
 		<project.java.version>1.8</project.java.version>
 
@@ -255,7 +255,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 								<configuration>
 									<target>
 										<property name="name" value="${project.name}" />
-										<property name="demo.dir" value="${project.demo.dir}" />
 										<property name="target.dir" value="${project.build.directory}" />
 										<property name="lib.dir" value="${project.lib.dir}" />
 										<property name="images.dir" value="${project.images.dir}" />
@@ -405,6 +404,22 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 									</resources>
 								</configuration>
 							</execution>
+							<execution>
+                                <id>copy-vbs</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.nsis.build.dir}/${project.vbs.dir}</outputDirectory>
+                                    <overwrite>true</overwrite>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.vbs.dir}</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
 							<execution>
 								<id>copy-jre</id>
 								<phase>package</phase>

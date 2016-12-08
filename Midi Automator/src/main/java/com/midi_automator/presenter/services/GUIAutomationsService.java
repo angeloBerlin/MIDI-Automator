@@ -10,6 +10,7 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.guiautomator.GUIAutomation;
@@ -30,6 +31,9 @@ import com.midi_automator.utils.MidiUtils;
 public class GUIAutomationsService {
 
 	private Logger log = Logger.getLogger(this.getClass().getName());
+
+	@Autowired
+	private ApplicationContext ctx;
 
 	@Autowired
 	private MidiAutomatorProperties properties;
@@ -85,7 +89,9 @@ public class GUIAutomationsService {
 			protected Void doInBackground() throws Exception {
 				for (int i = 0; i < guiAutomations.length; i++) {
 
-					GUIAutomator guiAutomator = new GUIAutomator(minSimilarity);
+					GUIAutomator guiAutomator = ctx.getBean("GUIAutomator",
+							GUIAutomator.class);
+					guiAutomator.init(minSimilarity);
 					guiAutomator.setName("GUIAutomator " + i);
 					guiAutomator.setGUIAutomation(guiAutomations[i]);
 					guiAutomators.add(guiAutomator);

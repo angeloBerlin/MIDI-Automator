@@ -7,7 +7,6 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import com.midi_automator.presenter.services.FileListService;
@@ -49,9 +48,6 @@ public class MainFramePopupMenu extends MidiLearnPopupMenu {
 
 	@Autowired
 	private MainFrame mainFrame;
-
-	@Autowired
-	private ApplicationContext ctx;
 
 	@Autowired
 	private FileListService fileListService;
