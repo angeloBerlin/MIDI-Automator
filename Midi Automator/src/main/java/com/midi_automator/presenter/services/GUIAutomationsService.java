@@ -1,6 +1,10 @@
 package com.midi_automator.presenter.services;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -470,12 +474,48 @@ public class GUIAutomationsService {
 		}
 	}
 
+	/**
+	 * Returns the paths to all open programs on Macintosh or the window titles
+	 * on Windows.
+	 * 
+	 * @return open program paths (MAC). Open Window titles (Windows).
+	 */
+	public String[] getOpenPrograms() {
+
+		String process;
+		HashSet<String> programsSet = new HashSet<String>();
+
+		if (System.getProperty("os.name").contains("Mac")) {
+			Process p;
+			String shellScript = "ps -few";
+			try {
+				p = Runtime.getRuntime().exec(shellScript);
+
+				BufferedReader input = new BufferedReader(
+						new InputStreamReader(p.getInputStream()));
+
+				while ((process = input.readLine()) != null) {
+					if (process.contains("/Applications/")
+							&& process.contains(".app")) {
+
+						programsSet.add(process.substring(process.indexOf('/'),
+								process.indexOf(".app") + 4));
+					}
+				}
+				input.close();
+			} catch (IOException e) {
+				log.error("Failed to run \"" + shellScript + "\"", e);
+			}
+		}
+
+		return programsSet.toArray(new String[programsSet.size()]);
+	}
+
 	public GUIAutomation[] getGuiAutomations() {
 		return guiAutomations;
 	}
 
 	public float getMinSimilarity() {
-
 		return minSimilarity;
 	}
 

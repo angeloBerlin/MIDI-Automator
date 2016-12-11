@@ -50,6 +50,7 @@ public class GUIAutomation implements IDeActivateable {
 	private String imagePath;
 	private String type;
 	private int[] keyCodes;
+	private String focusedProgram;
 	private String trigger;
 	private String midiSignature;
 	private boolean active;
@@ -291,4 +292,13 @@ public class GUIAutomation implements IDeActivateable {
 	public void setKeyCodes(int[] keyCodes) {
 		this.keyCodes = keyCodes;
 	}
+
+	public String getFocusedProgram() {
+		return focusedProgram;
+	}
+
+	public void setFocusedProgram(String focusedProgram) {
+		this.focusedProgram = focusedProgram;
+	}
+
 }

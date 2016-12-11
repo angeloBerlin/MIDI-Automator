@@ -273,8 +273,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		guiAutomation.setLastFoundRegion(match);
 
 		// set focus
-		// setFocus("Ableton Live 9 Suite.app");
-		setFocus("Ableton Live 9 Suite");
+		setFocus(guiAutomation.getFocusedProgram());
 
 		// left click
 		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)
@@ -309,20 +308,25 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		String[] cmd = new String[3];
 
-		if (System.getProperty("os.name").contains("Mac")) {
-			cmd[0] = "open";
-			cmd[1] = program;
-		}
+		if (program != null) {
+			if (!program.equals("")) {
 
-		if (System.getProperty("os.name").contains("Windows")) {
-			cmd[0] = "cscript";
-			cmd[1] = resources.getWorkingDirectory() + File.separator + "VBS"
-					+ File.separator + "setFocus.vbs";
-			cmd[2] = program;
-		}
+				if (System.getProperty("os.name").contains("Mac")) {
+					cmd[0] = "open";
+					cmd[1] = program;
+				}
 
-		ShellRunner shellRunner = new ShellRunner(cmd);
-		shellRunner.run();
+				if (System.getProperty("os.name").contains("Windows")) {
+					cmd[0] = "cscript";
+					cmd[1] = resources.getWorkingDirectory() + File.separator
+							+ "VBS" + File.separator + "setFocus.vbs";
+					cmd[2] = program;
+				}
+
+				ShellRunner shellRunner = new ShellRunner(cmd);
+				shellRunner.run();
+			}
+		}
 	}
 
 	/**
