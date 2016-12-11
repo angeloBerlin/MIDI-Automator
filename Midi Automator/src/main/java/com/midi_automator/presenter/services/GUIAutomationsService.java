@@ -22,6 +22,9 @@ import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.presenter.Presenter;
+import com.midi_automator.presenter.services.WIN32API.EnumWindowsCallback;
+import com.midi_automator.presenter.services.WIN32API.IEnumWindowsCallback;
+import com.midi_automator.presenter.services.WIN32API.IUser32;
 import com.midi_automator.utils.CommonUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -506,6 +509,13 @@ public class GUIAutomationsService {
 			} catch (IOException e) {
 				log.error("Failed to run \"" + shellScript + "\"", e);
 			}
+		}
+
+		if (System.getProperty("os.name").contains("Windows")) {
+
+			IEnumWindowsCallback wnDenumProc = new EnumWindowsCallback();
+			IUser32.INSTANCE.EnumWindows(wnDenumProc, null);
+			programsSet = wnDenumProc.getWINDOWNAMES();
 		}
 
 		return programsSet.toArray(new String[programsSet.size()]);
