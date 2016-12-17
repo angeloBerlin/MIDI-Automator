@@ -79,6 +79,8 @@ public class AddDialog extends AbstractBasicDialog {
 			UIManager.put("FileChooser.acceptAllFileFilterText", "All Files");
 			fileChooser = new JFileChooser();
 			programChooser = new JFileChooser();
+			programChooser
+					.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
 			createEntryName();
 			createEntryFile();

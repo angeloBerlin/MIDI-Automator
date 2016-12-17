@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -479,11 +480,11 @@ public class GUIAutomationsService {
 
 	/**
 	 * Returns the paths to all open programs on Macintosh or the window titles
-	 * on Windows.
+	 * on Windows in a sorted ArrayList.
 	 * 
 	 * @return open program paths (MAC). Open Window titles (Windows).
 	 */
-	public String[] getOpenPrograms() {
+	public ArrayList<String> getOpenPrograms() {
 
 		String process;
 		HashSet<String> programsSet = new HashSet<String>();
@@ -518,7 +519,12 @@ public class GUIAutomationsService {
 			programsSet = wnDenumProc.getWINDOWNAMES();
 		}
 
-		return programsSet.toArray(new String[programsSet.size()]);
+		ArrayList<String> programList = new ArrayList<String>(programsSet);
+
+		Collections.sort(programList,
+				(String program1, String program2) -> program1
+						.compareToIgnoreCase(program2));
+		return programList;
 	}
 
 	public GUIAutomation[] getGuiAutomations() {

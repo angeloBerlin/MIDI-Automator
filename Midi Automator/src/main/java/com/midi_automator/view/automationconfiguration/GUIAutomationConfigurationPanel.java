@@ -67,13 +67,15 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 	 */
 	public void init() {
 
+		GridBagConstraints c = new GridBagConstraints();
+
 		if (!initialized) {
 
 			setName(NAME);
 			setLayout(new GridBagLayout());
 
 			createGlobalSettingsPanel();
-			GridBagConstraints c = new GridBagConstraints();
+
 			c.gridx = 0;
 			c.gridy = 0;
 			c.anchor = GridBagConstraints.WEST;
@@ -83,7 +85,6 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			configurationTable = ctx.getBean("GUIAutomationConfigurationTable",
 					GUIAutomationConfigurationTable.class);
 
-			configurationTable.init();
 			configurationTable.setCache(configurationTable
 					.getSelectionBackground());
 			JScrollPane scrollPane = new JScrollPane(configurationTable);
@@ -99,6 +100,17 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			add(editorPanel, c);
 
 			initialized = true;
+		}
+
+		configurationTable.init();
+	}
+
+	/**
+	 * Reloads an initialized panel
+	 */
+	public void reload() {
+		if (initialized) {
+			configurationTable.init();
 		}
 	}
 

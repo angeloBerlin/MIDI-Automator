@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
+import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
@@ -60,6 +61,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int COLWIDTH_TYPE = 110;
 	private final int COLWIDTH_KEY = 80;
 	private final int COLWIDTH_TRIGGER = 220;
+	private final int COLWIDTH_FOCUS = 300;
 	private final int COLWIDTH_MIN_DELAY = 80;
 	private final int COLWIDTH_TIMEOUT = 80;
 	private final int COLWIDTH_MIDI_MESSAGE = 150;
@@ -69,14 +71,15 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private final int TABLEHEIGHT = 140;
 	private final int ROWHEIGHT = 40;
 	private final int TABLEWIDTH = COLWIDTH_IMAGE + COLWIDTH_TYPE
-			+ COLWIDTH_KEY + COLWIDTH_TRIGGER + COLWIDTH_MIN_DELAY
-			+ COLWIDTH_TIMEOUT + COLWIDTH_MIDI_MESSAGE + COLWIDTH_SCAN_RATE
-			+ COLWIDTH_MOVABLE;
+			+ COLWIDTH_KEY + COLWIDTH_TRIGGER + COLWIDTH_FOCUS
+			+ COLWIDTH_MIN_DELAY + COLWIDTH_TIMEOUT + COLWIDTH_MIDI_MESSAGE
+			+ COLWIDTH_SCAN_RATE + COLWIDTH_MOVABLE;
 
 	public static final String COLNAME_IMAGE = "Screenshot";
 	public static final String COLNAME_TYPE = "Type";
 	public static final String COLNAME_KEYS = "Keys";
 	public static final String COLNAME_TRIGGER = "Trigger";
+	public static final String COLNAME_FOCUS = "Focus Program";
 	public static final String COLNAME_MIN_DELAY = "Delay (ms)";
 	public static final String COLNAME_TIMEOUT = "Timeout (ms)";
 	public static final String COLNAME_MIDI_SIGNATURE = "Midi Message";
@@ -129,6 +132,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	@Autowired
 	protected PresenterService presenterService;
 
+	@Autowired
+	protected GUIAutomationsService guiAutomationsService;
+
 	/**
 	 * Initializes the automation table
 	 */
@@ -149,6 +155,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		columnNames.add(COLNAME_TYPE);
 		columnNames.add(COLNAME_KEYS);
 		columnNames.add(COLNAME_TRIGGER);
+		columnNames.add(COLNAME_FOCUS);
 		columnNames.add(COLNAME_MIN_DELAY);
 		columnNames.add(COLNAME_TIMEOUT);
 		columnNames.add(COLNAME_MIDI_SIGNATURE);
@@ -162,6 +169,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createTypeColumn();
 		createKeysColumn();
 		createTriggerColumn();
+		createFocusColumn();
 		createMinDelayColumn();
 		createTimeoutColumn();
 		createMidiMessageColumn();
@@ -284,7 +292,28 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	}
 
 	/**
-	 * Creates the minimun delay columns with a spinner.
+	 * Creates the focus program column with a combo box.
+	 */
+	private void createFocusColumn() {
+
+		getColumn(COLNAME_FOCUS).setMinWidth(COLWIDTH_FOCUS);
+
+		List<String> openPrograms = guiAutomationsService.getOpenPrograms();
+		openPrograms.add(0, MidiAutomatorProperties.VALUE_NULL);
+
+		JTableComboBoxRenderer focusComboBoxRenderer = new JTableComboBoxRenderer(
+				openPrograms.toArray(new String[0]));
+		JComboBox<String> focusComboBox = new JComboBox<String>(
+				openPrograms.toArray(new String[0]));
+		JTableComboBoxEditor focusComboBoxEditor = new JTableComboBoxEditor(
+				focusComboBox);
+
+		getColumn(COLNAME_FOCUS).setCellRenderer(focusComboBoxRenderer);
+		getColumn(COLNAME_FOCUS).setCellEditor(focusComboBoxEditor);
+	}
+
+	/**
+	 * Creates the minimum delay columns with a spinner.
 	 */
 	private void createMinDelayColumn() {
 
@@ -438,6 +467,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(getColumn(COLNAME_TYPE).getModelIndex(), initType(type));
 		rowData.add(getColumn(COLNAME_KEYS).getModelIndex(), initKeys(keyCodes));
 		rowData.add(getColumn(COLNAME_TRIGGER).getModelIndex(),
+				initTrigger(trigger));
+		rowData.add(getColumn(COLNAME_FOCUS).getModelIndex(),
 				initTrigger(trigger));
 		rowData.add(getColumn(COLNAME_MIN_DELAY).getModelIndex(), minDelay);
 		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), timeout);
