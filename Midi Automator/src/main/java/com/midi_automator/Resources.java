@@ -141,7 +141,7 @@ public class Resources {
 				fileAppender.setAppend(false);
 				fileAppender.setImmediateFlush(true);
 				fileAppender.setName(LOG_FILE_APPENDER_NAME);
-				fileAppender.setMaxFileSize("1MB");
+				fileAppender.setMaxFileSize("5MB");
 				fileAppender.setMaxBackupIndex(10);
 				rootLogger.addAppender(fileAppender);
 			}
