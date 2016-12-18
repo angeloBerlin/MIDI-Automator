@@ -115,15 +115,14 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private void triggerAutomation() {
 
 		// always
-		if (guiAutomation.getTrigger()
-				.equals(GUIAutomation.CLICKTRIGGER_ALWAYS)) {
+		if (guiAutomation.getTrigger().equals(GUIAutomation.TRIGGER_ALWAYS)) {
 			if (guiAutomation.isActive()) {
 				searchAndRunAutomation();
 			}
 		}
 
 		// once
-		if (guiAutomation.getTrigger().equals(GUIAutomation.CLICKTRIGGER_ONCE)) {
+		if (guiAutomation.getTrigger().equals(GUIAutomation.TRIGGER_ONCE)) {
 			if (guiAutomation.isActive()) {
 				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
@@ -133,7 +132,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 		// on change
 		if (guiAutomation.getTrigger().equals(
-				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
+				GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
 			if (guiAutomation.isActive()) {
 				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
@@ -142,8 +141,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		}
 
 		// on midi
-		if (guiAutomation.getTrigger()
-				.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+		if (guiAutomation.getTrigger().contains(GUIAutomation.TRIGGER_MIDI)) {
 			if (guiAutomation.isActive()) {
 				if (searchAndRunAutomation()) {
 					guiAutomation.setActive(false);
@@ -158,7 +156,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	public void activateOncePerChangeAutomations() {
 
 		if (guiAutomation.getTrigger().equals(
-				GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE)) {
+				GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
 			log.info("Activate automation once per change:" + guiAutomation);
 			guiAutomation.setActive(true);
 		}
@@ -176,7 +174,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		String signature = guiAutomation.getMidiSignature();
 
 		if (signature != null && midiSignature != null) {
-			if ((trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI) && (signature
+			if ((trigger.contains(GUIAutomation.TRIGGER_MIDI) && (signature
 					.equals(midiSignature)))) {
 				log.info("Activated automation " + guiAutomation
 						+ " by MIDI message: " + midiSignature);
@@ -306,17 +304,20 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	private void setFocus(String program) {
 
-		String[] cmd = new String[3];
+		String[] cmd = new String[0];
 
 		if (program != null) {
-			if (!program.equals("")) {
+			if (!program.equals("")
+					&& !program.equals(MidiAutomatorProperties.VALUE_NULL)) {
 
 				if (System.getProperty("os.name").contains("Mac")) {
+					cmd = new String[2];
 					cmd[0] = "open";
 					cmd[1] = program;
 				}
 
 				if (System.getProperty("os.name").contains("Windows")) {
+					cmd = new String[3];
 					cmd[0] = "cscript";
 					cmd[1] = resources.getWorkingDirectory() + File.separator
 							+ "VBS" + File.separator + "setFocus.vbs";
@@ -324,6 +325,13 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 				}
 
 				ShellRunner shellRunner = new ShellRunner(cmd);
+
+				String cmdString = "";
+				for (String command : cmd) {
+					cmdString = cmdString + command + " ";
+				}
+				log.info("Focusing program by running: " + cmdString);
+
 				shellRunner.run();
 			}
 		}

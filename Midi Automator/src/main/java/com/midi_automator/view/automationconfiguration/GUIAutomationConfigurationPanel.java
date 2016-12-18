@@ -186,6 +186,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			String type = getAutomationType(row);
 			int[] keyCodes = getAutomationKeyCodes(row);
 			String trigger = getAutomationTrigger(row);
+			String focus = getAutomationFocusedProgram(row);
 			long delay = getAutomationMinDelay(row);
 			long timeout = getAutomationTimeout(row);
 			String midiSignature = getAutomationMidiSignature(row);
@@ -193,7 +194,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 			boolean isMovable = getAutomationMovable(row);
 
 			GUIAutomation guiAutomation = new GUIAutomation(imagePath, type,
-					trigger, delay, timeout, midiSignature, scanRate,
+					trigger, focus, delay, timeout, midiSignature, scanRate,
 					isMovable, keyCodes);
 			guiAutomations[row] = guiAutomation;
 		}
@@ -272,6 +273,20 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		return getAutomationsTableValue(
 				GUIAutomationConfigurationTable.COLNAME_TRIGGER, row,
+				String.class);
+	}
+
+	/**
+	 * Gets the program to focus for a specific row from the automation table
+	 * 
+	 * @param row
+	 *            The row
+	 * @return The automation focus
+	 */
+	private String getAutomationFocusedProgram(int row) {
+
+		return getAutomationsTableValue(
+				GUIAutomationConfigurationTable.COLNAME_FOCUS, row,
 				String.class);
 	}
 
@@ -418,7 +433,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			configurationTable.setAutomation(null, null, null, null,
+			configurationTable.setAutomation(null, null, null, null, null,
 					GUIAutomation.DEFAULT_MIN_DELAY,
 					GUIAutomation.DEFAULT_TIMEOUT, null,
 					GUIAutomation.DEFAULT_SCAN_RATE,

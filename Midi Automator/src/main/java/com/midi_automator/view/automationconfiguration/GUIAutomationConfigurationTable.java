@@ -86,8 +86,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	public static final String COLNAME_SCAN_RATE = "Scans (1/s)";
 	public static final String COLNAME_MOVABLE = "Movable";
 
-	private final String DEFAULT_TYPE = GUIAutomation.CLICKTYPE_LEFT;
-	private final String DEFAULT_TRIGGER = GUIAutomation.CLICKTRIGGER_ALWAYS;
 	private final String DEFAULT_MIDI_MESSAGE = "";
 	private static final String DEFAULT_KEYS = "";
 	private final Long MIN_DELAY_STEP_SIZE = 1L;
@@ -270,13 +268,13 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 		// set values
 		List<String> triggerTypes = new ArrayList<String>();
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ALWAYS);
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE);
-		triggerTypes.add(GUIAutomation.CLICKTRIGGER_ONCE);
+		triggerTypes.add(GUIAutomation.TRIGGER_ALWAYS);
+		triggerTypes.add(GUIAutomation.TRIGGER_ONCE_PER_CHANGE);
+		triggerTypes.add(GUIAutomation.TRIGGER_ONCE);
 
 		// add midi IN devices as values
 		for (String deviceName : MidiUtils.getMidiDeviceSignatures("IN")) {
-			triggerTypes.add(GUIAutomation.CLICKTRIGGER_MIDI + deviceName);
+			triggerTypes.add(GUIAutomation.TRIGGER_MIDI + deviceName);
 		}
 
 		JTableComboBoxRenderer triggerComboBoxRenderer = new JTableComboBoxRenderer(
@@ -439,6 +437,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The type of automation, <NULL> for default type
 	 * @param trigger
 	 *            The trigger for the automation, <NULL> for default trigger
+	 * @param focusedProgram
+	 *            The focused program for the automation
 	 * @param keyCodes
 	 *            The keys send from the automation, <NULL> for default key
 	 * @param minDelay
@@ -455,8 +455,8 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            <FALSE> is not
 	 */
 	private void addAutomation(String imagePath, String type, int[] keyCodes,
-			String trigger, long minDelay, long timeout, String midiSignature,
-			float scanRate, boolean isMovable) {
+			String trigger, String focusedProgram, long minDelay, long timeout,
+			String midiSignature, float scanRate, boolean isMovable) {
 
 		// extend table model
 		Vector<Object> rowData = new Vector<Object>();
@@ -469,7 +469,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		rowData.add(getColumn(COLNAME_TRIGGER).getModelIndex(),
 				initTrigger(trigger));
 		rowData.add(getColumn(COLNAME_FOCUS).getModelIndex(),
-				initTrigger(trigger));
+				initFocusedProgram(focusedProgram));
 		rowData.add(getColumn(COLNAME_MIN_DELAY).getModelIndex(), minDelay);
 		rowData.add(getColumn(COLNAME_TIMEOUT).getModelIndex(), timeout);
 		rowData.add(getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex(),
@@ -504,11 +504,13 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 * @param imagePath
 	 *            The path to the click image, <NULL> for empty screenshot
 	 * @param type
-	 *            The type of automation, <NULL> for default type
+	 *            The type of automation, <NULL> for default
 	 * @param keyCodes
-	 *            The keys send from the automation, <NULL> for default key
+	 *            The keys send from the automation, <NULL> for default
 	 * @param trigger
-	 *            The trigger for the automation, <NULL> for default trigger
+	 *            The trigger for the automation, <NULL> for default
+	 * @param focusedProgram
+	 *            The program to focus for the automation, <NULL> for no focus
 	 * @param minDelay
 	 *            The minimum delay for the automation
 	 * @param timeout
@@ -524,14 +526,14 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	 *            The row of the automation, if < 0 a new row will be added
 	 */
 	public void setAutomation(String imagePath, String type, int[] keyCodes,
-			String trigger, long minDelay, long timeout, String midiSignature,
-			float scanRate, boolean isMovable, int row) {
+			String trigger, String focusedProgram, long minDelay, long timeout,
+			String midiSignature, float scanRate, boolean isMovable, int row) {
 
 		TableModel model = getModel();
 
 		if (model.getRowCount() <= row || row < 0) {
-			addAutomation(imagePath, type, keyCodes, trigger, minDelay,
-					timeout, midiSignature, scanRate, isMovable);
+			addAutomation(imagePath, type, keyCodes, trigger, focusedProgram,
+					minDelay, timeout, midiSignature, scanRate, isMovable);
 		} else {
 
 			model.setValueAt(initScreenshotIcon(imagePath), row,
@@ -542,12 +544,16 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					.getModelIndex());
 			model.setValueAt(initTrigger(trigger), row,
 					getColumn(COLNAME_TRIGGER).getModelIndex());
+			model.setValueAt(initFocusedProgram(focusedProgram), row,
+					getColumn(COLNAME_FOCUS).getModelIndex());
 			model.setValueAt(minDelay, row, getColumn(COLNAME_MIN_DELAY)
 					.getModelIndex());
 			model.setValueAt(timeout, row, getColumn(COLNAME_TIMEOUT)
 					.getModelIndex());
 			model.setValueAt(initMidiMessage(midiSignature), row,
 					getColumn(COLNAME_MIDI_SIGNATURE).getModelIndex());
+			model.setValueAt(scanRate, row, getColumn(COLNAME_SCAN_RATE)
+					.getModelIndex());
 			model.setValueAt(isMovable, row, getColumn(COLNAME_MOVABLE)
 					.getModelIndex());
 		}
@@ -677,9 +683,26 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private String initTrigger(String trigger) {
 
 		if (trigger == null) {
-			return DEFAULT_TRIGGER;
+			return GUIAutomation.DEFAULT_TRIGGER;
 		} else {
 			return trigger;
+		}
+	}
+
+	/**
+	 * Initializes a focused program value.
+	 * 
+	 * @param focusedProgram
+	 *            The focused program value, if <NULL> the default value will be
+	 *            returned.
+	 * @return The program to focus
+	 */
+	private String initFocusedProgram(String focusedProgram) {
+
+		if (focusedProgram == null) {
+			return MidiAutomatorProperties.VALUE_NULL;
+		} else {
+			return focusedProgram;
 		}
 	}
 
@@ -694,7 +717,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private String initType(String type) {
 
 		if (type == null) {
-			return DEFAULT_TYPE;
+			return GUIAutomation.CLICKTYPE_LEFT;
 		} else {
 			return type;
 		}
@@ -971,7 +994,7 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					&& !midiInAutomationDeviceName
 							.equals(MidiAutomatorProperties.VALUE_NULL)
 					&& midiInAutomationDeviceName
-							.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+							.contains(GUIAutomation.TRIGGER_MIDI)) {
 				midiLearnPopupMenu.getMidiLearnMenuItem().setEnabled(true);
 			}
 
@@ -1012,9 +1035,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					+ "_" + getSelectedAutomationIndex();
 			String trigger = (String) comboBox.getSelectedItem();
 
-			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+			if (trigger.contains(GUIAutomation.TRIGGER_MIDI)) {
 				midiDevicesService.loadMidiDeviceByFunctionKey(functionKey,
-						trigger.replace(GUIAutomation.CLICKTRIGGER_MIDI, ""));
+						trigger.replace(GUIAutomation.TRIGGER_MIDI, ""));
 			} else {
 				midiDevicesService.loadMidiDeviceByFunctionKey(functionKey,
 						MidiAutomatorProperties.VALUE_NULL);

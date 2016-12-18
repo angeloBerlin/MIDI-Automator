@@ -500,6 +500,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 						guiAutomations[i].getType(),
 						guiAutomations[i].getKeyCodes(),
 						guiAutomations[i].getTrigger(),
+						guiAutomations[i].getFocusedProgram(),
 						guiAutomations[i].getMinDelay(),
 						guiAutomations[i].getTimeout(),
 						guiAutomations[i].getMidiSignature(),

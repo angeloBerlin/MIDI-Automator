@@ -178,7 +178,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// set trigger to once
 			DialogFixture preferencesDialog = openPreferences();
-			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE, 0,
+			setAutomationTrigger(GUIAutomation.TRIGGER_ONCE, 0,
 					preferencesDialog);
 			saveDialog(preferencesDialog);
 
@@ -217,7 +217,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 			// set trigger to once per opening
 			DialogFixture preferencesDialog = openPreferences();
-			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE_PER_CHANGE, 0,
+			setAutomationTrigger(GUIAutomation.TRIGGER_ONCE_PER_CHANGE, 0,
 					preferencesDialog);
 			saveDialog(preferencesDialog);
 
@@ -452,7 +452,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			DialogFixture preferencesDialog = openPreferences();
 			setAutomationType(GUIAutomation.CLICKTYPE_DOUBLE, 0,
 					preferencesDialog);
-			setAutomationTrigger(GUIAutomation.CLICKTRIGGER_ONCE, 0,
+			setAutomationTrigger(GUIAutomation.TRIGGER_ONCE, 0,
 					preferencesDialog);
 			setAutomationMinDelay("1000", 0, preferencesDialog);
 			saveDialog(preferencesDialog);

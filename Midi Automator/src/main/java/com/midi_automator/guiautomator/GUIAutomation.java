@@ -23,11 +23,13 @@ public class GUIAutomation implements IDeActivateable {
 	public static final String CLICKTYPE_RIGHT = "right click";
 	public static final String CLICKTYPE_DOUBLE = "double click";
 	public static final String TYPE_SENDKEY = "send key";
+	public static final String DEFAULT_TYPE = CLICKTYPE_LEFT;
 
-	public static final String CLICKTRIGGER_ALWAYS = "always";
-	public static final String CLICKTRIGGER_ONCE_PER_CHANGE = "once per opening";
-	public static final String CLICKTRIGGER_ONCE = "once";
-	public static final String CLICKTRIGGER_MIDI = "MIDI: ";
+	public static final String TRIGGER_ALWAYS = "always";
+	public static final String TRIGGER_ONCE_PER_CHANGE = "once per opening";
+	public static final String TRIGGER_ONCE = "once";
+	public static final String TRIGGER_MIDI = "MIDI: ";
+	public static final String DEFAULT_TRIGGER = TRIGGER_ALWAYS;
 
 	public static final Long DEFAULT_MIN_DELAY = 0L;
 	public static final Long MIN_DELAY_MIN_VALUE = 0L;
@@ -48,10 +50,10 @@ public class GUIAutomation implements IDeActivateable {
 	public static final boolean DEFAULT_IS_MOVABLE = false;
 
 	private String imagePath;
-	private String type;
+	private String type = DEFAULT_TYPE;
 	private int[] keyCodes;
+	private String trigger = DEFAULT_TRIGGER;
 	private String focusedProgram;
-	private String trigger;
 	private String midiSignature;
 	private boolean active;
 	private long minDelay = DEFAULT_MIN_DELAY;
@@ -77,6 +79,8 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The automation type
 	 * @param trigger
 	 *            The automation trigger
+	 * @param focusedProgram
+	 *            The program to focus
 	 * @param delay
 	 *            The minimum delay before the automation runs
 	 * @param timeout
@@ -91,12 +95,14 @@ public class GUIAutomation implements IDeActivateable {
 	 *            The key to press
 	 */
 	public GUIAutomation(String imagePath, String type, String trigger,
-			long delay, long timeout, String midiSignature, float scanRate,
-			boolean isMovable, int[] keyCodes) {
+			String focusedProgram, long delay, long timeout,
+			String midiSignature, float scanRate, boolean isMovable,
+			int[] keyCodes) {
 		new GUIAutomation();
 		setImagePath(imagePath);
 		setType(type);
 		setTrigger(trigger);
+		setFocusedProgram(focusedProgram);
 		setMinDelay(delay);
 		setTimeout(timeout);
 		setMidiSignature(midiSignature);
@@ -161,8 +167,7 @@ public class GUIAutomation implements IDeActivateable {
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
 
-		if (trigger.equals(CLICKTRIGGER_ALWAYS)
-				|| trigger.equals(CLICKTRIGGER_ONCE)) {
+		if (trigger.equals(TRIGGER_ALWAYS) || trigger.equals(TRIGGER_ONCE)) {
 			setActive(true);
 		} else {
 			setActive(false);

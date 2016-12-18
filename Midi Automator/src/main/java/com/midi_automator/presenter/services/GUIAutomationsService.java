@@ -75,6 +75,7 @@ public class GUIAutomationsService {
 		loadAutomationTypeProperties();
 		loadAutomationKeyCodesProperties();
 		loadAutomationTriggerProperties();
+		loadAutomationFocusedProgramProperties();
 		loadAutomationMinDelayProperties();
 		loadAutomationTimeoutProperties();
 		loadAutomationMidiSignatureProperties();
@@ -258,18 +259,35 @@ public class GUIAutomationsService {
 			String trigger = (String) property.getValue();
 			guiAutomations[index].setTrigger(trigger);
 
-			if (trigger.contains(GUIAutomation.CLICKTRIGGER_MIDI)) {
+			if (trigger.contains(GUIAutomation.TRIGGER_MIDI)) {
 
 				String midiDeviceKey = MidiAutomatorProperties.KEY_MIDI_IN_AUTOMATION_TRIGGER_DEVICE
 						+ "_" + index;
 
 				String midiDeviceName = trigger.replace(
-						GUIAutomation.CLICKTRIGGER_MIDI, "");
+						GUIAutomation.TRIGGER_MIDI, "");
 
 				midiService.loadMidiDeviceByFunctionKey(midiDeviceKey,
 						midiDeviceName);
 			}
 
+		}
+	}
+
+	/**
+	 * Loads all focused programs.
+	 */
+	private void loadAutomationFocusedProgramProperties() {
+
+		Set<Entry<Object, Object>> propertiesSet = properties
+				.entrySet(GUIAutomationKey.GUI_AUTOMATION_FOCUS.toString());
+
+		for (Entry<Object, Object> property : propertiesSet) {
+
+			int index = MidiAutomatorProperties
+					.getIndexOfPropertyKey((String) property.getKey());
+			guiAutomations[index].setFocusedProgram((String) property
+					.getValue());
 		}
 	}
 
@@ -383,6 +401,10 @@ public class GUIAutomationsService {
 					guiAutomations[index].getTrigger());
 
 			saveAutomationProperty(
+					GUIAutomationKey.GUI_AUTOMATION_FOCUS.toString(), index,
+					guiAutomations[index].getFocusedProgram());
+
+			saveAutomationProperty(
 					GUIAutomationKey.GUI_AUTOMATION_MIN_DELAY.toString(),
 					index, guiAutomations[index].getMinDelay());
 
@@ -486,45 +508,74 @@ public class GUIAutomationsService {
 	 */
 	public ArrayList<String> getOpenPrograms() {
 
-		String process;
 		HashSet<String> programsSet = new HashSet<String>();
 
 		if (System.getProperty("os.name").contains("Mac")) {
-			Process p;
-			String shellScript = "ps -few";
-			try {
-				p = Runtime.getRuntime().exec(shellScript);
-
-				BufferedReader input = new BufferedReader(
-						new InputStreamReader(p.getInputStream()));
-
-				while ((process = input.readLine()) != null) {
-					if (process.contains("/Applications/")
-							&& process.contains(".app")) {
-
-						programsSet.add(process.substring(process.indexOf('/'),
-								process.indexOf(".app") + 4));
-					}
-				}
-				input.close();
-			} catch (IOException e) {
-				log.error("Failed to run \"" + shellScript + "\"", e);
-			}
+			programsSet = getOpenProgramsOnMac();
 		}
 
 		if (System.getProperty("os.name").contains("Windows")) {
-
-			IEnumWindowsCallback wnDenumProc = new EnumWindowsCallback();
-			IUser32.INSTANCE.EnumWindows(wnDenumProc, null);
-			programsSet = wnDenumProc.getWINDOWNAMES();
+			programsSet = getOpenWindowTitlesOnWindows();
 		}
 
+		// sort alphabetically
 		ArrayList<String> programList = new ArrayList<String>(programsSet);
-
 		Collections.sort(programList,
 				(String program1, String program2) -> program1
 						.compareToIgnoreCase(program2));
+
 		return programList;
+	}
+
+	/**
+	 * Gets all open windows titles. RUNS ONLY ON WINDOWS!
+	 * 
+	 * @return A unique set of open windows titles
+	 */
+	private HashSet<String> getOpenWindowTitlesOnWindows() {
+
+		HashSet<String> windowTitles = new HashSet<String>();
+
+		IEnumWindowsCallback wnDenumProc = new EnumWindowsCallback();
+		IUser32.INSTANCE.EnumWindows(wnDenumProc, null);
+		windowTitles = wnDenumProc.getWINDOWNAMES();
+
+		return windowTitles;
+	}
+
+	/**
+	 * Gets all open programs. RUNS ONLY ON MAC!
+	 * 
+	 * @return A unique set of open program paths
+	 */
+	private HashSet<String> getOpenProgramsOnMac() {
+
+		Process p;
+		String process;
+		HashSet<String> programs = new HashSet<String>();
+
+		String shellScript = "ps -few";
+
+		try {
+			p = Runtime.getRuntime().exec(shellScript);
+
+			BufferedReader input = new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
+
+			while ((process = input.readLine()) != null) {
+				if (process.contains("/Applications/")
+						&& process.contains(".app")) {
+
+					programs.add(process.substring(process.indexOf('/'),
+							process.indexOf(".app") + 4));
+				}
+			}
+			input.close();
+		} catch (IOException e) {
+			log.error("Failed to run \"" + shellScript + "\"", e);
+		}
+
+		return programs;
 	}
 
 	public GUIAutomation[] getGuiAutomations() {
