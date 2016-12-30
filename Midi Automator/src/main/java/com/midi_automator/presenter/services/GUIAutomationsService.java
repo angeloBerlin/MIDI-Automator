@@ -23,9 +23,6 @@ import com.midi_automator.guiautomator.GUIAutomator;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.presenter.Presenter;
-import com.midi_automator.presenter.services.WIN32API.EnumWindowsCallback;
-import com.midi_automator.presenter.services.WIN32API.IEnumWindowsCallback;
-import com.midi_automator.presenter.services.WIN32API.IUser32;
 import com.midi_automator.utils.CommonUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -54,7 +51,8 @@ public class GUIAutomationsService {
 
 	private GUIAutomation[] guiAutomations;
 	private float minSimilarity;
-	private List<GUIAutomator> guiAutomators = new ArrayList<GUIAutomator>();;
+	private List<GUIAutomator> guiAutomators = new ArrayList<GUIAutomator>();
+	public static final String PIDSEPARATOR = "PID: ";
 
 	/**
 	 * Loads all GUI automations from the properties.
@@ -501,81 +499,92 @@ public class GUIAutomationsService {
 	}
 
 	/**
-	 * Returns the paths to all open programs on Macintosh or the window titles
-	 * on Windows in a sorted ArrayList.
+	 * Gets all open programs.
 	 * 
-	 * @return open program paths (MAC). Open Window titles (Windows).
+	 * @return A unique of open programs
 	 */
-	public ArrayList<String> getOpenPrograms() {
+	public List<String> getOpenPrograms() {
 
-		HashSet<String> programsSet = new HashSet<String>();
-
-		if (System.getProperty("os.name").contains("Mac")) {
-			programsSet = getOpenProgramsOnMac();
-		}
-
-		if (System.getProperty("os.name").contains("Windows")) {
-			programsSet = getOpenWindowTitlesOnWindows();
-		}
-
-		// sort alphabetically
-		ArrayList<String> programList = new ArrayList<String>(programsSet);
-		Collections.sort(programList,
-				(String program1, String program2) -> program1
-						.compareToIgnoreCase(program2));
-
-		return programList;
-	}
-
-	/**
-	 * Gets all open windows titles. RUNS ONLY ON WINDOWS!
-	 * 
-	 * @return A unique set of open windows titles
-	 */
-	private HashSet<String> getOpenWindowTitlesOnWindows() {
-
-		HashSet<String> windowTitles = new HashSet<String>();
-
-		IEnumWindowsCallback wnDenumProc = new EnumWindowsCallback();
-		IUser32.INSTANCE.EnumWindows(wnDenumProc, null);
-		windowTitles = wnDenumProc.getWINDOWNAMES();
-
-		return windowTitles;
-	}
-
-	/**
-	 * Gets all open programs. RUNS ONLY ON MAC!
-	 * 
-	 * @return A unique set of open program paths
-	 */
-	private HashSet<String> getOpenProgramsOnMac() {
-
-		Process p;
-		String process;
 		HashSet<String> programs = new HashSet<String>();
 
-		String shellScript = "ps -few";
-
 		try {
-			p = Runtime.getRuntime().exec(shellScript);
+
+			Process process = null;
+
+			if (System.getProperty("os.name").contains("Mac")) {
+				process = Runtime.getRuntime().exec("ps -few");
+			}
+
+			if (System.getProperty("os.name").contains("Windows")) {
+				process = Runtime
+						.getRuntime()
+						.exec(System.getenv("windir")
+								+ "\\system32\\"
+								+ "tasklist.exe /nh /fo CSV /v /fi \"status eq running\"");
+			}
 
 			BufferedReader input = new BufferedReader(new InputStreamReader(
-					p.getInputStream()));
+					process.getInputStream()));
 
-			while ((process = input.readLine()) != null) {
-				if (process.contains("/Applications/")
-						&& process.contains(".app")) {
+			String line;
+			while ((line = input.readLine()) != null) {
 
-					programs.add(process.substring(process.indexOf('/'),
-							process.indexOf(".app") + 4));
+				if (System.getProperty("os.name").contains("Mac")) {
+					programs.add(parseMacProcessLine(line));
+				}
+
+				if (System.getProperty("os.name").contains("Windows")) {
+					String program = parseWindowsProcessLine(line);
+					if (program != null) {
+						programs.add(program);
+					}
 				}
 			}
 			input.close();
 		} catch (IOException e) {
-			log.error("Failed to run \"" + shellScript + "\"", e);
+			log.error("Failed to run process.", e);
 		}
 
-		return programs;
+		// sort alphabetically
+		ArrayList<String> programList = new ArrayList<String>(programs);
+		Collections.sort(programList,
+				(String program1, String program2) -> program1
+						.compareToIgnoreCase(program2));
+		return programList;
+	}
+
+	/**
+	 * Parses a Macintosh process line. Process that are not stored in
+	 * /Applications and do not end on .app are excluded.
+	 * 
+	 * @param processLine
+	 * @return A process name, NULL if process is excluded
+	 */
+	private String parseMacProcessLine(String processLine) {
+
+		if (processLine.contains("/Applications/")
+				&& processLine.contains(".app")) {
+
+			return processLine.substring(processLine.indexOf('/'),
+					processLine.indexOf(".app") + 4);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Parses a Windows process line.
+	 * 
+	 * @param processLine
+	 * @return A process name with window title
+	 */
+	private String parseWindowsProcessLine(String processLine) {
+		String[] columns = processLine.split(",");
+		String program = columns[0].replace("\"", "");
+		String pid = columns[1].replace("\"", "");
+		String windowTitle = columns[8].replace("\"", "");
+
+		return (program + ": " + windowTitle + " " + PIDSEPARATOR + pid);
 	}
 
 	public GUIAutomation[] getGuiAutomations() {

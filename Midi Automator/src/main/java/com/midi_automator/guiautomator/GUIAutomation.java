@@ -261,9 +261,11 @@ public class GUIAutomation implements IDeActivateable {
 	public String toString() {
 
 		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
-				+ "\" TYPE: " + type + "KEYS: "
+				+ "\" TYPE: " + type + " KEYS: "
 				+ GUIAutomationConfigurationTable.keyCodesToString(keyCodes)
-				+ " TRIGGER: " + trigger + " MIDI: " + midiSignature;
+				+ " TRIGGER: " + trigger + " FOCUS: \"" + focusedProgram
+				+ "\" MIDI: " + midiSignature + " TIMEOUT: " + timeout
+				+ " SCANRATE: " + scanRate + " MOVABLE: " + movable;
 	}
 
 	public boolean isMovable() {

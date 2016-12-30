@@ -1,12 +1,12 @@
-' Sets the focus to the given window name 
+' Sets the focus to the given PID
 '
-' usage: setFocus.vbs <WINDOW_NAME
+' usage: setFocus.vbs <PID>
 ' @author Angelo Guelle
-' @date 07-12-16
+' @date 18-12-16
 
 Set objArgs = Wscript.Arguments
 Set WshShell = WScript.CreateObject("WScript.Shell") 
 
-windowName = objArgs(0)
+pid = objArgs(0)
 
-WshShell.AppActivate(windowName)
+WshShell.AppActivate(pid)

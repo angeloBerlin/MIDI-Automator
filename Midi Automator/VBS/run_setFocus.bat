@@ -1,1 +1,1 @@
-setFocus.vbs "Ableton Live 9 Suite"
+setFocus.vbs "1304"

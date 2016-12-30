@@ -7,19 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -789,59 +785,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		}
 
 		return keyCodesString;
-	}
-
-	/**
-	 * ActionListener for the image search button
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class ImageSearchButtonListener implements ActionListener {
-
-		private final JFileChooser fileChooser = new JFileChooser();
-		private GUIAutomationConfigurationTable parent;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param parent
-		 *            the parent component
-		 */
-		public ImageSearchButtonListener(GUIAutomationConfigurationTable parent) {
-			this.parent = parent;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			int row = ((JTableButton) e.getSource()).getRow();
-			FileFilter filter = new FileNameExtensionFilter(
-					GUIAutomation.SCREENSHOT_FILE_TYPE,
-					GUIAutomation.SCREENSHOT_FILE_EXTENSIONS);
-			fileChooser.setAcceptAllFileFilterUsed(false);
-			fileChooser.setFileFilter(filter);
-
-			if (screenShotFileChooserDir != null) {
-				fileChooser.setCurrentDirectory(new File(
-						screenShotFileChooserDir));
-			}
-
-			int returnVal = fileChooser.showOpenDialog(parent);
-
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				screenShotFileChooserDir = file.getParent();
-				presenterService
-						.setLastScreenshotChooserDirectory(screenShotFileChooserDir);
-				try {
-					parent.setClickImage(file.getAbsolutePath(), row);
-				} catch (AutomationIndexDoesNotExistException ex) {
-					log.error(
-							"The automation for the click image does not exist.",
-							ex);
-				}
-			}
-		}
 	}
 
 	/**

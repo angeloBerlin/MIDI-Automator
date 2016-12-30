@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.IDeActivateable;
+import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.utils.ShellRunner;
 import com.midi_automator.utils.SystemUtils;
 
@@ -271,7 +272,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		guiAutomation.setLastFoundRegion(match);
 
 		// set focus
-		setFocus(guiAutomation.getFocusedProgram());
+		setFocusToProgram(guiAutomation.getFocusedProgram());
 
 		// left click
 		if (guiAutomation.getType().equals(GUIAutomation.CLICKTYPE_LEFT)
@@ -302,7 +303,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 * 
 	 * @param program
 	 */
-	private void setFocus(String program) {
+	private void setFocusToProgram(String program) {
 
 		String[] cmd = new String[0];
 
@@ -321,7 +322,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 					cmd[0] = "cscript";
 					cmd[1] = resources.getWorkingDirectory() + File.separator
 							+ "VBS" + File.separator + "setFocus.vbs";
-					cmd[2] = program;
+					cmd[2] = parsePIDfromFocusedWindowsProgram(program);
 				}
 
 				ShellRunner shellRunner = new ShellRunner(cmd);
@@ -334,6 +335,25 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 				shellRunner.run();
 			}
+		}
+	}
+
+	/**
+	 * Parses the PID from the focused program String on Windows.
+	 * 
+	 * @param focusedProgram
+	 *            The focused program from the GUI
+	 * @return the PID, <NULL> if PID does not exist
+	 */
+	private String parsePIDfromFocusedWindowsProgram(String focusedProgram) {
+
+		String[] split = focusedProgram
+				.split(GUIAutomationsService.PIDSEPARATOR);
+
+		if (split.length > 1) {
+			return split[1];
+		} else {
+			return null;
 		}
 	}
 
