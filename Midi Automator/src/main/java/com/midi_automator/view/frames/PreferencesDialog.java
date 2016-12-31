@@ -30,6 +30,7 @@ import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.HTMLLabel;
@@ -98,6 +99,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 	@Autowired
 	private Presenter presenter;
+	@Autowired
+	protected PresenterService presenterService;
 
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;

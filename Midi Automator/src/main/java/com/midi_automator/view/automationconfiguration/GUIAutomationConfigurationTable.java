@@ -100,7 +100,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 	private DefaultTableModel tableModel = new ConfigurationTableModel();
 	private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	private Vector<String> columnNames = new Vector<String>();
-	private String screenShotFileChooserDir;
 
 	@Autowired
 	@Qualifier("midiLearnPopupMenu")
@@ -169,9 +168,6 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		createMidiMessageColumn();
 		createScanRateColumn();
 		createMovableColumn();
-
-		screenShotFileChooserDir = presenterService
-				.getLastScreenshotChooserDirectory();
 
 		// popup Menu
 		addMouseListener(new PopupListener());

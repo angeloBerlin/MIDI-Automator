@@ -134,7 +134,7 @@ public class MidiAutomatorProperties extends Properties {
 			}
 		}
 
-		Object obj = super.setProperty(key, value);
+		Object obj = super.setProperty(key, value.replace("\\", "/"));
 		return obj;
 	}
 

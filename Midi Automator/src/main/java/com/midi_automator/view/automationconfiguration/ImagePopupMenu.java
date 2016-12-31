@@ -67,6 +67,9 @@ public class ImagePopupMenu extends JPopupMenu {
 		removeImageAction = new RemoveImageAction(mainFrame);
 		removeImageMenuItem.addActionListener(removeImageAction);
 
+		screenShotFileChooserDir = presenterService
+				.getLastScreenshotChooserDirectory();
+
 		add(newImageMenuItem);
 		add(removeImageMenuItem);
 
