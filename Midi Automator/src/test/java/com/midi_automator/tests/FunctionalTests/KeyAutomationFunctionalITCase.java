@@ -64,7 +64,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void textEditorShouldBeClosedByShortcut() {
+	public void textEditorShouldBeFocusedAndClosedByShortcut() {
 
 		try {
 			MockUpUtils.setMockupPropertiesFile("mockups/"
