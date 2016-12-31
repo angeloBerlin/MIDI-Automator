@@ -1,9 +1,11 @@
 package com.midi_automator.tests.utils;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
+import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 
 import org.assertj.swing.core.KeyPressInfo;
@@ -558,6 +560,51 @@ public class GUIAutomations {
 	}
 
 	/**
+	 * Gets an automation combobox
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param columnName
+	 *            The name of the column
+	 * @param preferencesDialog
+	 *            The preferences dialog
+	 * @return The combo box of the automation
+	 * 
+	 */
+	public static JComboBox<?> getAutomationsComboBox(int row,
+			String columnName, DialogFixture preferencesDialog) {
+
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
+		JTableCellFixture cell = table.cell(TableCell.row(row).column(
+				table.columnIndexFor(columnName)));
+		Component editor = cell.editor();
+
+		if (editor instanceof JComboBox) {
+			return (JComboBox<?>) editor;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the focus program combo box
+	 * 
+	 * @param row
+	 *            The row of the automation
+	 * @param preferencesDialog
+	 *            The preferences dialog
+	 * @return The combo box for the program focus
+	 */
+	public static JComboBox<?> getFocusProgramComboBox(int row,
+			DialogFixture preferencesDialog) {
+		JComboBox<?> comboBox = getAutomationsComboBox(0,
+				GUIAutomationConfigurationTable.COLNAME_FOCUS,
+				preferencesDialog);
+
+		return comboBox;
+	}
+
+	/**
 	 * Sets a mouse automation combo box option
 	 * 
 	 * @param value
@@ -589,6 +636,33 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 		setAutomationsComboBox(value, row,
 				GUIAutomationConfigurationTable.COLNAME_TYPE, preferencesDialog);
+	}
+
+	/**
+	 * Sets a focus program combo box option to the last item found for the
+	 * value.
+	 * 
+	 * @param value
+	 *            The value to choose
+	 * @param row
+	 *            The row of the automation
+	 * @param preferencesDialog
+	 *            The preferencesDialog
+	 */
+	public static void setFocusedProgram(String value, int row,
+			DialogFixture preferencesDialog) {
+
+		JComboBox<?> comboBox = getFocusProgramComboBox(row, preferencesDialog);
+
+		for (int i = 0; i < comboBox.getItemCount(); i++) {
+			String item = (String) comboBox.getItemAt(i);
+
+			if (item.contains(value)) {
+				setAutomationsComboBox(value, row,
+						GUIAutomationConfigurationTable.COLNAME_FOCUS,
+						preferencesDialog);
+			}
+		}
 	}
 
 	/**

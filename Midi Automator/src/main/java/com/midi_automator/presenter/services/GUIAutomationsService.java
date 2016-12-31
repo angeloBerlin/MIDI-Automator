@@ -527,17 +527,19 @@ public class GUIAutomationsService {
 					process.getInputStream()));
 
 			String line;
+			String program = null;
 			while ((line = input.readLine()) != null) {
 
 				if (System.getProperty("os.name").contains("Mac")) {
-					programs.add(parseMacProcessLine(line));
+					program = parseMacProcessLine(line);
 				}
 
 				if (System.getProperty("os.name").contains("Windows")) {
-					String program = parseWindowsProcessLine(line);
-					if (program != null) {
-						programs.add(program);
-					}
+					program = parseWindowsProcessLine(line);
+				}
+
+				if (program != null) {
+					programs.add(program);
 				}
 			}
 			input.close();
