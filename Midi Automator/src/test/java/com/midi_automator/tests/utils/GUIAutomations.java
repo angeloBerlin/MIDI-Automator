@@ -658,7 +658,7 @@ public class GUIAutomations {
 			String item = (String) comboBox.getItemAt(i);
 
 			if (item.contains(value)) {
-				setAutomationsComboBox(value, row,
+				setAutomationsComboBox(item, row,
 						GUIAutomationConfigurationTable.COLNAME_FOCUS,
 						preferencesDialog);
 			}

@@ -1,11 +1,22 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.*;
-import static org.junit.Assert.*;
+import static com.midi_automator.tests.utils.GUIAutomations.cancelKeyLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.getFocusProgramComboBox;
+import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
+import static com.midi_automator.tests.utils.GUIAutomations.keyLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.keyUnLearnAutomation;
+import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
+import static com.midi_automator.tests.utils.GUIAutomations.pressAndReleaseKeysOnGUIAutomationTable;
+import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
+import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
+import static com.midi_automator.tests.utils.GUIAutomations.setFocusedProgram;
+import static com.midi_automator.tests.utils.GUIAutomations.submitKeyLearnAutomation;
+import static org.junit.Assert.fail;
 
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -20,7 +31,6 @@ import org.junit.Test;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.utils.ShellRunner;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
 
 public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
@@ -60,6 +70,13 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 			propertiesMidiTriggerLeftClickAutomation = "automation1_midiTrigger_Windows.properties";
 			propertiesAlwaysCancelAutomation = "automation_cancel_always_left_Windows"
 					+ ".properties";
+			focusedProgram = "notepad.exe";
+			cmd = new String[1];
+			cmd[0] = focusedProgram;
+
+			// ALT + F4
+			modifierCode = KeyEvent.VK_ALT;
+			keyCode = KeyEvent.VK_F4;
 		}
 	}
 
@@ -72,8 +89,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 
 			// open text editor
-			ShellRunner shell = new ShellRunner(cmd);
-			shell.run();
+			Runtime.getRuntime().exec(cmd);
 
 			// start MIDI Automator
 			startApplication();
@@ -110,7 +126,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 			}
 
 		} catch (InterruptedException | InvalidMidiDataException
-				| MidiUnavailableException | AWTException e) {
+				| MidiUnavailableException | AWTException | IOException e) {
 			e.printStackTrace();
 		}
 	}
