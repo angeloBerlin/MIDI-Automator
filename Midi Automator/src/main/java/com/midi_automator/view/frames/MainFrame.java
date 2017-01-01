@@ -1,5 +1,6 @@
 package com.midi_automator.view.frames;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -13,7 +14,12 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.MenuItem;
 import java.awt.Point;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -22,10 +28,12 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +52,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -111,10 +120,12 @@ public class MainFrame extends JFrame {
 	public static final String MENU_ITEM_EXPORT = "Export...";
 	public static final String MENU_ITEM_EXIT = "Exit";
 	public static final String MENU_ITEM_PREFERENCES = "Preferences";
+	public static final String MENU_ITEM_OPEN_MIDI_AUTOMATOR = "Open...";
 	public static final String NAME_MENU_ITEM_IMPORT = "import";
 	public static final String NAME_MENU_ITEM_EXPORT = "export";
 	public static final String NAME_MENU_ITEM_PREFERENCES = "preferences";
 	public static final String NAME_MENU_ITEM_EXIT = "exit";
+	public static final String NAME_MENU_ITEM_OPEN_MIDI_AUTOMATOR = "open midi automator";
 	public static final String NAME_PREV_BUTTON = "previous button";
 	public static final String NAME_NEXT_BUTTON = "next button";
 	public static final String NAME_FILE_LIST = "file list";
@@ -123,6 +134,7 @@ public class MainFrame extends JFrame {
 	public static final String NAME_MIDI_OUT_DETECT_LABEL = "midi OUT label";
 	public static final String NAME_MIDI_IMPORT_FILECHOOSER = "import file chooser";
 	public static final String NAME_MIDI_EXPORT_FILECHOOSER = "export file chooser";
+	public static final String NAME_TRAY = "MIDI Automator";
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
@@ -130,6 +142,8 @@ public class MainFrame extends JFrame {
 	private JMenuItem exportMenuItem;
 	private JMenuItem exitMenuItem;
 	private JMenuItem preferencesMenuItem;
+	private PopupMenu trayPopupMenu;
+	private MenuItem restoreMainFrameMenuItem;
 	private BlinkingJLabel midiINdetect;
 	private BlinkingJLabel midiOUTdetect;
 	private HTMLLabel infoLabel;
@@ -137,6 +151,7 @@ public class MainFrame extends JFrame {
 	private CacheableBlinkableToolTipJList<IToolTipItem> fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
 	private CacheableJButton prevButton = new CacheableJButton();
 	private CacheableJButton nextButton = new CacheableJButton();
+	private TrayIcon trayIcon;
 
 	private KeyListener globalKeyListener = new GlobalKeyListener();
 	private PopupListener popupListener = new PopupListener();
@@ -149,6 +164,7 @@ public class MainFrame extends JFrame {
 
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
+	private boolean exiting;
 
 	public static final int MIDI_DETECT_BLINK_RATE = 200;
 	public static final Color MIDI_DETECT_COLOR = Color.YELLOW;
@@ -220,6 +236,9 @@ public class MainFrame extends JFrame {
 		icons.add(new ImageIcon(icon256).getImage());
 		setIconImages(icons);
 
+		// Tray
+		createTray(icon16);
+
 		iconPathPrev = resources.getImagePath() + File.separator
 				+ "arrow_prev.png";
 		iconPathNext = resources.getImagePath() + File.separator
@@ -260,11 +279,20 @@ public class MainFrame extends JFrame {
 
 		createSwitchButtons(footerPanel);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setAlwaysOnTop(true);
-
 		setVisible(true);
+
+		addWindowListener(new WindowHideListener(this));
+	}
+
+	public boolean isExiting() {
+		return exiting;
+	}
+
+	public void setExiting(boolean exiting) {
+		this.exiting = exiting;
 	}
 
 	@Override
@@ -616,7 +644,7 @@ public class MainFrame extends JFrame {
 		exitMenuItem = new JMenuItem(MENU_ITEM_EXIT);
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
 		exitMenuItem.setEnabled(true);
-		exitMenuItem.addActionListener(new ExitAction());
+		exitMenuItem.addActionListener(new ExitAction(this));
 		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
 				ActionEvent.ALT_MASK));
 	}
@@ -682,6 +710,38 @@ public class MainFrame extends JFrame {
 		detectorPanel.add(midiINdetect);
 		detectorPanel.add(midiOUTdetect);
 		parent.add(detectorPanel);
+	}
+
+	/**
+	 * Creates a tray icon
+	 * 
+	 * @param iconFileName
+	 *            The path to the icon file
+	 */
+	private void createTray(String iconFileName) {
+
+		if (SystemTray.isSupported()) {
+
+			SystemTray tray = SystemTray.getSystemTray();
+			Image image = Toolkit.getDefaultToolkit().getImage(iconFileName);
+
+			ActionListener mainFrameRestoreAction = new MainFrameRestoreAction(
+					this);
+
+			trayPopupMenu = new PopupMenu();
+			restoreMainFrameMenuItem = new MenuItem(
+					MENU_ITEM_OPEN_MIDI_AUTOMATOR);
+			restoreMainFrameMenuItem.addActionListener(mainFrameRestoreAction);
+			trayPopupMenu.add(restoreMainFrameMenuItem);
+			trayIcon = new TrayIcon(image, NAME_TRAY, trayPopupMenu);
+			trayIcon.addActionListener(mainFrameRestoreAction);
+
+			try {
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				log.error("Error on adding tray icon.", e);
+			}
+		}
 	}
 
 	/**
@@ -880,6 +940,36 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Hides the window and displays a dialog that the program was just hidden.
+	 * 
+	 * @author aguelle
+	 *
+	 */
+	class WindowHideListener extends WindowAdapter {
+
+		private final String DIALOG_MESSAGE = "The program window will be minimized to the system tray.";
+		private MainFrame programFrame;
+
+		public WindowHideListener(MainFrame programFrame) {
+			this.programFrame = programFrame;
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+
+			if (!programFrame.isExiting()) {
+				// Show dialog
+				JFrame frame = new JFrame();
+				frame.setAlwaysOnTop(true);
+				JOptionPane.showMessageDialog(frame, DIALOG_MESSAGE);
+
+				// hide window
+				e.getWindow().setVisible(false);
+			}
+		}
+	}
+
+	/**
 	 * Closes all open frames and exits.
 	 * 
 	 * @author aguelle
@@ -888,10 +978,17 @@ public class MainFrame extends JFrame {
 	class ExitAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
+		private MainFrame programFrame;
+
+		public ExitAction(MainFrame programFrame) {
+			this.programFrame = programFrame;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
+			programFrame.setExiting(true);
+			programFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			presenter.close();
 
 			// Find the active frame before creating and dispatching the event
@@ -938,6 +1035,29 @@ public class MainFrame extends JFrame {
 				importExportService.importMidautoFile(file);
 
 			}
+		}
+	}
+
+	/**
+	 * Restores the Main Frame.
+	 * 
+	 * @author aguelle
+	 * 
+	 */
+	class MainFrameRestoreAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+		private JFrame programFrame;
+
+		public MainFrameRestoreAction(JFrame programFrame) {
+			super();
+			this.programFrame = programFrame;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			programFrame.setState(Frame.NORMAL);
+			programFrame.setVisible(true);
 		}
 	}
 
