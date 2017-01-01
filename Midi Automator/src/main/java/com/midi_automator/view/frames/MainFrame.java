@@ -645,7 +645,7 @@ public class MainFrame extends JFrame {
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
 		exitMenuItem.setEnabled(true);
 		exitMenuItem.addActionListener(new ExitAction(this));
-		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
 				ActionEvent.ALT_MASK));
 	}
 
