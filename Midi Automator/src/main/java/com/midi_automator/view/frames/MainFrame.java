@@ -958,14 +958,21 @@ public class MainFrame extends JFrame {
 		public void windowClosing(WindowEvent e) {
 
 			if (!programFrame.isExiting()) {
-				// Show dialog
+
 				JFrame frame = new JFrame();
 				frame.setAlwaysOnTop(true);
-				JOptionPane.showMessageDialog(frame, DIALOG_MESSAGE);
 
-				// hide window
-				e.getWindow().setVisible(false);
+				if (System.getProperty("os.name").contains("Windows")) {
+					// Show dialog
+					JOptionPane.showMessageDialog(frame, DIALOG_MESSAGE);
+
+					// hide window
+					programFrame.setVisible(false);
+				} else {
+					new ExitAction(programFrame).actionPerformed(null);
+				}
 			}
+
 		}
 	}
 
