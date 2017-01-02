@@ -945,9 +945,8 @@ public class MainFrame extends JFrame {
 	 * @author aguelle
 	 *
 	 */
-	class WindowHideListener extends WindowAdapter {
+	public class WindowHideListener extends WindowAdapter {
 
-		private final String DIALOG_MESSAGE = "The program window will be minimized to the system tray.";
 		private MainFrame programFrame;
 
 		public WindowHideListener(MainFrame programFrame) {
@@ -959,12 +958,15 @@ public class MainFrame extends JFrame {
 
 			if (!programFrame.isExiting()) {
 
-				JFrame frame = new JFrame();
+				JFrame frame = ctx.getBean("trayInfoPaneFrame",
+						TrayInfoPaneFrame.class);
 				frame.setAlwaysOnTop(true);
 
 				if (System.getProperty("os.name").contains("Windows")) {
+
 					// Show dialog
-					JOptionPane.showMessageDialog(frame, DIALOG_MESSAGE);
+					JOptionPane.showMessageDialog(frame,
+							TrayInfoPaneFrame.MESSAGE);
 
 					// hide window
 					programFrame.setVisible(false);

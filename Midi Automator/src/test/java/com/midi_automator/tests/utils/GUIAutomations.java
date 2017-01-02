@@ -6,13 +6,16 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
+import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.KeyPressInfo;
 import org.assertj.swing.core.MouseButton;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.finder.JFileChooserFinder;
+import org.assertj.swing.finder.JOptionPaneFinder;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.AbstractWindowFixture;
 import org.assertj.swing.fixture.DialogFixture;
@@ -22,6 +25,7 @@ import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JMenuItemFixture;
+import org.assertj.swing.fixture.JOptionPaneFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.assertj.swing.fixture.JSpinnerFixture;
 import org.assertj.swing.fixture.JTableCellFixture;
@@ -40,6 +44,7 @@ import com.midi_automator.view.frames.AddDialog;
 import com.midi_automator.view.frames.EditDialog;
 import com.midi_automator.view.frames.MainFrame;
 import com.midi_automator.view.frames.PreferencesDialog;
+import com.midi_automator.view.frames.TrayInfoPaneFrame;
 
 public class GUIAutomations {
 
@@ -75,6 +80,26 @@ public class GUIAutomations {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Finds the tray info pane
+	 * 
+	 * @return The tray info pane
+	 */
+	public static JOptionPaneFixture findTrayInfoPane() {
+
+		GenericTypeMatcher<JOptionPane> messageMatcher = new GenericTypeMatcher<JOptionPane>(
+				JOptionPane.class) {
+
+			@Override
+			protected boolean isMatching(JOptionPane optionPane) {
+				return TrayInfoPaneFrame.MESSAGE
+						.equals(optionPane.getMessage());
+			}
+		};
+
+		return JOptionPaneFinder.findOptionPane(messageMatcher).using(robot);
 	}
 
 	/**
