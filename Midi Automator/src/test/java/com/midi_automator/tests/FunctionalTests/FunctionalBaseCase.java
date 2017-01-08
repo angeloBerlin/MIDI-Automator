@@ -1,10 +1,8 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.getInfoLabelText;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +61,8 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 		MidiAutomator.test = true;
 		MainFrame mainFrame = GuiActionRunner
 				.execute(new GuiQuery<MainFrame>() {
+
+					@Override
 					protected MainFrame executeInEDT() {
 
 						if (ctx == null) {
@@ -150,14 +150,6 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	protected void onTearDown() {
 		MockUpUtils.recoverMidoBackup();
 		MockUpUtils.recoverPropertiesBackup();
-
-		if (presenter != null) {
-			presenter.close();
-		}
-
-		if (ctx != null) {
-			ctx.close();
-		}
 	}
 
 	/**

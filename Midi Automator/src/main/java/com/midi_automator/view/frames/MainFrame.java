@@ -165,6 +165,7 @@ public class MainFrame extends JFrame {
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
 	private boolean exiting;
+	private boolean initialized;
 
 	public static final int MIDI_DETECT_BLINK_RATE = 200;
 	public static final Color MIDI_DETECT_COLOR = Color.YELLOW;
@@ -266,7 +267,7 @@ public class MainFrame extends JFrame {
 		createMidiDetect(headerPanel);
 
 		// Middle
-		createFileList(this);
+		createFileList();
 
 		// left and right margins
 		add(new JPanel(), BorderLayout.LINE_START);
@@ -282,9 +283,10 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		setAlwaysOnTop(true);
-		setVisible(true);
-
 		addWindowListener(new WindowHideListener(this));
+		initialized = true;
+
+		setVisible(true);
 	}
 
 	public boolean isExiting() {
@@ -644,7 +646,7 @@ public class MainFrame extends JFrame {
 		exitMenuItem = new JMenuItem(MENU_ITEM_EXIT);
 		exitMenuItem.setName(NAME_MENU_ITEM_EXIT);
 		exitMenuItem.setEnabled(true);
-		exitMenuItem.addActionListener(new ExitAction(this));
+		exitMenuItem.addActionListener(new ExitAction());
 		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
 				ActionEvent.ALT_MASK));
 	}
@@ -723,34 +725,38 @@ public class MainFrame extends JFrame {
 		if (SystemTray.isSupported()) {
 
 			SystemTray tray = SystemTray.getSystemTray();
-			Image image = Toolkit.getDefaultToolkit().getImage(iconFileName);
 
-			ActionListener mainFrameRestoreAction = new MainFrameRestoreAction(
-					this);
+			if (tray.getTrayIcons().length == 0) {
 
-			trayPopupMenu = new PopupMenu();
-			restoreMainFrameMenuItem = new MenuItem(
-					MENU_ITEM_OPEN_MIDI_AUTOMATOR);
-			restoreMainFrameMenuItem.addActionListener(mainFrameRestoreAction);
-			trayPopupMenu.add(restoreMainFrameMenuItem);
-			trayIcon = new TrayIcon(image, NAME_TRAY, trayPopupMenu);
-			trayIcon.addActionListener(mainFrameRestoreAction);
+				Image image = Toolkit.getDefaultToolkit()
+						.getImage(iconFileName);
 
-			try {
-				tray.add(trayIcon);
-			} catch (AWTException e) {
-				log.error("Error on adding tray icon.", e);
+				ActionListener mainFrameRestoreAction = new MainFrameRestoreAction(
+						this);
+
+				trayPopupMenu = new PopupMenu();
+				restoreMainFrameMenuItem = new MenuItem(
+						MENU_ITEM_OPEN_MIDI_AUTOMATOR);
+				restoreMainFrameMenuItem
+						.addActionListener(mainFrameRestoreAction);
+				trayPopupMenu.add(restoreMainFrameMenuItem);
+				trayIcon = new TrayIcon(image, NAME_TRAY, trayPopupMenu);
+				trayIcon.addActionListener(mainFrameRestoreAction);
+
+				try {
+					tray.add(trayIcon);
+				} catch (AWTException e) {
+					log.error("Error on adding tray icon.", e);
+				}
 			}
+
 		}
 	}
 
 	/**
 	 * Creates the list of files to open in the middle
-	 * 
-	 * @param parent
-	 *            The parent Container
 	 */
-	private void createFileList(Container parent) {
+	private void createFileList() {
 
 		firstClickStrategy = new BlinkingStrategy(fileList,
 				MainFrame.METRONOM_COLOR_FIRST_CLICK,
@@ -777,7 +783,7 @@ public class MainFrame extends JFrame {
 
 		fileListScrollPane = new JScrollPane(fileList);
 		fileListScrollPane.setViewportView(fileList);
-		parent.add(fileListScrollPane, BorderLayout.CENTER);
+		add(fileListScrollPane, BorderLayout.CENTER);
 	}
 
 	/**
@@ -958,21 +964,17 @@ public class MainFrame extends JFrame {
 
 			if (!programFrame.isExiting()) {
 
-				JFrame frame = ctx.getBean("trayInfoPaneFrame",
-						TrayInfoPaneFrame.class);
-				frame.setAlwaysOnTop(true);
+				TrayInfoPaneFrame trayPaneFrame = ctx.getBean(
+						"trayInfoPaneFrame", TrayInfoPaneFrame.class);
+				trayPaneFrame.setAlwaysOnTop(true);
 
-				if (System.getProperty("os.name").contains("Windows")) {
+				// Show dialog
+				JOptionPane.showMessageDialog(trayPaneFrame,
+						trayPaneFrame.getMessage());
 
-					// Show dialog
-					JOptionPane.showMessageDialog(frame,
-							TrayInfoPaneFrame.MESSAGE);
+				// hide window
+				programFrame.setVisible(false);
 
-					// hide window
-					programFrame.setVisible(false);
-				} else {
-					new ExitAction(programFrame).actionPerformed(null);
-				}
 			}
 
 		}
@@ -987,28 +989,10 @@ public class MainFrame extends JFrame {
 	class ExitAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		private MainFrame programFrame;
-
-		public ExitAction(MainFrame programFrame) {
-			this.programFrame = programFrame;
-		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
-			programFrame.setExiting(true);
-			programFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			presenter.close();
-
-			// Find the active frame before creating and dispatching the event
-			for (Frame frame : Frame.getFrames()) {
-				if (frame.isActive()) {
-
-					WindowEvent windowClosing = new WindowEvent(frame,
-							WindowEvent.WINDOW_CLOSING);
-					frame.dispatchEvent(windowClosing);
-				}
-			}
 		}
 	}
 

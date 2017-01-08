@@ -138,6 +138,13 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		saveDialogByEnter(addFile("Hello World", currentPath
 				+ "/testfiles/Hello World.rtf", programPath));
 
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		String firstFileListEntry = getFileList().contents()[0];
 		assertEquals("1 Hello World", firstFileListEntry);
 	}

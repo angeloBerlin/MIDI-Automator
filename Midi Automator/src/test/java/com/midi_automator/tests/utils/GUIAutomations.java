@@ -94,8 +94,18 @@ public class GUIAutomations {
 
 			@Override
 			protected boolean isMatching(JOptionPane optionPane) {
-				return TrayInfoPaneFrame.MESSAGE
-						.equals(optionPane.getMessage());
+
+				String message = "";
+
+				if (System.getProperty("os.name").contains("Mac")) {
+					message = TrayInfoPaneFrame.MESSAGE_MAC;
+				}
+
+				if (System.getProperty("os.name").contains("Windows")) {
+					message = TrayInfoPaneFrame.MESSAGE_WINDOWS;
+				}
+
+				return message.equals(optionPane.getMessage());
 			}
 		};
 
