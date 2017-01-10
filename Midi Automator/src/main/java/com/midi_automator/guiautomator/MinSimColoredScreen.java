@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Location;
 import org.sikuli.script.Match;
+import org.sikuli.script.Observer;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 
@@ -117,5 +118,10 @@ public class MinSimColoredScreen extends Screen {
 
 	public Region getSearchRegion() {
 		return searchRegion;
+	}
+
+	@Override
+	public Observer getObserver() {
+		return super.getObserver();
 	}
 }

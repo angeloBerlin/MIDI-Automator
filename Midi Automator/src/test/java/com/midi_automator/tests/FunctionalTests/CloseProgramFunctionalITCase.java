@@ -8,7 +8,7 @@ import org.junit.Test;
 public class CloseProgramFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
-	public void closingProgramShouldShowDialogOnWindows() {
+	public void closingProgramShouldShowDialog() {
 
 		startApplication();
 		window.close();
@@ -18,7 +18,7 @@ public class CloseProgramFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void comittingTrayDialogShouldHideProgramOnWindows() {
+	public void comittingTrayDialogShouldHideProgram() {
 
 		startApplication();
 		window.close();

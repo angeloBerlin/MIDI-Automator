@@ -91,10 +91,7 @@ public class AddDialog extends AbstractBasicDialog {
 			programChooserDir = presenterService
 					.getLastProgramChooserDirectory();
 
-			// Save
 			footerPanel.add(buttonSave);
-
-			// Cancel
 			footerPanel.add(buttonCancel);
 
 			initialized = true;

@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
+import org.junit.Assume;
 import org.junit.Test;
 
 import com.midi_automator.presenter.Messages;
@@ -38,6 +39,10 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void fileChooserShouldRememberLastDirectory() {
+
+		// issue in MAC implementation s.
+		// https://github.com/joel-costigliola/assertj-swing/issues/191
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -71,6 +76,10 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void programChooserShouldRememberLastDirectory() {
+
+		// issue in MAC implementation s.
+		// https://github.com/joel-costigliola/assertj-swing/issues/191
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
@@ -131,6 +140,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void newFileShouldBeAddedOnEnterSaveButton() {
 
+		// issue in sending keys on mac
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
+
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
@@ -141,7 +153,6 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -172,6 +183,9 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void fileChooserOfAddDialogShouldChooseHelloWorldRtfByKeyboard() {
+
+		// issue in sending keys on mac
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
 
 		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");

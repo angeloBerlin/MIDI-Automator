@@ -150,6 +150,15 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 	protected void onTearDown() {
 		MockUpUtils.recoverMidoBackup();
 		MockUpUtils.recoverPropertiesBackup();
+
+		if (presenter != null) {
+			presenter.reset();
+		}
+
+		if (ctx != null) {
+			ctx.close();
+		}
+		System.gc();
 	}
 
 	/**

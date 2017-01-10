@@ -9,6 +9,7 @@ import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
+import org.junit.Assume;
 import org.junit.Test;
 
 import com.midi_automator.presenter.services.FileListService;
@@ -70,6 +71,9 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void editingFileShouldBeCanceledByEnterCancelButton() {
 
+		// issue in sending keys on mac
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
+
 		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
 		startApplication();
@@ -115,6 +119,9 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void helloWorldShouldBeEditedOnEnterSaveButton() {
+
+		// issue in sending keys on mac
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
 
 		MockUpUtils.setMockupMidoFile("mockups/" + helloWorldMido);
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");

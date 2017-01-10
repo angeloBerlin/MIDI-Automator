@@ -102,19 +102,30 @@ public class Presenter {
 	}
 
 	/**
+	 * Resets all loaded automation and indexes.
+	 */
+	public void reset() {
+		midiService.unloadAllMidiDevices();
+		guiAutomationsService.stopGUIAutomations();
+		fileListService.resetCurrentIndex();
+	}
+
+	/**
 	 * Closes the application
 	 */
 	public void close() {
 		mainFrame.setExiting(true);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		midiService.unloadAllMidiDevices();
-		guiAutomationsService.stopGUIAutomations();
-		fileListService.resetCurrentIndex();
+		reset();
+		disposeAllFrames();
+	}
 
-		// Find the active frame before creating and dispatching the event
+	/**
+	 * Find the active frame before creating and dispatching the event
+	 */
+	private void disposeAllFrames() {
 		for (Frame frame : Frame.getFrames()) {
 			if (frame.isActive()) {
-
 				WindowEvent windowClosing = new WindowEvent(frame,
 						WindowEvent.WINDOW_CLOSING);
 				frame.dispatchEvent(windowClosing);

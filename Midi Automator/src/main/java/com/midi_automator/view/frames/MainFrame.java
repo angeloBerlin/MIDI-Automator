@@ -165,7 +165,6 @@ public class MainFrame extends JFrame {
 	private int lastSelectedIndex;
 	private boolean popupWasShown;
 	private boolean exiting;
-	private boolean initialized;
 
 	public static final int MIDI_DETECT_BLINK_RATE = 200;
 	public static final Color MIDI_DETECT_COLOR = Color.YELLOW;
@@ -284,7 +283,6 @@ public class MainFrame extends JFrame {
 		setSize(WIDTH, HEIGHT);
 		setAlwaysOnTop(true);
 		addWindowListener(new WindowHideListener(this));
-		initialized = true;
 
 		setVisible(true);
 	}

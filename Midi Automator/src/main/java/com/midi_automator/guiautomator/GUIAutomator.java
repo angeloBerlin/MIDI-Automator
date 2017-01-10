@@ -42,9 +42,9 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	private boolean active = true;
 
 	private GUIAutomation guiAutomation;
-	private Region searchRegion = new MinSimColoredScreen();
+	private MinSimColoredScreen searchRegion = new MinSimColoredScreen();
 	private Match match;
-	private ObserverCallBack observer = new AppearingMatchObserver();
+	private ObserverCallBack observerCallBack = new AppearingMatchObserver();
 	private boolean fixedSearchRegion = false;
 
 	@Autowired
@@ -73,7 +73,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 		// prepare search parameters
 		searchRegion.setObserveScanRate(guiAutomation.getScanRate());
 		searchRegion.onAppear(SystemUtils.replaceSystemVariables(guiAutomation
-				.getImagePath()), observer);
+				.getImagePath()), observerCallBack);
 
 		while (running) {
 			try {
@@ -156,11 +156,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	public void activateOncePerChangeAutomations() {
 
-		if (guiAutomation.getTrigger().equals(
-				GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
-			log.info("Activate automation once per change:" + guiAutomation);
-			guiAutomation.setActive(true);
-		}
+		// if (guiAutomation.getTrigger().equals(
+		// GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
+		// log.info("Activate automation once per change:" + guiAutomation);
+		// guiAutomation.setActive(true);
+		// }
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	/**
 	 * Searches for the region and runs the desired action if the automation are
 	 * active.
-	 * 
+	 *
 	 * @return <TRUE> if the automation was run, <FALSE> if not found or
 	 *         automation not active
 	 */
@@ -225,7 +225,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Search for the given screenshot
-	 * 
+	 *
 	 * @return <TRUE> if it was found, <FALSE> if it was not found within the
 	 *         time period.
 	 */
@@ -258,7 +258,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Runs automation the automation action on the found region.
-	 * 
+	 *
 	 * @param match
 	 *            The found region.
 	 */
@@ -300,7 +300,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Sets the focus to given program
-	 * 
+	 *
 	 * @param program
 	 */
 	private void setFocusToProgram(String program) {
@@ -359,7 +359,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Sends the key of the automation with modifiers.
-	 * 
+	 *
 	 * @param keyCodes
 	 *            The key codes to press and release i order
 	 */
@@ -404,7 +404,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * The observer call back stores the found match on appear.
-	 * 
+	 *
 	 * @author aguelle
 	 *
 	 */
@@ -425,7 +425,7 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 
 	/**
 	 * Takes the running time and stops the automation if the timeout exceeded.
-	 * 
+	 *
 	 * @author aguelle
 	 *
 	 */

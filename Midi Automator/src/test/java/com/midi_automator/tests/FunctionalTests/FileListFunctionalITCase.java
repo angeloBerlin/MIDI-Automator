@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
+import org.junit.Assume;
 import org.junit.Test;
 
 import com.midi_automator.presenter.services.FileListService;
@@ -216,6 +217,9 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 	@Test
 	public void popUpMenuShallBeShownOnSelectedItemOnKeyStroke() {
+
+		// issue in sending keys on mac
+		Assume.assumeFalse(System.getProperty("os.name").equals("Mac OS X"));
 
 		MockUpUtils.setMockupMidoFile("mockups/128_Hello_World.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
