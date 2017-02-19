@@ -986,12 +986,17 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 		/**
 		 * Gets the automation index from the combo box name.
 		 * 
-		 * @return The automation trigger
+		 * @return The automation index, -1 if there is no focus
 		 */
 		private int getSelectedAutomationIndex() {
-			String automationIndex = comboBox.getName().replace(
-					NAME_COMBOBOX_TRIGGER_EDITOR + "_", "");
-			return Integer.parseInt(automationIndex);
+
+			if (comboBox.getName() != null) {
+				String automationIndex = comboBox.getName().replace(
+						NAME_COMBOBOX_TRIGGER_EDITOR + "_", "");
+				return Integer.parseInt(automationIndex);
+			}
+
+			return -1;
 		}
 	}
 }
