@@ -36,8 +36,8 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 
 	protected FrameFixture window;
 	protected String currentPath;
-	protected SikuliXGUIAutomations sikulix;
 	protected AnnotationConfigApplicationContext ctx;
+	protected static SikuliXGUIAutomations sikulix;
 	protected static Locale locale = Locale.ENGLISH;
 
 	@Autowired
@@ -158,7 +158,6 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 		if (ctx != null) {
 			ctx.close();
 		}
-		System.gc();
 	}
 
 	/**

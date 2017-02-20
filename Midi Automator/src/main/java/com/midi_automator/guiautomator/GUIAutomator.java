@@ -156,11 +156,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 	 */
 	public void activateOncePerChangeAutomations() {
 
-		// if (guiAutomation.getTrigger().equals(
-		// GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
-		// log.info("Activate automation once per change:" + guiAutomation);
-		// guiAutomation.setActive(true);
-		// }
+		if (guiAutomation.getTrigger().equals(
+				GUIAutomation.TRIGGER_ONCE_PER_CHANGE)) {
+			log.info("Activate automation once per change:" + guiAutomation);
+			guiAutomation.setActive(true);
+		}
 	}
 
 	/**
