@@ -53,6 +53,25 @@ public class PresenterService {
 	}
 
 	/**
+	 * Gets the flag if the program shall be minimized on closed.
+	 * 
+	 * @return <TRUE> the program shall be minimized on close, <FALSE> the
+	 *         program shall be closed.
+	 */
+	public boolean isMinimizeOnClose() {
+
+		String minimizeOnClose = (String) properties
+				.get(MidiAutomatorProperties.KEY_MINIMIZE_ON_CLOSE);
+
+		if (minimizeOnClose != null) {
+			if (minimizeOnClose.equals("true")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Sets the last chosen directory for the file chooser
 	 * 
 	 * @param dir
@@ -97,6 +116,23 @@ public class PresenterService {
 			properties.store();
 		} catch (IOException e) {
 			log.error("Storing last screenshot chooser directory failed.", e);
+		}
+	}
+
+	/**
+	 * Sets the flag if the program shall be minimized on closed.
+	 * 
+	 * @param minimize
+	 *            <TRUE> the program shall be minimized on close, <FALSE> the
+	 *            program shall be closed.
+	 */
+	public void setMinimizeOnClose(boolean minimize) {
+		properties.setProperty(MidiAutomatorProperties.KEY_MINIMIZE_ON_CLOSE,
+				minimize);
+		try {
+			properties.store();
+		} catch (IOException e) {
+			log.error("Storing 'minimize on close' failed.", e);
 		}
 	}
 }

@@ -6,26 +6,23 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
-import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.KeyPressInfo;
 import org.assertj.swing.core.MouseButton;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.data.TableCell;
 import org.assertj.swing.finder.JFileChooserFinder;
-import org.assertj.swing.finder.JOptionPaneFinder;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.AbstractWindowFixture;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
+import org.assertj.swing.fixture.JCheckBoxFixture;
 import org.assertj.swing.fixture.JFileChooserFixture;
 import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JListFixture;
 import org.assertj.swing.fixture.JMenuItemFixture;
-import org.assertj.swing.fixture.JOptionPaneFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.assertj.swing.fixture.JSpinnerFixture;
 import org.assertj.swing.fixture.JTableCellFixture;
@@ -44,7 +41,6 @@ import com.midi_automator.view.frames.AddDialog;
 import com.midi_automator.view.frames.EditDialog;
 import com.midi_automator.view.frames.MainFrame;
 import com.midi_automator.view.frames.PreferencesDialog;
-import com.midi_automator.view.frames.TrayInfoPaneFrame;
 
 public class GUIAutomations {
 
@@ -80,36 +76,6 @@ public class GUIAutomations {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Finds the tray info pane
-	 * 
-	 * @return The tray info pane
-	 */
-	public static JOptionPaneFixture findTrayInfoPane() {
-
-		GenericTypeMatcher<JOptionPane> messageMatcher = new GenericTypeMatcher<JOptionPane>(
-				JOptionPane.class) {
-
-			@Override
-			protected boolean isMatching(JOptionPane optionPane) {
-
-				String message = "";
-
-				if (System.getProperty("os.name").contains("Mac")) {
-					message = TrayInfoPaneFrame.MESSAGE_MAC;
-				}
-
-				if (System.getProperty("os.name").contains("Windows")) {
-					message = TrayInfoPaneFrame.MESSAGE_WINDOWS;
-				}
-
-				return message.equals(optionPane.getMessage());
-			}
-		};
-
-		return JOptionPaneFinder.findOptionPane(messageMatcher).using(robot);
 	}
 
 	/**
@@ -1014,8 +980,6 @@ public class GUIAutomations {
 	 * 
 	 * @param value
 	 *            The value to choose
-	 * @param column
-	 *            The column of the automation
 	 * @param preferencesDialog
 	 *            The preferencesDialog
 	 */
@@ -1025,6 +989,22 @@ public class GUIAutomations {
 		JSpinnerFixture spinner = preferencesDialog
 				.spinner(GUIAutomationConfigurationPanel.NAME_MIN_SIMILARITY_SPINNER);
 		spinner.enterTextAndCommit(value);
+	}
+
+	/**
+	 * Checks the checkbox for minimizing the program frame on close.
+	 * 
+	 * @param checked
+	 *            <TRUE> check the checkbox, <FALSE> uncheck the checkbox
+	 * @param preferencesDialog
+	 *            The preferencesDialog
+	 */
+	public static void checkMinimizeOnClose(boolean checked,
+			DialogFixture preferencesDialog) {
+
+		JCheckBoxFixture checkbox = preferencesDialog
+				.checkBox(PreferencesDialog.NAME_CHECKBOX_MINIMIZE_ON_CLOSE);
+		checkbox.check(checked);
 	}
 
 	/**

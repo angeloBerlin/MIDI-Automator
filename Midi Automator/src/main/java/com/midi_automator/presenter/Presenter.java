@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.sound.midi.MidiUnavailableException;
-import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +114,6 @@ public class Presenter {
 	 */
 	public void close() {
 		mainFrame.setExiting(true);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		reset();
 		disposeAllFrames();
 	}

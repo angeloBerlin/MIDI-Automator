@@ -334,6 +334,11 @@ public class GUIAutomator extends Thread implements IDeActivateable {
 				log.info("Focusing program by running: " + cmdString);
 
 				shellRunner.run();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

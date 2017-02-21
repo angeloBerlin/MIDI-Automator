@@ -48,6 +48,7 @@ public class MidiAutomatorProperties extends Properties {
 	public static final String KEY_LAST_FILE_CHOOSER_DIR = "LAST_FILE_CHOOSER_DIR";
 	public static final String KEY_LAST_PROGRAM_CHOOSER_DIR = "LAST_PROGRAM_CHOOSER_DIR";
 	public static final String KEY_LAST_SCREENSHOT_CHOOSER_DIR = "LAST_SCREENSHOT_CHOOSER_DIR";
+	public static final String KEY_MINIMIZE_ON_CLOSE = "MINIMZE_PROGRAM_ON_CLOSE";
 
 	public static final String INDEX_SEPARATOR = "_";
 	public static final String VALUE_NULL = "-none-";

@@ -15,6 +15,7 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -54,6 +55,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private final String LABEL_MIDI_OUT_SWITCH_ITEM_DEVICES = "Midi Switch List Entry OUT:";
 	private final String LABEL_MIDI_OUT_SWITCH_ITEM_INFO = "Switch item: ch 16 CC [1 - 127] value 127";
 	private final String LABEL_MIDI_IN_METRONOM_DEVICES = "Midi Metronom IN:";
+	private final String LABEL_MINIMIZE_ON_CLOSE = "Minimize program on close";
 	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16 NOTE ON A4<br/>"
 			+ "Other clicks: ch 16 NOTE ON E4";
 	private final String LABEL_GUI_AUTOMATION = "Automation:";
@@ -66,6 +68,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	public static final String NAME_MIDI_OUT_SWITCH_ITEM_DEVICE_COMBO_BOX = "midiOUTSwitchItemDeviceComboBox";
 	public static final String NAME_MIDI_IN_METRONROM_DEVICE_COMBO_BOX = "midiINMetronomDeviceComboBox";
 	public static final String NAME_BUTTON_SEND_NOTIFIER = "buttonSendNotifier";
+	public static final String NAME_CHECKBOX_MINIMIZE_ON_CLOSE = "checkcoxMinimizeOnClose";
 
 	private JPanel middlePanel;
 	private JPanel footerPanel;
@@ -83,6 +86,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private JComboBox<String> midiOUTSwitchNotifierDeviceComboBox;
 	private JComboBox<String> midiINMetronomDeviceComboBox;
 	private JComboBox<String> midiOUTSwitchItemDeviceComboBox;
+	private JCheckBox minimizeOnCloseCheckBox;
 
 	private GUIAutomationConfigurationPanel guiAutomationConfigurationPanel;
 
@@ -122,20 +126,12 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		middlePanel = new JPanel(new GridBagLayout());
 		footerPanel = new JPanel(new FlowLayout());
 
-		// MIDI IN Remote
 		createRemoteMidiInDevices();
-
-		// MIDI OUT Remote
 		createRemoteMidiOutDevices();
-
-		// MIDI IN Metronom
-		createMetronomMidiInDevices();
-
-		// MIDI OUT Switch Item
 		createSwitchItemOutDevices();
-
-		// MIDI OUT Switch Notifier
 		createSwitchNotifierMidiOutDevices();
+		createMetronomMidiInDevices();
+		createMinimizeOnCloseCheckbox();
 
 		// GUI Automation
 		createGUIAutomation();
@@ -324,6 +320,24 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	}
 
 	/**
+	 * Creates the minimize on close check box
+	 */
+	private void createMinimizeOnCloseCheckbox() {
+
+		GridBagConstraints c = new GridBagConstraints();
+		minimizeOnCloseCheckBox = new JCheckBox(LABEL_MINIMIZE_ON_CLOSE);
+		minimizeOnCloseCheckBox.setName(NAME_CHECKBOX_MINIMIZE_ON_CLOSE);
+
+		c = new GridBagConstraints();
+		c.insets = INSETS_COMBO_BOX;
+		c.fill = CONSTRAINT_FILL_COMBO_BOX;
+		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.gridx = 2;
+		c.gridy = 4;
+		middlePanel.add(minimizeOnCloseCheckBox, c);
+	}
+
+	/**
 	 * Creates the midi in devices combo box for metronom with a label.
 	 */
 	private void createMetronomMidiInDevices() {
@@ -488,6 +502,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 					.setSelectedItem(midiOUTSwitchItemDevice);
 		}
 
+		// minimize on close
+		boolean minimizeOnClose = presenterService.isMinimizeOnClose();
+		minimizeOnCloseCheckBox.setSelected(minimizeOnClose);
+
 		// gui automations
 		GUIAutomation[] guiAutomations = guiAutomationsService
 				.getGuiAutomations();
@@ -636,6 +654,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 				MidiAutomatorProperties.KEY_MIDI_OUT_SWITCH_ITEM_DEVICE);
 		guiAutomationsService.saveGUIAutomations(guiAutomations,
 				guiAutomationConfigurationPanel.getMinSimilarity());
+		presenterService.setMinimizeOnClose(minimizeOnCloseCheckBox
+				.isSelected());
 
 		close();
 		presenter.loadProperties();

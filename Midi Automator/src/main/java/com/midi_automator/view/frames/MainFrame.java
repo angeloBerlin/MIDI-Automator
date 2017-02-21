@@ -52,7 +52,6 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -78,6 +77,7 @@ import com.midi_automator.presenter.services.ImportExportService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.BlinkingJLabel;
 import com.midi_automator.view.BlinkingStrategy;
@@ -193,6 +193,8 @@ public class MainFrame extends JFrame {
 	private MidiRemoteOpenService midiRemoteOpenService;
 	@Autowired
 	private MidiItemChangeNotificationService midiNotificationService;
+	@Autowired
+	private PresenterService presenterService;
 
 	@Autowired
 	private Resources resources;
@@ -960,19 +962,11 @@ public class MainFrame extends JFrame {
 		@Override
 		public void windowClosing(WindowEvent e) {
 
-			if (!programFrame.isExiting()) {
-
-				TrayInfoPaneFrame trayPaneFrame = ctx.getBean(
-						"trayInfoPaneFrame", TrayInfoPaneFrame.class);
-				trayPaneFrame.setAlwaysOnTop(true);
-
-				// Show dialog
-				JOptionPane.showMessageDialog(trayPaneFrame,
-						trayPaneFrame.getMessage());
-
-				// hide window
+			if (!programFrame.isExiting()
+					&& presenterService.isMinimizeOnClose()) {
 				programFrame.setVisible(false);
-
+			} else {
+				programFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			}
 
 		}
