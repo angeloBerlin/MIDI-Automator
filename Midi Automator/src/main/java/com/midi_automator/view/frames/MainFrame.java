@@ -1,6 +1,5 @@
 package com.midi_automator.view.frames;
 
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -8,18 +7,12 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.MenuItem;
 import java.awt.Point;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -28,7 +21,6 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -87,9 +79,11 @@ import com.midi_automator.view.DeActivateableMouseAdapter;
 import com.midi_automator.view.HTMLLabel;
 import com.midi_automator.view.IBlinkingStrategy;
 import com.midi_automator.view.IToolTipItem;
-import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.ToolTipItemImpl;
 import com.midi_automator.view.TransferableJListToolTipItem;
+import com.midi_automator.view.actions.HideShowMainFrameAction;
+import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.tray.Tray;
 
 @org.springframework.stereotype.Component
 public class MainFrame extends JFrame {
@@ -121,6 +115,7 @@ public class MainFrame extends JFrame {
 	public static final String MENU_ITEM_EXIT = "Exit";
 	public static final String MENU_ITEM_PREFERENCES = "Preferences";
 	public static final String MENU_ITEM_OPEN_MIDI_AUTOMATOR = "Open...";
+	public static final String MENU_ITEM_HIDE_MIDI_AUTOMATOR = "Hide...";
 	public static final String NAME_MENU_ITEM_IMPORT = "import";
 	public static final String NAME_MENU_ITEM_EXPORT = "export";
 	public static final String NAME_MENU_ITEM_PREFERENCES = "preferences";
@@ -142,8 +137,6 @@ public class MainFrame extends JFrame {
 	private JMenuItem exportMenuItem;
 	private JMenuItem exitMenuItem;
 	private JMenuItem preferencesMenuItem;
-	private PopupMenu trayPopupMenu;
-	private MenuItem restoreMainFrameMenuItem;
 	private BlinkingJLabel midiINdetect;
 	private BlinkingJLabel midiOUTdetect;
 	private HTMLLabel infoLabel;
@@ -151,7 +144,6 @@ public class MainFrame extends JFrame {
 	private CacheableBlinkableToolTipJList<IToolTipItem> fileList = new CacheableBlinkableToolTipJList<IToolTipItem>();
 	private CacheableJButton prevButton = new CacheableJButton();
 	private CacheableJButton nextButton = new CacheableJButton();
-	private TrayIcon trayIcon;
 
 	private KeyListener globalKeyListener = new GlobalKeyListener();
 	private PopupListener popupListener = new PopupListener();
@@ -200,6 +192,11 @@ public class MainFrame extends JFrame {
 	private Resources resources;
 
 	@Autowired
+	private Tray tray;
+	@Autowired
+	private HideShowMainFrameAction hideShowAction;
+
+	@Autowired
 	private MainFramePopupMenu popupMenu;
 
 	/**
@@ -239,7 +236,7 @@ public class MainFrame extends JFrame {
 		setIconImages(icons);
 
 		// Tray
-		createTray(icon16);
+		tray.init();
 
 		iconPathPrev = resources.getImagePath() + File.separator
 				+ "arrow_prev.png";
@@ -715,45 +712,6 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Creates a tray icon
-	 * 
-	 * @param iconFileName
-	 *            The path to the icon file
-	 */
-	private void createTray(String iconFileName) {
-
-		if (SystemTray.isSupported()) {
-
-			SystemTray tray = SystemTray.getSystemTray();
-
-			if (tray.getTrayIcons().length == 0) {
-
-				Image image = Toolkit.getDefaultToolkit()
-						.getImage(iconFileName);
-
-				ActionListener mainFrameRestoreAction = new MainFrameRestoreAction(
-						this);
-
-				trayPopupMenu = new PopupMenu();
-				restoreMainFrameMenuItem = new MenuItem(
-						MENU_ITEM_OPEN_MIDI_AUTOMATOR);
-				restoreMainFrameMenuItem
-						.addActionListener(mainFrameRestoreAction);
-				trayPopupMenu.add(restoreMainFrameMenuItem);
-				trayIcon = new TrayIcon(image, NAME_TRAY, trayPopupMenu);
-				trayIcon.addActionListener(mainFrameRestoreAction);
-
-				try {
-					tray.add(trayIcon);
-				} catch (AWTException e) {
-					log.error("Error on adding tray icon.", e);
-				}
-			}
-
-		}
-	}
-
-	/**
 	 * Creates the list of files to open in the middle
 	 */
 	private void createFileList() {
@@ -964,7 +922,7 @@ public class MainFrame extends JFrame {
 
 			if (!programFrame.isExiting()
 					&& presenterService.isMinimizeOnClose()) {
-				programFrame.setVisible(false);
+				hideShowAction.actionPerformed(null);
 			} else {
 				programFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			}
@@ -1020,29 +978,6 @@ public class MainFrame extends JFrame {
 				importExportService.importMidautoFile(file);
 
 			}
-		}
-	}
-
-	/**
-	 * Restores the Main Frame.
-	 * 
-	 * @author aguelle
-	 * 
-	 */
-	class MainFrameRestoreAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-		private JFrame programFrame;
-
-		public MainFrameRestoreAction(JFrame programFrame) {
-			super();
-			this.programFrame = programFrame;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			programFrame.setState(Frame.NORMAL);
-			programFrame.setVisible(true);
 		}
 	}
 

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
@@ -22,9 +23,9 @@ import org.springframework.context.ApplicationContext;
 
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.utils.CommonUtils;
-import com.midi_automator.view.KeyLearnPopupMenu;
-import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
+import com.midi_automator.view.menus.KeyLearnPopupMenu;
+import com.midi_automator.view.menus.MidiLearnPopupMenu;
 
 /**
  * A configuration panel for adding, deleting and editing GUI automation.
@@ -89,6 +90,7 @@ public class GUIAutomationConfigurationPanel extends JPanel {
 					.getSelectionBackground());
 			JScrollPane scrollPane = new JScrollPane(configurationTable);
 
+			c.insets = new Insets(0, 20, 0, 20);
 			c.gridx = 0;
 			c.gridy = 1;
 			add(scrollPane, c);

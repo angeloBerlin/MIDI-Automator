@@ -22,8 +22,8 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.MainFramePopupMenu;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
+import com.midi_automator.view.menus.MainFramePopupMenu;
 
 public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 

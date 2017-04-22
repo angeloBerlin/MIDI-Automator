@@ -9,7 +9,7 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.MainFramePopupMenu;
+import com.midi_automator.view.menus.MainFramePopupMenu;
 
 public class MoveEntriesFunctionalITCase extends FunctionalBaseCase {
 

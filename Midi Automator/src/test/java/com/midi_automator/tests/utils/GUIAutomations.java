@@ -31,16 +31,16 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.utils.SystemUtils;
-import com.midi_automator.view.KeyLearnPopupMenu;
-import com.midi_automator.view.MainFramePopupMenu;
-import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.automationconfiguration.ImagePopupMenu;
 import com.midi_automator.view.frames.AddDialog;
 import com.midi_automator.view.frames.EditDialog;
 import com.midi_automator.view.frames.MainFrame;
 import com.midi_automator.view.frames.PreferencesDialog;
+import com.midi_automator.view.menus.ImagePopupMenu;
+import com.midi_automator.view.menus.KeyLearnPopupMenu;
+import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.menus.MidiLearnPopupMenu;
 
 public class GUIAutomations {
 
@@ -301,6 +301,13 @@ public class GUIAutomations {
 	 *            The row of the automation
 	 * @param prferencesFrame
 	 *            The preferences frame
+	 * @throws IllegalStateException
+	 *             if {@link Settings#clickOnDisabledComponentsAllowed()} is
+	 *             <code>false</code> and this fixture's {@code Component} is
+	 *             disabled.
+	 * @throws IllegalStateException
+	 *             if this fixture's {@code Component} is not showing on the
+	 *             screen.
 	 */
 	public static void cancelKeyLearnAutomation(int row,
 			DialogFixture preferencesDialog) {
@@ -311,8 +318,10 @@ public class GUIAutomations {
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
+
 		popupMenu.menuItem(KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL)
 				.click();
+
 	}
 
 	/**

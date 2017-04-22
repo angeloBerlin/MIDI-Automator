@@ -1,8 +1,11 @@
-package com.midi_automator.view;
+package com.midi_automator.view.actions;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.midi_automator.view.frames.MainFrame;
 
@@ -12,15 +15,13 @@ import com.midi_automator.view.frames.MainFrame;
  * @author aguelle
  * 
  */
-public abstract class AbstractPopUpMenuAction extends AbstractAction {
+@Component
+public abstract class AbstractMainFramePopUpMenuAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
 	protected MainFrame mainFrame;
-
-	public AbstractPopUpMenuAction(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

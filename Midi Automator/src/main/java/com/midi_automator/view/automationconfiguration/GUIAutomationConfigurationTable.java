@@ -29,16 +29,18 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.GUIAutomationsService;
+import com.midi_automator.presenter.services.KeyLearnService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.CacheableJTable;
 import com.midi_automator.view.DeActivateableMouseAdapter;
-import com.midi_automator.view.KeyLearnListener;
-import com.midi_automator.view.KeyLearnPopupMenu;
-import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.ScaleableImageIcon;
+import com.midi_automator.view.listener.KeyLearnListener;
+import com.midi_automator.view.menus.ImagePopupMenu;
+import com.midi_automator.view.menus.KeyLearnPopupMenu;
+import com.midi_automator.view.menus.MidiLearnPopupMenu;
 
 /**
  * A JTable for configuring the GUI automation
@@ -115,6 +117,9 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 
 	@Autowired
 	private KeyLearnListener keyLearnListener;
+
+	@Autowired
+	private KeyLearnService keyLearnService;
 
 	@Autowired
 	private Presenter presenter;
@@ -867,6 +872,10 @@ public class GUIAutomationConfigurationTable extends CacheableJTable {
 					getColumn(COLNAME_KEYS).getModelIndex());
 
 			keyLearnPopupMenu.getKeyUnlearnMenuItem().setEnabled(false);
+
+			if (keyLearnService.isKeyLearning()) {
+				keyLearnPopupMenu.getKeyUnlearnMenuItem().setEnabled(true);
+			}
 
 			if (keySignature != null) {
 				if (!keySignature.equals("")) {

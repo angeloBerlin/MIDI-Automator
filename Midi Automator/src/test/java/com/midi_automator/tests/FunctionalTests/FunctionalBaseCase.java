@@ -80,12 +80,20 @@ public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 
 		GUIAutomations.window = window;
 		GUIAutomations.robot = robot();
+		configure();
 
 		try {
 			currentPath = new File(".").getCanonicalPath();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+
+	/**
+	 * Configures the test environment.
+	 */
+	private void configure() {
+		robot().settings().clickOnDisabledComponentsAllowed(false);
 	}
 
 	/**

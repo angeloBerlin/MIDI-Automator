@@ -14,12 +14,17 @@ import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	static Logger log = Logger.getLogger(PreferencesDialog.class.getName());
 
 	private final String TITLE = "Preferences";
+	private final String TITLE_PROGRAM_SETTINGS = "Program Settings";
 	private final String LABEL_MIDI_IN_REMOTE_DEVICES = "Midi Remote IN:";
 	private final String LABEL_MIDI_OUT_REMOTE_DEVICES = "Midi Master OUT:";
 	private final String LABEL_MIDI_OUT_REMOTE_INFO = "Master open: ch 1 CC 102 &lt;list entry - 1&gt;";
@@ -58,7 +64,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private final String LABEL_MINIMIZE_ON_CLOSE = "Minimize program on close";
 	private final String LABEL_MIDI_IN_METRONOM_INFO = "1st click: ch 16 NOTE ON A4<br/>"
 			+ "Other clicks: ch 16 NOTE ON E4";
-	private final String LABEL_GUI_AUTOMATION = "Automation:";
+	private final String LABEL_GUI_AUTOMATION = "Automations";
 	private final String BUTTON_SEND_NOTIFIER = "Send...";
 
 	public static final String NAME = "preferences frame";
@@ -70,6 +76,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	public static final String NAME_BUTTON_SEND_NOTIFIER = "buttonSendNotifier";
 	public static final String NAME_CHECKBOX_MINIMIZE_ON_CLOSE = "checkcoxMinimizeOnClose";
 
+	private JPanel topPanel;
 	private JPanel middlePanel;
 	private JPanel footerPanel;
 	private JLabel midiINRemoteDevicesLabel;
@@ -77,7 +84,6 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private JLabel midiOUTSwitchNotifierDevicesLabel;
 	private JLabel midiOUTSwitchItemDevicesLabel;
 	private JLabel labelHeader;
-	private JLabel guiAutomationLabel;
 	private HTMLLabel midiOUTSwitchNotifierInfoLabel;
 	private HTMLLabel midiOUTSwitchItemInfoLabel;
 	private HTMLLabel midiINMetronomInfoLabel;
@@ -95,8 +101,9 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	private final Insets INSETS_LABEL_HEADER = new Insets(0, 5, 0, 10);
 	private final Insets INSETS_COMBO_BOX = new Insets(0, 0, 0, 10);
 	private final Insets INSETS_LABEL_INFO = new Insets(0, 5, 0, 10);
-	private final int CONSTRAINT_FILL_COMBO_BOX = GridBagConstraints.NONE;
-	private final int CONSTRAINT_ANCHOR_COMBO_BOX = GridBagConstraints.WEST;
+
+	private int currentMiddleGridY = 0;
+	private int currentTopGridY = 0;
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -123,15 +130,28 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		setName(NAME);
 
 		// set layout
+		topPanel = new JPanel(new GridBagLayout());
 		middlePanel = new JPanel(new GridBagLayout());
 		footerPanel = new JPanel(new FlowLayout());
 
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+				TITLE_PROGRAM_SETTINGS);
+		Border topPadding = BorderFactory.createEmptyBorder(5, 0, 10, 0);
+		CompoundBorder topBorder = BorderFactory.createCompoundBorder(
+				titleBorder, topPadding);
+		topPanel.setBorder(topBorder);
+
+		createMinimizeOnCloseCheckbox();
+
 		createRemoteMidiInDevices();
 		createRemoteMidiOutDevices();
-		createSwitchItemOutDevices();
 		createSwitchNotifierMidiOutDevices();
+		currentMiddleGridY += 3;
+
+		createSwitchItemOutDevices();
 		createMetronomMidiInDevices();
-		createMinimizeOnCloseCheckbox();
+		currentMiddleGridY += 3;
 
 		// GUI Automation
 		createGUIAutomation();
@@ -143,6 +163,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		// Cancel
 		footerPanel.add(buttonCancel);
 
+		add(topPanel, BorderLayout.PAGE_START);
 		add(middlePanel, BorderLayout.CENTER);
 		add(footerPanel, BorderLayout.PAGE_END);
 
@@ -155,6 +176,23 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	}
 
 	/**
+	 * Creates the minimize on close check box
+	 */
+	private void createMinimizeOnCloseCheckbox() {
+
+		minimizeOnCloseCheckBox = new JCheckBox(LABEL_MINIMIZE_ON_CLOSE);
+		minimizeOnCloseCheckBox.setName(NAME_CHECKBOX_MINIMIZE_ON_CLOSE);
+
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 0;
+		c.gridy = currentTopGridY;
+		topPanel.add(minimizeOnCloseCheckBox, c);
+	}
+
+	/**
 	 * Creates the midi in devices combo box for the remote switch with a label
 	 */
 	private void createRemoteMidiInDevices() {
@@ -164,7 +202,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy = currentMiddleGridY;
 		middlePanel.add(midiINRemoteDevicesLabel, c);
 
 		List<String> midiINDevices = MidiUtils.getMidiDeviceSignatures("IN");
@@ -176,10 +214,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = currentMiddleGridY + 1;
 		middlePanel.add(midiINRemoteDeviceComboBox, c);
 
 	}
@@ -194,7 +232,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
-		c.gridy = 0;
+		c.gridy = currentMiddleGridY;
 		middlePanel.add(midiOUTRemoteDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -206,10 +244,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridy = 1;
+		c.gridy = currentMiddleGridY + 1;
 		middlePanel.add(midiOUTRemoteDeviceComboBox, c);
 
 		// Info label
@@ -217,7 +255,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
-		c.gridy = 2;
+		c.gridy = currentMiddleGridY + 2;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_OUT_REMOTE_INFO + "</span>");
@@ -236,7 +274,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
-		c.gridy = 0;
+		c.gridy = currentMiddleGridY;
 		middlePanel.add(midiOUTSwitchNotifierDevicesLabel, c);
 
 		List<String> midiOutDevices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -248,10 +286,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		c = new GridBagConstraints();
 		c.insets = new Insets(0, 0, 0, 0);
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 2;
-		c.gridy = 1;
+		c.gridy = currentMiddleGridY + 1;
 		middlePanel.add(midiOUTSwitchNotifierDeviceComboBox, c);
 
 		// Button test notification
@@ -259,7 +297,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 3;
-		c.gridy = 1;
+		c.gridy = currentMiddleGridY + 1;
 		buttonSendNotify = new JButton(BUTTON_SEND_NOTIFIER);
 		buttonSendNotify.setName(NAME_BUTTON_SEND_NOTIFIER);
 		buttonSendNotify.addActionListener(new SendNotificationAction());
@@ -271,7 +309,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
-		c.gridy = 2;
+		c.gridy = currentMiddleGridY + 2;
 		midiOUTSwitchNotifierInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_OUT_SWITCH_NOTIFIER_INFO + "</span>");
@@ -289,7 +327,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = currentMiddleGridY;
 		middlePanel.add(midiOUTSwitchItemDevicesLabel, c);
 
 		List<String> devices = MidiUtils.getMidiDeviceSignatures("OUT");
@@ -301,10 +339,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = currentMiddleGridY + 1;
 		middlePanel.add(midiOUTSwitchItemDeviceComboBox, c);
 
 		// Info label
@@ -312,29 +350,11 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = currentMiddleGridY + 2;
 		midiOUTSwitchItemInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ this.LABEL_MIDI_OUT_SWITCH_ITEM_INFO + "</span>");
 		middlePanel.add(midiOUTSwitchItemInfoLabel, c);
-	}
-
-	/**
-	 * Creates the minimize on close check box
-	 */
-	private void createMinimizeOnCloseCheckbox() {
-
-		GridBagConstraints c = new GridBagConstraints();
-		minimizeOnCloseCheckBox = new JCheckBox(LABEL_MINIMIZE_ON_CLOSE);
-		minimizeOnCloseCheckBox.setName(NAME_CHECKBOX_MINIMIZE_ON_CLOSE);
-
-		c = new GridBagConstraints();
-		c.insets = INSETS_COMBO_BOX;
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
-		c.gridx = 2;
-		c.gridy = 4;
-		middlePanel.add(minimizeOnCloseCheckBox, c);
 	}
 
 	/**
@@ -347,7 +367,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_HEADER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
-		c.gridy = 3;
+		c.gridy = currentMiddleGridY;
 		middlePanel.add(labelHeader, c);
 
 		List<String> midiInDevices = MidiUtils.getMidiDeviceSignatures("IN");
@@ -359,10 +379,10 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		c = new GridBagConstraints();
 		c.insets = INSETS_COMBO_BOX;
-		c.fill = CONSTRAINT_FILL_COMBO_BOX;
-		c.anchor = CONSTRAINT_ANCHOR_COMBO_BOX;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy = currentMiddleGridY + 1;
 		middlePanel.add(midiINMetronomDeviceComboBox, c);
 
 		// Info label
@@ -370,7 +390,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		c.insets = INSETS_LABEL_INFO;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
-		c.gridy = 5;
+		c.gridy = currentMiddleGridY + 2;
 		midiINMetronomInfoLabel = new HTMLLabel(
 				"<span style='font-family:Arial; font-size:8px'>"
 						+ LABEL_MIDI_IN_METRONOM_INFO + "</span>");
@@ -384,20 +404,17 @@ public class PreferencesDialog extends AbstractBasicDialog {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		guiAutomationLabel = new JLabel(LABEL_GUI_AUTOMATION);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(10, 0, 0, 0);
-		c.gridx = 0;
-		c.gridy = 8;
-		middlePanel.add(guiAutomationLabel, c);
-
 		guiAutomationConfigurationPanel = ctx.getBean(
 				"GUIAutomationConfigurationPanel",
 				GUIAutomationConfigurationPanel.class);
 		guiAutomationConfigurationPanel.init();
 		guiAutomationConfigurationPanel.setOpaque(true);
+		Border loweredetched = BorderFactory
+				.createEtchedBorder(EtchedBorder.LOWERED);
+		guiAutomationConfigurationPanel.setBorder(BorderFactory
+				.createTitledBorder(loweredetched, LABEL_GUI_AUTOMATION));
 		c.gridx = 0;
-		c.gridy = 9;
+		c.gridy = currentMiddleGridY;
 		c.gridwidth = 4;
 		middlePanel.add(guiAutomationConfigurationPanel, c);
 

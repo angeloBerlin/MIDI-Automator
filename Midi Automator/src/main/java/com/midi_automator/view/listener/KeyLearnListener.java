@@ -1,4 +1,4 @@
-package com.midi_automator.view;
+package com.midi_automator.view.listener;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

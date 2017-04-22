@@ -14,8 +14,8 @@ import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.MidiLearnPopupMenu;
 import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.menus.MidiLearnPopupMenu;
 
 public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 

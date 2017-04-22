@@ -17,7 +17,7 @@ import org.junit.Test;
 import com.midi_automator.presenter.services.FileListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.MainFramePopupMenu;
+import com.midi_automator.view.menus.MainFramePopupMenu;
 
 public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 

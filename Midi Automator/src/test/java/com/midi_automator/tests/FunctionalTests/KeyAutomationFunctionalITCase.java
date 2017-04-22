@@ -1,17 +1,7 @@
 package com.midi_automator.tests.FunctionalTests;
 
-import static com.midi_automator.tests.utils.GUIAutomations.cancelKeyLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.getFocusProgramComboBox;
-import static com.midi_automator.tests.utils.GUIAutomations.getGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.keyLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.keyUnLearnAutomation;
-import static com.midi_automator.tests.utils.GUIAutomations.openPreferences;
-import static com.midi_automator.tests.utils.GUIAutomations.pressAndReleaseKeysOnGUIAutomationTable;
-import static com.midi_automator.tests.utils.GUIAutomations.saveDialog;
-import static com.midi_automator.tests.utils.GUIAutomations.setAutomationType;
-import static com.midi_automator.tests.utils.GUIAutomations.setFocusedProgram;
-import static com.midi_automator.tests.utils.GUIAutomations.submitKeyLearnAutomation;
-import static org.junit.Assert.fail;
+import static com.midi_automator.tests.utils.GUIAutomations.*;
+import static org.junit.Assert.*;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -32,6 +22,7 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
+import com.midi_automator.view.menus.KeyLearnPopupMenu;
 
 public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
@@ -134,33 +125,37 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 	@Test
 	public void preferencesShouldBeOpenedOnMidiByKeyAutomation() {
 
-		try {
-			MockUpUtils.setMockupPropertiesFile("mockups/"
-					+ propertiesMidiTriggerLeftClickAutomation);
-			MockUpUtils.setMockupMidoFile("mockups/empty.mido");
-			startApplication();
+		if (!System.getProperty("os.name").equals("Mac OS X")) {
+			try {
+				MockUpUtils.setMockupPropertiesFile("mockups/"
+						+ propertiesMidiTriggerLeftClickAutomation);
+				MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+				startApplication();
 
-			// set type to send keys
-			DialogFixture preferencesDialog = openPreferences();
-			setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
+				// set type to send keys
+				DialogFixture preferencesDialog = openPreferences();
+				setAutomationType(GUIAutomation.TYPE_SENDKEY, 0,
+						preferencesDialog);
 
-			// key learn ALT + P
-			keyLearnAutomation(0, preferencesDialog);
-			pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog, 18, 80);
-			submitKeyLearnAutomation(0, preferencesDialog);
-			saveDialog(preferencesDialog);
+				// key learn ALT + P
+				keyLearnAutomation(0, preferencesDialog);
+				pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog,
+						KeyEvent.VK_ALT, KeyEvent.VK_P);
+				submitKeyLearnAutomation(0, preferencesDialog);
+				saveDialog(preferencesDialog);
 
-			// send midi trigger
-			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-					controlNo, value);
-			Thread.sleep(1000);
+				// send midi trigger
+				MidiUtils.sendMidiMessage(deviceName, messageType, channel,
+						controlNo, value);
+				Thread.sleep(1000);
 
-			// check if preferences frame is visible
-			preferencesDialog.requireVisible();
+				// check if preferences frame is visible
+				preferencesDialog.requireVisible();
 
-		} catch (InterruptedException | InvalidMidiDataException
-				| MidiUnavailableException e) {
-			e.printStackTrace();
+			} catch (InterruptedException | InvalidMidiDataException
+					| MidiUnavailableException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -184,7 +179,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	@Test
-	public void keyLearnShouldBeCanceled() {
+	public void keyLearnShouldBeCanceledWithLearnedKeys() {
 
 		MockUpUtils.setMockupPropertiesFile("mockups/"
 				+ propertiesAlwaysCancelAutomation);
@@ -195,16 +190,54 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		DialogFixture preferencesDialog = openPreferences();
 		setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
 
-		// cancel key learn
+		// cancel key learn after invoking
 		keyLearnAutomation(0, preferencesDialog);
 		pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog, 19, 81);
-		cancelKeyLearnAutomation(0, preferencesDialog);
+		try {
+			cancelKeyLearnAutomation(0, preferencesDialog);
+		} catch (IllegalStateException e) {
+			fail("JMenuItem with the name "
+					+ KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL
+					+ " is not enabled or not shown.");
+		}
 
 		// check if learned keys are revoked
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
 				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
 		int[] keyCodes = { 18, 80 };
+		table.requireCellValue(TableCell.row(0).column(column),
+				GUIAutomationConfigurationTable.keyCodesToString(keyCodes));
+
+	}
+
+	@Test
+	public void keyLearnShouldBeCanceled() {
+
+		MockUpUtils
+				.setMockupPropertiesFile("mockups/automation1_empty.properties");
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		startApplication();
+
+		// set type to send keys
+		DialogFixture preferencesDialog = openPreferences();
+		setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
+
+		// cancel key learn after invoking
+		keyLearnAutomation(0, preferencesDialog);
+		try {
+			cancelKeyLearnAutomation(0, preferencesDialog);
+		} catch (IllegalStateException e) {
+			fail("JMenuItem with the name "
+					+ KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL
+					+ " is not enabled or not shown.");
+		}
+
+		// check if learned keys are revoked
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
+		int column = table
+				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+		int[] keyCodes = {};
 		table.requireCellValue(TableCell.row(0).column(column),
 				GUIAutomationConfigurationTable.keyCodesToString(keyCodes));
 
