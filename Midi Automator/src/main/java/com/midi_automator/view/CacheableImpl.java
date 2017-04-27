@@ -1,5 +1,7 @@
 package com.midi_automator.view;
 
+import com.midi_automator.view.windows.MainFrame.ICacheable;
+
 
 /**
  * An implementation of ICachable used for delegation pattern.

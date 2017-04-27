@@ -27,7 +27,7 @@ import com.midi_automator.presenter.Presenter;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.tests.utils.SikuliXGUIAutomations;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 public class FunctionalBaseCase extends AssertJSwingJUnitTestCase {
 

@@ -1,12 +1,9 @@
 package com.midi_automator.presenter.services;
 
-import java.awt.Component;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
-import javax.swing.JList;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
@@ -17,7 +14,6 @@ import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.Model;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.frames.MainFrame;
 
 /**
  * Handles all MIDI master/slave actions
@@ -31,8 +27,6 @@ public class MidiRemoteOpenService {
 	private Logger log = Logger.getLogger(this.getClass().getName());
 
 	private final long WAIT_BEFORE_SLAVE_SEND = 2000;
-	private final String SWITCH_DIRECTION_PREV = "previous";
-	private final String SWITCH_DIRECTION_NEXT = "next";
 
 	public static final int OPEN_FILE_MIDI_COMMAND = ShortMessage.CONTROL_CHANGE;
 	public static final int OPEN_FILE_MIDI_CHANNEL = 1;
@@ -50,7 +44,9 @@ public class MidiRemoteOpenService {
 	@Autowired
 	private MidiService midiService;
 	@Autowired
-	private FileListService fileListService;
+	private MidiLearnService midiLearnService;
+	@Autowired
+	private ItemListService fileListService;
 	@Autowired
 	private InfoMessagesService infoMessagesService;
 
@@ -168,7 +164,8 @@ public class MidiRemoteOpenService {
 
 		String signature = MidiUtils.messageToString(message);
 
-		String prevSignature = getMidiListeningSignature(SWITCH_DIRECTION_PREV);
+		String prevSignature = midiLearnService
+				.getPreviousButtonMidiListeningSignature();
 
 		if (prevSignature != null) {
 			if (prevSignature.equals(signature)) {
@@ -187,87 +184,14 @@ public class MidiRemoteOpenService {
 
 		String signature = MidiUtils.messageToString(message);
 
-		String nextSignature = getMidiListeningSignature(SWITCH_DIRECTION_NEXT);
+		String nextSignature = midiLearnService
+				.getNextButtonMidiListeningSignature();
 
 		if (nextSignature != null) {
 			if (nextSignature.equals(signature)) {
 				fileListService.openNextFile();
 			}
 		}
-	}
-
-	/**
-	 * Gets the midi listening signature of the switch directions
-	 * 
-	 * @param switchDirection
-	 *            SWITCH_DIRECTION_PREV previous direction,
-	 *            SWITCH_DIRECTION_NEXT next direction
-	 * @return The midi signature
-	 */
-	private String getMidiListeningSignature(String switchDirection) {
-
-		if (switchDirection.equals(SWITCH_DIRECTION_PREV)) {
-			return properties
-					.getProperty(MidiAutomatorProperties.KEY_PREV_MIDI_SIGNATURE);
-		}
-
-		if (switchDirection.equals(SWITCH_DIRECTION_NEXT)) {
-			return properties
-					.getProperty(MidiAutomatorProperties.KEY_NEXT_MIDI_SIGNATURE);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Checks if a midi signature was learned for the given component name
-	 * 
-	 * @param component
-	 *            The component
-	 * @return <TRUE> if it was learned, <FALSE> if it was not learned or
-	 *         unlearned
-	 */
-	public boolean isMidiLearned(Component component) {
-		boolean isLearned = false;
-
-		// previous switch button
-		String prevSignature = getMidiListeningSignature(SWITCH_DIRECTION_PREV);
-		if (prevSignature != null
-				&& !prevSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
-			if (component.getName().equals(MainFrame.NAME_PREV_BUTTON)
-					&& (!prevSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
-
-		// next switch button
-		String nextSignature = getMidiListeningSignature(SWITCH_DIRECTION_NEXT);
-		if (nextSignature != null
-				&& !nextSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
-			if (component.getName().equals(MainFrame.NAME_NEXT_BUTTON)
-					&& (!nextSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
-
-		// file list item
-		if (component.getName().equals(MainFrame.NAME_FILE_LIST)) {
-			if (component instanceof JList) {
-				JList<?> fileList = (JList<?>) component;
-
-				String selectedSignature = fileListService
-						.getMidiFileListListeningSignature(fileList
-								.getSelectedIndex());
-
-				if (selectedSignature != null) {
-					if (!selectedSignature.equals("")) {
-						isLearned = true;
-					}
-				}
-			}
-		}
-
-		return isLearned;
 	}
 
 	/**

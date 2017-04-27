@@ -3,6 +3,9 @@ package com.midi_automator.utils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -11,12 +14,14 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 
 import com.midi_automator.view.DeActivateableMouseAdapter;
-import com.midi_automator.view.ICacheable;
+import com.midi_automator.view.windows.MainFrame.ICacheable;
 
 /**
  * Several utilities for working with the applications GUI.
@@ -25,6 +30,35 @@ import com.midi_automator.view.ICacheable;
  * 
  */
 public class GUIUtils {
+
+	/**
+	 * Tries to find the name of the invoking action source
+	 * 
+	 * @param actionEvent
+	 *            The action event
+	 * @return The name of the invoking source, <NULL> if name could not be
+	 *         found
+	 */
+	public static String findInvokerName(ActionEvent actionEvent) {
+
+		String invokerName = null;
+		Object source = actionEvent.getSource();
+
+		if (source instanceof JMenuItem) {
+			JMenuItem menuItem = (JMenuItem) source;
+			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
+			Component component = (Component) popupMenu.getInvoker();
+			invokerName = component.getName();
+		}
+
+		if (source instanceof MenuItem) {
+			MenuItem menuItem = (MenuItem) source;
+			PopupMenu popupMenu = (PopupMenu) menuItem.getParent();
+			invokerName = popupMenu.getName();
+		}
+
+		return invokerName;
+	}
 
 	/**
 	 * Gets all components of a Container
@@ -263,7 +297,7 @@ public class GUIUtils {
 	 *            The component
 	 * @return The cached Border
 	 */
-	private static Border getCachedBorder(JComponent component) {
+	private static Border getCachedBorder(Component component) {
 
 		Border border = null;
 

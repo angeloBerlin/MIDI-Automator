@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 public class MidiMetronomFunctionalITCase extends FunctionalBaseCase {
 

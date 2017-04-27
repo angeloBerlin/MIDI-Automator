@@ -21,8 +21,8 @@ import org.junit.Test;
 import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.menus.KeyLearnPopupMenu;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.menus.KeyLearnPopupMenu;
 
 public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
@@ -174,7 +174,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		// check if keys were unlearned
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		table.requireCellValue(TableCell.row(0).column(column), "");
 	}
 
@@ -204,10 +204,10 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		// check if learned keys are revoked
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		int[] keyCodes = { 18, 80 };
 		table.requireCellValue(TableCell.row(0).column(column),
-				GUIAutomationConfigurationTable.keyCodesToString(keyCodes));
+				GUIAutomationTable.keyCodesToString(keyCodes));
 
 	}
 
@@ -236,10 +236,10 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		// check if learned keys are revoked
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		int[] keyCodes = {};
 		table.requireCellValue(TableCell.row(0).column(column),
-				GUIAutomationConfigurationTable.keyCodesToString(keyCodes));
+				GUIAutomationTable.keyCodesToString(keyCodes));
 
 	}
 }

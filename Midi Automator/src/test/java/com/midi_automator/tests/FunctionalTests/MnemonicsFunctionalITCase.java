@@ -10,8 +10,9 @@ import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Test;
 
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesDialog;
+import com.midi_automator.view.windows.ExportFileChooser.ExportFileChooser;
+import com.midi_automator.view.windows.ImportFileChooser.ImportFileChooser;
+import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
 
 public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 
@@ -30,7 +31,7 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressKeyOnMainFrame(KeyEvent.VK_I);
 
 		JFileChooserFixture fileChooser = window.fileChooser(
-				MainFrame.NAME_MIDI_IMPORT_FILECHOOSER).requireVisible();
+				ImportFileChooser.NAME).requireVisible();
 		fileChooser.cancel();
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}
@@ -46,7 +47,7 @@ public class MnemonicsFunctionalITCase extends FunctionalBaseCase {
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_X);
 
 		JFileChooserFixture fileChooser = window.fileChooser(
-				MainFrame.NAME_MIDI_EXPORT_FILECHOOSER).requireVisible();
+				ExportFileChooser.NAME).requireVisible();
 		fileChooser.cancel();
 		pressAndReleaseKeysOnMainFrame(KeyEvent.VK_ALT);
 	}

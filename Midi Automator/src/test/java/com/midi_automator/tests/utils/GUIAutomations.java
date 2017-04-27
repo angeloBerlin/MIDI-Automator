@@ -31,16 +31,17 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.sikuli.script.FindFailed;
 
 import com.midi_automator.utils.SystemUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.frames.AddDialog;
-import com.midi_automator.view.frames.EditDialog;
-import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesDialog;
-import com.midi_automator.view.menus.ImagePopupMenu;
-import com.midi_automator.view.menus.KeyLearnPopupMenu;
-import com.midi_automator.view.menus.MainFramePopupMenu;
-import com.midi_automator.view.menus.MidiLearnPopupMenu;
+import com.midi_automator.view.windows.AddDialog.AddDialog;
+import com.midi_automator.view.windows.EditDialog.EditDialog;
+import com.midi_automator.view.windows.MainFrame.ItemList;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
+import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationPanel;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.menus.ImagePopupMenu;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.menus.KeyLearnPopupMenu;
+import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
 
 public class GUIAutomations {
 
@@ -182,7 +183,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -203,7 +204,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -224,7 +225,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -245,7 +246,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -265,7 +266,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -286,7 +287,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -314,7 +315,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_KEYS);
+				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -337,7 +338,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_IMAGE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_IMAGE);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -355,7 +356,7 @@ public class GUIAutomations {
 	public static void deleteAutomation(int row, DialogFixture preferencesDialog) {
 		getGUIAutomationTable(preferencesDialog).selectRows(row);
 		preferencesDialog.button(
-				GUIAutomationConfigurationPanel.NAME_DELETE_BUTTON).click();
+				GUIAutomationPanel.NAME_DELETE_BUTTON).click();
 	}
 
 	/**
@@ -390,7 +391,7 @@ public class GUIAutomations {
 	 */
 	public static void addAutomation(DialogFixture preferencesDialog) {
 		preferencesDialog.button(
-				GUIAutomationConfigurationPanel.NAME_ADD_BUTTON).click();
+				GUIAutomationPanel.NAME_ADD_BUTTON).click();
 	}
 
 	/**
@@ -608,7 +609,7 @@ public class GUIAutomations {
 	public static JComboBox<?> getFocusProgramComboBox(int row,
 			DialogFixture preferencesDialog) {
 		JComboBox<?> comboBox = getAutomationsComboBox(0,
-				GUIAutomationConfigurationTable.COLNAME_FOCUS,
+				GUIAutomationTable.COLNAME_FOCUS,
 				preferencesDialog);
 
 		return comboBox;
@@ -628,7 +629,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		setAutomationsComboBox(value, row,
-				GUIAutomationConfigurationTable.COLNAME_TRIGGER,
+				GUIAutomationTable.COLNAME_TRIGGER,
 				preferencesDialog);
 	}
 
@@ -645,7 +646,7 @@ public class GUIAutomations {
 	public static void setAutomationType(String value, int row,
 			DialogFixture preferencesDialog) {
 		setAutomationsComboBox(value, row,
-				GUIAutomationConfigurationTable.COLNAME_TYPE, preferencesDialog);
+				GUIAutomationTable.COLNAME_TYPE, preferencesDialog);
 	}
 
 	/**
@@ -669,7 +670,7 @@ public class GUIAutomations {
 
 			if (item.contains(value)) {
 				setAutomationsComboBox(item, row,
-						GUIAutomationConfigurationTable.COLNAME_FOCUS,
+						GUIAutomationTable.COLNAME_FOCUS,
 						preferencesDialog);
 			}
 		}
@@ -691,7 +692,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		spinUpAutomationsSpinner(times, row,
-				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
+				GUIAutomationTable.COLNAME_MIN_DELAY,
 				preferencesDialog);
 	}
 
@@ -711,7 +712,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		spinDownAutomationsSpinner(times, row,
-				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
+				GUIAutomationTable.COLNAME_MIN_DELAY,
 				preferencesDialog);
 	}
 
@@ -729,7 +730,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY);
+				.columnIndexFor(GUIAutomationTable.COLNAME_MIN_DELAY);
 		return TableCell.row(row).column(column);
 	}
 
@@ -865,7 +866,7 @@ public class GUIAutomations {
 
 		int index = table
 				.columnIndexFor(table
-						.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIN_DELAY));
+						.columnIndexFor(GUIAutomationTable.COLNAME_MIN_DELAY));
 
 		return getAutomationsSpinner(row, index, preferencesDialog);
 	}
@@ -901,7 +902,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MOVABLE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_MOVABLE);
 		clickAutomationCheckBox(row, column, preferencesDialog);
 	}
 
@@ -914,7 +915,7 @@ public class GUIAutomations {
 	 */
 	public static JTableFixture getGUIAutomationTable(
 			DialogFixture preferencesDialog) {
-		return preferencesDialog.table(GUIAutomationConfigurationTable.NAME);
+		return preferencesDialog.table(GUIAutomationTable.NAME);
 	}
 
 	/**
@@ -931,7 +932,7 @@ public class GUIAutomations {
 
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
 		int column = table
-				.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_IMAGE);
+				.columnIndexFor(GUIAutomationTable.COLNAME_IMAGE);
 
 		JPopupMenuFixture popupMenu = table.showPopupMenuAt(TableCell.row(row)
 				.column(column));
@@ -996,7 +997,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		JSpinnerFixture spinner = preferencesDialog
-				.spinner(GUIAutomationConfigurationPanel.NAME_MIN_SIMILARITY_SPINNER);
+				.spinner(GUIAutomationPanel.NAME_MIN_SIMILARITY_SPINNER);
 		spinner.enterTextAndCommit(value);
 	}
 
@@ -1032,7 +1033,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
-				GUIAutomationConfigurationTable.COLNAME_MIN_DELAY,
+				GUIAutomationTable.COLNAME_MIN_DELAY,
 				preferencesDialog);
 	}
 
@@ -1052,7 +1053,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
-				GUIAutomationConfigurationTable.COLNAME_SCAN_RATE,
+				GUIAutomationTable.COLNAME_SCAN_RATE,
 				preferencesDialog);
 	}
 
@@ -1072,7 +1073,7 @@ public class GUIAutomations {
 			DialogFixture preferencesDialog) {
 
 		setAutomationsSpinner(value, row,
-				GUIAutomationConfigurationTable.COLNAME_TIMEOUT,
+				GUIAutomationTable.COLNAME_TIMEOUT,
 				preferencesDialog);
 	}
 
@@ -1242,7 +1243,7 @@ public class GUIAutomations {
 	 * @return The file list
 	 */
 	public static JListFixture getFileList() {
-		return window.list(MainFrame.NAME_FILE_LIST);
+		return window.list(ItemList.NAME);
 	}
 
 	/**

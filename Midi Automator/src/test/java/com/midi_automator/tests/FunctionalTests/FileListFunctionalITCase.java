@@ -10,9 +10,9 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Assume;
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 
 public class FileListFunctionalITCase extends FunctionalBaseCase {
 
@@ -98,7 +98,7 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 		try {
 			selectEntryByLeftClick(6);
 			clickNextFile();
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			clickNextFile();
 
 			if (!sikulix.checkforStates("selected_Hello_World_9.png")) {
@@ -119,11 +119,11 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 			pressKeyOnMainFrame(KeyEvent.VK_SPACE);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 
 			pressKeyOnMainFrame(KeyEvent.VK_RIGHT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 2");
 
 		} catch (InterruptedException e) {
@@ -140,12 +140,12 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 			getFileList().requireSelection(0);
 
 			pressKeyOnMainFrame(KeyEvent.VK_ENTER);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 			getFileList().requireSelection(0);
 
@@ -163,11 +163,11 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_BACK_SPACE);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 3");
 
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_LEFT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 2");
 
 		} catch (InterruptedException e) {
@@ -187,9 +187,9 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 			selectEntryByLeftClick(1);
 
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_RIGHT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_RIGHT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -208,7 +208,7 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 			selectEntryByLeftClick(1);
 
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_LEFT);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			checkIfOpenEntryIsDisplayed("Hello World 1");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -243,7 +243,7 @@ public class FileListFunctionalITCase extends FunctionalBaseCase {
 			// popup menu on item 8
 			selectEntryByLeftClick(7);
 			clickNextFile();
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT + 50);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT + 50);
 			pressAndReleaseKeysOnMainFrame(popupMenuKey);
 			popupMenu.requireVisible();
 			fileList.requireSelection(8);

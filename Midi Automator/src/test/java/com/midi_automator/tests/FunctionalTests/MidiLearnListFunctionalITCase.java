@@ -14,7 +14,7 @@ import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.menus.MidiLearnPopupMenu;
+import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
 
 public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 

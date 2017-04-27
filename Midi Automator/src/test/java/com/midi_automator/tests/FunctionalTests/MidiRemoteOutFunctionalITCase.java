@@ -11,7 +11,7 @@ import javax.sound.midi.Receiver;
 import org.assertj.swing.fixture.DialogFixture;
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -56,7 +56,7 @@ public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 			saveDialog(preferencesDialog);
 
 			openEntryByDoubleClick(0);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			Thread.sleep(remoteTimeout);
@@ -68,7 +68,7 @@ public class MidiRemoteOutFunctionalITCase extends FunctionalBaseCase {
 			}
 
 			openEntryByDoubleClick(1);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			Thread.sleep(remoteTimeout);

@@ -40,9 +40,29 @@ public class MidiItemChangeNotificationService {
 	@Autowired
 	private MidiService midiService;
 	@Autowired
-	private FileListService fileListService;
+	private ItemListService fileListService;
 	@Autowired
 	private InfoMessagesService infoMessagesService;
+
+	/**
+	 * Sends a midi message as notifier that the item has changed.
+	 * 
+	 * @param deviceName
+	 *            The midi notification device name
+	 */
+	public void sendItemChangeNotifier(String deviceName) {
+
+		if (!deviceName.equals(MidiAutomatorProperties.VALUE_NULL)) {
+			try {
+				MidiDevice device = MidiUtils.getMidiDevice(deviceName, "OUT");
+				sendItemChangeNotifier(device);
+			} catch (MidiUnavailableException ex) {
+				log.error(
+						"The MIDI device for the switch notification is unavailable",
+						ex);
+			}
+		}
+	}
 
 	/**
 	 * Sends a midi message as notifier that the item has changed.

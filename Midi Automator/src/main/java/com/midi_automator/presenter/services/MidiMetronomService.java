@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
  * Handles all metronom functions.

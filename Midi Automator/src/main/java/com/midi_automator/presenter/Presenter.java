@@ -15,14 +15,14 @@ import com.midi_automator.MidiAutomator;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.Model;
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.InfoMessagesService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiMetronomService;
 import com.midi_automator.presenter.services.MidiRemoteOpenService;
 import com.midi_automator.presenter.services.MidiService;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 @Controller
 public class Presenter {
@@ -44,7 +44,7 @@ public class Presenter {
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;
 	@Autowired
-	private FileListService fileListService;
+	private ItemListService fileListService;
 	@Autowired
 	private MidiRemoteOpenService midiRemoteOpenService;
 	@Autowired

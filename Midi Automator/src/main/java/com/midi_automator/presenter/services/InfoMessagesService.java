@@ -1,13 +1,14 @@
 package com.midi_automator.presenter.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
  * Handles the messages in the info label.
@@ -18,7 +19,7 @@ import com.midi_automator.view.frames.MainFrame;
 @Service
 public class InfoMessagesService {
 
-	private List<String> infoMessages = new ArrayList<String>();
+	private Set<String> infoMessages = new LinkedHashSet<String>();
 
 	@Autowired
 	private MainFrame mainFrame;
@@ -46,7 +47,8 @@ public class InfoMessagesService {
 		if (!infoMessages.contains(message)) {
 			infoMessages.add(message);
 		}
-		mainFrame.setInfoText(messagesToString(infoMessages));
+		String displayedMesssage = messagesToString(infoMessages);
+		mainFrame.setInfoText(displayedMesssage);
 	}
 
 	/**
@@ -57,10 +59,16 @@ public class InfoMessagesService {
 	 */
 	public void removeInfoMessage(String message) {
 		infoMessages.remove(message);
+		String displayedMesssage = messagesToString(infoMessages);
+		mainFrame.setInfoText(displayedMesssage);
+	}
 
-		if (mainFrame != null) {
-			mainFrame.setInfoText(messagesToString(infoMessages));
-		}
+	/**
+	 * Removes all current info messages.
+	 */
+	public void clearInfoMessages() {
+		infoMessages.clear();
+		mainFrame.setInfoText("");
 	}
 
 	/**
@@ -70,7 +78,7 @@ public class InfoMessagesService {
 	 *            A list of messages
 	 * @return A HTML formatted String
 	 */
-	private String messagesToString(List<String> messages) {
+	private String messagesToString(Collection<String> messages) {
 		String result = "";
 
 		for (String message : messages) {

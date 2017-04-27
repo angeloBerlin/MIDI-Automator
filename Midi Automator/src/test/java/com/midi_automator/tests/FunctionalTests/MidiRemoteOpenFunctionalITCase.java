@@ -6,7 +6,7 @@ import javax.sound.midi.ShortMessage;
 
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 
@@ -42,7 +42,7 @@ public class MidiRemoteOpenFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 0);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if file opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");
@@ -51,7 +51,7 @@ public class MidiRemoteOpenFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(2000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, 1);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if file opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");

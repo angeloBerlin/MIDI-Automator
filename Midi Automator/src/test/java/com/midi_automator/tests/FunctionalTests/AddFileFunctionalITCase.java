@@ -11,10 +11,10 @@ import org.junit.Assume;
 import org.junit.Test;
 
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.AddDialog;
+import com.midi_automator.view.windows.AddDialog.AddDialog;
 
 public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
@@ -127,7 +127,7 @@ public class AddFileFunctionalITCase extends FunctionalBaseCase {
 
 		openEntryByDoubleClick(0);
 		try {
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

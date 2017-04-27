@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.frames.PreferencesDialog;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
+import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
 
 /**
  * Handles all key learning functions
@@ -83,7 +83,7 @@ public class KeyLearnService {
 		if (key.contains(KEY_KEY_LEARN_AUTOMATION)) {
 
 			if (newLearning) {
-				GUIAutomationConfigurationTable table = preferencesDialog
+				GUIAutomationTable table = preferencesDialog
 						.getGuiAutomationPanel().getGUIAutomationsTable();
 				keysCache = table.getKeysOfSelectedRow();
 				preferencesDialog.deleteKeyCodeFromSelectedAutomation();
@@ -146,7 +146,7 @@ public class KeyLearnService {
 	 */
 	public void cancelKeyLearn() {
 		setKeyLearnMode(false);
-		GUIAutomationConfigurationTable table = preferencesDialog
+		GUIAutomationTable table = preferencesDialog
 				.getGuiAutomationPanel().getGUIAutomationsTable();
 		table.setKeysOfSelectedRow(keysCache);
 		newLearning = false;

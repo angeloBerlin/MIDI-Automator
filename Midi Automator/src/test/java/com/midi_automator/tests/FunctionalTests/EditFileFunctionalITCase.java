@@ -12,11 +12,11 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Assume;
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.AddDialog;
-import com.midi_automator.view.frames.EditDialog;
-import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.AddDialog.AddDialog;
+import com.midi_automator.view.windows.EditDialog.EditDialog;
+import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 
 public class EditFileFunctionalITCase extends FunctionalBaseCase {
 
@@ -106,7 +106,7 @@ public class EditFileFunctionalITCase extends FunctionalBaseCase {
 			assertEquals(getFileList().contents()[0], "1 Hello World Edit");
 
 			openEntryByDoubleClick(0);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			checkIfOpenEntryIsDisplayed("Hello World Edit");
 			sikulix.checkIfProgramOpened(editedProgramScreenshot);

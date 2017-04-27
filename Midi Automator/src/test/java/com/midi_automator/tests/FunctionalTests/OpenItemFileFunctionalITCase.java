@@ -4,7 +4,7 @@ import static com.midi_automator.tests.utils.GUIAutomations.*;
 
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 
 public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
@@ -36,7 +36,7 @@ public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
 
 		openEntryByDoubleClick(0);
 		try {
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +56,7 @@ public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
 			startApplication();
 
 			openEntryByDoubleClick(0);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			checkIfOpenEntryIsDisplayed("Hello World");
 			sikulix.checkIfProgramOpened(specificProgramScreenshot);
@@ -77,7 +77,7 @@ public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
 		openEntryByDoubleClick(0);
 
 		try {
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -96,7 +96,7 @@ public class OpenItemFileFunctionalITCase extends FunctionalBaseCase {
 		openEntryByDoubleClick(1);
 
 		try {
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

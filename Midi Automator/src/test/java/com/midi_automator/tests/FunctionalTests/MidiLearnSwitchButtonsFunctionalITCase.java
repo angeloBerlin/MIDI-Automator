@@ -11,11 +11,11 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
 import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.frames.MainFrame;
-import com.midi_automator.view.menus.MidiLearnPopupMenu;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
+import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
 
 public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
@@ -80,7 +80,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
 			// open first files by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 2, 127);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check info text
 			checkInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
@@ -113,11 +113,14 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
+			// check if learned messages was displayed
+			checkInfoText("Midi message <b>channel 1: CONTROL CHANGE 106 value: 127</b> learned.");
+
 			// open first files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if first file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");
@@ -127,7 +130,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if second file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");
@@ -208,7 +211,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 
 			// open first files by learned midi message
 			MidiUtils.sendMidiMessage(deviceName, messageType, 1, 2, 127);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check info text
 			checkInfoText(String.format(Messages.MSG_MIDI_UNLEARNED,
@@ -241,11 +244,14 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
 
+			// check if learned messages was displayed
+			checkInfoText("Midi message <b>channel 1: CONTROL CHANGE 106 value: 127</b> learned.");
+
 			// open second files by learned midi message
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if second file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 2");
@@ -255,7 +261,7 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(1000);
 			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
 					controlNo, value);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if first file was not opened
 			checkIfOpenEntryIsDisplayed("Hello World 1");

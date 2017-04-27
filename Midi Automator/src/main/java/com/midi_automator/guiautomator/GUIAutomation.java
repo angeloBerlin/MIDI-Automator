@@ -5,7 +5,7 @@ import org.sikuli.script.Region;
 
 import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
 
 /**
  * Represents a GUI automation.
@@ -262,7 +262,7 @@ public class GUIAutomation implements IDeActivateable {
 
 		return "IMAGE: \"" + SystemUtils.replaceSystemVariables(imagePath)
 				+ "\" TYPE: " + type + " KEYS: "
-				+ GUIAutomationConfigurationTable.keyCodesToString(keyCodes)
+				+ GUIAutomationTable.keyCodesToString(keyCodes)
 				+ " TRIGGER: " + trigger + " FOCUS: \"" + focusedProgram
 				+ "\" MIDI: " + midiSignature + " TIMEOUT: " + timeout
 				+ " SCANRATE: " + scanRate + " MOVABLE: " + movable;

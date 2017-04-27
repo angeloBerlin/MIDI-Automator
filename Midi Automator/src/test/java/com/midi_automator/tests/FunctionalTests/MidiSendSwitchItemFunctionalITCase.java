@@ -14,10 +14,10 @@ import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 
 public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 
@@ -63,7 +63,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 
 			// open entry 1
 			openEntryByDoubleClick(0);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 1 value: 127"
@@ -74,7 +74,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 
 			// open entry 2
 			openEntryByDoubleClick(1);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 2 value: 127"
@@ -102,7 +102,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 			JPopupMenuFixture popupMenu = openFileListPopupMenu(0);
 			popupMenu.menuItem(MainFramePopupMenu.NAME_MENU_ITEM_SEND_MIDI)
 					.click();
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 1 value: 127"
@@ -115,7 +115,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 			popupMenu = openFileListPopupMenu(1);
 			popupMenu.menuItem(MainFramePopupMenu.NAME_MENU_ITEM_SEND_MIDI)
 					.click();
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 2 value: 127"
@@ -148,7 +148,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 			selectEntryByLeftClick(0);
 			pressKeyOnMainFrame(KeyEvent.VK_ALT);
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_M);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 1 value: 127"
@@ -161,7 +161,7 @@ public class MidiSendSwitchItemFunctionalITCase extends FunctionalBaseCase {
 			selectEntryByLeftClick(1);
 			pressKeyOnMainFrame(KeyEvent.VK_ALT);
 			pressAndReleaseKeysOnMainFrame(KeyEvent.VK_M);
-			Thread.sleep(FileListService.FAST_SWITCHING_TIMESLOT * 3);
+			Thread.sleep(ItemListService.FAST_SWITCHING_TIMESLOT * 3);
 
 			// check if midi master message was sent
 			if (!"channel 16: CONTROL CHANGE 2 value: 127"

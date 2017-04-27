@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.midi_automator.presenter.services.MidiLearnService;
+import com.midi_automator.view.windows.MainFrame.actions.AbstractMainFramePopUpMenuAction;
 
 /**
  * Cancels the midi learn mode and put the application to the normal state.

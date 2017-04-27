@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.services.FileListService;
+import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.ImportExportService;
 import com.midi_automator.presenter.services.MidiService;
@@ -18,7 +18,7 @@ public class ImportFileIntegrationTest extends IntegrationTBase {
 	@Autowired
 	private ImportExportService importExportService;
 	@Autowired
-	private FileListService fileListService;
+	private ItemListService fileListService;
 	@Autowired
 	private MidiService midiService;
 	@Autowired

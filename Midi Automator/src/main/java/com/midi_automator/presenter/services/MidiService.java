@@ -26,7 +26,7 @@ import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.frames.MainFrame;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
  * Handles all midi devices

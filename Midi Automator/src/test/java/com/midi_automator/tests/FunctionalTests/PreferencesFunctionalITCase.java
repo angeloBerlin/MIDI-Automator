@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.tests.utils.MockUpUtils;
-import com.midi_automator.view.frames.PreferencesDialog;
+import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
 
 public class PreferencesFunctionalITCase extends FunctionalBaseCase {
 

@@ -20,8 +20,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="com.midi_automator.view.frames.MainFrame" project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/frames/MainFrame.java" binary="false" 
+  <class id="3" language="java" name="com.midi_automator.view.windows.MainFrame.MainFrame" project="Midi Automator" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/MainFrame/MainFrame.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="297" y="448"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -30,8 +30,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="com.midi_automator.view.frames.AddDialog" project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/frames/AddDialog.java" binary="false" 
+  <class id="4" language="java" name="com.midi_automator.view.windows.AddDialog.AddDialog" project="Midi Automator" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/AddDialog/AddDialog.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="499" y="449"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -40,8 +40,8 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="com.midi_automator.view.frames.EditDialog" project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/frames/EditDialog.java" binary="false" 
+  <class id="5" language="java" name="com.midi_automator.view.windows.EditDialog.EditDialog" project="Midi Automator" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/EditDialog/EditDialog.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="690" y="448"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -50,9 +50,10 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="com.midi_automator.view.frames.PreferencesDialog" project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/frames/PreferencesDialog.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="6" language="java" name="com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog" 
+    project="Midi Automator" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/PreferencesDialog/PreferencesDialog.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-10" y="449"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -60,9 +61,10 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="com.midi_automator.view.menus.MainFramePopupMenu" project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/menus/MainFramePopupMenu.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="7" language="java" name="com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu" 
+    project="Midi Automator" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/MainFrame/menus/MainFramePopupMenu.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="484" y="295"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -70,9 +72,10 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationPanel" 
+  <class id="8" language="java" 
+    name="com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationPanel" 
     project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/automationconfiguration/GUIAutomationConfigurationPanel.java" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/PreferencesDialog/GUIAutomationPanel/GUIAutomationPanel.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-9" y="323"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -81,9 +84,10 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable" 
+  <class id="9" language="java" 
+    name="com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable" 
     project="Midi Automator" 
-    file="/Midi Automator/src/main/java/com/midi_automator/view/automationconfiguration/GUIAutomationConfigurationTable.java" 
+    file="/Midi Automator/src/main/java/com/midi_automator/view/windows/PreferencesDialog/GUIAutomationPanel/GUIAutomationTable/GUIAutomationTable.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="-9" y="202"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -92,125 +96,129 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <dependency id="10">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <generalization id="11">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <association id="12">    
+  <association id="10">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="13" name="preferencesDialog">        
+      <attribute id="11" name="popupMenu">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="14" minimum="0" maximum="1">        
+      <multiplicity id="12" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
+    <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="15">    
+  <association id="13">    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="16" name="guiAutomationConfigurationPanel">        
+      <attribute id="14" name="guiAutomationConfigurationPanel">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="17" minimum="0" maximum="1">        
+      <multiplicity id="15" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="8" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="18">    
-    <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="19" name="configurationTable">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="20" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="9" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="21">    
+  <association id="16">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="22" name="popupMenu">        
+      <attribute id="17" name="popupMenu">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="23" minimum="0" maximum="1">        
+      <multiplicity id="18" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="24">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="25" name="popupMenu">        
+  <dependency id="19">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <association id="20">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="21" name="guiAutomationConfigurationPanel">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="26" minimum="0" maximum="1">        
+      <multiplicity id="22" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
+    <end type="TARGET" refId="8" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="27">    
+  <association id="23">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="28" name="preferencesDialog">        
+      <attribute id="24" name="preferencesDialog">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="29" minimum="0" maximum="1">        
+      <multiplicity id="25" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="30">    
+  <dependency id="26">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="5"/>  
   </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <dependency id="28">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <generalization id="29">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </generalization>  
+  <dependency id="30">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
   <association id="31">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="32" name="mainFrame">        
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="32" name="configurationTable">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="33" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="3" navigable="true"/>    
+    <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <dependency id="34">    
     <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="9"/>  
+    <end type="TARGET" refId="2"/>  
   </dependency>  
-  <association id="35">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="36" name="guiAutomationConfigurationPanel">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="37" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="38">    
+  <dependency id="35">    
     <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="2"/>  
   </dependency>  
+  <association id="36">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="37" name="preferencesDialog">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <dependency id="39">    
     <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="4"/>  
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="40">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

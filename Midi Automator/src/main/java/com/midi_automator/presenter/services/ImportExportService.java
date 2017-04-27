@@ -39,7 +39,7 @@ public class ImportExportService {
 	private MidiAutomatorProperties properties;
 
 	@Autowired
-	private FileListService fileListService;
+	private ItemListService fileListService;
 
 	private String loadedMidautoFilePath;
 

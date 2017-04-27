@@ -22,8 +22,8 @@ import com.midi_automator.guiautomator.GUIAutomation;
 import com.midi_automator.presenter.Messages;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
-import com.midi_automator.view.automationconfiguration.GUIAutomationConfigurationTable;
-import com.midi_automator.view.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
+import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
 
 public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
@@ -265,7 +265,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// check for empty midi message
 			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
-					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+					.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 			table.requireCellValue(TableCell.row(0).column(column), "");
 
@@ -291,7 +291,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// check for empty midi message
 			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
-					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+					.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 			table.requireCellValue(TableCell.row(0).column(column), "");
 
@@ -321,7 +321,7 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			// check for learned midi message
 			JTableFixture table = getGUIAutomationTable(preferencesDialog);
 			int column = table
-					.columnIndexFor(GUIAutomationConfigurationTable.COLNAME_MIDI_SIGNATURE);
+					.columnIndexFor(GUIAutomationTable.COLNAME_MIDI_SIGNATURE);
 
 			table.requireCellValue(TableCell.row(0).column(column),
 					"channel 1: CONTROL CHANGE 109 value: 127");
