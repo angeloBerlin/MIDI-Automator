@@ -10,7 +10,7 @@ import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
-import com.midi_automator.presenter.Messages;
+import com.midi_automator.Messages;
 import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
@@ -38,7 +38,9 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void midiLearnShouldBeCanceledOnNextButton() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
@@ -142,7 +144,9 @@ public class MidiLearnSwitchButtonsFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void midiLearnShouldBeCanceledOnPrevButton() {
 
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");

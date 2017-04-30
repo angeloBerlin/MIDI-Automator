@@ -25,7 +25,9 @@ import javax.swing.border.Border;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
+import com.midi_automator.view.windows.listener.TrayMenuCloseListener;
 
 /**
  * Base class of dialogs with save and cancel buttons.
@@ -56,6 +58,8 @@ public abstract class AbstractBasicDialog extends JDialog {
 
 	@Autowired
 	protected MainFrame mainFrame;
+	@Autowired
+	private TrayMenuCloseListener trayCloseListener;
 
 	protected boolean initialized = false;
 
@@ -90,6 +94,8 @@ public abstract class AbstractBasicDialog extends JDialog {
 		buttonCancel.setName(NAME_CANCEL_BUTTON);
 		buttonCancel.addActionListener(new CancelAction());
 		buttonCancel.addKeyListener(new CancelKeyListener());
+
+		GUIUtils.addMouseListenerToAllComponents(this, trayCloseListener);
 
 	}
 

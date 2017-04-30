@@ -1,4 +1,4 @@
-package com.midi_automator.presenter;
+package com.midi_automator;
 
 import java.util.HashMap;
 import java.util.Map;

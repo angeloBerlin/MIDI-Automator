@@ -18,8 +18,8 @@ import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.assertj.swing.fixture.JTableFixture;
 import org.junit.Test;
 
+import com.midi_automator.Messages;
 import com.midi_automator.guiautomator.GUIAutomation;
-import com.midi_automator.presenter.Messages;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
@@ -37,9 +37,9 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 	private String propertiesAutomationMidiLearned;
 
 	private int messageType = ShortMessage.CONTROL_CHANGE;
-	private int channel = 1;
-	private int controlNo = 109;
-	private int value = 127;
+	private int midiChannel = 1;
+	private int midiControlNo = 109;
+	private int midiValue = 127;
 
 	public GUIAutomationFunctionalITCase() {
 
@@ -77,8 +77,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		try {
 			// send midi trigger
-			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-					controlNo, value);
+			MidiUtils.sendMidiMessage(deviceName, messageType, midiChannel,
+					midiControlNo, midiValue);
 			Thread.sleep(8000);
 
 			// search clicked Midi Automator
@@ -95,8 +95,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(1000);
 
 			// send midi trigger
-			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-					controlNo, value);
+			MidiUtils.sendMidiMessage(deviceName, messageType, midiChannel,
+					midiControlNo, midiValue);
 
 			Thread.sleep(5000);
 
@@ -246,6 +246,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 	}
 
 	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void automationMidiLearnShouldBeCanceled() {
 
 		try {
@@ -259,7 +261,6 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			midiLearnAutomation(0, preferencesDialog);
 			Thread.sleep(1000);
 
-			// TODO: right click on inactive component
 			cancelMidiLearnAutomation(0, preferencesDialog);
 
 			// check for empty midi message
@@ -314,8 +315,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			midiLearnAutomation(0, preferencesDialog);
 			Thread.sleep(1000);
 
-			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-					controlNo, value);
+			MidiUtils.sendMidiMessage(deviceName, messageType, midiChannel,
+					midiControlNo, midiValue);
 			Thread.sleep(2000);
 
 			// check for learned midi message
@@ -333,8 +334,8 @@ public class GUIAutomationFunctionalITCase extends FunctionalBaseCase {
 			addDialog.requireVisible();
 
 			// send midi trigger
-			MidiUtils.sendMidiMessage(deviceName, messageType, channel,
-					controlNo, value);
+			MidiUtils.sendMidiMessage(deviceName, messageType, midiChannel,
+					midiControlNo, midiValue);
 			Thread.sleep(5000);
 
 			// check if add dialog was canceled

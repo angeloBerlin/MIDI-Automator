@@ -13,13 +13,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.Messages;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.Model;
 import com.midi_automator.model.SetList;
 import com.midi_automator.model.SetListItem;
 import com.midi_automator.model.TooManyEntriesException;
-import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.FileUtils;
 import com.midi_automator.utils.MidiUtils;
@@ -59,7 +59,7 @@ public class ItemListService {
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;
 	@Autowired
-	private MidiRemoteOpenService midiRemoteOpenService;
+	private MidiExecuteService midiRemoteOpenService;
 	@Autowired
 	private MidiItemChangeNotificationService midiNotificationService;
 	@Autowired

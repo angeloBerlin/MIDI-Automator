@@ -1,58 +1,43 @@
 package com.midi_automator.view.tray.menus;
 
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
+import javax.swing.JMenuItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.midi_automator.view.actions.MidiLearnAction;
-import com.midi_automator.view.actions.MidiLearnCancelAction;
-import com.midi_automator.view.actions.MidiUnlearnAction;
+import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.view.windows.MainFrame.actions.HideShowMainFrameAction;
+import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
 
-@Component
-public class TrayPopupMenu extends PopupMenu {
+@org.springframework.stereotype.Component
+public class TrayPopupMenu extends MidiLearnPopupMenu {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String NAME = "tray popup menu";
 	public static final String MENU_ITEM_OPEN_MIDI_AUTOMATOR = "Open...";
 	public static final String MENU_ITEM_HIDE_MIDI_AUTOMATOR = "Hide...";
-	public static final String MENU_ITEM_MIDI_LEARN = "Midi learn";
-	public static final String MENU_ITEM_MIDI_LEARN_CANCEL = "Cancel midi learn";
-	public static final String MENU_ITEM_MIDI_UNLEARN = "Midi unlearn";
 
-	private MenuItem hideShowMenuItem;
-	private MenuItem midiLearnMenuItem;
-	private MenuItem midiUnLearnMenuItem;
+	private JMenuItem hideShowMenuItem;
 
 	@Autowired
 	private HideShowMainFrameAction hideShowAction;
+
 	@Autowired
-	private MidiLearnAction midiLearnAction;
-	@Autowired
-	private MidiLearnCancelAction midiLearnCancelAction;
-	@Autowired
-	private MidiUnlearnAction midiUnlearnAction;
+	private MidiService midiService;
 
 	/**
 	 * Initializes the popup menu
 	 */
 	public void init() {
+		super.init();
 		setName(NAME);
-
-		hideShowMenuItem = new MenuItem(MENU_ITEM_HIDE_MIDI_AUTOMATOR);
-		midiLearnMenuItem = new MenuItem(MENU_ITEM_MIDI_LEARN);
-		midiUnLearnMenuItem = new MenuItem(MENU_ITEM_MIDI_UNLEARN);
-
+		hideShowMenuItem = new JMenuItem(MENU_ITEM_HIDE_MIDI_AUTOMATOR);
 		hideShowMenuItem.addActionListener(hideShowAction);
-		midiLearnMenuItem.addActionListener(midiLearnAction);
-		midiUnLearnMenuItem.addActionListener(midiUnlearnAction);
 
+		removeAll();
 		add(hideShowMenuItem);
 		add(midiLearnMenuItem);
-		add(midiUnLearnMenuItem);
+		add(midiUnlearnMenuItem);
 	}
 
 	/**
@@ -65,30 +50,30 @@ public class TrayPopupMenu extends PopupMenu {
 
 		if (state) {
 			hideShowMenuItem
-					.setLabel(TrayPopupMenu.MENU_ITEM_OPEN_MIDI_AUTOMATOR);
+					.setText(TrayPopupMenu.MENU_ITEM_OPEN_MIDI_AUTOMATOR);
 		} else {
 			hideShowMenuItem
-					.setLabel(TrayPopupMenu.MENU_ITEM_HIDE_MIDI_AUTOMATOR);
+					.setText(TrayPopupMenu.MENU_ITEM_HIDE_MIDI_AUTOMATOR);
 		}
 	}
 
 	/**
-	 * Puts the frame to midi learn mode
+	 * Opens the popup menu
+	 * 
+	 * @param x
+	 *            The x location
+	 * @param y
+	 *            The y location
 	 */
-	public void midiLearnOn() {
-
-		midiLearnMenuItem.setLabel(MENU_ITEM_MIDI_LEARN_CANCEL);
-		midiLearnMenuItem.removeActionListener(midiLearnAction);
-		midiLearnMenuItem.addActionListener(midiLearnCancelAction);
+	public void open(int x, int y) {
+		setLocation(x, y);
+		setVisible(true);
 	}
 
 	/**
-	 * Puts the frame to normal mode.
+	 * Closes the popup menu
 	 */
-	public void midiLearnOff() {
-
-		midiLearnMenuItem.setLabel(MENU_ITEM_MIDI_LEARN);
-		midiLearnMenuItem.removeActionListener(midiLearnCancelAction);
-		midiLearnMenuItem.addActionListener(midiLearnAction);
+	public void close() {
+		setVisible(false);
 	}
 }

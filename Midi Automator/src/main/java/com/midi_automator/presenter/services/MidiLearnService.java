@@ -8,10 +8,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.Messages;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.MidiAutomatorProperties.GUIAutomationKey;
 import com.midi_automator.model.Model;
-import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.CommonUtils;
 import com.midi_automator.view.tray.Tray;
@@ -38,9 +38,9 @@ public class MidiLearnService {
 
 	public static final String KEY_MIDI_LEARN_PREVIOUS_BUTTON = "previous button";
 	public static final String KEY_MIDI_LEARN_NEXT_BUTTON = "next button";
-	public static final String KEY_MIDI_LEARN_FILE_LIST_ENTRY = "entry";
+	public static final String KEY_MIDI_LEARN_ITEM_LIST_ENTRY = "entry";
 	public static final String KEY_MIDI_LEARN_AUTOMATION_TRIGGER = "GUI automation trigger";
-	public static final String KEY_MIDI_LEARN_HIDE_SHOW_MAIN_FRAME = "hide show main frame";
+	public static final String KEY_MIDI_LEARN_HIDE_SHOW_MAIN_FRAME = "hiding program";
 
 	@Autowired
 	private MidiAutomatorProperties properties;
@@ -108,13 +108,17 @@ public class MidiLearnService {
 			midiLearnNextButton(midiSignature);
 			break;
 
-		case KEY_MIDI_LEARN_FILE_LIST_ENTRY:
+		case KEY_MIDI_LEARN_ITEM_LIST_ENTRY:
 			midiLearnFileListEntry(midiSignature,
 					getIndexFromIndexedMidiLearnKey(key));
 			break;
 
 		case KEY_MIDI_LEARN_AUTOMATION_TRIGGER:
 			preferencesDialog.setAutomationMidiSignature(midiSignature);
+			break;
+
+		case KEY_MIDI_LEARN_HIDE_SHOW_MAIN_FRAME:
+			midiLearnHideMainFrame(midiSignature);
 			break;
 		}
 	}
@@ -130,6 +134,22 @@ public class MidiLearnService {
 		midiLearningKey = retrieveLearningKeyForComponentName(componentName);
 		setMidiLearnMode(true);
 
+	}
+
+	/**
+	 * Midi learns the signature for hiding the main frame
+	 * 
+	 * @param midiSignature
+	 *            The midi signature
+	 */
+	private void midiLearnHideMainFrame(String midiSignature) {
+
+		properties.setProperty(
+				MidiAutomatorProperties.KEY_HIDE_PROGRAM_SIGNATURE,
+				midiSignature);
+
+		presenter.storePropertiesFile();
+		presenter.loadProperties();
 	}
 
 	/**
@@ -253,7 +273,9 @@ public class MidiLearnService {
 		String key = retrieveLearningKeyForComponentName(componentName);
 		midiLearn(null, key);
 
-		if (key.contains(KEY_MIDI_LEARN_FILE_LIST_ENTRY)) {
+		infoMessagesService.clearInfoMessages();
+
+		if (key.contains(KEY_MIDI_LEARN_ITEM_LIST_ENTRY)) {
 
 			String entryName = fileListService
 					.getEntryNameByIndex(getIndexFromIndexedMidiLearnKey(key));
@@ -287,12 +309,18 @@ public class MidiLearnService {
 		boolean found = false;
 
 		if (properties != null) {
-			@SuppressWarnings("unchecked")
-			Enumeration<String> propertyNames = (Enumeration<String>) properties
+
+			Enumeration<?> propertyNames = (Enumeration<?>) properties
 					.propertyNames();
 
 			while (propertyNames.hasMoreElements()) {
-				String key = propertyNames.nextElement();
+				Object element = propertyNames.nextElement();
+
+				String key = "";
+				if (element instanceof String) {
+					key = (String) element;
+				}
+
 				String value = (String) properties.get(key);
 
 				if (value.equals(signature)
@@ -300,6 +328,7 @@ public class MidiLearnService {
 								.toString())) {
 					found = true;
 				}
+
 			}
 		}
 
@@ -307,7 +336,7 @@ public class MidiLearnService {
 			found = true;
 		}
 
-		if (signature.contains(MidiRemoteOpenService.OPEN_FILE_MIDI_SIGNATURE)) {
+		if (signature.contains(MidiExecuteService.OPEN_FILE_MIDI_SIGNATURE)) {
 			found = true;
 		}
 
@@ -332,35 +361,28 @@ public class MidiLearnService {
 
 		switch (invokerName) {
 
-		// Previous button
 		case MainFrame.NAME_PREV_BUTTON:
 			return MidiLearnService.KEY_MIDI_LEARN_PREVIOUS_BUTTON;
 
-			// Next button
 		case MainFrame.NAME_NEXT_BUTTON:
 			return MidiLearnService.KEY_MIDI_LEARN_NEXT_BUTTON;
 
-			// File list
 		case ItemList.NAME:
 			int selectedIndex = mainFrame.getItemList().getSelectedIndex();
-			return MidiLearnService.KEY_MIDI_LEARN_FILE_LIST_ENTRY + " "
+			return MidiLearnService.KEY_MIDI_LEARN_ITEM_LIST_ENTRY + " "
 					+ selectedIndex;
-
-			// GUI automation trigger
 		case GUIAutomationTable.NAME:
 
 			PreferencesDialog preferencesDialog = mainFrame
 					.getPreferencesDialog();
 			GUIAutomationPanel panel = preferencesDialog
 					.getGuiAutomationPanel();
-			GUIAutomationTable table = panel
-					.getGUIAutomationsTable();
+			GUIAutomationTable table = panel.getGUIAutomationsTable();
 
 			int selectedRow = table.getSelectedRow();
 			return MidiLearnService.KEY_MIDI_LEARN_AUTOMATION_TRIGGER + " "
 					+ selectedRow;
 
-			// Tray menu
 		case TrayPopupMenu.NAME:
 			return MidiLearnService.KEY_MIDI_LEARN_HIDE_SHOW_MAIN_FRAME;
 		}
@@ -379,41 +401,62 @@ public class MidiLearnService {
 	public boolean isMidiLearned(String componentName) {
 		boolean isLearned = false;
 
-		// previous switch button
-		String prevSignature = getPreviousButtonMidiListeningSignature();
-		if (prevSignature != null
-				&& !prevSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
-			if (componentName.equals(MainFrame.NAME_PREV_BUTTON)
-					&& (!prevSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
+		switch (componentName) {
 
-		// next switch button
-		String nextSignature = getNextButtonMidiListeningSignature();
-		if (nextSignature != null
-				&& !nextSignature.equals(MidiAutomatorProperties.VALUE_NULL)) {
-			if (componentName.equals(MainFrame.NAME_NEXT_BUTTON)
-					&& (!nextSignature.equals(""))) {
-				isLearned = true;
-			}
-		}
+		case MainFrame.NAME_PREV_BUTTON:
+			String prevSignature = getPreviousButtonMidiListeningSignature();
+			isLearned = isValidMidiSignature(prevSignature);
+			break;
 
-		// file list item
-		if (componentName.equals(ItemList.NAME)) {
+		case MainFrame.NAME_NEXT_BUTTON:
+			String nextSignature = getNextButtonMidiListeningSignature();
+			isLearned = isValidMidiSignature(nextSignature);
+			break;
 
+		case Tray.NAME:
+			String hideSignature = getMainFrameHideMidiListeningSignature();
+			isLearned = isValidMidiSignature(hideSignature);
+			break;
+
+		case ItemList.NAME:
 			String selectedSignature = fileListService
 					.getMidiFileListListeningSignature(mainFrame.getItemList()
 							.getSelectedIndex());
-
-			if (selectedSignature != null) {
-				if (!selectedSignature.equals("")) {
-					isLearned = true;
-				}
-			}
+			isLearned = isValidMidiSignature(selectedSignature);
+			break;
 		}
 
 		return isLearned;
+	}
+
+	/**
+	 * Checks if the given signature is not null, not empty or not set.
+	 * 
+	 * @param signature
+	 *            The MID signature
+	 * @return <TRUE>, if the signature is valid, <FALSE> if the signature is
+	 *         not valid
+	 */
+	private boolean isValidMidiSignature(String signature) {
+
+		if (signature != null
+				&& !signature.equals(MidiAutomatorProperties.VALUE_NULL)
+				&& !signature.equals("")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Gets the midi listening signature for hiding the main frame
+	 * 
+	 * @return The midi signature
+	 */
+	public String getMainFrameHideMidiListeningSignature() {
+
+		return properties
+				.getProperty(MidiAutomatorProperties.KEY_HIDE_PROGRAM_SIGNATURE);
 	}
 
 	/**

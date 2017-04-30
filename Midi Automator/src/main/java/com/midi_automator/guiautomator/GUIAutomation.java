@@ -3,7 +3,7 @@ package com.midi_automator.guiautomator;
 import org.apache.log4j.Logger;
 import org.sikuli.script.Region;
 
-import com.midi_automator.presenter.IDeActivateable;
+import com.midi_automator.IDeActivateable;
 import com.midi_automator.utils.SystemUtils;
 import com.midi_automator.view.windows.PreferencesDialog.GUIAutomationPanel.GUIAutomationTable.GUIAutomationTable;
 

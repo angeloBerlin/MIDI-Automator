@@ -10,7 +10,7 @@ import org.assertj.swing.fixture.JFileChooserFixture;
 import org.junit.Assume;
 import org.junit.Test;
 
-import com.midi_automator.presenter.Messages;
+import com.midi_automator.Messages;
 import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.GUIAutomations;
 import com.midi_automator.tests.utils.MockUpUtils;

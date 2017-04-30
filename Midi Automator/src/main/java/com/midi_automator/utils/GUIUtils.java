@@ -3,8 +3,6 @@ package com.midi_automator.utils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -47,14 +45,17 @@ public class GUIUtils {
 		if (source instanceof JMenuItem) {
 			JMenuItem menuItem = (JMenuItem) source;
 			JPopupMenu popupMenu = (JPopupMenu) menuItem.getParent();
-			Component component = (Component) popupMenu.getInvoker();
-			invokerName = component.getName();
-		}
 
-		if (source instanceof MenuItem) {
-			MenuItem menuItem = (MenuItem) source;
-			PopupMenu popupMenu = (PopupMenu) menuItem.getParent();
-			invokerName = popupMenu.getName();
+			Object invoker = popupMenu.getInvoker();
+
+			// return name of component where the popup menu was invoked,
+			// otherwise return name of popup menu
+			if (invoker instanceof Component) {
+				Component component = (Component) popupMenu.getInvoker();
+				invokerName = component.getName();
+			} else {
+				invokerName = popupMenu.getName();
+			}
 		}
 
 		return invokerName;
@@ -153,14 +154,17 @@ public class GUIUtils {
 				.getAllComponents((Container) rootComponent);
 
 		for (Component component : compList) {
+
+			String componentName = component.getName();
+
 			if (component instanceof JComponent) {
 
-				// check is component is excepted
+				// check if component is excepted
 				boolean exception = false;
 				for (String exceptionName : exceptionNames) {
 
-					if (component.getName() != null) {
-						if (component.getName().equals(exceptionName)) {
+					if (componentName != null) {
+						if (componentName.equals(exceptionName)) {
 							exception = true;
 						}
 					}
@@ -309,5 +313,26 @@ public class GUIUtils {
 		}
 
 		return border;
+	}
+
+	/**
+	 * Adds a mouse listener to a component and all its childs.
+	 * 
+	 * @param parent
+	 *            The parent component
+	 * @param listener
+	 *            The listener to add
+	 */
+	public static void addMouseListenerToAllComponents(Component parent,
+			MouseListener listener) {
+
+		parent.addMouseListener(listener);
+
+		if (parent instanceof Container) {
+			Component[] comps = ((Container) parent).getComponents();
+			for (Component c : comps) {
+				addMouseListenerToAllComponents(c, listener);
+			}
+		}
 	}
 }

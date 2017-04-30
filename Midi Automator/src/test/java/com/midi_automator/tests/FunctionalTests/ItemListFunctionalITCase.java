@@ -14,11 +14,11 @@ import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 
-public class FileListFunctionalITCase extends FunctionalBaseCase {
+public class ItemListFunctionalITCase extends FunctionalBaseCase {
 
 	private int popupMenuKey;
 
-	public FileListFunctionalITCase() {
+	public ItemListFunctionalITCase() {
 
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			popupMenuKey = KeyEvent.VK_META;

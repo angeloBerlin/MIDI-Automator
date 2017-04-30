@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -44,7 +45,7 @@ import com.midi_automator.presenter.services.ImportExportService;
 import com.midi_automator.presenter.services.ItemListService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiLearnService;
-import com.midi_automator.presenter.services.MidiRemoteOpenService;
+import com.midi_automator.presenter.services.MidiExecuteService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
@@ -63,6 +64,7 @@ import com.midi_automator.view.windows.MainFrame.listener.HideMainFrameListener;
 import com.midi_automator.view.windows.MainFrame.listener.MainFramePopupListener;
 import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
+import com.midi_automator.view.windows.listener.TrayMenuCloseListener;
 
 @org.springframework.stereotype.Component
 public class MainFrame extends JFrame {
@@ -75,7 +77,7 @@ public class MainFrame extends JFrame {
 	private final int WIDTH = 500;
 	private final int HEIGHT = 610;
 	public static final int TEST_POSITION_X = 0;
-	public static final int TEST_POSITION_Y = 50;
+	public static final int TEST_POSITION_Y = 100;
 	private final int FRAME_LOCATION_X_OFFSET = 50;
 	private final int FRAME_LOCATION_Y_OFFSET = 50;
 	private final int MAIN_LAYOUT_HORIZONTAL_GAP = 10;
@@ -126,6 +128,8 @@ public class MainFrame extends JFrame {
 	private GlobalKeyListener globalKeyListener;
 	@Autowired
 	private HideMainFrameListener windowHideListener;
+	@Autowired
+	private TrayMenuCloseListener trayCloseListener;
 
 	@Autowired
 	private ExitAction exitAction;
@@ -169,7 +173,7 @@ public class MainFrame extends JFrame {
 	@Autowired
 	private MidiService midiService;
 	@Autowired
-	private MidiRemoteOpenService midiRemoteOpenService;
+	private MidiExecuteService midiRemoteOpenService;
 	@Autowired
 	private MidiItemChangeNotificationService midiNotificationService;
 	@Autowired
@@ -226,9 +230,6 @@ public class MainFrame extends JFrame {
 		icons.add(new ImageIcon(icon256).getImage());
 		setIconImages(icons);
 
-		// Tray
-		tray.init();
-
 		iconPathPrev = resources.getImagePath() + File.separator
 				+ "arrow_prev.png";
 		iconPathNext = resources.getImagePath() + File.separator
@@ -273,6 +274,10 @@ public class MainFrame extends JFrame {
 		setSize(WIDTH, HEIGHT);
 		setAlwaysOnTop(true);
 		addWindowListener(windowHideListener);
+
+		// Tray
+		tray.init();
+		GUIUtils.addMouseListenerToAllComponents(this, trayCloseListener);
 
 		setVisible(true);
 	}
@@ -423,6 +428,7 @@ public class MainFrame extends JFrame {
 
 		// change menu item
 		popupMenu.midiLearnOff();
+		tray.midiLearnOff();
 
 		learnOff();
 	}
@@ -465,41 +471,44 @@ public class MainFrame extends JFrame {
 
 		// disable all inputs
 		GUIUtils.disEnableAllInputs(this, false);
+
+		// activate popup menu listener
+		popupListener.setActive(true);
 	}
 
 	/**
-	 * Puts the GUI to the learning mode for the given component
+	 * Puts the GUI to the learning mode the given component.
 	 * 
 	 * @param learningComponent
+	 *            The learning component to highlight
+	 * 
 	 */
 	private void learnOn(Component learningComponent) {
 
 		learnOn();
 
-		// activate popup menu listener
-		GUIUtils.deActivateAllMouseListeners(learningComponent, true);
+		String componentName = learningComponent.getName();
 
-		// highlight component
-		if (learningComponent.getName() != null) {
-			if (learningComponent.getName().equals(ItemList.NAME)) {
+		switch (componentName) {
+		case ItemList.NAME:
+			GUIUtils.deHighlightListItem((JList<?>) learningComponent, true);
+			log.info("Learning for item index: "
+					+ (itemList.getSelectedIndex() + 1));
+			break;
 
-				GUIUtils.deHighlightListItem(itemList, true);
+		case NAME_PREV_BUTTON:
+			GUIUtils.deHighlightComponent((JComponent) learningComponent, true);
+			log.info("Learning for button: " + learningComponent.getName());
+			break;
 
-				log.info("Learning for index: "
-						+ (itemList.getSelectedIndex() + 1));
+		case NAME_NEXT_BUTTON:
+			GUIUtils.deHighlightComponent((JComponent) learningComponent, true);
+			log.info("Learning for button: " + learningComponent.getName());
+			break;
 
-			} else {
+		case NAME:
+			log.info("Learning for : " + learningComponent.getName());
 
-				if (learningComponent.getName().equals(NAME_PREV_BUTTON)
-						|| learningComponent.getName().equals(NAME_NEXT_BUTTON)) {
-
-					GUIUtils.deHighlightComponent(
-							(JComponent) learningComponent, true);
-
-					log.info("Learning for button: "
-							+ learningComponent.getName());
-				}
-			}
 		}
 	}
 
@@ -534,6 +543,8 @@ public class MainFrame extends JFrame {
 
 		// change menu item text
 		popupMenu.midiLearnOn();
+		tray.midiLearnOn();
+
 		Component learningComponent = getLearningComponentFromKey(key);
 		learnOn(learningComponent);
 	}
@@ -553,12 +564,14 @@ public class MainFrame extends JFrame {
 		case MidiLearnService.KEY_MIDI_LEARN_AUTOMATION_TRIGGER:
 			return preferencesDialog.getGuiAutomationPanel()
 					.getGUIAutomationsTable();
-		case MidiLearnService.KEY_MIDI_LEARN_FILE_LIST_ENTRY:
+		case MidiLearnService.KEY_MIDI_LEARN_ITEM_LIST_ENTRY:
 			return itemList;
 		case MidiLearnService.KEY_MIDI_LEARN_NEXT_BUTTON:
 			return nextButton;
 		case MidiLearnService.KEY_MIDI_LEARN_PREVIOUS_BUTTON:
 			return prevButton;
+		case MidiLearnService.KEY_MIDI_LEARN_HIDE_SHOW_MAIN_FRAME:
+			return this;
 
 		}
 

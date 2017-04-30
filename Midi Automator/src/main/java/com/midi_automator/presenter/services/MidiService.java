@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.Messages;
 import com.midi_automator.midi.MidiINAutomationReceiver;
 import com.midi_automator.midi.MidiINDetector;
 import com.midi_automator.midi.MidiINExecuteReceiver;
 import com.midi_automator.midi.MidiINLearnReceiver;
 import com.midi_automator.midi.MidiINMetronomReceiver;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.Messages;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
@@ -52,7 +52,7 @@ public class MidiService {
 	@Autowired
 	private GUIAutomationsService guiAutomationsService;
 	@Autowired
-	private MidiRemoteOpenService midiRemoteOpenService;
+	private MidiExecuteService midiExecuteService;
 	@Autowired
 	private MidiMetronomService midiMetronomService;
 	@Autowired
@@ -431,10 +431,11 @@ public class MidiService {
 			String signature = MidiUtils.messageToString(message);
 			log.debug("Executed MIDI message: " + signature);
 
-			midiRemoteOpenService.openFileByLearnedMidiMessage(message);
-			midiRemoteOpenService.openFileByMasterMidiMessage(message);
-			midiRemoteOpenService.openPrevFileByLearnedMidiMessage(message);
-			midiRemoteOpenService.openNextFileByLearnedMidiMessage(message);
+			midiExecuteService.openFileByLearnedMidiMessage(message);
+			midiExecuteService.openFileByMasterMidiMessage(message);
+			midiExecuteService.openPrevFileByLearnedMidiMessage(message);
+			midiExecuteService.openNextFileByLearnedMidiMessage(message);
+			midiExecuteService.hideMainFrameByLearnedMidiMessage(message);
 
 		}
 	}

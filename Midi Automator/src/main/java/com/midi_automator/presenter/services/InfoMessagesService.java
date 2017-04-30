@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.midi_automator.presenter.Messages;
+import com.midi_automator.Messages;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**

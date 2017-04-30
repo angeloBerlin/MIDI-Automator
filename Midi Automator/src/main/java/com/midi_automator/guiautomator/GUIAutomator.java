@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.midi_automator.IDeActivateable;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
-import com.midi_automator.presenter.IDeActivateable;
 import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.utils.ShellRunner;
 import com.midi_automator.utils.SystemUtils;

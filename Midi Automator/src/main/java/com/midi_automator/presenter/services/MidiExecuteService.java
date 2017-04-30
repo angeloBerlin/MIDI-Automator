@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.midi_automator.Messages;
 import com.midi_automator.model.MidiAutomatorProperties;
 import com.midi_automator.model.Model;
-import com.midi_automator.presenter.Messages;
 import com.midi_automator.utils.MidiUtils;
 
 /**
@@ -22,7 +22,7 @@ import com.midi_automator.utils.MidiUtils;
  *
  */
 @Service
-public class MidiRemoteOpenService {
+public class MidiExecuteService {
 
 	private Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -49,6 +49,8 @@ public class MidiRemoteOpenService {
 	private ItemListService fileListService;
 	@Autowired
 	private InfoMessagesService infoMessagesService;
+	@Autowired
+	private PresenterService presenterService;
 
 	/**
 	 * Sends a midi message with the current index.
@@ -131,6 +133,27 @@ public class MidiRemoteOpenService {
 
 				int index = shortMessage.getData2();
 				fileListService.selectEntryByIndex(index, false);
+			}
+		}
+	}
+
+	/**
+	 * Hides the main frame if the given midi message fits to the learned midi
+	 * message.
+	 * 
+	 * @param message
+	 *            The learned midi message
+	 */
+	public void hideMainFrameByLearnedMidiMessage(MidiMessage message) {
+
+		String signature = MidiUtils.messageToString(message);
+
+		String hideSignature = midiLearnService
+				.getMainFrameHideMidiListeningSignature();
+
+		if (hideSignature != null) {
+			if (hideSignature.equals(signature)) {
+				presenterService.hideShowMainFrame();
 			}
 		}
 	}

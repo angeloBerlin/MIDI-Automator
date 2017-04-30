@@ -12,7 +12,7 @@ import com.midi_automator.view.DeActivateableMouseAdapter;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
- * Opens the double-clicked file from the JList
+ * Opens the double clicked item from the item list
  * 
  * @author aguelle
  * 
@@ -26,6 +26,7 @@ public class OpenFileOnDoubleClickListener extends DeActivateableMouseAdapter {
 	@Autowired
 	ItemListService itemListService;
 
+	@Override
 	public void mouseClicked(MouseEvent me) {
 
 		if (isActive()) {

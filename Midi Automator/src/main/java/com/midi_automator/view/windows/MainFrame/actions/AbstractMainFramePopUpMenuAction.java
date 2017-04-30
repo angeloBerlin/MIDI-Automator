@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.midi_automator.view.tray.menus.TrayPopupMenu;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
@@ -22,10 +23,13 @@ public abstract class AbstractMainFramePopUpMenuAction extends AbstractAction {
 
 	@Autowired
 	protected MainFrame mainFrame;
+	@Autowired
+	protected TrayPopupMenu trayPopupMenu;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		mainFrame.setPopupWasShown(false);
+		trayPopupMenu.setVisible(false);
 	}
 
 }

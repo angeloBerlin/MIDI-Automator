@@ -1,4 +1,4 @@
-package com.midi_automator.presenter;
+package com.midi_automator;
 
 /**
  * Gives the implemented class an active state

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.Resources;
+import com.midi_automator.view.tray.listener.TrayMouseListener;
 import com.midi_automator.view.tray.menus.TrayPopupMenu;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
 
@@ -20,6 +21,8 @@ public class Tray {
 	static Logger log = Logger.getLogger(MainFrame.class.getName());
 
 	@Autowired
+	private TrayMouseListener trayMouseListener;
+	@Autowired
 	private TrayPopupMenu trayPopupMenu;
 
 	private TrayIcon trayIcon;
@@ -28,7 +31,7 @@ public class Tray {
 	@Autowired
 	private Resources resources;
 
-	public static final String NAME_TRAY = "MIDI Automator";
+	public static final String NAME = "MIDI Automator";
 
 	/**
 	 * Initializes the tray
@@ -45,7 +48,8 @@ public class Tray {
 						+ "MidiAutomatorIcon16.png";
 				image = Toolkit.getDefaultToolkit().getImage(iconFileName);
 				trayPopupMenu.init();
-				trayIcon = new TrayIcon(image, NAME_TRAY, trayPopupMenu);
+				trayIcon = new TrayIcon(image, NAME);
+				trayIcon.addMouseListener(trayMouseListener);
 
 				try {
 					tray.add(trayIcon);

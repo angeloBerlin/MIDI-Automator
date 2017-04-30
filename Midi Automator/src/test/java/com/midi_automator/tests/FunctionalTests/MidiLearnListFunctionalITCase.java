@@ -10,8 +10,8 @@ import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JPopupMenuFixture;
 import org.junit.Test;
 
-import com.midi_automator.presenter.Messages;
-import com.midi_automator.presenter.services.MidiRemoteOpenService;
+import com.midi_automator.Messages;
+import com.midi_automator.presenter.services.MidiExecuteService;
 import com.midi_automator.tests.utils.MockUpUtils;
 import com.midi_automator.utils.MidiUtils;
 import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
@@ -38,7 +38,9 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void midiLearnShouldBeCanceled() {
 		MockUpUtils.setMockupMidoFile("mockups/Hello_World_12.mido");
 		MockUpUtils.setMockupPropertiesFile("mockups/" + propertiesFile);
@@ -168,23 +170,23 @@ public class MidiLearnListFunctionalITCase extends FunctionalBaseCase {
 			Thread.sleep(1000);
 
 			MidiUtils.sendMidiMessage(deviceName,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_COMMAND,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO, 1);
+					MidiExecuteService.OPEN_FILE_MIDI_COMMAND,
+					MidiExecuteService.OPEN_FILE_MIDI_CHANNEL,
+					MidiExecuteService.OPEN_FILE_MIDI_CONTROL_NO, 1);
 			Thread.sleep(2000);
 
 			// check failure
 			checkInfoText(String.format(Messages.MSG_DUPLICATE_MIDI_SIGNATURE,
-					"channel " + MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL
+					"channel " + MidiExecuteService.OPEN_FILE_MIDI_CHANNEL
 							+ ": CONTROL CHANGE "
-							+ MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO
+							+ MidiExecuteService.OPEN_FILE_MIDI_CONTROL_NO
 							+ " value: " + 1));
 
 			// open second file by master midi message
 			MidiUtils.sendMidiMessage(deviceName,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_COMMAND,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_CHANNEL,
-					MidiRemoteOpenService.OPEN_FILE_MIDI_CONTROL_NO, 1);
+					MidiExecuteService.OPEN_FILE_MIDI_COMMAND,
+					MidiExecuteService.OPEN_FILE_MIDI_CHANNEL,
+					MidiExecuteService.OPEN_FILE_MIDI_CONTROL_NO, 1);
 			Thread.sleep(2000);
 
 			checkInfoText(String.format(Messages.MSG_OPENING_ENTRY,

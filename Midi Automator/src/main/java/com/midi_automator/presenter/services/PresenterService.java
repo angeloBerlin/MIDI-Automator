@@ -1,5 +1,6 @@
 package com.midi_automator.presenter.services;
 
+import java.awt.Frame;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.midi_automator.model.MidiAutomatorProperties;
+import com.midi_automator.view.tray.menus.TrayPopupMenu;
+import com.midi_automator.view.windows.MainFrame.MainFrame;
 
 /**
  * Handles all helping functions for the presenter.
@@ -21,6 +24,10 @@ public class PresenterService {
 
 	@Autowired
 	private MidiAutomatorProperties properties;
+	@Autowired
+	private MainFrame mainFrame;
+	@Autowired
+	private TrayPopupMenu trayPopupMenu;
 
 	/**
 	 * Gets the last directory of the file chooser
@@ -133,6 +140,21 @@ public class PresenterService {
 			properties.store();
 		} catch (IOException e) {
 			log.error("Storing 'minimize on close' failed.", e);
+		}
+	}
+
+	/**
+	 * Hides and shows the main frame.
+	 */
+	public void hideShowMainFrame() {
+		if (mainFrame.isVisible()) {
+			mainFrame.setState(Frame.ICONIFIED);
+			mainFrame.setVisible(false);
+			trayPopupMenu.setHiddenState(true);
+		} else {
+			mainFrame.setState(Frame.NORMAL);
+			mainFrame.setVisible(true);
+			trayPopupMenu.setHiddenState(false);
 		}
 	}
 }

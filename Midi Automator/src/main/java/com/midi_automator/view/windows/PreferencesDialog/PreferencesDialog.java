@@ -555,7 +555,7 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 */
 	private void learnOn() {
 		// disable inputs
-		GUIUtils.disEnableAllInputs(this, false, GUIAutomationTable.NAME);
+		GUIUtils.disEnableAllInputs(this, false);
 	}
 
 	/**

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.midi_automator.Messages;
 import com.midi_automator.MidiAutomator;
 import com.midi_automator.Resources;
 import com.midi_automator.model.MidiAutomatorProperties;
@@ -20,7 +21,7 @@ import com.midi_automator.presenter.services.GUIAutomationsService;
 import com.midi_automator.presenter.services.InfoMessagesService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiMetronomService;
-import com.midi_automator.presenter.services.MidiRemoteOpenService;
+import com.midi_automator.presenter.services.MidiExecuteService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
 
@@ -46,7 +47,7 @@ public class Presenter {
 	@Autowired
 	private ItemListService fileListService;
 	@Autowired
-	private MidiRemoteOpenService midiRemoteOpenService;
+	private MidiExecuteService midiRemoteOpenService;
 	@Autowired
 	private MidiMetronomService midiMetronomService;
 	@Autowired
