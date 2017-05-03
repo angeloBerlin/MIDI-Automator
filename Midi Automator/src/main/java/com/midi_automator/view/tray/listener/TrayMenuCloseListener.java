@@ -1,4 +1,4 @@
-package com.midi_automator.view.windows.listener;
+package com.midi_automator.view.tray.listener;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

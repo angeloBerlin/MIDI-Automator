@@ -50,6 +50,7 @@ import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
 import com.midi_automator.view.tray.Tray;
+import com.midi_automator.view.tray.listener.TrayMenuCloseListener;
 import com.midi_automator.view.windows.AddDialog.AddDialog;
 import com.midi_automator.view.windows.EditDialog.EditDialog;
 import com.midi_automator.view.windows.MainFrame.actions.ExitAction;
@@ -64,7 +65,6 @@ import com.midi_automator.view.windows.MainFrame.listener.HideMainFrameListener;
 import com.midi_automator.view.windows.MainFrame.listener.MainFramePopupListener;
 import com.midi_automator.view.windows.MainFrame.menus.MainFramePopupMenu;
 import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
-import com.midi_automator.view.windows.listener.TrayMenuCloseListener;
 
 @org.springframework.stereotype.Component
 public class MainFrame extends JFrame {

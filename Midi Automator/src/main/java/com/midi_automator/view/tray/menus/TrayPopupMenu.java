@@ -1,10 +1,13 @@
 package com.midi_automator.view.tray.menus;
 
+import java.awt.Component;
+
 import javax.swing.JMenuItem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.presenter.services.MidiService;
+import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.view.windows.MainFrame.actions.HideShowMainFrameAction;
 import com.midi_automator.view.windows.menus.MidiLearnPopupMenu;
 
@@ -24,6 +27,8 @@ public class TrayPopupMenu extends MidiLearnPopupMenu {
 
 	@Autowired
 	private MidiService midiService;
+	@Autowired
+	private PresenterService presenterService;
 
 	/**
 	 * Initializes the popup menu
@@ -38,6 +43,12 @@ public class TrayPopupMenu extends MidiLearnPopupMenu {
 		add(hideShowMenuItem);
 		add(midiLearnMenuItem);
 		add(midiUnlearnMenuItem);
+	}
+
+	@Override
+	public void show(Component invoker, int x, int y) {
+		super.show(invoker, x - invoker.getLocation().x,
+				y - invoker.getLocation().y);
 	}
 
 	/**

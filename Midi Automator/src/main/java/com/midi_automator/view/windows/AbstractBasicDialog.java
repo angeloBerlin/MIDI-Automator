@@ -26,8 +26,8 @@ import javax.swing.border.Border;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.utils.GUIUtils;
+import com.midi_automator.view.tray.listener.TrayMenuCloseListener;
 import com.midi_automator.view.windows.MainFrame.MainFrame;
-import com.midi_automator.view.windows.listener.TrayMenuCloseListener;
 
 /**
  * Base class of dialogs with save and cancel buttons.
