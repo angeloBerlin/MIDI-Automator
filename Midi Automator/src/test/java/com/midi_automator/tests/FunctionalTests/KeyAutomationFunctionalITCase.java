@@ -173,12 +173,13 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		// check if keys were unlearned
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
-		int column = table
-				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
+		int column = table.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		table.requireCellValue(TableCell.row(0).column(column), "");
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void keyLearnShouldBeCanceledWithLearnedKeys() {
 
 		MockUpUtils.setMockupPropertiesFile("mockups/"
@@ -203,15 +204,16 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		// check if learned keys are revoked
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
-		int column = table
-				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
+		int column = table.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		int[] keyCodes = { 18, 80 };
 		table.requireCellValue(TableCell.row(0).column(column),
 				GUIAutomationTable.keyCodesToString(keyCodes));
 
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void keyLearnShouldBeCanceled() {
 
 		MockUpUtils
@@ -225,18 +227,11 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
 		// cancel key learn after invoking
 		keyLearnAutomation(0, preferencesDialog);
-		try {
-			cancelKeyLearnAutomation(0, preferencesDialog);
-		} catch (IllegalStateException e) {
-			fail("JMenuItem with the name "
-					+ KeyLearnPopupMenu.NAME_MENU_ITEM_KEYS_CANCEL
-					+ " is not enabled or not shown.");
-		}
+		cancelKeyLearnAutomation(0, preferencesDialog);
 
 		// check if learned keys are revoked
 		JTableFixture table = getGUIAutomationTable(preferencesDialog);
-		int column = table
-				.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
+		int column = table.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
 		int[] keyCodes = {};
 		table.requireCellValue(TableCell.row(0).column(column),
 				GUIAutomationTable.keyCodesToString(keyCodes));
