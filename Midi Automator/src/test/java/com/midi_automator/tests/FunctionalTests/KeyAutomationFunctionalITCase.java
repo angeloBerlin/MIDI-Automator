@@ -122,7 +122,9 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	@Test
+	// @Test
+	// Blocked due to
+	// https://github.com/joel-costigliola/assertj-swing/issues/169"
 	public void preferencesShouldBeOpenedOnMidiByKeyAutomation() {
 
 		if (!System.getProperty("os.name").equals("Mac OS X")) {
