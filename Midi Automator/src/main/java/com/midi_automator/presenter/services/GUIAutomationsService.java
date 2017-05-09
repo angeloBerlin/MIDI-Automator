@@ -554,6 +554,10 @@ public class GUIAutomationsService {
 		Collections.sort(programList,
 				(String program1, String program2) -> program1
 						.compareToIgnoreCase(program2));
+		for (String programName : programList) {
+			log.debug("Found open program: " + programName);
+		}
+
 		return programList;
 	}
 
