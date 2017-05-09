@@ -122,9 +122,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		}
 	}
 
-	// @Test
-	// Blocked due to
-	// https://github.com/joel-costigliola/assertj-swing/issues/169"
+	@Test
 	public void preferencesShouldBeOpenedOnMidiByKeyAutomation() {
 
 		if (!System.getProperty("os.name").equals("Mac OS X")) {
@@ -179,9 +177,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 		table.requireCellValue(TableCell.row(0).column(column), "");
 	}
 
-	// @Test
-	// Blocked due to
-	// https://github.com/joel-costigliola/assertj-swing/issues/169"
+	@Test
 	public void keyLearnShouldBeCanceledWithLearnedKeys() {
 
 		MockUpUtils.setMockupPropertiesFile("mockups/"
@@ -213,9 +209,7 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 
 	}
 
-	// @Test
-	// Blocked due to
-	// https://github.com/joel-costigliola/assertj-swing/issues/169"
+	@Test
 	public void keyLearnShouldBeCanceled() {
 
 		MockUpUtils

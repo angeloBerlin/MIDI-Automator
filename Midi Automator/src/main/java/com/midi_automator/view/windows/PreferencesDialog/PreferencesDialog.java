@@ -554,8 +554,9 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * Puts the frame to learn mode
 	 */
 	private void learnOn() {
-		// disable inputs
-		GUIUtils.disEnableAllInputs(this, false);
+		// disable inputs, except GUIAutomation table, so that it can listen for
+		// keys
+		GUIUtils.disEnableAllInputs(this, false, GUIAutomationTable.NAME);
 	}
 
 	/**

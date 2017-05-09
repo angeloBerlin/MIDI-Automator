@@ -237,8 +237,7 @@ public class GUIAutomationTable extends CacheableJTable {
 	 */
 	public String getKeysOfSelectedRow() {
 		int row = getSelectedRow();
-		int col = getColumn(GUIAutomationTable.COLNAME_KEYS)
-				.getModelIndex();
+		int col = getColumn(GUIAutomationTable.COLNAME_KEYS).getModelIndex();
 		String keys = (String) getModel().getValueAt(row, col);
 		return keys;
 	}
@@ -251,8 +250,7 @@ public class GUIAutomationTable extends CacheableJTable {
 	 */
 	public void setKeysOfSelectedRow(String keys) {
 		int row = getSelectedRow();
-		int col = getColumn(GUIAutomationTable.COLNAME_KEYS)
-				.getModelIndex();
+		int col = getColumn(GUIAutomationTable.COLNAME_KEYS).getModelIndex();
 		getModel().setValueAt(keys, row, col);
 	}
 
@@ -736,8 +734,7 @@ public class GUIAutomationTable extends CacheableJTable {
 				keys = keys + keyCodes[i];
 
 				if (i != keyCodes.length - 1) {
-					keys = keys
-							+ GUIAutomationTable.KEYS_DELIMITER;
+					keys = keys + GUIAutomationTable.KEYS_DELIMITER;
 				}
 			}
 		}
