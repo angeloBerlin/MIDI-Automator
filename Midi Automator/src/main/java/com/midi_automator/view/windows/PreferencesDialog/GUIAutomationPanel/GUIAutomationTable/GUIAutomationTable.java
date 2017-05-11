@@ -184,7 +184,8 @@ public class GUIAutomationTable extends CacheableJTable {
 		imagePopupMenu.setName(NAME_POPUP_MENU_IMAGE);
 
 		// key learn listener
-		GUIUtils.addKeyListenerToComponent(keyLearnListener, this);
+		GUIUtils.removeKeyListenersFromContainer(this);
+		GUIUtils.addKeyListenerToContainer(keyLearnListener, this);
 
 		grabFocus();
 	}

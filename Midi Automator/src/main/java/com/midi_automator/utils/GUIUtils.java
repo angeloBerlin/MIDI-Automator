@@ -106,6 +106,7 @@ public class GUIUtils {
 	 * Removes all MouseListeners from a component.
 	 * 
 	 * @param component
+	 *            The Component to remove from
 	 */
 	public static void removeMouseListeners(Component component) {
 
@@ -253,14 +254,14 @@ public class GUIUtils {
 	}
 
 	/**
-	 * Adds a key listener to a Container and all its Components
+	 * Adds a KeyListener to a Container and all its Components
 	 * 
 	 * @param listener
 	 *            The key listener
 	 * @param container
 	 *            The container
 	 */
-	public static void addKeyListenerToComponent(KeyListener listener,
+	public static void addKeyListenerToContainer(KeyListener listener,
 			Container container) {
 
 		container.addKeyListener(listener);
@@ -268,6 +269,29 @@ public class GUIUtils {
 
 		for (Component component : components) {
 			component.addKeyListener(listener);
+		}
+	}
+
+	/**
+	 * Removes all KeyListeners from a Container and all its Components.
+	 * 
+	 * @param container
+	 *            The Container to remove from
+	 */
+	public static void removeKeyListenersFromContainer(Container container) {
+
+		KeyListener[] containerKeyListeners = container.getKeyListeners();
+		for (int i = 0; i < containerKeyListeners.length; i++) {
+			container.removeKeyListener(containerKeyListeners[i]);
+		}
+
+		List<Component> components = getAllComponents(container);
+		for (Component component : components) {
+
+			KeyListener[] componentKeyListeners = component.getKeyListeners();
+			for (int i = 0; i < componentKeyListeners.length; i++) {
+				component.removeKeyListener(componentKeyListeners[i]);
+			}
 		}
 	}
 

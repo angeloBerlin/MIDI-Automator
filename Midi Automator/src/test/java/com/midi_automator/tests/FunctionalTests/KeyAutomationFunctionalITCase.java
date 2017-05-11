@@ -233,4 +233,40 @@ public class KeyAutomationFunctionalITCase extends FunctionalBaseCase {
 				GUIAutomationTable.keyCodesToString(keyCodes));
 
 	}
+
+	@Test
+	public void keyShouldBelearnedOnlyOnceAfterReopeningPreferences() {
+
+		MockUpUtils.setMockupPropertiesFile("mockups/empty.properties");
+		MockUpUtils.setMockupMidoFile("mockups/empty.mido");
+		startApplication();
+
+		// open preferences
+		DialogFixture preferencesDialog = openPreferences();
+
+		// save and reopen preferences
+		saveDialog(preferencesDialog);
+		preferencesDialog = openPreferences();
+
+		// add automation
+		addAutomation(preferencesDialog);
+
+		// set type to send keys
+		setAutomationType(GUIAutomation.TYPE_SENDKEY, 0, preferencesDialog);
+
+		// key learn P
+		keyLearnAutomation(0, preferencesDialog);
+		pressAndReleaseKeysOnGUIAutomationTable(preferencesDialog,
+				KeyEvent.VK_P);
+		submitKeyLearnAutomation(0, preferencesDialog);
+
+		// check if only one key was learned
+		JTableFixture table = getGUIAutomationTable(preferencesDialog);
+		int column = table.columnIndexFor(GUIAutomationTable.COLNAME_KEYS);
+		int[] keyCodes = { KeyEvent.VK_P };
+		table.requireCellValue(TableCell.row(0).column(column),
+				GUIAutomationTable.keyCodesToString(keyCodes));
+
+	}
+
 }
