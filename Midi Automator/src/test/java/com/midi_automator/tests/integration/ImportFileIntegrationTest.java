@@ -1,4 +1,4 @@
-package com.midi_automator.tests.IntegrationTests;
+package com.midi_automator.tests.integration;
 
 import static org.junit.Assert.*;
 

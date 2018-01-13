@@ -1,4 +1,4 @@
-package com.midi_automator.tests.FunctionalTests;
+package com.midi_automator.tests.functional;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;

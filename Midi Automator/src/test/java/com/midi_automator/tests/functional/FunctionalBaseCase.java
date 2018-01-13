@@ -1,4 +1,4 @@
-package com.midi_automator.tests.FunctionalTests;
+package com.midi_automator.tests.functional;
 
 import static com.midi_automator.tests.utils.GUIAutomations.*;
 import static org.hamcrest.CoreMatchers.*;

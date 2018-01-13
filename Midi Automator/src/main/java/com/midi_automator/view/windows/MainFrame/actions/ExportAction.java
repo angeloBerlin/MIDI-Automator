@@ -36,6 +36,7 @@ public class ExportAction extends AbstractAction {
 
 		fileChooser.init();
 		int returnVal = fileChooser.showSaveDialog(mainFrame);
+		fileChooser.getFileSelectionMode();
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();

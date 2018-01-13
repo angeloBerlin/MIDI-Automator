@@ -1,11 +1,12 @@
 package com.midi_automator.view.windows.MainFrame;
 
+import info.clearthought.layout.TableLayout;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,11 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLayer;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -43,12 +46,13 @@ import com.midi_automator.Resources;
 import com.midi_automator.presenter.Presenter;
 import com.midi_automator.presenter.services.ImportExportService;
 import com.midi_automator.presenter.services.ItemListService;
+import com.midi_automator.presenter.services.MidiExecuteService;
 import com.midi_automator.presenter.services.MidiItemChangeNotificationService;
 import com.midi_automator.presenter.services.MidiLearnService;
-import com.midi_automator.presenter.services.MidiExecuteService;
 import com.midi_automator.presenter.services.MidiService;
 import com.midi_automator.presenter.services.PresenterService;
 import com.midi_automator.utils.GUIUtils;
+import com.midi_automator.view.ZoomUI;
 import com.midi_automator.view.tray.Tray;
 import com.midi_automator.view.tray.listener.TrayMenuCloseListener;
 import com.midi_automator.view.windows.AddDialog.AddDialog;
@@ -74,14 +78,13 @@ public class MainFrame extends JFrame {
 	static Logger log = Logger.getLogger(MainFrame.class.getName());
 
 	private final String TITLE = "Midi Automator";
-	private final int WIDTH = 500;
-	private final int HEIGHT = 610;
+	private final int MIN_WIDTH = 500;
+	private final int MIN_HEIGHT = 610;
 	public static final int TEST_POSITION_X = 0;
 	public static final int TEST_POSITION_Y = 100;
 	private final int FRAME_LOCATION_X_OFFSET = 50;
 	private final int FRAME_LOCATION_Y_OFFSET = 50;
-	private final int MAIN_LAYOUT_HORIZONTAL_GAP = 10;
-	private final int MAIN_LAYOUT_VERTICAL_GAP = 10;
+	private final int FOOTER_HEIGHT = 230;
 	private final String FONT_FAMILY = "Arial";
 	private String iconPathPrev;
 	private String iconPathNext;
@@ -107,6 +110,9 @@ public class MainFrame extends JFrame {
 	public static final String NAME_MIDI_IN_DETECT_LABEL = "midi IN label";
 	public static final String NAME_MIDI_OUT_DETECT_LABEL = "midi OUT label";
 	public static final String NAME_TRAY = "MIDI Automator";
+
+	private ZoomUI zoomUI = new ZoomUI();
+	private JPanel mainPanel = new JPanel();
 
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
@@ -199,10 +205,20 @@ public class MainFrame extends JFrame {
 	 */
 	public void init() {
 
+		double zoomFactor = 1;
+
 		setName(NAME);
 		JFileChooser.setDefaultLocale(MidiAutomator.locale);
 
-		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		int width = MIN_WIDTH;
+		int height = MIN_HEIGHT;
+
+		if (zoomFactor > 1) {
+			width = new Double(MIN_WIDTH * (zoomFactor + 0.1)).intValue();
+			height = new Double(MIN_HEIGHT * (zoomFactor + 0.1)).intValue();
+		}
+
+		setMinimumSize(new Dimension(width, height));
 		setResizable(true);
 
 		if (presenter.isInTestMode()) {
@@ -211,29 +227,7 @@ public class MainFrame extends JFrame {
 		}
 
 		setTitle("");
-
-		String icon16 = resources.getImagePath() + File.separator
-				+ "MidiAutomatorIcon16.png";
-		String icon32 = resources.getImagePath() + File.separator
-				+ "MidiAutomatorIcon32.png";
-		String icon64 = resources.getImagePath() + File.separator
-				+ "MidiAutomatorIcon64.png";
-		String icon128 = resources.getImagePath() + File.separator
-				+ "MidiAutomatorIcon128.png";
-		String icon256 = resources.getImagePath() + File.separator
-				+ "MidiAutomatorIcon256.png";
-		ArrayList<Image> icons = new ArrayList<Image>();
-		icons.add(new ImageIcon(icon16).getImage());
-		icons.add(new ImageIcon(icon32).getImage());
-		icons.add(new ImageIcon(icon64).getImage());
-		icons.add(new ImageIcon(icon128).getImage());
-		icons.add(new ImageIcon(icon256).getImage());
-		setIconImages(icons);
-
-		iconPathPrev = resources.getImagePath() + File.separator
-				+ "arrow_prev.png";
-		iconPathNext = resources.getImagePath() + File.separator
-				+ "arrow_next.png";
+		createIcons();
 
 		// Menu
 		createMenuItems();
@@ -244,34 +238,47 @@ public class MainFrame extends JFrame {
 		popupWasShown = false;
 
 		// Layout
-		getContentPane().setLayout(
-				new BorderLayout(MAIN_LAYOUT_HORIZONTAL_GAP,
-						MAIN_LAYOUT_VERTICAL_GAP));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
 		// Header
 		JPanel headerPanel = new JPanel();
-		headerPanel.setLayout(new FlowLayout());
-		add(headerPanel, BorderLayout.PAGE_START);
+		headerPanel.setLayout(new GridLayout());
+		headerPanel.setBorder(BorderFactory.createMatteBorder(5, 20, 0, 20,
+				getBackground()));
+		headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-		createInfo(headerPanel);
-		createMidiDetect(headerPanel);
+		JPanel headerContentPanel = new JPanel();
+		headerContentPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
+		double size[][] = { { TableLayout.FILL, 30 },
+				{ headerContentPanel.getMaximumSize().height } };
+		headerContentPanel.setLayout(new TableLayout(size));
+		headerContentPanel.add(createInfo(), "0, 0");
+		headerContentPanel.add(createMidiDetectors(), "1, 0");
+
+		headerPanel.add(headerContentPanel);
+
+		mainPanel.add(headerPanel, BorderLayout.PAGE_START);
 
 		// Middle
-		createItemList();
+		JPanel middlePanel = new JPanel();
+		middlePanel.setLayout(new GridLayout());
+		middlePanel.setBorder(BorderFactory.createMatteBorder(15, 20, 10, 20,
+				getBackground()));
+		itemListScrollPane = createItemList();
 
-		// left and right margins
-		add(new JPanel(), BorderLayout.LINE_START);
-		add(new JPanel(), BorderLayout.LINE_END);
+		middlePanel.add(itemListScrollPane);
+		mainPanel.add(middlePanel, BorderLayout.CENTER);
 
 		// Footer
 		JPanel footerPanel = new JPanel();
+		footerPanel.setMaximumSize(new Dimension(width, FOOTER_HEIGHT));
 		footerPanel.setLayout(new GridBagLayout());
-		add(footerPanel, BorderLayout.PAGE_END);
+		mainPanel.add(footerPanel, BorderLayout.PAGE_END);
 
 		createSwitchButtons(footerPanel);
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setSize(WIDTH, HEIGHT);
+		setSize(MIN_WIDTH, MIN_HEIGHT);
 		setAlwaysOnTop(true);
 		addWindowListener(windowHideListener);
 
@@ -279,6 +286,9 @@ public class MainFrame extends JFrame {
 		tray.init();
 		GUIUtils.addMouseListenerToAllComponents(this, trayCloseListener);
 
+		zoomUI.setZoom(zoomUI.getZoom() * zoomFactor);
+		JLayer<JComponent> mainLayer = new JLayer<JComponent>(mainPanel, zoomUI);
+		add(mainLayer);
 		setVisible(true);
 	}
 
@@ -676,36 +686,53 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Creates the icons of the application
+	 */
+	private void createIcons() {
+
+		String icon16 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon16.png";
+		String icon32 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon32.png";
+		String icon64 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon64.png";
+		String icon128 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon128.png";
+		String icon256 = resources.getImagePath() + File.separator
+				+ "MidiAutomatorIcon256.png";
+		ArrayList<Image> icons = new ArrayList<Image>();
+		icons.add(new ImageIcon(icon16).getImage());
+		icons.add(new ImageIcon(icon32).getImage());
+		icons.add(new ImageIcon(icon64).getImage());
+		icons.add(new ImageIcon(icon128).getImage());
+		icons.add(new ImageIcon(icon256).getImage());
+		setIconImages(icons);
+	}
+
+	/**
 	 * Creates the info label on top
 	 * 
-	 * @param parent
-	 *            The parent Container
-	 * 
+	 * @return a scroll pane
 	 */
-	private void createInfo(Container parent) {
-		final Dimension dimension = new Dimension(426, 50);
+	private JScrollPane createInfo() {
 
 		infoLabel = new HTMLLabel();
 		infoLabel.setName(NAME_INFO_LABEL);
-		infoLabel.setPreferredSize(dimension);
 		infoLabel.addKeyListener(globalKeyListener);
 		infoLabel.requestFocusInWindow();
 
 		JScrollPane scrollingInfoLabel = new JScrollPane(infoLabel);
 		scrollingInfoLabel.getViewport().setBackground(this.getBackground());
 
-		parent.add(scrollingInfoLabel);
+		return scrollingInfoLabel;
 	}
 
 	/**
 	 * Creates the midi detectors
 	 * 
-	 * @param parent
-	 *            The parent Container
-	 * 
+	 * @return a JPanel with the detectors
 	 */
-	private void createMidiDetect(Container parent) {
-		final Dimension dimension = new Dimension(25, 25);
+	private JPanel createMidiDetectors() {
 		final Font font = new Font(FONT_FAMILY, Font.PLAIN, 10);
 
 		midiINdetect = new BlinkingJLabel(LABEL_MIDI_IN_DETECT);
@@ -724,31 +751,34 @@ public class MainFrame extends JFrame {
 		midiOUTdetect.setHorizontalAlignment(SwingConstants.CENTER);
 		midiINdetect.setBorder(BorderFactory.createLineBorder(Color.black));
 		midiOUTdetect.setBorder(BorderFactory.createLineBorder(Color.black));
-		midiINdetect.setPreferredSize(dimension);
-		midiOUTdetect.setPreferredSize(dimension);
 		midiINdetect.setOpaque(true);
 		midiOUTdetect.setOpaque(true);
 
 		JPanel detectorPanel = new JPanel();
+		detectorPanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0,
+				getBackground()));
 		GridLayout grid = new GridLayout(2, 1);
 		grid.setVgap(3);
 		detectorPanel.setLayout(grid);
 		detectorPanel.add(midiINdetect);
 		detectorPanel.add(midiOUTdetect);
-		parent.add(detectorPanel);
+		return detectorPanel;
 	}
 
 	/**
 	 * Creates the scrollable list of items
+	 * 
+	 * @return The ScrollPane with the item list
 	 */
-	private void createItemList() {
+	private JScrollPane createItemList() {
 
 		itemList.init();
 		itemList.addMouseListener(popupListener);
 		itemList.setFocusable(false);
-		itemListScrollPane = new JScrollPane(itemList);
+		JScrollPane itemListScrollPane = new JScrollPane(itemList);
 		itemListScrollPane.setViewportView(itemList);
-		add(itemListScrollPane, BorderLayout.CENTER);
+
+		return itemListScrollPane;
 	}
 
 	/**
@@ -758,7 +788,11 @@ public class MainFrame extends JFrame {
 	 *            The parent container
 	 */
 	private void createSwitchButtons(Container parent) {
-		final Dimension dimension = new Dimension(230, 230);
+
+		iconPathPrev = resources.getImagePath() + File.separator
+				+ "arrow_prev.png";
+		iconPathNext = resources.getImagePath() + File.separator
+				+ "arrow_next.png";
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -767,7 +801,6 @@ public class MainFrame extends JFrame {
 		c.gridy = 0;
 
 		prevButton.setName(NAME_PREV_BUTTON);
-		prevButton.setPreferredSize(dimension);
 		prevButton.setAction(prevAction);
 		prevButton.setIcon(new ImageIcon(iconPathPrev));
 		log.debug("Loading \"prev\" icon: " + iconPathPrev);
@@ -779,7 +812,6 @@ public class MainFrame extends JFrame {
 		prevButton.setCache(prevButton.getBorder());
 
 		nextButton.setName(NAME_NEXT_BUTTON);
-		nextButton.setPreferredSize(dimension);
 		nextButton.setAction(nextAction);
 		log.debug("Loading \"next\" icon: " + iconPathNext);
 		nextButton.setIcon(new ImageIcon(iconPathNext));

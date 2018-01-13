@@ -81,7 +81,7 @@ public class CommonUtils {
 	 * @param s
 	 *            The string to check
 	 * @param radix
-	 *            The possible amount of digits
+	 *            The base of the numeric system
 	 * @return <TRUE>, if String is an integer, <FALSE> if String is no integer
 	 */
 	public static boolean isInteger(String s, int radix) {

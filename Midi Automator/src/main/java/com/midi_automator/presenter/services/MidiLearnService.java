@@ -247,7 +247,7 @@ public class MidiLearnService {
 		String lastSplit = splitted[splitted.length - 1];
 		String keyValue = "";
 
-		if (CommonUtils.isInteger(lastSplit, 3)) {
+		if (CommonUtils.isInteger(lastSplit, 10)) {
 			for (int i = 0; i < splitted.length - 1; i++) {
 				keyValue = keyValue + splitted[i];
 
