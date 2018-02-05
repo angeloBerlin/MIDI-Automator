@@ -42,6 +42,8 @@
 			<arg value="${name}" />
 			<arg value="-ov" />
 			<arg value="${target.dir}/${name}-tmp.dmg" />
+			<arg value="-fs" />
+			<arg value="HFS+" />
 			<arg value="-format" />
 			<arg value="UDRW" />
 		</exec>
@@ -78,33 +80,28 @@
 		
 		<!-- Eject MIDI Automator and run .build.sh from here on until this is resolved https://stackoverflow.com/questions/48368389/hdiutil-attach-detach-convert-results-to-resource-temporarily-unavailable-->
 		
-		<!-- Detach the temporary image
+		<!-- Detach the temporary image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
 			<arg value="detach" />
 			<arg value="-force" />
 			<arg value="${mountdir}/${name}" />
 		</exec>
-		 -->
+		 
 		
-		<!-- Compress it to a new image
+		<!-- Compress it to a new image -->
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
 			<arg value="convert" />
 			<arg value="${target.dir}/${name}-tmp.dmg" />
-			<arg value="-format" />
-		-->
-			<!-- read/write image for changes at the .DS_Store file
-			<arg value="UDRW" /> 
-			-->
-		<!--
+			<arg value="-format" />		
 			<arg value="UDZO" />
 			<arg value="-o" />
 			<arg value="${target.dir}/${dist.dmg}" />
 		</exec> 
-		 -->
 		
-		<!-- Delete the temporary image 
+		
+		<!-- Delete the temporary image -->
 		<delete file="${target.dir}/${name}-tmp.dmg" quiet="yes" failonerror="false" />
-		-->
+		
 		
 	</target>
 </project>
