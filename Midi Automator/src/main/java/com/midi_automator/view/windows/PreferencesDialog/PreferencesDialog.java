@@ -130,7 +130,12 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	public void init() {
 		super.init();
 
+		log.debug("Initializing Preferences Dialog...");
+
+		log.debug("Set Title: " + TITLE);
 		setTitle(TITLE);
+
+		log.debug("Set Name: " + NAME);
 		setName(NAME);
 
 		// set layout
@@ -177,12 +182,15 @@ public class PreferencesDialog extends AbstractBasicDialog {
 		// action on close
 		addWindowListener(windowCloseListener);
 
+		log.debug("Preferences Dialog initialized.");
 	}
 
 	/**
 	 * Creates the minimize on close check box
 	 */
 	private void createMinimizeOnCloseCheckbox() {
+
+		log.debug("Creating Minimze On Close checkbox");
 
 		minimizeOnCloseCheckBox = new JCheckBox(LABEL_MINIMIZE_ON_CLOSE);
 		minimizeOnCloseCheckBox.setName(NAME_CHECKBOX_MINIMIZE_ON_CLOSE);
@@ -200,6 +208,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * Creates the midi in devices combo box for the remote switch with a label
 	 */
 	private void createRemoteMidiInDevices() {
+
+		log.debug("Creating Remote Midi In Device combo box");
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiINRemoteDevicesLabel = new JLabel(LABEL_MIDI_IN_REMOTE_DEVICES);
@@ -230,6 +240,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * Creates the midi out devices combo box for the remote switch with a label
 	 */
 	private void createRemoteMidiOutDevices() {
+
+		log.debug("Creating Remote Midi Out Device combo box");
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiOUTRemoteDevicesLabel = new JLabel(LABEL_MIDI_OUT_REMOTE_DEVICES);
@@ -271,6 +283,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * label
 	 */
 	private void createSwitchNotifierMidiOutDevices() {
+
+		log.debug("Creating Switch Notifier Midi Out combo box");
 
 		GridBagConstraints c = new GridBagConstraints();
 		midiOUTSwitchNotifierDevicesLabel = new JLabel(
@@ -325,6 +339,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 */
 	private void createSwitchItemOutDevices() {
 
+		log.debug("Creating Switch Item Out combo box");
+
 		GridBagConstraints c = new GridBagConstraints();
 		midiOUTSwitchItemDevicesLabel = new JLabel(
 				LABEL_MIDI_OUT_SWITCH_ITEM_DEVICES);
@@ -366,6 +382,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 */
 	private void createMetronomMidiInDevices() {
 
+		log.debug("Creating Midi In combo box");
+
 		GridBagConstraints c = new GridBagConstraints();
 		labelHeader = new JLabel(LABEL_MIDI_IN_METRONOM_DEVICES);
 		c.insets = INSETS_LABEL_HEADER;
@@ -405,6 +423,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * Creates the GUI automation configuration panel
 	 */
 	private void createGUIAutomation() {
+
+		log.debug("Creating Gui Automation panel");
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -477,6 +497,8 @@ public class PreferencesDialog extends AbstractBasicDialog {
 	 * Reloads the data of the frame
 	 */
 	public void reload() {
+
+		log.debug("Reloading settings...");
 
 		// midi in remote opener
 		String midiInRemoteDeviceName = midiService

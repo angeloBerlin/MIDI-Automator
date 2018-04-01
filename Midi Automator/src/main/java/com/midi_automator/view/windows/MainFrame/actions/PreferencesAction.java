@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import com.midi_automator.view.windows.PreferencesDialog.PreferencesDialog;
 public class PreferencesAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
+	static Logger log = Logger.getLogger(PreferencesAction.class.getName());
 
 	@Autowired
 	private MainFrame mainFrame;
@@ -29,8 +31,7 @@ public class PreferencesAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		// preferencesDialog = ctx.getBean("preferencesDialog",
-		// PreferencesDialog.class);
+		log.info("Opening Preferences Dialog..");
 		preferencesDialog.init();
 		preferencesDialog.setLocation(mainFrame.getLocationOnScreen());
 		preferencesDialog.showDialog();

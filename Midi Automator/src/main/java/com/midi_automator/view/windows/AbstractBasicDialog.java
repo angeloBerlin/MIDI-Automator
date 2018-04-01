@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.midi_automator.utils.GUIUtils;
@@ -38,6 +39,8 @@ import com.midi_automator.view.windows.MainFrame.MainFrame;
 public abstract class AbstractBasicDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+
+	static Logger log = Logger.getLogger(AbstractBasicDialog.class.getName());
 
 	private final int PADDING_HORIZONTAL = 20;
 	private final int PADDING_VERTICAL = 10;
@@ -68,6 +71,7 @@ public abstract class AbstractBasicDialog extends JDialog {
 	 */
 	public void init() {
 
+		log.debug("Initilaizing Abstract Dialog...");
 		setParent(mainFrame);
 		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		setResizable(false);
