@@ -127,19 +127,23 @@ public class MidiUtils {
 				String name = infos[i].getName();
 				int maxReceivers = device.getMaxReceivers();
 				int maxTransmitters = device.getMaxTransmitters();
+				log.debug("Found Midi device: " + name);
 
 				if (direction == null) {
 
 					midiDeviceSignatures.add(name);
+					log.debug("Returning Midi device: " + name);
 
 				} else {
 
 					if (direction.equals("IN") && (maxTransmitters != 0)) {
 						midiDeviceSignatures.add(name);
+						log.debug("Returning Midi IN device: " + name);
 					}
 
 					if (direction.equals("OUT") && (maxReceivers != 0)) {
 						midiDeviceSignatures.add(name);
+						log.debug("Returning Midi OUT device: " + name);
 					}
 				}
 
