@@ -15,6 +15,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 that are way apart from the main idea.
 
 DOWNLOAD: https://github.com/aguelle/MIDI-Automator/releases
+
 DONATIONS: Feel free to donate via paypal to my account "paypal.com@tieffrequent.de"
 
 This software tries to follow the principales of semantic versioning (http://semver.org/) as good as possible.
