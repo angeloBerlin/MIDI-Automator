@@ -14,6 +14,8 @@ of a fully automated stage setup.
 MIDI Automator shall be hold as generic as possible, so that it can also handle other use cases 
 that are way apart from the main idea.
 
+You can see how it works on my Youtube channel: https://www.youtube.com/channel/UCU4K4NwcvBsVVeVxZpaGOtg
+
 DOWNLOAD: https://github.com/aguelle/MIDI-Automator/releases
 
 DONATIONS: Feel free to donate via paypal to my account "paypal.com@tieffrequent.de"
