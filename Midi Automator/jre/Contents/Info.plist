@@ -7,37 +7,35 @@
         <key>CFBundleExecutable</key>
         <string>libjli.dylib</string>
         <key>CFBundleGetInfoString</key>
-        <string>Java SE 1.8.0_74</string>
+        <string>OpenJDK 17.0.20.1+1</string>
         <key>CFBundleIdentifier</key>
-        <string>com.oracle.java.8u74.jdk</string>
+        <string>net.java.openjdk.jre</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>7.0</string>
         <key>CFBundleName</key>
-        <string>Java SE 8</string>
+        <string>OpenJDK 17.0.20.1</string>
         <key>CFBundlePackageType</key>
         <string>BNDL</string>
         <key>CFBundleShortVersionString</key>
-        <string>1.0</string>
+        <string>17.0.20.1</string>
         <key>CFBundleSignature</key>
         <string>????</string>
         <key>CFBundleVersion</key>
-        <string>1.8.0_74</string>
+        <string></string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>The application is requesting access to the microphone.</string>
         <key>JavaVM</key>
         <dict>
-                <key>JVMCapabilities</key>
-                <array>
-                        <string>CommandLine</string>
-                </array>
                 <key>JVMMinimumFrameworkVersion</key>
                 <string>13.2.9</string>
                 <key>JVMMinimumSystemVersion</key>
-                <string>10.6.0</string>
+                <string>11.00.00</string>
                 <key>JVMPlatformVersion</key>
-                <string>1.8</string>
+                <string>17.0.20.1</string>
                 <key>JVMVendor</key>
-                <string>Oracle Corporation</string>
+                <string>Eclipse Adoptium</string>
                 <key>JVMVersion</key>
-                <string>1.8.0_74</string>
+                <string>17.0.20.1</string>
         </dict>
 </dict>
 </plist>

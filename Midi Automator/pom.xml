@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.midi-automator</groupId>
 	<artifactId>midi-automator</artifactId>
-	<version>1.8.4-SNAPSHOT</version>
+	<version>1.9.0</version>
 
 	<!-- Project -->
 	<name>MIDI Automator</name>
-	<url>http://midi-automator.com</url>
+	<url>https://midi-automator.com</url>
 	<description>MIDI Automator is a desktop software for automating user actions (i.e. opening files, clicking buttons) triggered by midi messages.
 
 The main idea is to have a little helper for musicians who use laptops on stage. Most musicians use Ableton Live for that purpose. But they have to store their songs in one big live-set file which is hard to maintain. With MIDI Automator they can prepare and change an ordered set list containing single live-set files. MIDI Automator can listen to midi messages and load the next, previous or desired live-set file. All other features shall support the demand of a fully automated stage setup.
@@ -17,14 +17,14 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 	<licenses>
 		<license>
 			<name>MIT</name>
-			<url>http://opensource.org/licenses/MIT</url>
+			<url>https://opensource.org/licenses/MIT</url>
 		</license>
 	</licenses>
 	<developers>
 		<developer>
 			<id>aguelle</id>
-			<name>Angelo Gülle</name>
-			<email>angelo@tieffrequent.de</email>
+			<name>Angelo Pluskwa</name>
+			<email>midi-automator.com@tieffrequent.de</email>
 			<roles>
 				<role>project owner</role>
 			</roles>
@@ -41,9 +41,9 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.dist.dir>dist</project.dist.dir>
 		<project.log.file>MidiAutomator.log</project.log.file>
 		<project.lib.dir>lib</project.lib.dir>
-		<project.sikulix.version>1.1.0</project.sikulix.version>
-		<project.spring.version>4.2.2.RELEASE</project.spring.version>
-		<project.junit.version>4.12</project.junit.version>
+		<project.oculix.version>4.0.0</project.oculix.version>
+		<project.spring.version>5.3.39</project.spring.version>
+		<project.junit.version>4.13.2</project.junit.version>
 		<project.log4j.version>1.2.17</project.log4j.version>
 		<project.commons-lang.version>2.6</project.commons-lang.version>
 		<project.commons-io.version>2.4</project.commons-io.version>
@@ -54,7 +54,10 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.images.dir>images</project.images.dir>
 		<project.vbs.dir>VBS</project.vbs.dir>
 		<project.jre.dir>jre</project.jre.dir>
-		<project.java.version>1.8</project.java.version>
+		<project.java.version>17</project.java.version>
+		<maven.compiler.release>17</maven.compiler.release>
+		<project.jpackage.executable>${java.home}/bin/jpackage</project.jpackage.executable>
+		<project.test.java.executable>${java.home}/bin/java</project.test.java.executable>
 
 		<!-- MacOS -->
 		<project.dist.dir.macos>${project.dist.dir}/MacOS</project.dist.dir.macos>
@@ -74,32 +77,6 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		<project.jre.windows.dir>jre/Windows</project.jre.windows.dir>
 	</properties>
 
-	<!-- Repositories -->
-	<repositories>
-		<repository>
-			<id>com.sikulix</id>
-			<name>com.sikulix</name>
-			<url>http://oss.sonatype.org/content/groups/public</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Codehaus Snapshots</id>
-			<url>http://nexus.codehaus.org/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<!-- Dependencies -->
 	<dependencies>
 		<dependency>
@@ -108,9 +85,9 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<version>20050920</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sikulix</groupId>
-			<artifactId>sikulixapi</artifactId>
-			<version>${project.sikulix.version}</version>
+			<groupId>io.github.oculix-org</groupId>
+			<artifactId>oculixapi</artifactId>
+			<version>${project.oculix.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -168,13 +145,21 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 		</resources>
 
 		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.6.0</version>
+				<configuration>
+					<jvm>${project.test.java.executable}</jvm>
+					<argLine>--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED</argLine>
+				</configuration>
+			</plugin>
+
 			<!-- Customize compiler version -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.13.0</version>
 				<configuration>
-					<source>${project.java.version}</source>
-					<target>${project.java.version}</target>
+					<release>${project.java.version}</release>
 				</configuration>
 			</plugin>
 
@@ -182,6 +167,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.8.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -224,11 +210,13 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 					<execution>
 						<goals>
 							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+					<argLine>-Dfile.encoding=${project.build.sourceEncoding} --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED</argLine>
+					<jvm>${project.test.java.executable}</jvm>
 				</configuration>
 			</plugin>
 
@@ -246,10 +234,13 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 					<family>mac</family>
 				</os>
 			</activation>
+			<properties>
+				<project.test.java.executable>${project.basedir}/jre/Contents/Home/bin/java</project.test.java.executable>
+			</properties>
 			<build>
 				<plugins>
 
-					<!-- Run ANT tasks for bundeling -->
+					<!-- Run ANT tasks for bundling -->
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<version>1.7</version>
@@ -266,6 +257,7 @@ MIDI Automator shall be hold as generic as possible, so that it can also handle 
 										<property name="lib.dir" value="${project.lib.dir}" />
 										<property name="images.dir" value="${project.images.dir}" />
 										<property name="jar.file" value="${project.jar}" />
+										<property name="jpackage.executable" value="${project.jpackage.executable}" />
 										<property name="base.package" value="${project.base.package}" />
 										<property name="main.class" value="${project.main.class}" />
 										<property name="splashscreen.file" value="${project.splashscreen.file}" />

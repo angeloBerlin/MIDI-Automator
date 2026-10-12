@@ -3,31 +3,44 @@
 	<property environment="env" />
 
 	<!-- MacOS -->
-	<property name="macos.bundle.dir" value="${target.dir}/${name}.app/Contents" />
-	<property name="working.dir.macos.resources" value="$APP_ROOT/Contents/Resources" />
 	<property name="java.runtime" value="jre/Contents/Home/" />
 	<property name="mountdir" value="/tmp" />
+	<property name="jpackage.input.dir" value="${target.dir}/jpackage-input" />
 
 	<!-- Generates a MacOS Bundle from the jar -->
 	<target name="macbundle">
-        <!-- change to ant/appBundler-1.0.jar for using the originial appbundler instead of branch from https://bitbucket.org/infinitekind/appbundler -->
-		<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-			classpath="ant/appBundler-1.0ea.jar" />
-		<bundleapp outputdirectory="${target.dir}" name="${name}"
-			displayname="${name}" identifier="${base.package}" icon="${images.dir}/${icon.file.macos}"
-			mainclassname="${main.class}">
-			<runtime dir="${java.runtime}" />
-			<option
-				value="-splash:${working.dir.macos.resources}/images/${splashscreen.file}" />
-			<argument value="-wd=${working.dir.macos.resources}/" />
-			<arch name="x86_64"/>
-			<plistentry key="NSHighResolutionCapable" value="true"/>
-		</bundleapp>
-
-		<copy file="${target.dir}/${jar.file}" tofile="${macos.bundle.dir}/Java/${jar.file}" />
-		<copy todir="${macos.bundle.dir}/Resources/${images.dir}">
+		<delete dir="${target.dir}/${name}.app" quiet="true" />
+		<delete dir="${jpackage.input.dir}" quiet="true" />
+		<mkdir dir="${jpackage.input.dir}" />
+		<copy file="${target.dir}/${jar.file}" todir="${jpackage.input.dir}" />
+		<copy todir="${jpackage.input.dir}/${images.dir}">
 			<fileset dir="${images.dir}" />
 		</copy>
+		<exec executable="${jpackage.executable}" failonerror="true">
+			<arg value="--type" />
+			<arg value="app-image" />
+			<arg value="--name" />
+			<arg value="${name}" />
+			<arg value="--input" />
+			<arg value="${jpackage.input.dir}" />
+			<arg value="--main-jar" />
+			<arg value="${jar.file}" />
+			<arg value="--main-class" />
+			<arg value="${main.class}" />
+			<arg value="--runtime-image" />
+			<arg value="${java.runtime}" />
+			<arg value="--dest" />
+			<arg value="${target.dir}" />
+			<arg value="--icon" />
+			<arg value="${images.dir}/${icon.file.macos}" />
+			<arg value="--mac-package-identifier" />
+			<arg value="com.midi-automator" />
+			<arg value="--java-options" />
+			<arg value="-splash:$APPDIR/images/${splashscreen.file}" />
+			<arg value="--arguments" />
+			<arg value="-wd=$APPDIR" />
+		</exec>
+		<delete dir="${jpackage.input.dir}" quiet="true" />
 	</target>
 
 	<!-- Generates a DMG installer image form the app bundle -->
@@ -75,9 +88,6 @@
 		<!-- Add a symbolic link to the Applications directory -->
 		<symlink link="${mountdir}/${name}" resource="/Applications" />
 	    
-		<!-- Set jspawnhelper executable (Needed to retrieve open programs) -->
-		<chmod file="${mountdir}/${name}/${name}.app/Contents/PlugIns/jre/Contents/Home/jre/lib/jspawnhelper" perm="+x"/>
-		
 		<!-- Eject MIDI Automator and run .build.sh from here on until this is resolved https://stackoverflow.com/questions/48368389/hdiutil-attach-detach-convert-results-to-resource-temporarily-unavailable-->
 		
 		<!-- Detach the temporary image -->
@@ -92,6 +102,7 @@
 		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
 			<arg value="convert" />
 			<arg value="${target.dir}/${name}-tmp.dmg" />
+			<arg value="-ov" />
 			<arg value="-format" />		
 			<arg value="UDZO" />
 			<arg value="-o" />
@@ -105,4 +116,3 @@
 		
 	</target>
 </project>
-

@@ -22,5 +22,22 @@ DONATIONS: Feel free to donate via paypal to my account "paypal.com@tieffrequent
 
 This software tries to follow the principales of semantic versioning (http://semver.org/) as good as possible.
 
+## macOS (Apple Silicon)
+
+The macOS release targets **Apple Silicon (arm64)** natively. It bundles Eclipse Temurin **Java 17** and uses **OculiX** for GUI automation.
+
+On first launch, grant **Accessibility** and **Screen Recording** to `MIDI Automator.app` in
+**System Settings → Privacy & Security**. These are required for MIDI-triggered GUI automation
+(clicking buttons / matching on-screen images).
+
+Build requirements: JDK 17+, Maven 3.8+, and macOS command-line tools (`SetFile` / `hdiutil`).
+
+```bash
+cd "Midi Automator"
+mvn -DskipTests package
+```
+
+The DMG is written to `Midi Automator/target/MIDI Automator.dmg` (and copied to `dist/MacOS` on `mvn install`).
+
 Personal Note:
 For everyone who is missing the previous fancy midi-automator.com website... It was hacked on 18-04-18 because I was too lazy patching my Drupal installation. As I want to spend the few time I have, for developing the product instead of maintaining a website, I decided to leave everything here on github.

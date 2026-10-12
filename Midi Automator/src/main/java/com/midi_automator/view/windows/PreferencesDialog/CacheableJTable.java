@@ -53,7 +53,7 @@ public class CacheableJTable extends JTable implements ICacheable {
 		initialize();
 	}
 
-	public CacheableJTable(Vector<?> rowData, Vector<?> columnNames) {
+	public CacheableJTable(Vector<? extends Vector> rowData, Vector<?> columnNames) {
 		super(rowData, columnNames);
 		initialize();
 	}

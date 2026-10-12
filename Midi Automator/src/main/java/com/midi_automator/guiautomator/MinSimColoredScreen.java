@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Location;
 import org.sikuli.script.Match;
-import org.sikuli.script.Observer;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
+import org.sikuli.support.Observer;
 
 import com.midi_automator.utils.ImageUtils;
 
